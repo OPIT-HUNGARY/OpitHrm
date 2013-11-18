@@ -1,0 +1,5 @@
+opit_notes_user:
+    resource: "@OpitNotesUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
