@@ -1,0 +1,30 @@
+/web/bundles/
+/app/bootstrap.php.cache
+/app/cache/*
+/app/config/parameters.yml
+/app/logs/*
+/app/config/deploy.rb
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+/build/
+/vendor/
+/bin/
+/composer.phar
+
+# general files
+*~
+Capfile
+*.sqlite
+*.log
+.DS_Store
+Thumbs.db
+
+# vcs
+.svn
+.svn/
+
+# netbeans specific
+core
+nbproject/*
+!nbproject/project.properties
+!nbproject/project.xml
