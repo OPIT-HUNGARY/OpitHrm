@@ -16,3 +16,5 @@ _main:
 # AcmeDemoBundle routes (to be removed)
 _acme_demo:
     resource: "@AcmeDemoBundle/Resources/config/routing.yml"
+_opit_notes:
+    resource: "@OpitNotesUserBundle/Resources/config/routing.yml"

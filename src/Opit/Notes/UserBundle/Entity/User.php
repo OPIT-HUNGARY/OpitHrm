@@ -83,7 +83,7 @@ class User implements UserInterface, \Serializable {
      */
     public function getPassword()
     {
-        return $this->password;
+        return md5($this->password);
     }
 
     /**
@@ -120,4 +120,69 @@ class User implements UserInterface, \Serializable {
             $this->id,
         ) = unserialize($serialized);
     }
+    
+    /**
+     * Set username
+     *
+     * @param string $username
+     * @return User
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    
+        return $this;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = md5($password);
+    
+        return $this;
+    }    
+    
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    
+        return $this;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    
+        return $this;
+    }    
 }
