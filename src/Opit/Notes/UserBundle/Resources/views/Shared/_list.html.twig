@@ -1,0 +1,20 @@
+<div id="listElementProperties"></div>
+{% if userList is defined %}
+    {% for user in userList %}
+        <div class="listRow {% if loop.index0 is even %}odd{% endif %}">
+            <div class="listColumn">
+                {{ user.username }}
+            </div>
+            <div class="listColumn">
+                {{ user.email }}
+            </div>
+            <div class="listColumn">
+                {% if user.status == 1 %}
+                    Active
+                {%else%}
+                    Inactive
+                {%endif%}
+            </div>        
+        </div>
+    {% endfor %}
+{% endif %}

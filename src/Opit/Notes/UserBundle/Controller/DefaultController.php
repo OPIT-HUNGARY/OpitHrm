@@ -16,13 +16,4 @@ class DefaultController extends Controller
     {
         return array();
     }
-    
-    /**
-     * @Route("/list")
-     * @Template()
-     */
-    public function listAction()
-    {
-        return array();
-    }    
 }

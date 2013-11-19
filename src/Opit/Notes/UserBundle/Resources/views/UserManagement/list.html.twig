@@ -1,0 +1,6 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
+        'properties': userList
+    } %}
+{% endblock %}
