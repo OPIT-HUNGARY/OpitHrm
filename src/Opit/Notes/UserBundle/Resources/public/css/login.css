@@ -1,0 +1,26 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Nov 20, 2013, 3:09:17 PM Author     : OPIT\kaufmann
+*/
+#mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
+#mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }
+#mainWrapper #welcomeWrapper #welcomeText { padding: 15px 0 0 0; color: black; font-size: 8em; text-align: center; }
+#mainWrapper #welcomeWrapper #welcomeUnderText { color: #f28c38; font-size: 1.7em; text-align: center; margin-top: -35px; }
+#mainWrapper #loginForm { float: left; background-color: rgba(220, 220, 220, 0.8); width: 30%; margin-top: 10px; height: 223px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
+#mainWrapper #loginForm h2 { padding-left: 20px; }
+#mainWrapper #loginForm form { padding-left: 20px; }
+#mainWrapper #loginForm form #login div { margin: 0 0 10px 0; }
+#mainWrapper #loginForm form #login .placeholder { position: absolute; margin: -30px 0 0 10px; }
+#mainWrapper #loginForm form #login .placeholder .hidden { display: none; }
+#mainWrapper #loginForm form input { width: 240px; height: 30px; outline: none; border: 2px solid transparent; background-color: #fafafa; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; }
+#mainWrapper #loginForm form input:focus { border: solid 2px #f28c38; }
+#mainWrapper #loginForm form label { display: none; }
+#mainWrapper #loginForm form button { border: 0; outline: 0; background-color: #f28c38; float: left; color: white; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+#mainWrapper #featuresForm { background-color: rgba(220, 220, 220, 0.8); width: 69%; height: 223px; float: left; margin: 10px 0 0 10px; text-indent: 20px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
+#mainWrapper #featuresForm li { margin: 0 0 0 20px; text-indent: 5px; }
+#mainWrapper .input-padding, #mainWrapper #loginForm form input { padding: 2px 5px; }
+#mainWrapper .input-indent, #mainWrapper #loginForm form input { text-indent: 25px; }
+#mainWrapper .button-padding, #mainWrapper #loginForm form button { padding: 8px 30px 8px 30px; }

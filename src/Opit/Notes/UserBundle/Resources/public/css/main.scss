@@ -1,0 +1,110 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 19, 2013, 12:01:54 PM
+    Author     : OPIT\kaufmann
+*/
+
+$orangeColor: #f28c38;
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$lightGrayHover: rgba(200, 200, 200, 1);
+html, body{
+    font-family: arial, helvetica, sans-serif;
+    font-size: 13px;
+}
+
+header{
+    
+    #siteTitle{
+        float:left;
+        margin: 10px 0 0 10px;
+        font-size: 20px;
+    }
+    
+    #menuWrapper{
+        margin: 20px 0 0 0;
+        width: 100%;
+        height:80px;
+        overflow:visible;
+        float:left;
+
+         .menu{
+            height:40px;
+            width:100%; 
+            float:left;
+            overflow:visible;
+        }
+
+         nav:first-child{
+            padding:0 0 0 20px;
+            background-color:$lightGrayColor;
+        }
+
+         nav:last-child{
+            background-color:$orangeColor;
+        } 
+
+         nav:first-child .mainMenu{
+            float:left;
+            height:46px;
+            line-height:46px;
+            padding: 0 10px 0 10px;
+            margin: -3px 3px 0 0;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;        
+        }
+
+         nav:first-child .mainMenu .subMenu{
+            border-radius:0;
+            position:absolute;
+            width:100%;
+            height:40px;
+            left:0;
+            margin:-3px 0 0 0;
+            background-color:$lightGrayHover;
+            display:none;
+        }
+
+         nav:first-child .mainMenu:hover{
+            cursor:pointer;
+            background-color:$lightGrayHover;
+        }
+
+         nav:first-child .mainMenu:hover .subMenu{
+            display:block;
+            z-index:2;
+        }
+
+         nav:first-child .active{
+            background-color:$orangeColor;
+        }
+
+         nav:first-child .active:hover{
+            background-color:$orangeColor;
+        }
+
+         nav:first-child .active .subMenu{
+            background-color:$orangeColor;
+            display:block;
+            z-index:1;
+        }
+
+       :target{
+            background-color:$orangeColor;
+        }
+
+        :target{
+            background-color:$orangeColor;
+            display:block;
+            z-index:1;
+        }    
+    }
+}
+
+#bodyWrapper{
+    float:left;
+    margin:20px 0 0 0;
+}

@@ -11,6 +11,9 @@ namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\User;
+use Doctrine\Common\DataFixtures\AbstractFixture;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Description of User
@@ -24,20 +27,38 @@ use Opit\Notes\UserBundle\Entity\User;
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
  */
-class UserFixtures implements FixtureInterface 
+class UserFixtures extends AbstractFixture implements FixtureInterface, ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
     
     /**
      * {@inheritDoc}
      */
     public function load(ObjectManager $manager) 
     {
+        $factory = $this->container->get('security.encoder_factory');
+        $user = new User();
+        $encoder = $factory->getEncoder($user);
+        
         for($i = 0; $i < 10; $i++) {
             $testUser = new User();
             $testUser->setUsername("test".$i."Name");
-            $testUser->setPassword("test".$i."Password");
-            $testUser->setSalt("setSalt");
+            $password = $encoder->encodePassword("test".$i."Password", "");
+            $testUser->setPassword($password);
+            $testUser->setSalt("");
             $testUser->setEmail("mymail".$i."@mail.com");
+            $testUser->setEmployeeName("empname".$i);
             $testUser->setIsActive(1);
 
             $manager->persist($testUser);

@@ -1,0 +1,138 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 20, 2013, 3:09:17 PM
+    Author     : OPIT\kaufmann
+*/
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
+}
+
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$inputBackgroundColor: rgba(250, 250, 250, 1);
+$orangeColor: #f28c38;
+$boxShadowColor: rgba(160, 160, 160, 1);
+
+#mainWrapper{
+    width:60%;
+    min-width:1024px;
+    margin:0 auto;
+
+    #welcomeWrapper{
+        width:100%;
+        min-width: 740px;
+        height:250px;
+        background-color:$lightGrayColor;
+        margin:0 auto;
+        box-shadow:1px 1px 1px 1px $boxShadowColor;
+
+        #welcomeText{
+            padding: 15px 0 0 0;
+            color:black;
+            font-size:8em;
+            text-align:center;
+        }
+
+        #welcomeUnderText{
+            color:$orangeColor;
+            font-size:1.7em;
+            text-align:center;    
+            margin-top:-35px;
+        }
+    }
+
+    #loginForm{
+        float:left;
+        background-color:$lightGrayColor;
+        width:30%;
+        margin-top:10px;
+        height:223px;
+        box-shadow:1px 1px 1px 1px $boxShadowColor;
+
+        h2{
+            padding-left:20px;
+        }
+        
+        form{
+            padding-left:20px;
+
+            #login{
+                div{
+                   margin:0 0 10px 0; 
+                }
+
+                .placeholder{
+                    position:absolute;
+                    margin: -30px 0 0 10px;
+
+                    .hidden{
+                        display:none;
+                    }
+                }
+            }
+
+            input{
+                width:240px;
+                height:30px;
+                outline:none;
+                border:2px solid transparent;
+                background-color: $inputBackgroundColor;
+                @extend .input-padding;
+                @extend .input-indent;
+                @include border-radius(3px);
+            }
+
+            input:focus{
+                border:solid 2px $orangeColor;
+            }
+
+            label{
+                display:none;
+            }
+
+            button{
+                border:0;
+                outline:0;
+                background-color: $orangeColor;
+                float:left;
+                color:white;
+                @include border-radius(5px);
+                @extend .button-padding;
+            }
+        }
+    }
+
+    #featuresForm{
+        background-color:$lightGrayColor;
+        width:69%;
+        height:223px;
+        float:left;
+        margin:10px 0 0 10px;
+        text-indent: 20px;
+        box-shadow:1px 1px 1px 1px $boxShadowColor;        
+
+        li{
+            margin:0 0 0 20px;
+            text-indent: 5px;
+        }
+    }
+
+    .input-padding {
+        padding: 2px 5px;
+    }
+    .input-indent {
+        text-indent: 25px;
+    }
+
+    .button-padding{
+        padding:8px 30px 8px 30px;    
+    }
+}

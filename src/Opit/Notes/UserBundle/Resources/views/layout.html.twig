@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+    {% stylesheets 
+        '@OpitNotesUserBundle/Resources/public/css/main.css'
+        '@OpitNotesUserBundle/Resources/public/css/list.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}           
+{% block javascripts %}
+    {% javascripts 
+        '@OpitNotesUserBundle/Resources/public/js/main.js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block header %}        
+    <header>
+        <a href="{{ path('OpitNotesUserBundle_default_index') }}" id="siteTitle">N.O.T.E.S</a>
+        <div id="menuWrapper">
+            {% include 'OpitNotesUserBundle:Shared:_menu.html.twig' %}
+        </div>
+    </header> 
+{% endblock %}        
+{% block body %}
+        <div id="bodyWrapper">
+            
+        </div>        
+{% endblock %}        

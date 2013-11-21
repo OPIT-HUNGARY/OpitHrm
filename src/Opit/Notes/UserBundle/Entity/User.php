@@ -35,6 +35,11 @@ class User implements UserInterface, \Serializable {
      * @ORM\Column(type="string", length=25, unique=true)
      */
     private $username;
+    
+    /**
+     * @ORM\Column(type="string", length=25, unique=true)
+     */
+    private $employeeName;    
 
     /**
      * @ORM\Column(type="string", length=32)
@@ -89,6 +94,30 @@ class User implements UserInterface, \Serializable {
     /**
      * @inheritDoc
      */
+    public function getEmployeeName()
+    {
+        return $this->employeeName;
+    }    
+    
+    /**
+     * @inheritDoc
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }     
+
+    /**
+     * @inheritDoc
+     */
     public function getSalt()
     {
         return $this->salt;
@@ -99,7 +128,7 @@ class User implements UserInterface, \Serializable {
      */
     public function getPassword()
     {
-        return md5($this->password);
+        return $this->password;
     }
 
     /**
@@ -149,6 +178,19 @@ class User implements UserInterface, \Serializable {
     
         return $this;
     }
+    
+    /**
+     * Set employee name
+     *
+     * @param string $employeeName
+     * @return User
+     */
+    public function setEmployeeName($employeeName)
+    {
+        $this->employeeName = $employeeName;
+    
+        return $this;
+    }    
 
     /**
      * Set salt
@@ -171,7 +213,7 @@ class User implements UserInterface, \Serializable {
      */
     public function setPassword($password)
     {
-        $this->password = md5($password);
+        $this->password = $password;
     
         return $this;
     }    
@@ -201,4 +243,14 @@ class User implements UserInterface, \Serializable {
     
         return $this;
     }    
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }

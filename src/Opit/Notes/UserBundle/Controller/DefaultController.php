@@ -9,11 +9,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="OpitNotesUserBundle_default_index")
      * @Template()
      */
     public function indexAction()
     {
-        return array();
-    }
+        return $this->forward('OpitNotesUserBundle:Security:login');
+    }   
 }

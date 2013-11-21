@@ -1,0 +1,53 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+        {% stylesheets 
+            '@OpitNotesUserBundle/Resources/public/css/main.css'
+            '@OpitNotesUserBundle/Resources/public/css/login.css' %}
+            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+        {% endstylesheets %}
+{% endblock %}
+{% block javascripts %}
+        {% javascripts 
+            '@OpitNotesUserBundle/Resources/public/js/login.js' %}
+            <script type="text/javascript" src="{{ asset_url }}" ></script>
+        {% endjavascripts %}
+{% endblock %}            
+            
+{% block body %}
+    <div id="mainWrapper">
+        <div id="welcomeWrapper">
+            {#<img id="welcomeImage" src="{{ asset('bundles/opitnotesuser/images/notes.svg')}}" alt="notes" />#}
+            <div id="welcomeText">NOTES</div>
+            <div id="welcomeUnderText">New OPIT Travel Expense System</div>
+        </div>
+        <div id="loginForm">
+            <h2>Login</h2> 
+            {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'attr': {'id':'login'} }) }}
+        </div>
+        <div id="featuresForm">
+            <h2>The New OPIT Travel Expense System (NOTES) features:</h2>
+
+            <ol>
+                <li>
+                    User Management
+                </li>
+                <li>
+                    Administrate collating and displaying the expected travel expenses
+                </li>
+                <li>
+                    Submission for travel related expense
+                </li>
+                <li>
+                    Worklow support
+                </li>
+                <li>
+                    Automated currency rate fetching                
+                </li>
+            </ol>
+        </div>
+    </div>        
+    
+{#    {% if error %}
+            <div class="error">{{ error.message }}</div>
+    {% endif %}#}
+{% endblock %}

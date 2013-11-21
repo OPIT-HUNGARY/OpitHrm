@@ -3,83 +3,23 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
-    Created on : Nov 19, 2013, 12:01:54 PM
-    Author     : OPIT\kaufmann
+/*  Created on : Nov 19, 2013, 12:01:54 PM Author     : OPIT\kaufmann
 */
-header{
-    margin: 80px 0 0 0;
-    width: 100%;
-    height:80px;   
-    overflow:visible;
-}
-    header .menu{
-        height:40px;
-        width:100%; 
-        float:left;
-        overflow:visible;
-    }
-    
-    header nav:first-child{
-        padding:0 0 0 20px;
-        background-color:rgba(230, 230, 230, 1);
-    }
-    
-    header nav:last-child{
-        background-color:rgb(242, 140, 56);
-    } 
-    
-    header nav:first-child div{
-        float:left;
-        height:46px;
-        line-height:46px;
-        padding: 0 10px 0 10px;
-        margin: -3px 3px 0 0;
-        border-top-right-radius: 5px;
-        border-top-left-radius: 5px;        
-    }
-    
-    header nav:first-child div .subMenu{
-        border-radius:0;
-        position:absolute;
-        width:100%;
-        height:40px;
-        left:0;
-        margin:-3px 0 0 0;
-        background-color:rgba(200, 200, 200, 1);
-        display:none;
-    }
-    
-    header nav:first-child div:hover{
-        cursor:pointer;
-        background-color:rgba(200, 200, 200, 1);
-    }
-    
-    header nav:first-child div:hover .subMenu{
-        display:block;
-        z-index:2;
-    }
-    
-    header nav:first-child .active{
-        background-color:rgb(242, 140, 56);
-    }
-    
-    header nav:first-child .active:hover{
-        background-color:rgb(242, 140, 56);
-    }
-    
-    header nav:first-child .active .subMenu{
-        background-color:rgb(242, 140, 56);
-        display:block;
-        z-index:1;
-    }
-    
-/*    :target{
-        background-color:#f28c38;
-    }
-    
-    :target .subMenu{
-        background-color:#f28c38;
-        display:block;
-        z-index:1;
-    }    */
+html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
+
+header #siteTitle { float: left; margin: 10px 0 0 10px; font-size: 20px; }
+header #menuWrapper { margin: 20px 0 0 0; width: 100%; height: 80px; overflow: visible; float: left; }
+header #menuWrapper .menu { height: 40px; width: 100%; float: left; overflow: visible; }
+header #menuWrapper nav:first-child { padding: 0 0 0 20px; background-color: rgba(220, 220, 220, 0.8); }
+header #menuWrapper nav:last-child { background-color: #f28c38; }
+header #menuWrapper nav:first-child .mainMenu { float: left; height: 46px; line-height: 46px; padding: 0 10px 0 10px; margin: -3px 3px 0 0; border-top-right-radius: 5px; border-top-left-radius: 5px; }
+header #menuWrapper nav:first-child .mainMenu .subMenu { border-radius: 0; position: absolute; width: 100%; height: 40px; left: 0; margin: -3px 0 0 0; background-color: #c8c8c8; display: none; }
+header #menuWrapper nav:first-child .mainMenu:hover { cursor: pointer; background-color: #c8c8c8; }
+header #menuWrapper nav:first-child .mainMenu:hover .subMenu { display: block; z-index: 2; }
+header #menuWrapper nav:first-child .active { background-color: #f28c38; }
+header #menuWrapper nav:first-child .active:hover { background-color: #f28c38; }
+header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38; display: block; z-index: 1; }
+header #menuWrapper :target { background-color: #f28c38; }
+header #menuWrapper :target { background-color: #f28c38; display: block; z-index: 1; }
+
+#bodyWrapper { float: left; margin: 20px 0 0 0; }
