@@ -103,7 +103,8 @@ class OpitExtension extends \Twig_Extension
      */
     public function splitText($text, $pattern, $index)
     {
-        return split($pattern, $text)[$index];
+        $split = split($pattern, $text);
+        return $split[$index];
     }
    
 

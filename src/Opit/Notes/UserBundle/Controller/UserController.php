@@ -42,7 +42,7 @@ class UserController extends Controller
                 );
             }
             
-            $propertyNames = ["username", "email", "employeeName", "isActive", "roles"];
+            $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
 
         return array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues);
     }
