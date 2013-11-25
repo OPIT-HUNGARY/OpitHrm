@@ -9,6 +9,7 @@
 namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -60,11 +61,19 @@ class User implements UserInterface, \Serializable {
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
+     * @ORM\JoinTable(name="notes_users_groups")
+     * 
+     */
+    protected $groups;    
 
     public function __construct()
     {
+        //$this->salt = md5(uniqid(null, true));
         $this->isActive = true;
-        $this->salt = md5(uniqid(null, true));
+        $this->groups = new ArrayCollection();
     }
 
     /**
@@ -135,8 +144,8 @@ class User implements UserInterface, \Serializable {
      * @inheritDoc
      */
     public function getRoles()
-    {
-        return array('ROLE_USER');
+    {     
+        return $this->groups->toArray();
     }
 
     /**
