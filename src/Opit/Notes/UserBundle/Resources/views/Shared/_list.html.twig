@@ -1,20 +1,32 @@
-<div id="listElementProperties"></div>
-{% if userList is defined %}
-    {% for user in userList %}
-        <div class="listRow {% if loop.index0 is even %}odd{% endif %}">
-            <div class="listColumn">
-                {{ user.username }}
-            </div>
-            <div class="listColumn">
-                {{ user.email }}
-            </div>
-            <div class="listColumn">
-                {% if user.status == 1 %}
-                    Active
-                {%else%}
-                    Inactive
-                {%endif%}
-            </div>        
-        </div>
+<table>
+    <tr>
+        <td class="no-padding">
+            <button class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+            <button class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+{% if propertyNames is defined %}
+    {% for propertyName in propertyNames %}
+    <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
+    {% endfor %}
+    {% for propertyValue in propertyValues %}
+        <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+        {% for propertyName in propertyNames %}
+            {% if propertyName == "roles" %}
+                <td>
+                    {{ attribute(propertyValue, propertyName)|join(', ') }}
+                </td>
+            {% elseif propertyName == "isActive" %}
+                {% if attribute(propertyValue, propertyName) == 1 %}
+                    <td>Active</td>
+                {% else %}
+                    <td>Inactive</td>
+                {% endif %}
+            {% else %}
+                <td>{{ attribute(propertyValue, propertyName) }}</td>
+            {% endif %}
+        {% endfor %}
+        </tr>
     {% endfor %}
 {% endif %}
+</table>

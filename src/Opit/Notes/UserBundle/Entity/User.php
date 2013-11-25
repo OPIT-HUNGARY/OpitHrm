@@ -106,14 +106,6 @@ class User implements UserInterface, \Serializable {
     public function getEmployeeName()
     {
         return $this->employeeName;
-    }    
-    
-    /**
-     * @inheritDoc
-     */
-    public function getEmail()
-    {
-        return $this->email;
     }
     
     /**

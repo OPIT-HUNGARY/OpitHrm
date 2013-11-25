@@ -1,3 +1,4 @@
+$loginIcon = $("<i>").attr("class", "fa fa-sign-in");
 $usernameIcon = $("<i>").attr("class", "fa fa-user");
 $passwordIcon = $("<i>").attr("class", "fa fa-key");
 $usernameText = $("<span>").html(" Username");
@@ -21,10 +22,12 @@ usernameField
   .focus -> $usernameText.addClass("hidden");
 
 usernameField
-  .focusout -> if ($(this).val() == "") then $usernameText.removeClass("hidden");
+  .focusout -> if ($(this).val() is "") then $usernameText.removeClass("hidden");
 
 passwordField
   .focus -> $passwordText.addClass("hidden");
 
 passwordField
-  .focusout -> if ($(this).val() == "") then $passwordText.removeClass("hidden");
+  .focusout -> if ($(this).val() is "") then $passwordText.removeClass("hidden");
+  
+$(":button").append(" ").append($loginIcon);

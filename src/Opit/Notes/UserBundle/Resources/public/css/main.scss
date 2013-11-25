@@ -9,8 +9,46 @@ and open the template in the editor.
 */
 
 $orangeColor: #f28c38;
+$darkGrayColor: rgba(100, 100, 100, 1);
+$darkerGrayColor: rgba(80, 80, 80, 1);
 $lightGrayColor: rgba(220, 220, 220, 0.8);
 $lightGrayHover: rgba(200, 200, 200, 1);
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
+}
+@mixin border-top-left-radius($radius) {
+  -webkit-border-top-left-radius: $radius;
+     -moz-border-top-left-radius: $radius;
+      -ms-border-top-left-radius: $radius;
+       -o-border-top-left-radius: $radius;
+          border-top-left-radius: $radius;
+}
+@mixin border-top-right-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+     -moz-border-top-right-radius: $radius;
+      -ms-border-top-right-radius: $radius;
+       -o-border-top-right-radius: $radius;
+          border-top-right-radius: $radius;
+}
+@mixin border-bottom-left-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+     -moz-border-bottom-left-radius: $radius;
+      -ms-border-bottom-left-radius: $radius;
+       -o-border-bottom-left-radius: $radius;
+          border-bottom-left-radius: $radius;
+}
+@mixin border-bottom-right-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+     -moz-border-bottom-right-radius: $radius;
+      -ms-border-bottom-right-radius: $radius;
+       -o-border-bottom-right-radius: $radius;
+          border-bottom-right-radius: $radius;
+}
+
 html, body{
     font-family: arial, helvetica, sans-serif;
     font-size: 13px;
@@ -18,26 +56,50 @@ html, body{
 
 header{
     
-    #siteTitle{
+    #siteLogo{
         float:left;
         margin: 10px 0 0 10px;
-        font-size: 20px;
+        text-decoration:none;
+        color:black;
+        
+        span:first-child{
+            float:left;
+            clear:both;
+            font-size:3.6em;
+        }
+        span:last-child{
+            float:left;
+            clear:both;
+            font-size:0.8em;
+            color: $orangeColor;
+            margin:-10px 0 0 0;
+        }
+    }
+    
+    #logoutButton{
+        float:right;
+        color:white;
+        text-decoration:none;
+        background-color:$orangeColor;
+        padding:4px 10px 4px 10px;
+        font-weight: bold;
+        margin:0 10px 0 0;
+        @include border-bottom-left-radius(10px);
+        @include border-bottom-right-radius(10px);
     }
     
     #menuWrapper{
-        margin: 20px 0 0 0;
+        margin: 20px 0 30px 0;
         width: 100%;
         height:80px;
-        overflow:visible;
         float:left;
 
          .menu{
             height:40px;
             width:100%; 
             float:left;
-            overflow:visible;
         }
-
+        
          nav:first-child{
             padding:0 0 0 20px;
             background-color:$lightGrayColor;
@@ -49,23 +111,89 @@ header{
 
          nav:first-child .mainMenu{
             float:left;
-            height:46px;
-            line-height:46px;
+            height:44px;
+            line-height:44px;
             padding: 0 10px 0 10px;
             margin: -3px 3px 0 0;
-            border-top-right-radius: 5px;
-            border-top-left-radius: 5px;        
+            @include border-top-right-radius(5px);
+            @include border-top-left-radius(5px); 
         }
 
          nav:first-child .mainMenu .subMenu{
-            border-radius:0;
+            @include border-radius(0);
             position:absolute;
             width:100%;
-            height:40px;
+            height:42px;
             left:0;
             margin:-3px 0 0 0;
             background-color:$lightGrayHover;
             display:none;
+            
+            .subMenuItem{
+                float:left;
+                position:relative;
+                margin:0 0 0 10px;
+                
+                a{
+                    background-color:$darkGrayColor;
+                    font-weight: normal;
+                    color:white;
+                    text-decoration:none;
+                    padding:5px 15px 5px 15px;
+                    @include border-radius(5px);
+                    
+                    i{
+                        margin:0 0 0 5px;
+                        display:inline;
+                    }
+                }
+                
+                ul{
+                    float:left;
+                    position:absolute;
+                    background-color:$darkerGrayColor;
+                    top:inherit;
+                    left:inherit;
+                    margin:0;
+                    padding:0;
+                    margin: -10px 0 0 0;
+                    display:none;
+                    width:100%;
+                    min-width:100px;
+                    @include border-bottom-left-radius(5px);
+                    @include border-bottom-right-radius(5px);
+                    @include border-top-right-radius(5px);
+                    
+                    li{
+                        padding:0 10px 0 10px;
+                    }
+                    
+                    li:first-child{
+                        @include border-top-right-radius(5px);                    
+                    }
+                    li:last-child{
+                        @include border-bottom-left-radius(5px);
+                        @include border-bottom-right-radius(5px);
+                    }
+                    
+                    li:hover{
+                        background-color:$darkGrayColor;
+                    }
+                }
+            }
+            
+            .subMenuItem:hover{
+                a{
+                    background-color:$darkerGrayColor;
+                }
+                a.dropdown{
+                    @include border-bottom-left-radius(0);
+                    @include border-bottom-right-radius(0);
+                }
+                ul{
+                    display:block;
+                }
+            }
         }
 
          nav:first-child .mainMenu:hover{
@@ -80,6 +208,8 @@ header{
 
          nav:first-child .active{
             background-color:$orangeColor;
+            color:white;
+            font-weight: bold;
         }
 
          nav:first-child .active:hover{
@@ -92,19 +222,20 @@ header{
             z-index:1;
         }
 
-       :target{
+/*       :target{
             background-color:$orangeColor;
-        }
-
-        :target{
-            background-color:$orangeColor;
-            display:block;
-            z-index:1;
-        }    
+            color:white;
+            font-weight: bold;
+            
+            .subMenu{
+                background-color:$orangeColor;
+                display:block;
+                z-index:1;
+            }            
+        }    */
     }
 }
 
-#bodyWrapper{
-    float:left;
-    margin:20px 0 0 0;
+.default-right{
+    float: right;
 }

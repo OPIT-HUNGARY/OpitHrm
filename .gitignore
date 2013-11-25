@@ -18,6 +18,7 @@ Capfile
 *.log
 .DS_Store
 Thumbs.db
+.sass-cache/
 
 # vcs
 .svn

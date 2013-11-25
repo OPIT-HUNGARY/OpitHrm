@@ -15,8 +15,9 @@
         {% stylesheets 
             'css/html5-boilerplate/main.css' 
             'css/html5-boilerplate/normalize.css'
+            'bundles/bmatznerfontawesome/css/font-awesome.min.css'
             '@OpitNotesUserBundle/Resources/public/css/main.css'
-            '@OpitNotesUserBundle/Resources/public/css/list.css' %}
+            '@OpitNotesUserBundle/Resources/public/css/list.css'%}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
@@ -33,10 +34,9 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-        <header>
-            {% include 'OpitNotesUserBundle:Shared:_menu.html.twig' %}
-        </header>
+            {% block header %}{% endblock %}
             {% block body %}{% endblock %}
         <footer></footer>
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
