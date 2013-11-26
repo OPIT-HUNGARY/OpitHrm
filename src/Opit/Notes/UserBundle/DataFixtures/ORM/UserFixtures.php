@@ -8,7 +8,7 @@
 
 namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
  */
-class UserFixtures extends AbstractFixture implements FixtureInterface, ContainerAwareInterface
+class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -60,12 +60,20 @@ class UserFixtures extends AbstractFixture implements FixtureInterface, Containe
             $testUser->setEmail("mymail".$i."@mail.com");
             $testUser->setEmployeeName("empname".$i);
             $testUser->setIsActive(1);
+            $testUser->addGroup($this->getReference('admin-group'));
 
             $manager->persist($testUser);
         }
         
         $manager->flush();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function getOrder()
+    {
+        return 2; // the order in which fixtures will be loaded
+    }
 
-//put your code here
 }

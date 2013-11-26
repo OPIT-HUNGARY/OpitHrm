@@ -254,4 +254,37 @@ class User implements UserInterface, \Serializable {
     {
         return $this->id;
     }
+
+    /**
+     * Add groups
+     *
+     * @param \Opit\Notes\UserBundle\Entity\Groups $groups
+     * @return User
+     */
+    public function addGroup(\Opit\Notes\UserBundle\Entity\Groups $groups)
+    {
+        $this->groups[] = $groups;
+    
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \Opit\Notes\UserBundle\Entity\Groups $groups
+     */
+    public function removeGroup(\Opit\Notes\UserBundle\Entity\Groups $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
 }
