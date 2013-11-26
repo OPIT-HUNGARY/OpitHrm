@@ -10,8 +10,9 @@ and open the template in the editor.
 #mainWrapper #welcomeWrapper #welcomeText { padding: 15px 0 0 0; color: black; font-size: 8em; text-align: center; }
 #mainWrapper #welcomeWrapper #welcomeUnderText { color: #f28c38; font-size: 1.7em; text-align: center; margin-top: -35px; }
 #mainWrapper #loginForm { float: left; background-color: rgba(220, 220, 220, 0.8); width: 30%; margin-top: 10px; height: 223px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
-#mainWrapper #loginForm h2 { padding-left: 20px; }
-#mainWrapper #loginForm form { padding-left: 20px; }
+#mainWrapper #loginForm > div { margin: 20px; }
+#mainWrapper #loginForm h2 { margin-bottom: 5px; }
+#mainWrapper #loginForm .error { color: red; margin-bottom: 10px; }
 #mainWrapper #loginForm form #login div { margin: 0 0 10px 0; }
 #mainWrapper #loginForm form #login .placeholder { position: absolute; margin: -30px 0 0 10px; }
 #mainWrapper #loginForm form #login .placeholder .hidden { display: none; }

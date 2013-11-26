@@ -48,7 +48,7 @@ $boxShadowColor: rgba(160, 160, 160, 1);
             margin-top:-35px;
         }
     }
-
+    
     #loginForm{
         float:left;
         background-color:$lightGrayColor;
@@ -57,12 +57,20 @@ $boxShadowColor: rgba(160, 160, 160, 1);
         height:223px;
         box-shadow:1px 1px 1px 1px $boxShadowColor;
 
+        > div{
+            margin:20px;
+        }
+        
         h2{
-            padding-left:20px;
+            margin-bottom:5px;
+        }
+        
+        .error{
+            color:red;
+            margin-bottom:10px;
         }
         
         form{
-            padding-left:20px;
 
             #login{
                 div{

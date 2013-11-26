@@ -3,9 +3,9 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/*  Created on : Nov 25, 2013, 10:37:17 AM Author     : OPIT\kaufmann
+/*  Created on : Nov 25, 2013, 10:37:17 AM Author     : OPIT\Notes
 */
-table { width: 98%; margin-left: 1%; float: left; }
+table { margin-left: 1%; width: 98%; }
 table th { background-color: #f28c38; padding: 10px 10px 10px 10px; border-right: solid 1px white; text-align: left; color: white; }
 table td { padding: 5px 10px 5px 10px; }
 table .oddRow { background-color: rgba(220, 220, 220, 0.8); }

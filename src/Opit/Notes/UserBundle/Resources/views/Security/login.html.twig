@@ -10,19 +10,23 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="bundles/opitnotesuser/js/login.js" ></script>
+    <script type="text/javascript" src="/bundles/opitnotesuser/js/login.js" ></script>
 {% endblock %}            
             
 {% block body %}
     <div id="mainWrapper">
         <div id="welcomeWrapper">
-            {#<img id="welcomeImage" src="{{ asset('bundles/opitnotesuser/images/notes.svg')}}" alt="notes" />#}
             <div id="welcomeText">NOTES</div>
             <div id="welcomeUnderText">New OPIT Travel Expense System</div>
         </div>
         <div id="loginForm">
-            <h2>Login</h2> 
+            <div>
+            <h2>Login</h2>
+            {% if error %}
+                    <div class="error">{{ error.message }}</div>
+            {% endif %}
             {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'attr': {'id':'login'} }) }}
+            </div>
         </div>
         <div id="featuresForm">
             <h2>The New OPIT Travel Expense System (NOTES) features:</h2>
@@ -46,8 +50,4 @@
             </ol>
         </div>
     </div>        
-    
-{#    {% if error %}
-            <div class="error">{{ error.message }}</div>
-    {% endif %}#}
 {% endblock %}

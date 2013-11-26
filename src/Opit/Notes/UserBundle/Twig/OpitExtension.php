@@ -97,14 +97,14 @@ class OpitExtension extends \Twig_Extension
     /**
      * 
      * @param string $text the string you want to split
-     * @param sting $pattern the pattern at where you want to split the text
+     * @param sting $delimiter the pattern at where you want to split the text
      * @param integer $index which index of the splitted text to return
      * @return type
      */
-    public function splitText($text, $pattern, $index)
+    public function splitText($text, $delimiter, $index)
     {
-        $split = split($pattern, $text);
-        return $split[$index];
+        $result = explode($delimiter, $text);
+        return $result[$index];
     }
    
 
