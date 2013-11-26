@@ -13,11 +13,12 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         {% stylesheets 
-            'css/html5-boilerplate/main.css' 
             'css/html5-boilerplate/normalize.css'
+            'css/html5-boilerplate/main.css' 
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
             '@OpitNotesUserBundle/Resources/public/css/main.css'
-            '@OpitNotesUserBundle/Resources/public/css/list.css'%}
+            '@OpitNotesUserBundle/Resources/public/css/list.css'
+            output='css/base.css' filter='?yui_css, cssrewrite'%}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
