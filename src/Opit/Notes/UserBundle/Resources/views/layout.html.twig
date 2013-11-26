@@ -1,14 +1,18 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets 
         '@OpitNotesUserBundle/Resources/public/css/main.css'
-        '@OpitNotesUserBundle/Resources/public/css/list.css' %}
+        '@OpitNotesUserBundle/Resources/public/css/list.css'
+    output='css/notes_main.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}           
 {% block javascripts %}
+    {{ parent() }}
     {% javascripts 
-        '@OpitNotesUserBundle/Resources/public/js/main.js' %}
+        '@OpitNotesUserBundle/Resources/public/js/main.js'
+    output='js/notes_main.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
