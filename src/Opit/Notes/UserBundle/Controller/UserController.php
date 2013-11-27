@@ -6,6 +6,7 @@ use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class UserController extends Controller
 {
@@ -45,5 +46,51 @@ class UserController extends Controller
             $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
 
         return array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues);
+    }
+    
+/**
+    * @Route("/secured/user/search", name="OpitNotesUserBundle_user_search")
+    * @Template()
+    * @Method({"POST"})
+    */
+    public function searchAction()
+    {
+        $request = $this->getRequest()->request->all();
+        $empty = array_filter($request, function($value) { return !empty($value); });
+        
+        if(array_key_exists('resetForm', $request) || empty($empty)) {
+            list($propertyNames, $propertyValues) = array_values($this->listAction());
+        } else {
+            $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
+            $propertyValues = array();
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $result = $entityManager->getRepository('OpitNotesUserBundle:User')
+                    ->findUsersByPropertyUsingLike($request);
+
+            $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
+
+            $users = array();
+            for ($i = 0; $i < count($result); $i++) {
+                $user = $result[$i];
+                $id = $user->getId();
+                $roles = array();
+                $localUserRoles = $groups->findUserGroupsArray($id);
+                foreach ($localUserRoles as $role) {
+                    $roles[] = $role["name"];
+                }
+
+                $propertyValues[$id] = array(
+                        "username" => $user->getUsername(),
+                        "email" => $user->getEmail(),
+                        "employeeName" => $user->getEmployeeName(),
+                        "isActive" => $user->getIsActive(),
+                        "roles" => $roles
+                    );
+            }
+        }
+        
+        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig',
+                array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues));
     }
 }

@@ -1,0 +1,60 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 27, 2013, 4:37:04 PM
+    Author     : OPIT\kaufmann
+*/
+
+$buttonDefaultLightColor: rgba(235, 235, 235, 1);
+$buttonDefaultDarkColor: rgba(180, 180, 180, 1);
+$orangeColor: #f28c38;
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
+}
+
+@mixin border-top-left-radius($radius) {
+  -webkit-border-top-left-radius: $radius;
+     -moz-border-top-left-radius: $radius;
+      -ms-border-top-left-radius: $radius;
+       -o-border-top-left-radius: $radius;
+          border-top-left-radius: $radius;
+}
+@mixin border-top-right-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+     -moz-border-top-right-radius: $radius;
+      -ms-border-top-right-radius: $radius;
+       -o-border-top-right-radius: $radius;
+          border-top-right-radius: $radius;
+}
+@mixin border-bottom-left-radius($radius) {
+  -webkit-border-bottom-left-radius: $radius;
+     -moz-border-bottom-left-radius: $radius;
+      -ms-border-bottom-left-radius: $radius;
+       -o-border-bottom-left-radius: $radius;
+          border-bottom-left-radius: $radius;
+}
+@mixin border-bottom-right-radius($radius) {
+  -webkit-border-bottom-right-radius: $radius;
+     -moz-border-bottom-right-radius: $radius;
+      -ms-border-bottom-right-radius: $radius;
+       -o-border-bottom-right-radius: $radius;
+          border-bottom-right-radius: $radius;
+}
+
+@mixin button-gradient($color1, $color2, $color3){
+        background: linear-gradient($color1, $color2, $color3);
+        background: -webkit-linear-gradient($color1, $color2, $color3);
+        background: -o-linear-gradient($color1, $color2, $color3);
+        background: -moz-linear-gradient($color1, $color2, $color3);  
+}
+@mixin box-shadow($left, $top, $scatter, $size, $color){
+    box-shadow: $left $top $scatter $size $color;
+}

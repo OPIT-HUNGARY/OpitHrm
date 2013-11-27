@@ -96,4 +96,30 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         return $this->findBy(array(), array('username' => 'ASC'));
     }
+    
+    /**
+     * 
+     * @param type $parameters key value pairs, parameter name and value
+     * @return type
+     */
+    public function findUsersByPropertyUsingLike($parameters)
+    {
+        $qb = $this->createQueryBuilder('u');
+        $params = array();
+        $andx = array();
+        
+        foreach ($parameters as $key => $value) {
+            if ($value != '') {
+                $params[':'.$key] = '%'.$value.'%';
+                $andx[] = $qb->expr()->andX($qb->expr()->like('u.'.$key, ':'.$key));
+            }
+        }
+        
+        $qb->where(call_user_func_array(array($qb->expr(), "andX"), $andx))
+        ->setParameters($params);
+
+        $qb = $qb->getQuery();
+                
+        return $qb->getResult();
+    }
 }

@@ -5,28 +5,28 @@
             <button class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
         </td>
     </tr>
-{% if propertyNames is defined %}
-    {% for propertyName in propertyNames %}
-    <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
-    {% endfor %}
-    {% for propertyValue in propertyValues %}
-        <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+    {% if propertyNames is defined %}
         {% for propertyName in propertyNames %}
-            {% if propertyName == "roles" %}
-                <td>
-                    {{ attribute(propertyValue, propertyName)|join(', ') }}
-                </td>
-            {% elseif propertyName == "isActive" %}
-                {% if attribute(propertyValue, propertyName) == 1 %}
-                    <td>Active</td>
-                {% else %}
-                    <td>Inactive</td>
-                {% endif %}
-            {% else %}
-                <td>{{ attribute(propertyValue, propertyName) }}</td>
-            {% endif %}
+        <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
         {% endfor %}
-        </tr>
-    {% endfor %}
-{% endif %}
+        {% for propertyValue in propertyValues %}
+            <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+            {% for propertyName in propertyNames %}
+                {% if propertyName == "roles" %}
+                    <td>
+                        {{ attribute(propertyValue, propertyName)|join(', ') }}
+                    </td>
+                {% elseif propertyName == "isActive" %}
+                    {% if attribute(propertyValue, propertyName) == 1 %}
+                        <td>Active</td>
+                    {% else %}
+                        <td>Inactive</td>
+                    {% endif %}
+                {% else %}
+                    <td>{{ attribute(propertyValue, propertyName) }}</td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    {% endif %}
 </table>

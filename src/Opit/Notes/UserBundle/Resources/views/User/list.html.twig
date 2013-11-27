@@ -1,7 +1,11 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block body %}
-    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
-        'propertyNames': propertyNames,
-        'propertyValues': propertyValues
-    } %}
+    {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' %}
+
+    <div id="userlistWrapper">
+        {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
+            'propertyNames': propertyNames,
+            'propertyValues': propertyValues
+        } %}
+    </div>
 {% endblock %}

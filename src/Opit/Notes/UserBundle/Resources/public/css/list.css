@@ -5,14 +5,15 @@ and open the template in the editor.
 */
 /*  Created on : Nov 25, 2013, 10:37:17 AM Author     : OPIT\Notes
 */
-table { margin-left: 1%; width: 98%; }
-table th { background-color: #f28c38; padding: 10px 10px 10px 10px; border-right: solid 1px white; text-align: left; color: white; }
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\kaufmann
+*/
+table th { background-color: #f28c38; padding: 10px 10px 10px 10px; text-align: left; color: white; }
 table td { padding: 5px 10px 5px 10px; }
-table .oddRow { background-color: rgba(220, 220, 220, 0.8); }
-table .no-padding { padding: 0; }
-table .button { border: 0; margin: 0 0 10px 0; padding: 14px 33px 14px 33px; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; }
-table .button i { margin: 0 5px 0 0; }
-table .button:hover { background: #b4b4b4; box-shadow: 0 0 0 0 black; }
 table .delete { margin: 0 0 0 10px; background: linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -webkit-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -o-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -moz-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); box-shadow: 2px 2px 2px 1px #8c0a0a; }
 table .delete:hover { background: #8c0a0a; }
 table .add { background: linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -webkit-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -o-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -moz-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); box-shadow: 2px 2px 2px 1px #0a8c0a; }

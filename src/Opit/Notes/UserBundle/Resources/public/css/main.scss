@@ -8,50 +8,47 @@ and open the template in the editor.
     Author     : OPIT\Notes
 */
 
-$orangeColor: #f28c38;
+@import '_defaults';
+
 $darkGrayColor: rgba(100, 100, 100, 1);
 $darkerGrayColor: rgba(80, 80, 80, 1);
 $lightGrayColor: rgba(220, 220, 220, 0.8);
 $lightGrayHover: rgba(200, 200, 200, 1);
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-      -ms-border-radius: $radius;
-       -o-border-radius: $radius;
-          border-radius: $radius;
-}
-@mixin border-top-left-radius($radius) {
-  -webkit-border-top-left-radius: $radius;
-     -moz-border-top-left-radius: $radius;
-      -ms-border-top-left-radius: $radius;
-       -o-border-top-left-radius: $radius;
-          border-top-left-radius: $radius;
-}
-@mixin border-top-right-radius($radius) {
-  -webkit-border-top-right-radius: $radius;
-     -moz-border-top-right-radius: $radius;
-      -ms-border-top-right-radius: $radius;
-       -o-border-top-right-radius: $radius;
-          border-top-right-radius: $radius;
-}
-@mixin border-bottom-left-radius($radius) {
-  -webkit-border-bottom-left-radius: $radius;
-     -moz-border-bottom-left-radius: $radius;
-      -ms-border-bottom-left-radius: $radius;
-       -o-border-bottom-left-radius: $radius;
-          border-bottom-left-radius: $radius;
-}
-@mixin border-bottom-right-radius($radius) {
-  -webkit-border-bottom-right-radius: $radius;
-     -moz-border-bottom-right-radius: $radius;
-      -ms-border-bottom-right-radius: $radius;
-       -o-border-bottom-right-radius: $radius;
-          border-bottom-right-radius: $radius;
-}
+
+$buttonDefaultLightColor: rgba(235, 235, 235, 1);
+$buttonDefaultDarkColor: rgba(180, 180, 180, 1);
 
 html, body{
     font-family: arial, helvetica, sans-serif;
     font-size: 13px;
+}
+
+#main-wrapper {
+    margin: 1.5em;
+}
+
+.oddRow { background-color: rgba(220, 220, 220, 0.8); }
+
+.no-padding{
+    padding:0;
+}
+
+.button{
+    border:0;
+    margin:0 0 10px 0;
+    padding:14px 33px 14px 33px;
+    @include border-radius(10px);
+    @include button-gradient($buttonDefaultLightColor, $buttonDefaultLightColor, $buttonDefaultDarkColor);
+    @include box-shadow(2px, 2px, 2px, 1px, rgba(150, 150, 150, 1));
+
+    i{
+        margin:0 5px 0 0;
+    }
+}
+
+.button:hover{
+    background: $buttonDefaultDarkColor;
+    box-shadow:0 0 0 0 black;
 }
 
 header{
@@ -101,7 +98,6 @@ header{
         }
         
          nav:first-child{
-            padding:0 0 0 20px;
             background-color:$lightGrayColor;
         }
 

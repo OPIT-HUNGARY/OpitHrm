@@ -8,4 +8,18 @@
     });
   });
 
+  $.fn.extend({
+    formIsEmpty: function(element) {
+      var $el, exists;
+      $el = element ? $(element) : $(this);
+      exists = false;
+      $el.find(':input').each(function() {
+        if ($(this).val()) {
+          return exists = true;
+        }
+      });
+      return exists;
+    }
+  });
+
 }).call(this);

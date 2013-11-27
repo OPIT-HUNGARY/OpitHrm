@@ -8,17 +8,10 @@ and open the template in the editor.
     Author     : OPIT\kaufmann
 */
 
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-      -ms-border-radius: $radius;
-       -o-border-radius: $radius;
-          border-radius: $radius;
-}
+@import '_defaults';
 
 $lightGrayColor: rgba(220, 220, 220, 0.8);
 $inputBackgroundColor: rgba(250, 250, 250, 1);
-$orangeColor: #f28c38;
 $boxShadowColor: rgba(160, 160, 160, 1);
 
 #mainWrapper{

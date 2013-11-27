@@ -5,6 +5,13 @@ and open the template in the editor.
 */
 /*  Created on : Nov 20, 2013, 3:09:17 PM Author     : OPIT\kaufmann
 */
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\kaufmann
+*/
 #mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
 #mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }
 #mainWrapper #welcomeWrapper #welcomeText { padding: 15px 0 0 0; color: black; font-size: 8em; text-align: center; }

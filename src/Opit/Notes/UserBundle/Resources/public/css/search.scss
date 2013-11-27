@@ -1,0 +1,99 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 26, 2013, 11:50:17 AM
+    Author     : OPIT\kaufmann
+*/
+
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Nov 26, 2013, 11:49:55 AM
+    Author     : OPIT\kaufmann
+*/
+
+@import '_defaults';
+
+$defaultLightColor: rgba(235, 235, 235, 1);
+$defaultDarkColor: rgba(180, 180, 180, 1);
+
+#userlistWrapper > table {
+    width: 100%;
+}
+
+#searchFormWrapper{
+    background-color: $defaultLightColor;
+    margin-bottom:20px;
+    padding: 10px;
+    
+    @include border-radius(5px);
+   
+    h3{
+        font-size: 1.4em;
+        margin:0;
+        
+        i{
+            font-size: .5em;
+            padding:4px;
+            color:rgba(180, 180, 180, 1);
+            border:solid 1px rgba(180, 180, 180, 1);
+            background-color:rgba(240, 240, 240, 1);
+            
+            @include border-radius(5px);
+        }
+        
+        i:hover{
+            cursor:pointer;
+            color:rgba(140, 140, 140, 1);
+            border:solid 1px rgba(140, 140, 140, 1);
+            background-color:rgba(230, 230, 230, 1);
+        }
+    }
+    
+    #toggleSearchForm:hover{
+        cursor:pointer;
+    }
+    
+    #searchFormProperties{
+        padding:10px;
+        
+        .searchProperty{
+            width:15%;
+            margin:5px;
+            display:inline-block;
+
+            label{
+                display:block;        
+            }
+            input{
+                width:100%;
+                height:25px;
+                display:block;   
+                border:solid 1px $defaultDarkColor;
+                @include border-radius(5px);
+                outline:0;
+                text-indent: 5px;
+            }
+            input:focus{
+                border:solid 1px $orangeColor;
+            }
+        }
+    }
+    
+    #searchFormButtons{
+        margin:10px 0 10px 15px;
+        
+        button.search{
+            
+        }
+        button.reset{
+            margin:0 0 0 10px;
+        }        
+    }
+}

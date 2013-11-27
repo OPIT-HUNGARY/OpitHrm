@@ -8,67 +8,22 @@ and open the template in the editor.
     Author     : OPIT\Notes
 */
 
-$buttonDefaultLightColor: rgba(235, 235, 235, 1);
-$buttonDefaultDarkColor: rgba(180, 180, 180, 1);
+@import '_defaults';
 
 $buttonDeleteLightColor: rgba(220, 10, 10, 1);
 $buttonDeleteDarkColor: rgba(140, 10, 10, 1);
-
 $buttonAddLightColor: rgba(10, 200, 10, 1);
 $buttonAddDarkColor: rgba(10, 140, 10, 1);
 
-@mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-      -ms-border-radius: $radius;
-       -o-border-radius: $radius;
-          border-radius: $radius;
-}
-@mixin button-gradient($color1, $color2, $color3){
-        background: linear-gradient($color1, $color2, $color3);
-        background: -webkit-linear-gradient($color1, $color2, $color3);
-        background: -o-linear-gradient($color1, $color2, $color3);
-        background: -moz-linear-gradient($color1, $color2, $color3);  
-}
-@mixin box-shadow($left, $top, $scatter, $size, $color){
-    box-shadow: $left $top $scatter $size $color;
-}
-
 table {
-    margin-left: 1%;
-    width: 98%;
-    
     th { 
         background-color: #f28c38;
         padding: 10px 10px 10px 10px;
-        border-right: solid 1px white;
         text-align: left;
         color: white; 
     }
     td { 
         padding: 5px 10px 5px 10px;
-    }
-    .oddRow { background-color: rgba(220, 220, 220, 0.8); }
-    
-    .no-padding{
-        padding:0;
-    }
-    .button{
-        border:0;
-        margin:0 0 10px 0;
-        padding:14px 33px 14px 33px;
-        @include border-radius(10px);     
-        @include button-gradient($buttonDefaultLightColor, $buttonDefaultLightColor, $buttonDefaultDarkColor);
-        @include box-shadow(2px, 2px, 2px, 1px, rgba(150, 150, 150, 1));
-        
-        i{
-            margin:0 5px 0 0;
-        }
-    }
-    
-    .button:hover{
-        background: $buttonDefaultDarkColor;
-        box-shadow:0 0 0 0 black;
     }
     
     .delete{
