@@ -1,3 +1,8 @@
+opit_notes_travel:
+    resource: "@OpitNotesTravelBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 opit_notes_user:
     resource: "@OpitNotesUserBundle/Controller/"
     type:     annotation

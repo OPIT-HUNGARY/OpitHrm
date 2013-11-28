@@ -15,5 +15,13 @@
             </div>
         </div>
     </div>
+    <div class="mainMenu {{ (module == 'travel') ? 'active': '' }}">
+        Travel
+        <div class="subMenu">
+            <div class="subMenuItem">
+                <a href="{{ path('OpitNotesTravelBundle_travel_list') }}">List</a>
+            </div>
+        </div>
+    </div>
 </nav>
 <nav class="menu"></nav>

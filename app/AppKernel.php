@@ -19,7 +19,8 @@ class AppKernel extends Kernel
             new Opit\Notes\UserBundle\OpitNotesUserBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
-            new Bmatzner\FontAwesomeBundle\BmatznerFontAwesomeBundle()
+            new Bmatzner\FontAwesomeBundle\BmatznerFontAwesomeBundle(),
+            new Opit\Notes\TravelBundle\OpitNotesTravelBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
