@@ -23,24 +23,28 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * 
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"user" = "User", "TRUser" = "Opit\Notes\TravelBundle\Entity\TravelRequestUser"})
  */
-class User implements UserInterface, \Serializable {
+class User implements UserInterface, \Serializable
+{
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      */
-    private $username;
+    protected $username;
     
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      */
-    private $employeeName;    
+    protected $employeeName;
 
     /**
      * @ORM\Column(type="string", length=32)
@@ -55,7 +59,7 @@ class User implements UserInterface, \Serializable {
     /**
      * @ORM\Column(type="string", length=60, unique=true)
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(name="is_active", type="boolean")
@@ -67,8 +71,8 @@ class User implements UserInterface, \Serializable {
      * @ORM\JoinTable(name="notes_users_groups")
      * 
      */
-    protected $groups;    
-
+    protected $groups;
+    
     public function __construct()
     {
         //$this->salt = md5(uniqid(null, true));
