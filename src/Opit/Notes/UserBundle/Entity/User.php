@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
 
 /**
  * Description of User
@@ -25,14 +26,11 @@ use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * 
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({"user" = "User", "TRUser" = "Opit\Notes\TravelBundle\Entity\TravelRequestUser"})
  * @UniqueEntity(fields={"username"}, message="The username is already used.")
  * @UniqueEntity(fields={"email"}, message="The email is already used.")
  * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, \Serializable, TravelRequestUserInterface
 {
     /**
      * @ORM\Column(type="integer")

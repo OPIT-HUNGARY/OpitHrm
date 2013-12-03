@@ -23,7 +23,8 @@ class TravelRequest
     private $id;
 
     /**
-      * @ORM\ManyToOne(targetEntity="TravelRequestUser", inversedBy="travelRequests")
+      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequests")
+      * @var TravelRequestUserInterface
      */
     private $user;
 
@@ -49,12 +50,14 @@ class TravelRequest
     private $tripPurpose;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TravelRequestUser", inversedBy="travelRequestsTM")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequestsTM")
+     * @var TravelRequestUserInterface
      */
     private $teamManager;
 
     /**
-      * @ORM\ManyToOne(targetEntity="TravelRequestUser", inversedBy="travelRequestsGM")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequestsGM")
+     * @var TravelRequestUserInterface
      */
     private $generalManager;
 
@@ -286,10 +289,10 @@ class TravelRequest
     /**
      * Set user
      *
-     * @param \Opit\Notes\TravelBundle\Entity\User $user
+     * @param \Opit\Notes\UserBundle\Entity\User $user
      * @return TravelRequest
      */
-    public function setUser(\Opit\Notes\TravelBundle\Entity\User $user = null)
+    public function setUser(\Opit\Notes\UserBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -299,7 +302,7 @@ class TravelRequest
     /**
      * Get user
      *
-     * @return \Opit\Notes\TravelBundle\Entity\User
+     * @return \Opit\Notes\UserBundle\Entity\User
      */
     public function getUser()
     {
@@ -309,10 +312,10 @@ class TravelRequest
     /**
      * Set teamManager
      *
-     * @param \Opit\Notes\TravelBundle\Entity\User $teamManager
+     * @param \Opit\Notes\UserBundle\Entity\User $teamManager
      * @return TravelRequest
      */
-    public function setTeamManager(\Opit\Notes\TravelBundle\Entity\User $teamManager = null)
+    public function setTeamManager(\Opit\Notes\UserBundle\Entity\User $teamManager = null)
     {
         $this->teamManager = $teamManager;
     
@@ -332,10 +335,10 @@ class TravelRequest
     /**
      * Set generalManager
      *
-     * @param \Opit\Notes\TravelBundle\Entity\User $generalManager
+     * @param \Opit\Notes\UserBundle\Entity\User $generalManager
      * @return TravelRequest
      */
-    public function setGeneralManager(\Opit\Notes\TravelBundle\Entity\User $generalManager = null)
+    public function setGeneralManager(\Opit\Notes\UserBundle\Entity\User $generalManager = null)
     {
         $this->generalManager = $generalManager;
     
@@ -345,7 +348,7 @@ class TravelRequest
     /**
      * Get generalManager
      *
-     * @return \Opit\Notes\TravelBundle\Entity\User
+     * @return \Opit\Notes\UserBundle\Entity\User
      */
     public function getGeneralManager()
     {

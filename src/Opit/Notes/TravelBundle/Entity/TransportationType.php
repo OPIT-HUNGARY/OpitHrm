@@ -3,6 +3,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use \Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * TransPortationTypes
@@ -29,7 +30,7 @@ class TransportationType
     private $name;
 
     /**
-     * @ORM\OneToOne(targetEntity="TRDestination", mappedBy="transportationTypes", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="TRDestination", mappedBy="transportationType", cascade={"persist"})
      */
     protected $destinations;
     
@@ -38,7 +39,7 @@ class TransportationType
      */
     public function __construct()
     {
-        $this->destinations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->destinations = new ArrayCollection();
     }
     
     /**
@@ -73,8 +74,7 @@ class TransportationType
     {
         return $this->name;
     }
-
-
+    
     /**
      * Add destinations
      *
@@ -106,18 +106,5 @@ class TransportationType
     public function getDestinations()
     {
         return $this->destinations;
-    }
-
-    /**
-     * Set destinations
-     *
-     * @param \Opit\Notes\TravelBundle\Entity\TRDestination $destinations
-     * @return TransportationType
-     */
-    public function setDestinations(\Opit\Notes\TravelBundle\Entity\TRDestination $destinations = null)
-    {
-        $this->destinations = $destinations;
-    
-        return $this;
     }
 }
