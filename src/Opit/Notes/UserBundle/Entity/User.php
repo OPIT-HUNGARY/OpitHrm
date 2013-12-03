@@ -10,7 +10,9 @@ namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Description of User
@@ -26,6 +28,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  * @ORM\DiscriminatorMap({"user" = "User", "TRUser" = "Opit\Notes\TravelBundle\Entity\TravelRequestUser"})
+ * @UniqueEntity(fields={"username"}, message="The username is already used.")
+ * @UniqueEntity(fields={"email"}, message="The email is already used.")
+ * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.")
  */
 class User implements UserInterface, \Serializable
 {
@@ -38,11 +43,13 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     * @Assert\NotBlank(message="The username should not be blank.")
      */
     protected $username;
     
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     * @Assert\NotBlank(message="The employeeName should not be blank.")
      */
     protected $employeeName;
 
@@ -58,6 +65,8 @@ class User implements UserInterface, \Serializable
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
+     * @Assert\NotBlank(message="The email should not be blank.")
+     * @Assert\Email(message = "The email '{{ value }}' is not a valid email.")
      */
     protected $email;
 
@@ -78,6 +87,7 @@ class User implements UserInterface, \Serializable
         //$this->salt = md5(uniqid(null, true));
         $this->isActive = true;
         $this->groups = new ArrayCollection();
+        $this->setSalt("");
     }
 
     /**
@@ -245,9 +255,22 @@ class User implements UserInterface, \Serializable
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setRoles($role)
+    {
+        $this->groups[] = $role;
     
         return $this;
-    }    
+    }
 
     /**
      * Get id
@@ -291,4 +314,5 @@ class User implements UserInterface, \Serializable
     {
         return $this->groups;
     }
+
 }

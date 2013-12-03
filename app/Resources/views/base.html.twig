@@ -17,6 +17,7 @@
             'css/html5-boilerplate/normalize.css'
             'css/html5-boilerplate/main.css' 
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+            '//code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css'
            output='css/base.css' filter='?yui_css, cssrewrite'%}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
@@ -36,6 +37,7 @@
         <footer></footer>
         {% block javascripts %}
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+            <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
             <script>
                 window.jQuery || document.write('<script src="{{ asset('js/jquery/jquery-1.10.2.min.js') }}"><\/script>');
             </script>
@@ -45,5 +47,6 @@
                 <script type="text/javascript" src="{{ asset_url }}" ></script>
             {% endjavascripts %}
         {% endblock %}
+        {% block scripts %}{% endblock %}
     </body>
 </html>

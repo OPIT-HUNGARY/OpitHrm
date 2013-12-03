@@ -59,6 +59,34 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $user;
     }
 
+   /**
+     * Method required and called by custom authentication provider
+     *
+     * @param arry $data the data to search for user
+     *
+     * @return User $user An user object
+     */
+    public function loadUserByUniques($data)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        if (isset($data['id']) && $data['id']>0) {
+            $qb->where('(u.username = :username OR u.email = :email OR u.employeeName = :employeeName) AND u.id != :id')
+            ->setParameter('username', $data['username'])
+            ->setParameter('email', $data['email'])
+            ->setParameter('employeeName', $data['employeeName'])
+            ->setParameter('id',$data['id']);
+        }else{
+            $qb->where('u.username = :username OR u.email = :email OR u.employeeName = :employeeName')
+            ->setParameter('username', $data['username'])
+            ->setParameter('email', $data['email'])
+            ->setParameter('employeeName', $data['employeeName']);
+        }
+        $q = $qb->getQuery();
+
+        return $q->getResult();
+    }
+
     /**
      * Method used by custom authentication provider
      * 
@@ -92,6 +120,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $this->getEntityName() === $class || is_subclass_of($class, $this->getEntityName());
     }
     
+    /**
+     * Get all Users from
+     *
+     * @return object User
+     */
     public function findAll()
     {
         return $this->findBy(array(), array('username' => 'ASC'));
@@ -121,5 +154,23 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $qb->getQuery();
                 
         return $qb->getResult();
+    }
+
+    /**
+     * Delete users from the database
+     *
+     * @param arry $data the data contains the id of users
+     */
+    public function deleteUsersByIds($data)
+    {
+        $qb = $this
+              ->createQueryBuilder('u')
+              ->delete()
+              ->where('u.id IN (:idarray)')
+              ->setParameter('idarray', $data);
+
+        $q = $qb->getQuery();
+
+        return $q->getResult();
     }
 }

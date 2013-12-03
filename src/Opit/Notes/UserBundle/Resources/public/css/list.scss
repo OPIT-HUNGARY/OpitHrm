@@ -14,6 +14,14 @@ $buttonDeleteLightColor: rgba(220, 10, 10, 1);
 $buttonDeleteDarkColor: rgba(140, 10, 10, 1);
 $buttonAddLightColor: rgba(10, 200, 10, 1);
 $buttonAddDarkColor: rgba(10, 140, 10, 1);
+$linkHoverColor: #CCC;
+
+$orangeColor: #f28c38;
+$defaultLightColor: rgba(235, 235, 235, 1);
+
+$bgGrey: #dbdbdb;
+$darkGrey: #929292;
+$defaultFontSize: .9em;
 
 table {
     th { 
@@ -25,23 +33,112 @@ table {
     td { 
         padding: 5px 10px 5px 10px;
     }
-    
+
     .delete{
         margin:0 0 0 10px;
         @include button-gradient($buttonDeleteLightColor, $buttonDeleteLightColor, $buttonDeleteDarkColor);
         @include box-shadow(2px, 2px, 2px, 1px, $buttonDeleteDarkColor);        
     }
-    
+
     .delete:hover{
         background: $buttonDeleteDarkColor;
     }
-    
+
     .add{
         @include button-gradient($buttonAddLightColor, $buttonAddLightColor, $buttonAddDarkColor);
         @include box-shadow(2px, 2px, 2px, 1px, $buttonAddDarkColor);               
     }
-    
+
     .add:hover{
         background: $buttonAddDarkColor;
     }
+
+    .clickable{
+        text-decoration: underline;
+    }
+
+    .clickable:hover{
+        background-color:$linkHoverColor;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+}
+
+#list-table{
+    width:100%;
+}
+
+#dialog-edititem{
+
+    h2{
+        margin: 0 0 5px 0;
+        font-size: 1.1em;
+    }
+
+    #user{
+        margin-top: 15px;
+
+        > div{
+            margin-bottom: 10px;
+        }
+    }
+
+    .description{
+        background-color: $orangeColor;
+        color: white;
+        margin-bottom:5px;
+        padding:5px;
+        @include border-radius(5px);
+    }
+
+    .ui-dialog-content{
+        padding:10px;
+    }
+
+    .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+        float: left;
+    }
+}
+
+select {
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    background-image: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+    background-image: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+    background-image: -ms-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+    background-image: -o-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
+    background-repeat: no-repeat;
+    border: 1px solid #aaa;
+    color: #333;
+    font-size: inherit;
+    @extend .no-margin;
+    padding: 3px;
+}
+
+.item-input-box-header {
+    padding: 4px;
+    background-color: $orangeColor;
+    color: white;
+    font-weight: bold;
+    font-size: $defaultFontSize;
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
+    @include border-top-right-radius(5px);
+    @include border-top-left-radius(5px);
+    -webkit-user-select: none;
+    max-width: 92%;
+    min-width: 92%;
+}
+
+.item-input-box {
+    @extend select;
+    max-width: 92%;
+    min-width: 92%;
+    margin-bottom: 10px;
+    min-height: 25px;
+    max-height: 70px;
+    overflow: auto;
+    @include border-bottom-right-radius(5px);
+    @include border-bottom-left-radius(5px);
 }

@@ -1,0 +1,34 @@
+{% block form_label %}
+{% spaceless %}
+    {% if label is not sameas(false) %}
+        {% if not compound %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {% endif %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain)|underscore|humanize }}</label>
+    {% endif %}
+{% endspaceless %}
+{% endblock form_label %}
+
+{% block form_row %}
+    <div class="float-left width-24">
+        <div class="vertical-align-top item-input-box-header float-left height-20">{{ form_label(form) }}</div>
+        {{ form_errors(form) }}
+        <div class="vertical-align-top item-input-box float-left height-60">{{ form_widget(form) }}</div>
+    </div>
+{% endblock form_row %}
+
+
+{% block choice_widget_expanded %}
+{% spaceless %}
+{% for child in form %}
+       {{ form_widget(child) }}
+       {{ child.vars.label}}<br>
+{% endfor %}
+{% endspaceless %}
+{% endblock %}

@@ -1,3 +1,4 @@
+$(document).data 'OpitNotesUserBundle', {}
 $(document)
   .ready ->
     $(".menu .mainMenu")

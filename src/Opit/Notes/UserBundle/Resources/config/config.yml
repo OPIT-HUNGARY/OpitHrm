@@ -1,0 +1,4 @@
+parameters:
+    notes.user.status:
+        1: Active
+        0: Inactive

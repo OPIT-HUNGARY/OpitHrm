@@ -1,32 +1,37 @@
-<table>
-    <tr>
-        <td class="no-padding">
-            <button class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
-            <button class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
-        </td>
-    </tr>
-    {% if propertyNames is defined %}
-        {% for propertyName in propertyNames %}
-        <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
-        {% endfor %}
-        {% for propertyValue in propertyValues %}
-            <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+
+    <table id="list-table">
+        {% if propertyNames is defined %}
+            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></th>
             {% for propertyName in propertyNames %}
-                {% if propertyName == "roles" %}
-                    <td>
-                        {{ attribute(propertyValue, propertyName)|join(', ') }}
-                    </td>
-                {% elseif propertyName == "isActive" %}
-                    {% if attribute(propertyValue, propertyName) == 1 %}
-                        <td>Active</td>
-                    {% else %}
-                        <td>Inactive</td>
-                    {% endif %}
-                {% else %}
-                    <td>{{ attribute(propertyValue, propertyName) }}</td>
-                {% endif %}
+            <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
             {% endfor %}
-            </tr>
-        {% endfor %}
-    {% endif %}
-</table>
+            {% for key,value in propertyValues %}
+                <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+                    <td class="width-24-fix">
+                        <input type="checkbox" class="list-delete-user" value="{{ key }}" >
+                    </td>
+                {% for propertyName in propertyNames %}
+                    {% if propertyName == "roles" %}
+                        <td>
+                            {{ attribute(value, propertyName)|join(', ') }}
+                        </td>
+                    {% elseif propertyName == "username" %}
+                        <td >
+                            <span class="list-username clickable" data-user-id="{{ key }}">
+                                {{ attribute(value, propertyName)|join(', ') }}
+                            </span>
+                        </td>
+                    {% elseif propertyName == "isActive" %}
+                        {% if attribute(value, propertyName) == 1 %}
+                            <td>Active</td>
+                        {% else %}
+                            <td>Inactive</td>
+                        {% endif %}
+                    {% else %}
+                        <td>{{ attribute(value, propertyName) }}</td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>

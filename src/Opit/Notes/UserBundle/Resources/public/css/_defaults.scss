@@ -58,3 +58,58 @@ $orangeColor: #f28c38;
 @mixin box-shadow($left, $top, $scatter, $size, $color){
     box-shadow: $left $top $scatter $size $color;
 }
+
+.float-left {
+    float: left;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.width-24 {
+    width: 24%!important;
+}
+
+.width-98 {
+    width: 98%!important;
+}
+
+.width-24-fix {
+    width: 24px!important;
+}
+
+.height-auto {
+    height: auto;
+}
+
+.height-20{
+    height: 20px;
+}
+
+.height-60{
+    height: 60px;
+}
+
+.default-border {
+    border: 1px solid $darkGrey;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}
+
+.modalwindow {
+    border: 1px solid $darkGrey;
+    background-color: $defaultLightColor;
+    font-size: $defaultFontSize;
+    padding: 5px;
+    @include border-top-right-radius(5px);
+    @include border-top-left-radius(5px);
+    @include border-bottom-right-radius(5px);
+    @include border-bottom-left-radius(5px);
+}
