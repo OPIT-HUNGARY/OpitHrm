@@ -1,0 +1,102 @@
+<div id="dialog-details-travel">
+    <h2>Travel Request Details</h2>
+    <div class="modalwindow">
+        <div class="dialog-table-title">
+            <span class="bold">General</span>
+        </div>
+        <table border='1'>
+            <tr>
+                <td class="bgGrey width-40 bold">Id</td>
+                <td>{{ travelRequest.id }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Employee Name</td>
+                <td>{{ travelRequest.user.employeeName }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Departure date</td>
+                <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Arrival date</td>
+                <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Trip purpose</td>
+                <td>{{ travelRequest.tripPurpose }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Customer related</td>
+                <td>
+                    {% if travelRequest.customerRelated == 1%}
+                        Yes
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Opportunity name</td>
+                <td>{{ travelRequest.opportunityName }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>Team Manager</td>
+                <td>{{ travelRequest.teamManager.employeeName }}</td>
+            </tr>
+            <tr>
+                <td class='bgGrey bold'>General Manager</td>
+                <td>{{ travelRequest.generalManager.employeeName }}</td>
+            </tr>
+        </table>
+
+        {% if travelRequest.destinations|length > 0 %}  
+        <div class="dialog-table-title">
+            <span class="bold">Destination</span>
+        </div>
+        <table border='1'>
+            {% for dest in travelRequest.destinations %}
+                    <tr>
+                        <td class='bgGrey bold width-40'>Name</td>
+                        <td>{{ dest.name }}</td>
+                    </tr>
+                    <tr>
+                        <td class='bgGrey bold'>Cost</td>
+                        <td>{{ dest.cost }}</td>
+                    </tr>
+                    {% if dest.transportationType is not null %}
+                    <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+                        <td class='bgGrey bold'>Transportation type</td>
+                        <td>{{ dest.transportationType.name }}</td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+        </table>
+        {% endif %}
+        
+        {% if travelRequest.accomodations|length > 0 %}
+        <div class="dialog-table-title">
+            <span class="bold">Accomodation</span>
+        </div> 
+        <table border='1'>
+                {% for accom in travelRequest.accomodations %}
+                    <tr>
+                        <td  class='bgGrey bold width-40'>Hotel name</td>
+                        <td>{{ accom.hotelName }}</td>
+                    </tr>
+                    <tr>
+                        <td class='bgGrey bold'>City</td>
+                        <td>{{ accom.city }}</td>
+                    </tr>
+                    <tr>
+                        <td class='bgGrey bold'>Number of nights</td>
+                        <td>{{ accom.numberOfNights }}</td>
+                    </tr>
+                    <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+                        <td class='bgGrey bold'>Cost</td>
+                        <td>{{ accom.cost }}</td>
+                    </tr>
+                {% endfor %}            
+        </table>
+        {% endif %}
+    </div>
+</div>

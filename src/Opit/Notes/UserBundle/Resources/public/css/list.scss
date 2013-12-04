@@ -5,7 +5,7 @@ and open the template in the editor.
 */
 /* 
     Created on : Nov 25, 2013, 10:37:17 AM
-    Author     : OPIT\Notes
+    Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
 */
 
 @import '_defaults';
@@ -63,6 +63,11 @@ table {
         text-decoration: underline;
     }
 
+    .clickableTableRow:hover{
+        background-color:$linkHoverColor;
+        cursor: pointer;
+    }
+
 }
 
 #list-table{
@@ -98,6 +103,30 @@ table {
 
     .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
         float: left;
+    }
+}
+
+#dialog-details-travel {
+    h2{
+        margin: 0 0 5px 0;
+        font-size: 1.1em;
+    }
+    table{
+        width: 100%;
+    }
+    .dialog-table-title{
+        background-color: $orangeColor;
+        color: white;
+        margin-top: 5px;
+        padding:5px;
+    }
+
+    .bgGrey{
+        background-color: $bgGrey;
+    }
+
+    .dialog-table-tr-seperator{
+        border-bottom: $darkGrey solid 1px;
     }
 }
 

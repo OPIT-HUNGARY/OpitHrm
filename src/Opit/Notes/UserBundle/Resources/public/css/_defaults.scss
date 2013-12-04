@@ -5,7 +5,7 @@ and open the template in the editor.
 */
 /* 
     Created on : Nov 27, 2013, 4:37:04 PM
-    Author     : OPIT\kaufmann
+    Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
 */
 
 $defaultDarkColor: rgba(180, 180, 180, 1);
@@ -24,6 +24,12 @@ $formLightColor: rgba(235, 235, 235, 1);
 $formDarkColor: rgba(210, 210, 210, 1);
 
 $defaultFontSize: 13px;
+
+$defaultLightColor: rgba(235, 235, 235, 1);
+
+$bgGrey: #dbdbdb;
+$darkGrey: #929292;
+$defaultFontSize: .9em;
 
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
@@ -75,6 +81,10 @@ $defaultFontSize: 13px;
     -o-box-shadow: $left $top $scatter $size $color;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .float-left {
     float: left;
 }
@@ -85,6 +95,10 @@ $defaultFontSize: 13px;
 
 .width-24 {
     width: 24%!important;
+}
+
+.width-40 {
+    width: 40%!important;
 }
 
 .width-98 {

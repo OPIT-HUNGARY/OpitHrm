@@ -2,6 +2,8 @@
 (function() {
   $(document).data('OpitNotesUserBundle', {});
 
+  $(document).data('OpitNotesTravelBundle', {});
+
   $(document).ready(function() {
     return $(".menu .mainMenu").click(function() {
       $(".menu .mainMenu").removeClass("active");

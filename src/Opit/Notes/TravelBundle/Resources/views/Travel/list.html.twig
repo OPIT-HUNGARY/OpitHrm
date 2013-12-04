@@ -1,0 +1,45 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block body %}
+<table id="list-table">
+    <tr>
+        <th>Employee Name</th>
+        <th>Departure date</th>
+        <th>Arrival date</th>
+        <th>Opportunity name</th>
+        <th>Destination</th>
+    </tr>
+    {% for travelRequest in travelRequests %}
+    <tr class="clickableTableRow {% if loop.index0 is even %}oddRow{% endif %}" data-tr-id='{{ travelRequest.id }}'>
+        <td class="clickable">{{ travelRequest.user.employeeName }}</td>
+        <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
+        <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
+        <td>{{ travelRequest.opportunityName }}</td>
+        <td>{% for dest in travelRequest.destinations %}
+                {{ dest.name }}
+                {% if loop.last == false %},{% endif %}
+        {% endfor %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+{% block scripts %}
+    {{ parent() }}
+    <script>
+    $.extend(true, $(document).data('OpitNotesTravelBundle'), {
+        urls: {
+            {% for key, url in urls %}
+            '{{ key }}': '{{ url }}',
+            {% endfor %}
+        }
+    });
+    </script>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/list.js'
+    output='js/notes_tr_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}

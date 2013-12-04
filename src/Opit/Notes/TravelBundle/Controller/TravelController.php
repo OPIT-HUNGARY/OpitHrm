@@ -22,17 +22,63 @@ use Opit\Notes\TravelBundle\Entity\TRDestination;
 /**
  * Description of TravelController
  *
- * @author OPIT\kaufmann
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  */
 class TravelController extends Controller
 {
+    protected $jsRoutes;
+
     /**
      * @Route("/secured/travel/list", name="OpitNotesTravelBundle_travel_list")
      * @Template()
      */
     public function listAction()
     {
-        return array();
+        $em = $this->getDoctrine()->getManager();
+        $travelRequests = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
+
+        // urls for js scripts
+        $this->jsRoutes = $this->generateJsRoutes();
+
+        return array("travelRequests" => $travelRequests, 'urls' => $this->jsRoutes);
+    }
+
+    /**
+     * To generate details form for travel requests
+     *
+     * @Route("/secured/travel/show/details", name="OpitNotesTravelBundle_travel_show_details")
+     * @Template()
+     */
+    public function showDetailsAction()
+    {
+        $request = $this->getRequest();
+        $trId =  (integer) $request->request->get('trId');
+        $travelRequest = null;
+
+        if ($trId > 0) {
+            $em = $this->getDoctrine()->getManager();
+            $travelRequest = $em->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
+        }
+        return array('travelRequest' => $travelRequest);
+    }
+
+    /**
+     * Generates notes routes for use in js scripts
+     *
+     * @return array Genrated notes routes collection
+     */
+    protected function generateJsRoutes()
+    {
+        $router = $this->container->get('router');
+
+        $js_routes = array();
+        foreach ($router->getRouteCollection()->all() as $name => $route) {
+            if (strpos($name, 'OpitNotesTravelBundle') !== false) {
+                $js_routes[$name] = $this->generateUrl($name);
+            }
+        }
+
+        return $js_routes;
     }
     
     /**

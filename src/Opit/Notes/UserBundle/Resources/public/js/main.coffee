@@ -1,4 +1,5 @@
 $(document).data 'OpitNotesUserBundle', {}
+$(document).data 'OpitNotesTravelBundle', {}
 $(document)
   .ready ->
     $(".menu .mainMenu")

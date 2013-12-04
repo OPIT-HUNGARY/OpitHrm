@@ -10,13 +10,17 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\kaufmann
+/*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
 */
+.bold { font-weight: bold; }
+
 .float-left { float: left; }
 
 .no-margin { margin: 0; }
 
 .width-24 { width: 24% !important; }
+
+.width-40 { width: 40% !important; }
 
 .width-98 { width: 98% !important; }
 
@@ -28,13 +32,13 @@ and open the template in the editor.
 
 .height-60 { height: 60px; }
 
-.default-border { border: 1px solid #646464; }
+.default-border { border: 1px solid #929292; }
 
 .overflow-hidden { overflow: hidden; }
 
 .vertical-align-top { vertical-align: top; }
 
-.modalwindow { border: 1px solid #646464; background-color: #ebebeb; font-size: 13px; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+.modalwindow { border: 1px solid #929292; background-color: #ebebeb; font-size: 0.9em; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
 
 #mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
 #mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }
