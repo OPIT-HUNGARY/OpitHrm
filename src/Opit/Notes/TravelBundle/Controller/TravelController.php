@@ -44,6 +44,32 @@ class TravelController extends Controller
     }
 
     /**
+     * @Route("/secured/travel/search", name="OpitNotesTravelBundle_travel_search")
+     * @Template()
+     */
+    public function searchAction()
+    {
+        $request = $this->getRequest()->request->all();
+        $empty = array_filter($request, function ($value) {
+            return !empty($value);
+        });
+
+        $travelRequests = null;
+
+        if (array_key_exists('resetForm', $request) || empty($empty)) {
+             list($travelRequests) = array_values($this->listAction());
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $travelRequests = $em->getRepository('OpitNotesTravelBundle:TravelRequest')
+                                 ->getTravelRequestsBySearchParams($request);
+        }
+        return $this->render(
+            'OpitNotesTravelBundle:Travel:_list.html.twig',
+            array("travelRequests" => $travelRequests)
+        );
+    }
+
+    /**
      * To generate details form for travel requests
      *
      * @Route("/secured/travel/show/details", name="OpitNotesTravelBundle_travel_show_details")
