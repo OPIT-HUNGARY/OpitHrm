@@ -8,9 +8,22 @@ and open the template in the editor.
     Author     : OPIT\kaufmann
 */
 
-$buttonDefaultLightColor: rgba(235, 235, 235, 1);
-$buttonDefaultDarkColor: rgba(180, 180, 180, 1);
+$defaultDarkColor: rgba(180, 180, 180, 1);
+$darkGrey: rgba(100, 100, 100, 1);
+$defaultLightColor: rgba(235, 235, 235, 1);
 $orangeColor: #f28c38;
+$darkerGrayColor: rgba(80, 80, 80, 1);
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$lightGrayHover: rgba(200, 200, 200, 1);
+
+
+$defaultRed: rgb(170, 0, 0);
+$defaultGreen: rgb(0, 100, 0);
+
+$formLightColor: rgba(235, 235, 235, 1);
+$formDarkColor: rgba(210, 210, 210, 1);
+
+$defaultFontSize: 13px;
 
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
@@ -49,14 +62,17 @@ $orangeColor: #f28c38;
           border-bottom-right-radius: $radius;
 }
 
-@mixin button-gradient($color1, $color2, $color3){
+@mixin gradient($color1, $color2, $color3){
         background: linear-gradient($color1, $color2, $color3);
         background: -webkit-linear-gradient($color1, $color2, $color3);
         background: -o-linear-gradient($color1, $color2, $color3);
-        background: -moz-linear-gradient($color1, $color2, $color3);  
+        background: -moz-linear-gradient($color1, $color2, $color3);
 }
 @mixin box-shadow($left, $top, $scatter, $size, $color){
     box-shadow: $left $top $scatter $size $color;
+    -moz-box-shadow: $left $top $scatter $size $color;
+    -webkit-box-shadow: $left $top $scatter $size $color;
+    -o-box-shadow: $left $top $scatter $size $color;
 }
 
 .float-left {

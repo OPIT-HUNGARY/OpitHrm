@@ -10,14 +10,6 @@ and open the template in the editor.
 
 @import '_defaults';
 
-$darkGrayColor: rgba(100, 100, 100, 1);
-$darkerGrayColor: rgba(80, 80, 80, 1);
-$lightGrayColor: rgba(220, 220, 220, 0.8);
-$lightGrayHover: rgba(200, 200, 200, 1);
-
-$buttonDefaultLightColor: rgba(235, 235, 235, 1);
-$buttonDefaultDarkColor: rgba(180, 180, 180, 1);
-
 html, body{
     font-family: arial, helvetica, sans-serif;
     font-size: 13px;
@@ -37,8 +29,10 @@ html, body{
     border:0;
     margin:0 0 10px 0;
     padding:14px 33px 14px 33px;
+    color:black;
+    text-decoration:none;
     @include border-radius(10px);
-    @include button-gradient($buttonDefaultLightColor, $buttonDefaultLightColor, $buttonDefaultDarkColor);
+    @include gradient($defaultLightColor, $defaultLightColor, $defaultDarkColor);
     @include box-shadow(2px, 2px, 2px, 1px, rgba(150, 150, 150, 1));
 
     i{
@@ -46,9 +40,91 @@ html, body{
     }
 }
 
+input[type="text"], input[type="date"], input[type="number"], input[type="password"]{
+    padding:4px 0 4px 0;
+    display:block;   
+    border:solid 1px $defaultDarkColor;
+    @include border-radius(5px);
+    outline:0;
+    text-indent: 5px;    
+}
+
+input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus{
+    border:solid 1px $orangeColor;
+}
+
 .button:hover{
-    background: $buttonDefaultDarkColor;
+    background: $defaultDarkColor;
     box-shadow:0 0 0 0 black;
+    cursor:pointer;
+}
+
+.formFieldset{
+    background-color: $formLightColor;
+    @include border-radius(5px);
+    padding:0 0 5px 0;
+    margin:20px 0 20px 0;
+
+    .formFieldsetChild{
+        background-color: $formDarkColor;
+        padding:10px;
+        @include border-radius(5px);
+        margin-right:2.2em;
+
+        display:inline-block;
+        vertical-align: top;            
+    }
+
+    h3{
+        -webkit-margin-before:0;
+        @include border-top-left-radius(5px);
+        @include border-top-right-radius(5px);
+        padding:2px 0 2px 0;
+        padding-left:1em;
+        background-color:$orangeColor;
+        color:white;
+    }
+
+    .formFieldsetChild:first-child{
+        margin-left:1em;
+    }
+
+    .formFieldsetButton{
+        text-decoration:underline;
+        margin-top:5px;
+        vertical-align:bottom;
+        padding:2px;
+
+        i{
+            margin:0 2px 0 0;
+        }            
+    }
+    .formFieldsetButton:hover{
+        cursor:pointer;
+    }        
+
+    .deleteFormFieldsetChild{
+        color:$defaultRed;
+    }
+
+    .addFormFieldsetChild{
+        color:$defaultGreen;
+        margin-left:1em;    
+    }
+}
+
+.inlineElements{
+    display:inline-block;
+    margin-right: 1em;
+}
+
+.default-right{
+    float: right;
+}
+
+.required:after{
+    content:'*';
+    color:$defaultRed;
 }
 
 header{
@@ -131,7 +207,7 @@ header{
                 margin:0 0 0 10px;
                 
                 a{
-                    background-color:$darkGrayColor;
+                    background-color:$darkGrey;
                     font-weight: normal;
                     color:white;
                     text-decoration:none;
@@ -147,7 +223,7 @@ header{
                 ul{
                     float:left;
                     position:absolute;
-                    background-color:$darkerGrayColor;
+                    background-color:$darkGrey;
                     top:inherit;
                     left:inherit;
                     margin:0;
@@ -173,14 +249,14 @@ header{
                     }
                     
                     li:hover{
-                        background-color:$darkGrayColor;
+                        background-color:$darkGrey;
                     }
                 }
             }
             
             .subMenuItem:hover{
                 a{
-                    background-color:$darkerGrayColor;
+                    background-color:$darkGrey;
                 }
                 a.dropdown{
                     @include border-bottom-left-radius(0);
@@ -218,8 +294,4 @@ header{
             z-index:1;
         }
     }
-}
-
-.default-right{
-    float: right;
 }

@@ -41,7 +41,7 @@ class TRDestination
     protected $travelRequest;
     
     /**
-     * @ORM\OneToOne(targetEntity="TransportationType", inversedBy="destinations")
+     * @ORM\ManyToOne(targetEntity="TransportationType", inversedBy="destinations")
      */
     private $transportationType;
 

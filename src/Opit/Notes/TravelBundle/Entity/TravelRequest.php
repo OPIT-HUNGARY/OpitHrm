@@ -71,7 +71,7 @@ class TravelRequest
     /**
      * @var string
      *
-     * @ORM\Column(name="opportunity_name", type="string", length=255)
+     * @ORM\Column(name="opportunity_name", type="string", nullable=true)
      */
     private $opportunityName;
     

@@ -12,6 +12,30 @@ and open the template in the editor.
 */
 /*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\kaufmann
 */
+.float-left { float: left; }
+
+.no-margin { margin: 0; }
+
+.width-24 { width: 24% !important; }
+
+.width-98 { width: 98% !important; }
+
+.width-24-fix { width: 24px !important; }
+
+.height-auto { height: auto; }
+
+.height-20 { height: 20px; }
+
+.height-60 { height: 60px; }
+
+.default-border { border: 1px solid #646464; }
+
+.overflow-hidden { overflow: hidden; }
+
+.vertical-align-top { vertical-align: top; }
+
+.modalwindow { border: 1px solid #646464; background-color: #ebebeb; font-size: 13px; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 #main-wrapper { margin: 1.5em; }
@@ -20,10 +44,30 @@ html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 .no-padding { padding: 0; }
 
-.button { border: 0; margin: 0 0 10px 0; padding: 14px 33px 14px 33px; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; }
+.button { border: 0; margin: 0 0 10px 0; padding: 14px 33px 14px 33px; color: black; text-decoration: none; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; -moz-box-shadow: 2px 2px 2px 1px #969696; -webkit-box-shadow: 2px 2px 2px 1px #969696; -o-box-shadow: 2px 2px 2px 1px #969696; }
 .button i { margin: 0 5px 0 0; }
 
-.button:hover { background: #b4b4b4; box-shadow: 0 0 0 0 black; }
+input[type="text"], input[type="date"], input[type="number"], input[type="password"] { padding: 4px 0 4px 0; display: block; border: solid 1px #b4b4b4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; outline: 0; text-indent: 5px; }
+
+input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus { border: solid 1px #f28c38; }
+
+.button:hover { background: #b4b4b4; box-shadow: 0 0 0 0 black; cursor: pointer; }
+
+.formFieldset { background-color: #ebebeb; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; padding: 0 0 5px 0; margin: 20px 0 20px 0; }
+.formFieldset .formFieldsetChild { background-color: #d2d2d2; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-right: 2.2em; display: inline-block; vertical-align: top; }
+.formFieldset h3 { -webkit-margin-before: 0; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; padding: 2px 0 2px 0; padding-left: 1em; background-color: #f28c38; color: white; }
+.formFieldset .formFieldsetChild:first-child { margin-left: 1em; }
+.formFieldset .formFieldsetButton { text-decoration: underline; margin-top: 5px; vertical-align: bottom; padding: 2px; }
+.formFieldset .formFieldsetButton i { margin: 0 2px 0 0; }
+.formFieldset .formFieldsetButton:hover { cursor: pointer; }
+.formFieldset .deleteFormFieldsetChild { color: #aa0000; }
+.formFieldset .addFormFieldsetChild { color: darkgreen; margin-left: 1em; }
+
+.inlineElements { display: inline-block; margin-right: 1em; }
+
+.default-right { float: right; }
+
+.required:after { content: '*'; color: #aa0000; }
 
 header { margin-bottom: 100px; }
 header #siteLogo { float: left; margin: -10px 0 20px 10px; text-decoration: none; color: black; }
@@ -39,12 +83,12 @@ header #menuWrapper nav:first-child .mainMenu .subMenu { -webkit-border-radius: 
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem { float: left; position: relative; margin: 0 0 0 10px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem a { background-color: #646464; font-weight: normal; color: white; text-decoration: none; padding: 5px 15px 5px 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem a i { margin: 0 0 0 5px; display: inline; }
-header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul { float: left; position: absolute; background-color: #505050; top: inherit; left: inherit; margin: 0; padding: 0; margin: -10px 0 0 0; display: none; width: 100%; min-width: 100px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
+header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul { float: left; position: absolute; background-color: #646464; top: inherit; left: inherit; margin: 0; padding: 0; margin: -10px 0 0 0; display: none; width: 100%; min-width: 100px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul li { padding: 0 10px 0 10px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul li:first-child { -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul li:last-child { -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul li:hover { background-color: #646464; }
-header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem:hover a { background-color: #505050; }
+header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem:hover a { background-color: #646464; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem:hover a.dropdown { -webkit-border-bottom-left-radius: 0; -moz-border-bottom-left-radius: 0; -ms-border-bottom-left-radius: 0; -o-border-bottom-left-radius: 0; border-bottom-left-radius: 0; -webkit-border-bottom-right-radius: 0; -moz-border-bottom-right-radius: 0; -ms-border-bottom-right-radius: 0; -o-border-bottom-right-radius: 0; border-bottom-right-radius: 0; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem:hover ul { display: block; }
 header #menuWrapper nav:first-child .mainMenu:hover { cursor: pointer; background-color: #c8c8c8; }
@@ -52,5 +96,3 @@ header #menuWrapper nav:first-child .mainMenu:hover .subMenu { display: block; z
 header #menuWrapper nav:first-child .active { background-color: #f28c38; color: white; font-weight: bold; }
 header #menuWrapper nav:first-child .active:hover { background-color: #f28c38; }
 header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38; display: block; z-index: 1; }
-
-.default-right { float: right; }

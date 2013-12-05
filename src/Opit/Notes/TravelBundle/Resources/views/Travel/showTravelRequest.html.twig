@@ -1,0 +1,21 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}        
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
+{% endblock %}        
+        
+{% block body %}
+    <h1>{{ app.request.get('id') ? 'Edit' : 'New' }} Travel Request</h1>
+{{ form(form, {
+    'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
+    'method': 'POST',
+    'attr':{
+        'id': 'travelRequestForm',
+        'data-search': path('OpitNotesTravelBundle_travel_userSearch')}})
+}}
+{% endblock %}

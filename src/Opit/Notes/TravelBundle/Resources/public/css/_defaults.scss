@@ -1,0 +1,54 @@
+/*
+    Created on : Nov 27, 2013, 4:37:04 PM
+    Author     : OPIT\Notes
+*/
+
+$defaultDarkColor: rgba(180, 180, 180, 1);
+$darkGrey: rgba(100, 100, 100, 1);
+$defaultLightColor: rgba(235, 235, 235, 1);
+$orangeColor: #f28c38;
+$darkerGrayColor: rgba(80, 80, 80, 1);
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$lightGrayHover: rgba(200, 200, 200, 1);
+
+
+$defaultRed: rgb(170, 0, 0);
+$defaultGreen: rgb(0, 100, 0);
+
+$formLightColor: rgba(235, 235, 235, 1);
+$formDarkColor: rgba(210, 210, 210, 1);
+
+$defaultFontSize: 13px;
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+       -o-border-radius: $radius;
+          border-radius: $radius;
+}
+
+@mixin border-top-left-radius($radius) {
+  -webkit-border-top-left-radius: $radius;
+     -moz-border-top-left-radius: $radius;
+      -ms-border-top-left-radius: $radius;
+       -o-border-top-left-radius: $radius;
+          border-top-left-radius: $radius;
+}
+@mixin border-top-right-radius($radius) {
+  -webkit-border-top-right-radius: $radius;
+     -moz-border-top-right-radius: $radius;
+      -ms-border-top-right-radius: $radius;
+       -o-border-top-right-radius: $radius;
+          border-top-right-radius: $radius;
+}
+@mixin box-shadow($left, $top, $scatter, $size, $color){
+    box-shadow: $left $top $scatter $size $color;
+    -moz-box-shadow: $left $top $scatter $size $color;
+    -webkit-box-shadow: $left $top $scatter $size $color;
+    -o-box-shadow: $left $top $scatter $size $color;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}

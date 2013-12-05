@@ -1,0 +1,16 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Nov 28, 2013, 4:00:11 PM Author     : OPIT\Notes
+*/
+/* Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\Notes
+*/
+.vertical-align-top { vertical-align: top; }
+
+#travelRequest label { display: block; }
+#travelRequest .formFieldset { margin: 20px 0 20px 0; }
+#travelRequest .formFieldset > div { margin-top: 5px; margin-bottom: 5px; }
+#travelRequest .marginLeft .inlineElements { margin-left: 1em; margin-right: 0; }
+#travelRequest .generalFormFieldset { padding: 10px; }
