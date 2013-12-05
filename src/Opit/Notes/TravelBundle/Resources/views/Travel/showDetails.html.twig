@@ -37,11 +37,23 @@
             </tr>
             <tr>
                 <td class='bgGrey bold'>Opportunity name</td>
-                <td>{{ travelRequest.opportunityName }}</td>
+                <td>
+                    {% if travelRequest.opportunityName is empty %}
+                        [Empty]
+                    {% else %}
+                        {{ travelRequest.opportunityName }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td class='bgGrey bold'>Team Manager</td>
-                <td>{{ travelRequest.teamManager.employeeName }}</td>
+                <td>
+                    {% if travelRequest.teamManager is null %}
+                        [Empty]
+                    {% else %}
+                        {{ travelRequest.teamManager.employeeName }}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td class='bgGrey bold'>General Manager</td>
