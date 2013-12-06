@@ -164,7 +164,7 @@ class TravelController extends Controller
     }
     
     /**
-     * @Route("/secured/travel/search", name="OpitNotesTravelBundle_travel_userSearch")
+     * @Route("/secured/travel/usersearch", name="OpitNotesTravelBundle_travel_userSearch")
      * @Method({"GET"})
      */
     public function userSearchAction()
