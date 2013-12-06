@@ -43,19 +43,20 @@ class UserController extends Controller
             
             //create new array for user containing its properties
             $propertyValues[$user->getId()] = array(
-                    "username" => $user->getUsername(),
-                    "email" => $user->getEmail(),
-                    "employeeName" => $user->getEmployeeName(),
-                    "isActive" => $user->getIsActive(),
-                    "roles" => $roles
-                );
-            }
+                "username" => $user->getUsername(),
+                "email" => $user->getEmail(),
+                "employeeName" => $user->getEmployeeName(),
+                "isActive" => $user->getIsActive(),
+                "roles" => $roles
+            );
+        }
             
-            $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
+        $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
 
-        //return array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues, 'urls' => $this->jsRoutes);
-        return $this->render($showList ? 'OpitNotesUserBundle:Shared:_list.html.twig' : 'OpitNotesUserBundle:User:list.html.twig',
-                array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues, 'urls' => $this->jsRoutes));
+        return $this->render(
+            $showList ? 'OpitNotesUserBundle:Shared:_list.html.twig' : 'OpitNotesUserBundle:User:list.html.twig',
+            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues, 'urls' => $this->jsRoutes)
+        );
     }
     
     /**
@@ -66,9 +67,11 @@ class UserController extends Controller
     public function searchAction()
     {
         $request = $this->getRequest()->request->all();
-        $empty = array_filter($request, function($value) { return !empty($value); });
+        $empty = array_filter($request, function ($value) {
+            return !empty($value);
+        });
         
-        if(array_key_exists('resetForm', $request) || empty($empty)) {
+        if (array_key_exists('resetForm', $request) || empty($empty)) {
             list($propertyNames, $propertyValues) = array_values($this->listAction());
         } else {
             $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
@@ -100,8 +103,10 @@ class UserController extends Controller
             }
         }
         
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig',
-                array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues));
+        return $this->render(
+            'OpitNotesUserBundle:Shared:_list.html.twig',
+            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues)
+        );
     }
 
     /**
@@ -123,7 +128,13 @@ class UserController extends Controller
             $user = $em->getRepository('OpitNotesUserBundle:User')->find($userId);
         }
 
-        $form = $this->createForm(new UserShowType($this->getDoctrine()->getEntityManager(), $this->container->getParameter('notes.user.status')), $user);
+        $form = $this->createForm(
+            new UserShowType(
+                $this->getDoctrine()->getEntityManager(),
+                $this->container->getParameter('notes.user.status')
+            ),
+            $user
+        );
 
         return $this->render('OpitNotesUserBundle:User:showUserForm.html.twig', array('form' => $form->createView()));
     }
@@ -148,12 +159,30 @@ class UserController extends Controller
             $user = new User();
         }
 
-        $form = $this->createForm(new UserShowType($this->getDoctrine()->getEntityManager(), $this->container->getParameter('notes.user.status')), $user);
-        $form->bind($request);
+        $form = $this->createForm(
+            new UserShowType(
+                $this->getDoctrine()->getEntityManager(),
+                $this->container->getParameter('notes.user.status')
+            ),
+            $user
+        );
+        $originalPassword = $user->getPassword();
+        $form->handleRequest($request);
 
         // Process form data and create user
         if ($form->isValid()) {
-            $user = $form->getData();
+
+            $plainPassword = $userData['password'];
+
+            if (!empty($plainPassword)) {
+                // Encode the user's password.
+                $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
+                $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+                $user->setPassword($newPassword);
+            } else {
+                $user->setPassword($originalPassword);
+            }
+            // Save the user.
             $em->persist($user);
             $em->flush();
             $result['response'] = 'success';
@@ -162,12 +191,11 @@ class UserController extends Controller
         $errors = $validator->validate($user);
 
         if (count($errors) > 0) {
-            $errorsString = "<ul>";
+            $errorsString = "";
 
             foreach ($errors as $e) {
-                $errorsString .= "<li>".$e->getMessage()."</li>";
+                $errorsString .= $e->getMessage();
             }
-            $errorsString .= "</ul>";
 
             $result['errorMessage'] = $errorsString;
             $result['response'] = 'error';
@@ -187,7 +215,13 @@ class UserController extends Controller
         $request = $this->getRequest();
         $userIds = $request->request->get('userIds');
 
-        $deleteResult = $em->getRepository('OpitNotesUserBundle:User')->deleteUsersByIds($userIds);
+        $users = $em->getRepository('OpitNotesUserBundle:User')->findUsersUsingIn($userIds);
+
+        foreach ($users as $user) {
+            $em->remove($user);
+        }
+
+        $em->flush();
 
         $deleteMessage = 'success';
 
