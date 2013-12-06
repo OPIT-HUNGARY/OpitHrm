@@ -56,8 +56,7 @@ and open the template in the editor.
 #searchFormWrapper #toggleSearchForm:hover { cursor: pointer; }
 #searchFormWrapper #searchFormProperties { padding: 10px; }
 #searchFormWrapper #searchFormProperties .searchProperty { width: 15%; margin: 5px; display: inline-block; }
+#searchFormWrapper #searchFormProperties .searchProperty input[type="text"] { width: 100%; }
 #searchFormWrapper #searchFormProperties .searchProperty label { display: block; }
-#searchFormWrapper #searchFormProperties .searchProperty input { width: 100%; height: 25px; display: block; border: solid 1px #b4b4b4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; outline: 0; text-indent: 5px; }
-#searchFormWrapper #searchFormProperties .searchProperty input:focus { border: solid 1px #f28c38; }
 #searchFormWrapper #searchFormButtons { margin: 10px 0 10px 15px; }
 #searchFormWrapper #searchFormButtons button.reset { margin: 0 0 0 10px; }
