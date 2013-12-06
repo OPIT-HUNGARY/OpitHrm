@@ -33,6 +33,14 @@ and open the template in the editor.
 
 .width-24-fix { width: 24px !important; }
 
+.width-small { width: 100px; }
+
+.wdith-medium { width: 200px; }
+
+.width-big { width: 300px; }
+
+.width-large { width: 500px; }
+
 .height-auto { height: auto; }
 
 .height-20 { height: 20px; }
