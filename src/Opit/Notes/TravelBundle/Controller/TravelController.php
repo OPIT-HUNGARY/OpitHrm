@@ -145,6 +145,8 @@ class TravelController extends Controller
 
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
+                
+                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
             }
         }
         
