@@ -22,6 +22,14 @@
         }
       });
       return exists;
+    },
+    checkAll: function(selector) {
+      var $el, checkAll;
+      $el = selector ? $(selector) : $(this);
+      checkAll = $el.filter(':checked').length === $el.length ? false : true;
+      return $el.each(function() {
+        return $(this).prop('checked', checkAll);
+      });
     }
   });
 

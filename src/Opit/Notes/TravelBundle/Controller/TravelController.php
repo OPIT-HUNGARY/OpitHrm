@@ -77,38 +77,13 @@ class TravelController extends Controller
      */
     public function showDetailsAction()
     {
-        $request = $this->getRequest();
-        $trId =  (integer) $request->request->get('trId');
-        $travelRequest = null;
-
-        if ($trId > 0) {
-            $em = $this->getDoctrine()->getManager();
-            $travelRequest = $em->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
-        }
+        $travelRequest = $this->getTravelRequest();
+        
         return array('travelRequest' => $travelRequest);
-    }
-
-    /**
-     * Generates notes routes for use in js scripts
-     *
-     * @return array Genrated notes routes collection
-     */
-    protected function generateJsRoutes()
-    {
-        $router = $this->container->get('router');
-
-        $js_routes = array();
-        foreach ($router->getRouteCollection()->all() as $name => $route) {
-            if (strpos($name, 'OpitNotesTravelBundle') !== false) {
-                $js_routes[$name] = $this->generateUrl($name);
-            }
-        }
-
-        return $js_routes;
     }
     
     /**
-     * @Route("/secured/travel/show/{id}", name="OpitNotesTravelBundle_travel_show", defaults={"id" = 0})
+     * @Route("/secured/travel/show/{id}", name="OpitNotesTravelBundle_travel_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Template()
      */
     public function showTravelRequestAction(Request $request)
@@ -116,13 +91,7 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
         
-        if (null === ($travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId))) {
-            $travelRequest = new TravelRequest();
-        }
-        
-        if (!$travelRequest) {
-            throw $this->createNotFoundException('Missing travel request for id "' . $travelRequestId . '"');
-        }
+        $travelRequest = ("new" == $travelRequestId) ? new TravelRequest() : $this->getTravelRequest($travelRequestId);
         
         // Track current persisted destination objects
         $children = new ArrayCollection();
@@ -153,18 +122,6 @@ class TravelController extends Controller
         return array('form' => $form->createView());
     }
     
-    protected function removeChildNodes(&$entityManager, $travelRequest, $children)
-    {
-        foreach ($children as $child) {
-            $getter = ($child instanceof TRDestination) ? 'getDestinations' : 'getAccomodations';
-            if (false === $travelRequest->$getter()->contains($child)) {
-                $child->setTravelRequest(null);
-                $entityManager->persist($child);
-                $entityManager->remove($child);
-            }
-        }
-    }
-    
     /**
      * @Route("/secured/travel/usersearch", name="OpitNotesTravelBundle_travel_userSearch")
      * @Method({"GET"})
@@ -188,5 +145,91 @@ class TravelController extends Controller
         }
         
         return new JsonResponse($userNames);
+    }
+    
+    /**
+     * @Route("/secured/travel/delete", name="OpitNotesTravelBundle_travel_delete")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function deleteTravelRequestAction(Request $request)
+    {
+        $ids = $request->request->get('id');
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        
+        foreach ($ids as $id) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $travelRequest = $this->getTravelRequest($id);
+
+            $entityManager->remove($travelRequest);
+        }
+        
+        $entityManager->flush();
+        
+        return new JsonResponse('0');
+    }
+    
+    /**
+     * Returns a travel request object
+     *
+     * @param integer $travelRequestId
+     * @return mixed  TravelRequest object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getTravelRequest($travelRequestId = null)
+    {
+        $request = $this->getRequest();
+        $entityManager = $this->getDoctrine()->getManager();
+        
+        if (null === $travelRequestId) {
+            $travelRequestId = $request->request->get('id');
+        }
+        
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
+        
+        if (!$travelRequest) {
+            throw $this->createNotFoundException('Missing travel request for id "' . $travelRequestId . '"');
+        }
+        
+        return $travelRequest;
+    }
+    
+    /**
+     * Removes related travel request instances.
+     *
+     * @param object $entityManager
+     * @param object $travelRequest
+     * @param ArrayCollection $children
+     */
+    protected function removeChildNodes(&$entityManager, $travelRequest, $children)
+    {
+        foreach ($children as $child) {
+            $getter = ($child instanceof TRDestination) ? 'getDestinations' : 'getAccomodations';
+            if (false === $travelRequest->$getter()->contains($child)) {
+                $child->setTravelRequest(null);
+                $entityManager->remove($child);
+            }
+        }
+    }
+    
+    /**
+     * Generates notes routes for use in js scripts
+     *
+     * @return array Genrated notes routes collection
+     */
+    protected function generateJsRoutes()
+    {
+        $router = $this->container->get('router');
+
+        $jsRoutes = array();
+        foreach ($router->getRouteCollection()->all() as $name => $route) {
+            if (strpos($name, 'OpitNotesTravelBundle') !== false) {
+                $jsRoutes[$name] = $this->generateUrl($name);
+            }
+        }
+
+        return $jsRoutes;
     }
 }

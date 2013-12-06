@@ -1,14 +1,25 @@
+<table>
+    <tr>
+        <td class="no-padding">
+            <a href="{{ path('OpitNotesTravelBundle_travel_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
 <table id="list-table">
     <tr>
+        <th><i class="fa fa-trash-o"></i></th>
         <th>Employee Name</th>
         <th>Departure date</th>
         <th>Arrival date</th>
         <th>Opportunity name</th>
         <th>Destination</th>
+        <th></th>
     </tr>
     {% for travelRequest in travelRequests %}
-    <tr class="clickableTableRow {% if loop.index0 is even %}oddRow{% endif %}" data-tr-id='{{ travelRequest.id }}'>
-        <td class="clickable">{{ travelRequest.user.employeeName }}</td>
+    <tr class="clickableTableRow">
+        <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
+        <td class="clickable" data-tr-id='{{ travelRequest.id }}'>{{ travelRequest.user.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.opportunityName }}</td>
@@ -16,6 +27,10 @@
                 {{ dest.name }}
                 {% if loop.last == false %},{% endif %}
         {% endfor %}
+        </td>
+        <td>
+            <a href="{{ path('OpitNotesTravelBundle_travel_delete') }}" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
+            <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
         </td>
     </tr>
     {% endfor %}

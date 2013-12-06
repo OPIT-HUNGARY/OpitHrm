@@ -96,7 +96,7 @@ class TravelType extends AbstractType
             'attr' => array('placeholder' => 'General manager')
         ));
         
-        $builder->add('Add travel request', 'submit', array(
+        $builder->add('add_travel_request', 'submit', array(
             'label'=>$options['data']->getUser() ? 'Edit travel request' : 'Add travel request',
             'attr' => array('class' => 'button')
         ));

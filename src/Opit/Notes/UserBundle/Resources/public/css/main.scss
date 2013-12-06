@@ -15,11 +15,26 @@ html, body{
     font-size: 13px;
 }
 
+a{
+    text-decoration:underline;
+    color:black;
+    &:visited{
+        color:black;
+    }
+    &:hover, &:active{
+        color:$orangeColor;
+    }
+    
+    > i{
+        text-decoration: none !important;
+        float:right;
+        margin:0 5px 0 0;
+    }
+}
+
 #main-wrapper {
     margin: 1.5em;
 }
-
-.oddRow { background-color: rgba(220, 220, 220, 0.8); }
 
 .no-padding{
     padding:0;
@@ -28,7 +43,7 @@ html, body{
 .button{
     border:0;
     margin:0 0 10px 0;
-    padding:14px 33px 14px 33px;
+    padding:8px 24px 8px 24px;
     color:black;
     text-decoration:none;
     @include border-radius(10px);
@@ -160,6 +175,11 @@ header{
         margin:-20px 10px 0 0;
         @include border-bottom-left-radius(10px);
         @include border-bottom-right-radius(10px);
+        
+        > i{
+            margin:0;
+            float:none;
+        }
     }
     
     #menuWrapper{
@@ -207,7 +227,7 @@ header{
                 margin:0 0 0 10px;
                 
                 a{
-                    background-color:$darkGrey;
+                    background-color:$darkerGrayColor;
                     font-weight: normal;
                     color:white;
                     text-decoration:none;
@@ -254,7 +274,7 @@ header{
                 }
             }
             
-            .subMenuItem:hover{
+            .subMenuItem:hover{                
                 a{
                     background-color:$darkGrey;
                 }

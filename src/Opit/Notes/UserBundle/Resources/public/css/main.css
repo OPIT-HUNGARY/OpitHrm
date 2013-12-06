@@ -50,13 +50,16 @@ and open the template in the editor.
 
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
-#main-wrapper { margin: 1.5em; }
+a { text-decoration: underline; color: black; }
+a:visited { color: black; }
+a:hover, a:active { color: #f28c38; }
+a > i { text-decoration: none !important; float: right; margin: 0 5px 0 0; }
 
-.oddRow { background-color: rgba(220, 220, 220, 0.8); }
+#main-wrapper { margin: 1.5em; }
 
 .no-padding { padding: 0; }
 
-.button { border: 0; margin: 0 0 10px 0; padding: 14px 33px 14px 33px; color: black; text-decoration: none; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; -moz-box-shadow: 2px 2px 2px 1px #969696; -webkit-box-shadow: 2px 2px 2px 1px #969696; -o-box-shadow: 2px 2px 2px 1px #969696; }
+.button { border: 0; margin: 0 0 10px 0; padding: 8px 24px 8px 24px; color: black; text-decoration: none; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; -moz-box-shadow: 2px 2px 2px 1px #969696; -webkit-box-shadow: 2px 2px 2px 1px #969696; -o-box-shadow: 2px 2px 2px 1px #969696; }
 .button i { margin: 0 5px 0 0; }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"] { padding: 4px 0 4px 0; display: block; border: solid 1px #b4b4b4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; outline: 0; text-indent: 5px; }
@@ -86,6 +89,7 @@ header #siteLogo { float: left; margin: -10px 0 20px 10px; text-decoration: none
 header #siteLogo span:first-child { float: left; clear: both; font-size: 3.6em; }
 header #siteLogo span:last-child { float: left; clear: both; font-size: 0.8em; color: #f28c38; margin: -10px 0 0 0; }
 header #logoutButton { float: right; color: white; text-decoration: none; background-color: #f28c38; padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
+header #logoutButton > i { margin: 0; float: none; }
 header #menuWrapper { margin: 20px 0 30px 0; width: 100%; height: 80px; }
 header #menuWrapper .menu { height: 40px; width: 100%; float: left; }
 header #menuWrapper nav:first-child { background-color: rgba(220, 220, 220, 0.8); }
@@ -93,7 +97,7 @@ header #menuWrapper nav:last-child { background-color: #f28c38; }
 header #menuWrapper nav:first-child .mainMenu { float: left; height: 44px; line-height: 44px; padding: 0 10px 0 10px; margin: -3px 3px 0 0; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; position: absolute; width: 100%; height: 42px; left: 0; margin: -3px 0 0 0; background-color: #c8c8c8; display: none; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem { float: left; position: relative; margin: 0 0 0 10px; }
-header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem a { background-color: #929292; font-weight: normal; color: white; text-decoration: none; padding: 5px 15px 5px 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem a { background-color: #505050; font-weight: normal; color: white; text-decoration: none; padding: 5px 15px 5px 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem a i { margin: 0 0 0 5px; display: inline; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul { float: left; position: absolute; background-color: #929292; top: inherit; left: inherit; margin: 0; padding: 0; margin: -10px 0 0 0; display: none; width: 100%; min-width: 100px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
 header #menuWrapper nav:first-child .mainMenu .subMenu .subMenuItem ul li { padding: 0 10px 0 10px; }

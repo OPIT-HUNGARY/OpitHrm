@@ -8,7 +8,7 @@ addFormDeleteButton = ->
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()
     return
-
+    
 generalData = $('<div>').addClass 'formFieldset generalFormFieldset'
 generalData.append($('#travelRequest_user_ac,
                       #travelRequest_departure_date,
@@ -102,7 +102,6 @@ $('#travelRequest_user_ac').autocomplete
     source: url+'?user=all'
     minLength: 2
     response: (event, ui) ->
-        console.log ui
         return  
     select: (event, ui) ->
         $('#travelRequest_user').val ui.item.id
@@ -120,11 +119,10 @@ $('#travelRequest_general_manager_ac').autocomplete
     minLength: 2
     select: (event, ui) ->
         $('#travelRequest_general_manager').val ui.item.id
-        console.log ''
         return
 
 #for adding new destination form
-$addDestination = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add a destination</div>')
+$addDestination = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add destination</div>')
 $destinationCollection = $('#travelRequest_destinations').append $addDestination
 $destinationCollection.data 'index', $destinationCollection.find(':input').length
 $addDestination.click (e) ->
@@ -133,15 +131,13 @@ $addDestination.click (e) ->
     return
  
 #for adding new accomodation form 
-$addAccomodation = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add a accomodation</div>')
+$addAccomodation = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add accomodation</div>')
 $accomodationCollection = $('#travelRequest_accomodations').append $addAccomodation
 $accomodationCollection.data 'index', $accomodationCollection.find(':input').length
 $addAccomodation.click (e) ->
     e.preventDefault()
     addForm $accomodationCollection, $addAccomodation
     return
-
-
 
 addForm = ($collectionHolder, $addButton) ->
     prototype = $collectionHolder.data 'prototype'

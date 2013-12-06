@@ -53,7 +53,7 @@ table {
         background: $buttonAddDarkColor;
     }
 
-    .clickable{
+/*    .clickable{
         text-decoration: underline;
     }
 
@@ -61,17 +61,25 @@ table {
         background-color:$linkHoverColor;
         cursor: pointer;
         text-decoration: underline;
-    }
+    }*/
 
-    .clickableTableRow:hover{
+/*    .clickableTableRow:hover{
         background-color:$linkHoverColor;
         cursor: pointer;
-    }
+    }*/
 
 }
 
 #list-table{
     width:100%;
+    tr:nth-child(even){
+        background-color: rgba(220, 220, 220, 0.8);
+    }
+    th{
+        i:hover{
+            cursor:pointer;
+        }
+    }
 }
 
 #dialog-edititem{

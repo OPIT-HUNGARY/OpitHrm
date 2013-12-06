@@ -64,7 +64,7 @@ and open the template in the editor.
 #searchFormWrapper #toggleSearchForm:hover { cursor: pointer; }
 #searchFormWrapper #searchFormProperties { padding: 10px; }
 #searchFormWrapper #searchFormProperties .searchProperty { width: 15%; margin: 5px; display: inline-block; }
-#searchFormWrapper #searchFormProperties .searchProperty input[type="text"] { width: 100%; }
+#searchFormWrapper #searchFormProperties .searchProperty input[type="text"], #searchFormWrapper #searchFormProperties .searchProperty input[type="date"] { width: 100%; }
 #searchFormWrapper #searchFormProperties .searchProperty label { display: block; }
 #searchFormWrapper #searchFormButtons { margin: 10px 0 10px 15px; }
 #searchFormWrapper #searchFormButtons button.reset { margin: 0 0 0 10px; }
