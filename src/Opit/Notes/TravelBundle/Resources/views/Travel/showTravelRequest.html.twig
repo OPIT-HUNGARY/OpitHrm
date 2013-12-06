@@ -10,7 +10,7 @@
 {% endblock %}        
         
 {% block body %}
-    <h1>{{ app.request.get('id') ? 'Edit' : 'New' }} Travel Request</h1>
+    <h1>{{ (app.request.get('id')=="new") ? 'New' : 'Edit' }} Travel Request</h1>
 {{ form(form, {
     'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
     'method': 'POST',
