@@ -76,12 +76,17 @@ class UserShowType extends AbstractType
         $builder->add('groups', 'entity', array(
             'class' => 'OpitNotesUserBundle:Groups',
             'property' => 'name',
-             'multiple' => true,
-             'expanded' => true
+            'multiple' => true,
+            'expanded' => true
         ));
-        $builder->add('password', 'password', array('attr' => array(
-            'placeholder' => 'Password'
-        )));
+        if (null === $userId) {
+            $builder->add('password', 'repeated', array(
+                'first_name' => 'password',
+                'second_name' => 'confirm',
+                'type' => 'password',
+                'invalid_message' => 'Passwords do not match'
+            ));
+        }
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
     }
     /**

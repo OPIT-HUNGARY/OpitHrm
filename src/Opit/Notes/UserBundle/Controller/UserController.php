@@ -8,12 +8,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\UserBundle\Form\UserShowType;
+use Opit\Notes\UserBundle\Form\ChangePasswordType;
 use Opit\Notes\UserBundle\Entity\User;
 
 class UserController extends Controller
 {
-    protected $jsRoutes;
-    
     /**
      * @Route("/secured/user/list", name="OpitNotesUserBundle_user_list")
      * @Template()
@@ -28,9 +27,6 @@ class UserController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
 
-        // urls for js scripts
-        $this->jsRoutes = $this->generateJsRoutes();
-        
         foreach ($users as $user) {
             //fetch roles for the user
             $localUserRoles = $groups->findUserGroupsArray($user->getId());
@@ -40,7 +36,7 @@ class UserController extends Controller
             foreach ($localUserRoles as $role) {
                 $roles[] = $role["name"];
             }
-            
+
             //create new array for user containing its properties
             $propertyValues[$user->getId()] = array(
                 "username" => $user->getUsername(),
@@ -50,12 +46,12 @@ class UserController extends Controller
                 "roles" => $roles
             );
         }
-            
+
         $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
 
         return $this->render(
             $showList ? 'OpitNotesUserBundle:Shared:_list.html.twig' : 'OpitNotesUserBundle:User:list.html.twig',
-            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues, 'urls' => $this->jsRoutes)
+            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues)
         );
     }
     
@@ -70,9 +66,9 @@ class UserController extends Controller
         $empty = array_filter($request, function ($value) {
             return !empty($value);
         });
-        
+
         if (array_key_exists('resetForm', $request) || empty($empty)) {
-            list($propertyNames, $propertyValues) = array_values($this->listAction());
+            return $this->listAction();
         } else {
             $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
             $propertyValues = array();
@@ -89,6 +85,7 @@ class UserController extends Controller
                 $id = $user->getId();
                 $roles = array();
                 $localUserRoles = $groups->findUserGroupsArray($id);
+
                 foreach ($localUserRoles as $role) {
                     $roles[] = $role["name"];
                 }
@@ -99,7 +96,7 @@ class UserController extends Controller
                         "employeeName" => $user->getEmployeeName(),
                         "isActive" => $user->getIsActive(),
                         "roles" => $roles
-                    );
+                );
             }
         }
         
@@ -112,49 +109,17 @@ class UserController extends Controller
     /**
      * To generate add/edit item form
      *
-     * @Route("/secured/user/show", name="OpitNotesUserBundle_user_show")
-     * @Method({"POST"})
+     * @Route("/secured/user/show/{id}", name="OpitNotesUserBundle_user_show", requirements={"id" = "\d+"})
+     * @Method({"GET"})
      * @Template()
      */
     public function showUserFormAction()
     {
         $request = $this->getRequest();
-        $userId =  (integer) $request->request->get('userId');
-        $user = null;
+        $id = $request->attributes->get('id');
 
-        // If this is an edit request.
-        if ($userId > 0) {
-            $em = $this->getDoctrine()->getManager();
-            $user = $em->getRepository('OpitNotesUserBundle:User')->find($userId);
-        }
-
-        $form = $this->createForm(
-            new UserShowType(
-                $this->getDoctrine()->getEntityManager(),
-                $this->container->getParameter('notes.user.status')
-            ),
-            $user
-        );
-
-        return $this->render('OpitNotesUserBundle:User:showUserForm.html.twig', array('form' => $form->createView()));
-    }
-
-    /**
-     * To add/edit user in Notes
-     *
-     * @Route("/secured/user/add", name="OpitNotesUserBundle_user_add")
-     * @Method({"POST"})
-     */
-    public function addUserAction()
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-        $request = $this->getRequest();
-        $userData =  $request->request->get('user');
-        $userId = $userData['userId'];
-        $result = array();
-
-        if ($userId) {
-            $user = $em->getRepository('OpitNotesUserBundle:User')->find($userId);
+        if ($id) {
+            $user = $this->getUserObject($id);
         } else {
             $user = new User();
         }
@@ -166,39 +131,67 @@ class UserController extends Controller
             ),
             $user
         );
-        $originalPassword = $user->getPassword();
-        $form->handleRequest($request);
+        return $this->render('OpitNotesUserBundle:User:showUserForm.html.twig', array('form' => $form->createView()));
+    }
 
-        // Process form data and create user
-        if ($form->isValid()) {
+    /**
+     * To add/edit user in Notes
+     *
+     * @Route("/secured/user/add/{id}", name="OpitNotesUserBundle_user_add", requirements={"id" = "\d+"})
+     * @Method({"POST"})
+     */
+    public function addUserAction()
+    {
+        $em = $this->getDoctrine()->getEntityManager();
+        $request = $this->getRequest();
+        $id = $request->attributes->get('id');
+        $errorMessages = array();
+        $result = array('response' => 'error');
 
-            $plainPassword = $userData['password'];
-
-            if (!empty($plainPassword)) {
-                // Encode the user's password.
-                $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
-                $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                $user->setPassword($newPassword);
-            } else {
-                $user->setPassword($originalPassword);
-            }
-            // Save the user.
-            $em->persist($user);
-            $em->flush();
-            $result['response'] = 'success';
+        if ($id) {
+            $user = $this->getUserObject($request->attributes->get('id'));
+        } else {
+            $user = new User();
         }
-        $validator = $this->get('validator');
-        $errors = $validator->validate($user);
 
-        if (count($errors) > 0) {
-            $errorsString = "";
+        $form = $this->createForm(
+            new UserShowType(
+                $this->getDoctrine()->getEntityManager(),
+                $this->container->getParameter('notes.user.status')
+            ),
+            $user
+        );
 
-            foreach ($errors as $e) {
-                $errorsString .= $e->getMessage();
+        if ($request->isMethod("POST")) {
+            $form->handleRequest($request);
+            // Process form data and create user
+            if ($form->isValid()) {
+
+                if (!$user->getId()) {
+                    // Encode the user's password.
+                    $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
+                    $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+                    $user->setPassword($newPassword);
+                }
+                // Save the user.
+                $em->persist($user);
+                $em->flush();
+                $result['response'] = 'success';
+            }
+            $validator = $this->get('validator');
+            $errors = $validator->validate($user);
+            $formData = $request->request->get('user');
+
+            if (isset($formData['password']) && $formData['password']['password'] != $formData['password']['confirm']) {
+                $errorMessages[] = 'The passwords do not match.';
             }
 
-            $result['errorMessage'] = $errorsString;
-            $result['response'] = 'error';
+            if (count($errors) > 0) {
+               foreach ($errors as $e) {
+                    $errorMessages[] = $e->getMessage();
+                }
+            }
+            $result['errorMessage'] = $errorMessages;
         }
         return new JsonResponse(array($result));
     }
@@ -209,7 +202,7 @@ class UserController extends Controller
      * @Route("/secured/user/delete", name="OpitNotesUserBundle_user_delete")
      * @Method({"POST"})
      */
-    public function deleteResourceAction()
+    public function deleteUserAction()
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
@@ -220,7 +213,6 @@ class UserController extends Controller
         foreach ($users as $user) {
             $em->remove($user);
         }
-
         $em->flush();
 
         $deleteMessage = 'success';
@@ -229,21 +221,91 @@ class UserController extends Controller
     }
 
     /**
-     * Generates notes routes for use in js scripts
+     * To generate change password form
      *
-     * @return array Genrated notes routes collection
+     * @Route("/secured/user/show/password/{id}", name="OpitNotesUserBundle_user_show_password", requirements={"id" = "\d+"})
+     * @Method({"GET"})
+     * @Template()
      */
-    protected function generateJsRoutes()
+    public function showChangePasswordAction()
     {
-        $router = $this->container->get('router');
+        $request = $this->getRequest();
 
-        $js_routes = array();
-        foreach ($router->getRouteCollection()->all() as $name => $route) {
-            if (strpos($name, 'OpitNotesUserBundle') !== false) {
-                $js_routes[$name] = $this->generateUrl($name);
+        $user = $this->getUserObject($request->attributes->get('id'));
+
+        $form = $this->createForm(new ChangePasswordType(), $user);
+
+        return $this->render('OpitNotesUserBundle:User:_changePasswordForm.html.twig', array('form' => $form->createView()));
+    }
+
+    /**
+     * Change the password of an exist user.
+     *
+     * @Route("/secured/user/update/password/{id}", name="OpitNotesUserBundle_user_update_password", requirements={"id" = "\d+"})
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function updatePasswordAction()
+    {
+        $errorMessages = array();
+        $result = array('response' => 'error');
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $this->getUserObject($request->attributes->get('id'));
+
+        $form = $this->createForm(new ChangePasswordType(), $user);
+
+        if ($request->isMethod("POST")) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
+                $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+                $user->setPassword($newPassword);
+
+                // Save the user.
+                $em->persist($user);
+                $em->flush();
+                $result['response'] = 'success';
             }
+            $validator = $this->get('validator');
+            $errors = $validator->validate($user);
+            $formData = $request->request->get('user');
+
+            if ($formData['password']['first'] != $formData['password']['second']) {
+                $errorMessages[] = 'The passwords do not match.';
+            }
+            if (count($errors) > 0) {
+               foreach ($errors as $e) {
+                    $errorMessages[] = $e->getMessage();
+                }
+            }
+            $result['errorMessage'] = $errorMessages;
+        }
+        return new JsonResponse(array($result));
+    }
+
+    /**
+     * Gets a user object
+     *
+     * @param integer $id
+     * @return object A user object
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getUserObject($id = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $id) {
+            $id = $request->request->get('id');
         }
 
-        return $js_routes;
+        if (!$user = $em->getRepository('OpitNotesUserBundle:User')->find($id)) {
+            throw $this->createNotFoundException('User object with id "'.$id.'" not found.');
+        }
+
+        return $user;
     }
 }

@@ -1,37 +1,43 @@
-
-    <table id="list-table">
-        {% if propertyNames is defined %}
-            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></th>
+<table id="list-table">
+    {% if propertyNames is defined %}
+        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></th>
+        {% for propertyName in propertyNames %}
+        <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
+        {% endfor %}
+        <th></th>
+        {% for key,value in propertyValues %}
+            <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+                <td class="width-24-fix">
+                    <input type="checkbox" class="list-delete-user" value="{{ key }}" >
+                </td>
             {% for propertyName in propertyNames %}
-            <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
-            {% endfor %}
-            {% for key,value in propertyValues %}
-                <tr>
-                    <td class="width-24-fix">
-                        <input type="checkbox" class="list-delete-user" value="{{ key }}" >
+                {% if propertyName == "roles" %}
+                    <td>
+                        {{ attribute(value, propertyName)|join(', ') }}
                     </td>
-                {% for propertyName in propertyNames %}
-                    {% if propertyName == "roles" %}
-                        <td>
+                {% elseif propertyName == "username" %}
+                    <td >
+                        <span class="list-username clickable" data-user-id="{{ key }}">
                             {{ attribute(value, propertyName)|join(', ') }}
-                        </td>
-                    {% elseif propertyName == "username" %}
-                        <td>
-                            <span class="list-username clickable" data-user-id="{{ key }}">
-                                {{ attribute(value, propertyName)|join(', ') }}
-                            </span>
-                        </td>
-                    {% elseif propertyName == "isActive" %}
-                        {% if attribute(value, propertyName) == 1 %}
-                            <td>Active</td>
-                        {% else %}
-                            <td>Inactive</td>
-                        {% endif %}
+                        </span>
+                    </td>
+                {% elseif propertyName == "isActive" %}
+                    {% if attribute(value, propertyName) == 1 %}
+                        <td>Active</td>
                     {% else %}
-                        <td>{{ attribute(value, propertyName) }}</td>
+                        <td>Inactive</td>
                     {% endif %}
-                {% endfor %}
-                </tr>
+                {% else %}
+                    <td>{{ attribute(value, propertyName) }}</td>
+                {% endif %}
+
             {% endfor %}
-        {% endif %}
-    </table>
+                    <td>
+                        <span class="list-change-password clickable" data-user-id="{{ key }}">
+                           Change Password
+                        </span>
+                    </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>

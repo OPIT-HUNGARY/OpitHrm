@@ -42,10 +42,12 @@
                 window.jQuery || document.write('<script src="{{ asset('js/jquery/jquery-1.10.2.min.js') }}"><\/script>');
             </script>
             {% javascripts 
+                'bundles/fosjsrouting/js/router.js'
                 '@OpitNotesUserBundle/Resources/public/js/main.js'
             output='js/base.js' filter='?yui_js' %}
                 <script type="text/javascript" src="{{ asset_url }}" ></script>
             {% endjavascripts %}
+            <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         {% endblock %}
         {% block scripts %}{% endblock %}
     </body>

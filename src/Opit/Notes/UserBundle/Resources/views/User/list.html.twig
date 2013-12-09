@@ -1,8 +1,6 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
-
 {% block body %}
     {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' %}
-
     <div id="userlistWrapper">
         <div  id="list">
             <table>
@@ -13,24 +11,13 @@
                     </td>
                 </tr>
             </table>
+            <div id="list-reply-message"></div> 
         {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
             'propertyNames': propertyNames,
             'propertyValues': propertyValues
         } %}
         </div>
     </div>
-{% endblock %}
-{% block scripts %}
-    {{ parent() }}
-    <script>
-    $.extend(true, $(document).data('OpitNotesUserBundle'), {
-        urls: {
-            {% for key, url in urls %}
-            '{{ key }}': '{{ url }}',
-            {% endfor %}
-        }
-    });
-    </script>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
