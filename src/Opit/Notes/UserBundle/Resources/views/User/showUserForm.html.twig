@@ -1,6 +1,6 @@
 {% form_theme form 'OpitNotesUserBundle:Form:form_template.html.twig' %}
 
-{% if form.vars.value.getId() is defined %}
+{% if form.vars.value.getId() is not null %}
     {% set title = "Edit User"  %}
     {% set desc = "Edit an existing user." %}
 {% else %}

@@ -82,7 +82,7 @@ $("#list-table").on "click", ".list-change-password", ->
     $('<div id="dialog-edititem"></div>')
       .dialog
           open: ->
-            $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Update Password')
+            $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
             $(@).html(data)
           dialogClass: 'popup-dialog-change-password'
           width: 750
@@ -96,7 +96,7 @@ $("#list-table").on "click", ".list-change-password", ->
                 data: $('#changePassword_frm').serialize()
               .done (data)->
                   response = data
-                  showAlert response, "update","modified the password"
+                  showAlert response, "update","reseted the password"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return

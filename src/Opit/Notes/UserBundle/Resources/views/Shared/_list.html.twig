@@ -4,7 +4,7 @@
         {% for propertyName in propertyNames %}
         <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
         {% endfor %}
-        <th></th>
+        <th>Actions</th>
         {% for key,value in propertyValues %}
             <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
                 <td class="width-24-fix">
@@ -34,7 +34,7 @@
             {% endfor %}
                     <td>
                         <span class="list-change-password clickable" data-user-id="{{ key }}">
-                           Change Password
+                           Reset Password
                         </span>
                     </td>
             </tr>

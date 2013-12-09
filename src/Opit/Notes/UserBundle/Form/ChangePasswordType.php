@@ -36,7 +36,7 @@ class ChangePasswordType extends AbstractType
     {
         $builder->add('password', 'repeated', array(
         'type' => 'password',
-        'first_options' => array('label' => 'Password'),
+        'first_options' => array('label' => 'New password'),
         'second_options' => array('label' => 'Confirm'),
         'invalid_message' => 'Passwords do not match.'
         ));
