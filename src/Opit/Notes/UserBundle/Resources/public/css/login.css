@@ -16,6 +16,8 @@ and open the template in the editor.
 
 .float-left { float: left; }
 
+.float-right { float: right; }
+
 .no-margin { margin: 0; }
 
 .width-24 { width: 24% !important; }
@@ -47,6 +49,13 @@ and open the template in the editor.
 .vertical-align-top { vertical-align: top; }
 
 .modalwindow { border: 1px solid #929292; background-color: #ebebeb; font-size: 0.9em; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+
+.alert-message { border: 1px solid transparent; margin-top: 10px; margin-bottom: 10px; padding: 10px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+.alert-message ul { margin: 3px; }
+
+.error-message { color: #a94442; background-color: #f2dede; border-color: #a94442; }
+
+.success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
 #mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
 #mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }

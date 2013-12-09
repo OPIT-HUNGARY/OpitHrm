@@ -31,6 +31,11 @@ $bgGrey: #dbdbdb;
 $darkGrey: #929292;
 $defaultFontSize: .9em;
 
+$dangerRed: #a94442;
+$alertRed: #f2dede;
+$successGreen: #3c763d;
+$alertGreen: #dff0d8;
+
 @mixin border-radius($radius) {
   -webkit-border-radius: $radius;
      -moz-border-radius: $radius;
@@ -87,6 +92,10 @@ $defaultFontSize: .9em;
 
 .float-left {
     float: left;
+}
+
+.float-right {
+    float: right;
 }
 
 .no-margin {
@@ -158,4 +167,31 @@ $defaultFontSize: .9em;
     @include border-top-left-radius(5px);
     @include border-bottom-right-radius(5px);
     @include border-bottom-left-radius(5px);
+}
+
+.alert-message {
+    border: 1px solid transparent;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    @include border-top-right-radius(5px);
+    @include border-top-left-radius(5px);
+    @include border-bottom-right-radius(5px);
+    @include border-bottom-left-radius(5px);
+    
+    ul {
+        margin: 3px;
+    }
+}
+
+.error-message {
+    color: $dangerRed;
+    background-color: $alertRed;
+    border-color: $dangerRed;
+}
+
+.success-message {
+    color: $successGreen;
+    background-color: $alertGreen;
+    border-color: $successGreen;
 }
