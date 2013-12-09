@@ -182,6 +182,22 @@ header{
         }
     }
     
+    #loggedInUser{
+        float:right;
+        text-decoration:none;
+        background-color:$lightGrayColor;
+        padding:4px 10px 4px 10px;
+        font-weight: bold;
+        margin:-20px 10px 0 0;
+        @include border-bottom-left-radius(10px);
+        @include border-bottom-right-radius(10px);
+
+        > i{
+            margin:0;
+            float:none;
+        }
+    }
+
     #menuWrapper{
         margin: 20px 0 30px 0;
         width: 100%;
