@@ -115,7 +115,7 @@
     }).done(function(data) {
       $('<div id="dialog-edititem"></div>').dialog({
         open: function() {
-          $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Update Password');
+          $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Reset Password');
           return $(this).html(data);
         },
         dialogClass: 'popup-dialog-change-password',
@@ -133,7 +133,7 @@
             }).done(function(data) {
               var response;
               response = data;
-              return showAlert(response, "update", "modified the password");
+              return showAlert(response, "update", "reseted the password");
             });
           },
           Close: function() {
