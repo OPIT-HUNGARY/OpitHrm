@@ -16,7 +16,7 @@
       url: url,
       data: $form.serialize()
     }).done(function(response) {
-      $('#userlistWrapper').html(response);
+      $('#list-table').html(response);
     });
   });
 
@@ -25,10 +25,11 @@
       method: 'POST',
       url: url,
       data: {
-        'resetForm': true
+        'resetForm': true,
+        'showList': 1
       }
     }).done(function(response) {
-      $('#userlistWrapper').html(response);
+      $('#list-table').html(response);
     });
   });
 

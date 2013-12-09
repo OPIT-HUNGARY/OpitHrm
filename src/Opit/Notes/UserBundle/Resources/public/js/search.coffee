@@ -9,17 +9,17 @@ $('#searchButton').click ->
       url: url
       data: $form.serialize()
   .done (response) ->
-    $('#userlistWrapper').html response
+    $('#list-table').html response
     return
   return
-  
+
 $('#resetButton').click ->
   $.ajax
       method: 'POST'
       url: url
-      data: 'resetForm': true
+      data: 'resetForm': true, 'showList' : 1
   .done (response) ->
-    $('#userlistWrapper').html response
+    $('#list-table').html response
     return
   return
 

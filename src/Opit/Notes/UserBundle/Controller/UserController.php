@@ -99,7 +99,6 @@ class UserController extends Controller
                 );
             }
         }
-        
         return $this->render(
             'OpitNotesUserBundle:Shared:_list.html.twig',
             array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues)
