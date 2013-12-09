@@ -15,8 +15,8 @@
                         <td>
                             {{ attribute(value, propertyName)|join(', ') }}
                         </td>
-                    {% elseif propertyName == "empName" %}
-                        <td >
+                    {% elseif propertyName == "username" %}
+                        <td>
                             <span class="list-username clickable" data-user-id="{{ key }}">
                                 {{ attribute(value, propertyName)|join(', ') }}
                             </span>
