@@ -157,6 +157,23 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     }
 
     /**
+     * Get users by an array which contain the ids.
+     *
+     * @param array $userIds contains the ids of users
+     * @return User $user user object list.
+     */
+    public function findUsersUsingIn($userIds)
+    {
+        $qb = $this
+              ->createQueryBuilder('u')
+              ->where('u.id IN (:idarray)')
+              ->setParameter('idarray', $userIds);
+
+        $q = $qb->getQuery();
+
+        return $q->getResult();
+    }
+    /**
      * Delete users from the database
      *
      * @param arry $data the data contains the id of users

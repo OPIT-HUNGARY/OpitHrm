@@ -206,17 +206,21 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $userIds = $request->request->get('userIds');
+        $result = array('response' => 'error');
 
-        $users = $em->getRepository('OpitNotesUserBundle:User')->findUsersUsingIn($userIds);
+        try {
+           $users = $em->getRepository('OpitNotesUserBundle:User')->findUsersUsingIn($userIds);
 
-        foreach ($users as $user) {
-            $em->remove($user);
+            foreach ($users as $user) {
+                $em->remove($user);
+            }
+            $em->flush();
+            $result['response'] = 'success';
+
+        } catch (Exception $ex) {
+             $result['errorMessage'] = $ex->getMessage();
         }
-        $em->flush();
-
-        $deleteMessage = 'success';
-
-        return new JsonResponse(array('code' => 200, 'response' => $deleteMessage));
+        return new JsonResponse(array('code' => 200, $result));
     }
 
     /**

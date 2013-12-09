@@ -38,7 +38,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "created the user");
+                return showAlert(response, "create", "created the user");
               });
             });
           },
@@ -90,7 +90,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "modified the user");
+                return showAlert(response, "update", "modified the user");
               });
             });
           },
@@ -133,7 +133,7 @@
             }).done(function(data) {
               var response;
               response = data;
-              return showAlert(response, "modified the password");
+              return showAlert(response, "update", "modified the password");
             });
           },
           Close: function() {
@@ -172,24 +172,29 @@
         }
       }).done(function(data) {
         $('#list-table').html(data);
+        showAlert(response, "delete", "deleted the user(s)");
       });
     });
   });
 
-  showAlert = function(response, actionType) {
+  showAlert = function(response, actionType, message) {
     var errorString, i, _i, _len, _ref;
     $('#reply-message').addClass("alert-message");
     if (response[0].response === 'error') {
-      errorString = "<ul>";
-      _ref = response[0].errorMessage;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        i = _ref[_i];
-        errorString += "<li>" + i + "</li>";
+      if ("update" === actionType || "create" === actionType) {
+        errorString = "<ul>";
+        _ref = response[0].errorMessage;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          i = _ref[_i];
+          errorString += "<li>" + i + "</li>";
+        }
+        errorString += "</ul>";
+        return $('#reply-message').html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>" + errorString).removeClass('success-message').addClass('error-message');
+      } else if ("delete" === actionType) {
+        return $('#list-reply-message').html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ").removeClass('success-message').addClass('error-message').fadeIn(200).delay(5000).slideUp(1000);
       }
-      errorString += "</ul>";
-      return $('#reply-message').html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>" + errorString).removeClass('success-message').addClass('error-message');
     } else {
-      $('#list-reply-message').html("<i class='fa fa-check-square'></i> Successfully " + actionType + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
+      $('#list-reply-message').html("<i class='fa fa-check-square'></i> Successfully " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
       return $('#dialog-edititem').dialog('destroy');
     }
   };

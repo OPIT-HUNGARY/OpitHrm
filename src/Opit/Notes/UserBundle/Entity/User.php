@@ -23,7 +23,9 @@ use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
  * @version 1.0
  * @package Opit
  * @subpackage Notes
- * 
+ *
+ * @internal Must be implemented the: User, General Manager and Travel manager requests.
+ *
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
  * @UniqueEntity(fields={"username"}, message="The username is already used.")
@@ -58,6 +60,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
 
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank(message="The password should not be blank.")
+     * @Assert\Length(
+     *      min = "6",
+     *      max = "50",
+     *      minMessage = "The password should not be at least {{ limit }} characters length",
+     *      maxMessage = "The password should not be longer than {{ limit }} characters length"
+     * )
      */
     private $password;
 
@@ -76,15 +85,35 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
      * @ORM\JoinTable(name="notes_users_groups")
-     * 
      */
     protected $groups;
     
+    /**
+     * User travel requests
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
+     */
+    protected $userTravelRequests;
+
+    /**
+     * General manager travel requests
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
+     */
+    protected $gmTravelRequests;
+
+    /**
+     * Team manager travel requests
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
+     */
+    protected $tmTravelRequests;
+
     public function __construct()
     {
         //$this->salt = md5(uniqid(null, true));
         $this->isActive = true;
         $this->groups = new ArrayCollection();
+        $this->userTravelRequests = new ArrayCollection();
+        $this->gmTravelRequests = new ArrayCollection();
+        $this->tmTravelRequests = new ArrayCollection();
         $this->setSalt("");
     }
 
@@ -312,5 +341,4 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         return $this->groups;
     }
-
 }

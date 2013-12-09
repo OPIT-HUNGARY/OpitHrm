@@ -57,14 +57,14 @@ and open the template in the editor.
 
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
-table { /*    .clickable{ text-decoration: underline; }
- .clickable:hover{ background-color:$linkHoverColor; cursor: pointer; text-decoration: underline; }*/ /*    .clickableTableRow:hover{ background-color:$linkHoverColor; cursor: pointer; }*/ }
 table th { background-color: #f28c38; padding: 10px 10px 10px 10px; text-align: left; color: white; }
 table td { padding: 5px 10px 5px 10px; }
 table .delete { margin: 0 0 0 10px; background: linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -webkit-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -o-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -moz-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); box-shadow: 2px 2px 2px 1px #8c0a0a; -moz-box-shadow: 2px 2px 2px 1px #8c0a0a; -webkit-box-shadow: 2px 2px 2px 1px #8c0a0a; -o-box-shadow: 2px 2px 2px 1px #8c0a0a; }
 table .delete:hover { background: #8c0a0a; }
 table .add { background: linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -webkit-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -o-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); background: -moz-linear-gradient(#0ac80a, #0ac80a, #0a8c0a); box-shadow: 2px 2px 2px 1px #0a8c0a; -moz-box-shadow: 2px 2px 2px 1px #0a8c0a; -webkit-box-shadow: 2px 2px 2px 1px #0a8c0a; -o-box-shadow: 2px 2px 2px 1px #0a8c0a; }
 table .add:hover { background: #0a8c0a; }
+table .clickable { text-decoration: underline; }
+table .clickable:hover { cursor: pointer; text-decoration: underline; }
 
 #list-table { width: 100%; }
 #list-table tr:nth-child(even) { background-color: rgba(220, 220, 220, 0.8); }

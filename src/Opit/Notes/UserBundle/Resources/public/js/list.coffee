@@ -27,7 +27,7 @@ $("#add").click ->
                     data: "showList" : 1
                   .done (data)->
                     $('#list-table').html data
-                    showAlert response, "created the user"
+                    showAlert response, "create", "created the user"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -65,7 +65,7 @@ $("#list-table").on "click", ".list-username", ->
                     data: "showList" : 1
                   .done (data)->
                     $('#list-table').html data
-                    showAlert response, "modified the user"
+                    showAlert response, "update","modified the user"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -96,7 +96,7 @@ $("#list-table").on "click", ".list-change-password", ->
                 data: $('#changePassword_frm').serialize()
               .done (data)->
                   response = data
-                  showAlert response, "modified the password"
+                  showAlert response, "update","modified the password"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -122,22 +122,32 @@ $('#delete').click ->
       data: "showList" : 1
     .done (data)->
       $('#list-table').html data
+      showAlert response, "delete","deleted the user(s)"
       return
 
-showAlert = (response, actionType) ->
+showAlert = (response, actionType, message) ->
   $('#reply-message').addClass "alert-message"
-  if response[0].response == 'error'             
-    errorString = "<ul>"
-    for i in response[0].errorMessage
-      errorString += "<li>"+i+"</li>"
-    errorString += "</ul>"                      
-    $('#reply-message')
-      .html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>"+errorString)                        
-      .removeClass('success-message')
-      .addClass('error-message')
+  if response[0].response == 'error'
+    if "update" == actionType or "create" == actionType
+      errorString = "<ul>"
+      for i in response[0].errorMessage
+        errorString += "<li>"+i+"</li>"
+      errorString += "</ul>"
+      $('#reply-message')
+        .html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>"+errorString)
+        .removeClass('success-message')
+        .addClass('error-message')
+    else if "delete" == actionType
+      $('#list-reply-message')
+        .html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ")
+        .removeClass('success-message')
+        .addClass('error-message')
+        .fadeIn(200)
+        .delay(5000)
+        .slideUp(1000)
   else
     $('#list-reply-message')
-      .html("<i class='fa fa-check-square'></i> Successfully "+actionType+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
+      .html("<i class='fa fa-check-square'></i> Successfully "+message+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
       .addClass("alert-message")
       .addClass('success-message')
       .fadeIn(200)
