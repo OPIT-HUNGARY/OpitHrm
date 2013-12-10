@@ -151,15 +151,26 @@ addForm = ($collectionHolder, $addButton) ->
 
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
-    
-$.validator.setDefaults ->
-  debug: true
-  success: "valid"
-  return
+
+#$.validator.setDefaults ->
+#  debug: true
+#  success: "valid"
+#  return
 
 # method to validate form before preview
 $form = $( '#travelRequestForm' )
-$form.validate()
+    
+# method to validate if departure date is smaller than arrival date
+$.validator.addMethod "compare", (value, element) ->
+    departureDate = $('#travelRequest_departure_date').prop 'value'
+    arrivalDate = $('#travelRequest_arrival_date').prop 'value'
+    return departureDate < arrivalDate
+, "Arrival date should be smaller than departure date."
+
+$form.validate
+    rules:
+        "travelRequest[arrival_date]": "compare"
+
 $( '#travelRequest_add_travel_request' ).click ->
     event.preventDefault()
     if $form.valid()

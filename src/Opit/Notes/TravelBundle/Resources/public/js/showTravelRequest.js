@@ -192,16 +192,20 @@
     return $addButton.before($newForm);
   };
 
-  $.validator.setDefaults(function() {
-    ({
-      debug: true,
-      success: "valid"
-    });
-  });
-
   $form = $('#travelRequestForm');
 
-  $form.validate();
+  $.validator.addMethod("compare", function(value, element) {
+    var arrivalDate, departureDate;
+    departureDate = $('#travelRequest_departure_date').prop('value');
+    arrivalDate = $('#travelRequest_arrival_date').prop('value');
+    return departureDate < arrivalDate;
+  }, "Arrival date should be smaller than departure date.");
+
+  $form.validate({
+    rules: {
+      "travelRequest[arrival_date]": "compare"
+    }
+  });
 
   $('#travelRequest_add_travel_request').click(function() {
     event.preventDefault();
