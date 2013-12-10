@@ -81,7 +81,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
-    
+
+    /**
+     * @ORM\Column(name="job_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Job", inversedBy="users")
+     */
+    private $job;
+
     /**
      * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
      * @ORM\JoinTable(name="notes_users_groups")
@@ -155,7 +161,15 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function getIsActive()
     {
         return $this->isActive;
-    }     
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getJob()
+    {
+        return $this->job;
+    }
 
     /**
      * @inheritDoc
@@ -244,6 +258,19 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         $this->salt = $salt;
     
+        return $this;
+    }
+
+    /**
+     * Set job
+     *
+     * @param string $job
+     * @return User
+     */
+    public function setJob($job)
+    {
+        $this->job = $job;
+
         return $this;
     }
 

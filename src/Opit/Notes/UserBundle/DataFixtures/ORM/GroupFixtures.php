@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Edk bundle.
+ * This file is part of the Notes bundle.
  *
  * (c) Opit Consulting Kft. <info@opit.hu>
  *

@@ -27,7 +27,7 @@ $("#add").click ->
                     data: "showList" : 1
                   .done (data)->
                     $('#list-table').html data
-                    showAlert response, "create", "created the user"
+                    showAlert response, "create", "User created successfully"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -65,7 +65,7 @@ $("#list-table").on "click", ".list-username", ->
                     data: "showList" : 1
                   .done (data)->
                     $('#list-table').html data
-                    showAlert response, "update","modified the user"
+                    showAlert response, "update","User modified successfully"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -96,7 +96,7 @@ $("#list-table").on "click", ".list-change-password", ->
                 data: $('#changePassword_frm').serialize()
               .done (data)->
                   response = data
-                  showAlert response, "update","reseted the password"
+                  showAlert response, "update","Password reset successfully"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -147,7 +147,7 @@ showAlert = (response, actionType, message) ->
         .slideUp(1000)
   else
     $('#list-reply-message')
-      .html("<i class='fa fa-check-square'></i> Successfully "+message+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
+      .html("<i class='fa fa-check-square'></i> "+message+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
       .addClass("alert-message")
       .addClass('success-message')
       .fadeIn(200)

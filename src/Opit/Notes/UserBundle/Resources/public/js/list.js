@@ -38,7 +38,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "create", "created the user");
+                return showAlert(response, "create", "User created successful");
               });
             });
           },
@@ -90,7 +90,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "update", "modified the user");
+                return showAlert(response, "update", "User modified successful");
               });
             });
           },
@@ -133,7 +133,7 @@
             }).done(function(data) {
               var response;
               response = data;
-              return showAlert(response, "update", "reseted the password");
+              return showAlert(response, "update", "Password reset successful");
             });
           },
           Close: function() {
@@ -194,7 +194,7 @@
         return $('#list-reply-message').html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ").removeClass('success-message').addClass('error-message').fadeIn(200).delay(5000).slideUp(1000);
       }
     } else {
-      $('#list-reply-message').html("<i class='fa fa-check-square'></i> Successfully " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
+      $('#list-reply-message').html("<i class='fa fa-check-square'></i> " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
       return $('#dialog-edititem').dialog('destroy');
     }
   };
