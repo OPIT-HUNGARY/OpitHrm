@@ -5,7 +5,7 @@
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}        
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
 {% endblock %}        
         
@@ -16,6 +16,9 @@
     'method': 'POST',
     'attr':{
         'id': 'travelRequestForm',
-        'data-search': path('OpitNotesTravelBundle_travel_userSearch')}})
+        'data-search': path('OpitNotesTravelBundle_travel_userSearch'),
+        'data-preview': path('OpitNotesTravelBundle_travel_show_details')
+    }
+   })
 }}
 {% endblock %}

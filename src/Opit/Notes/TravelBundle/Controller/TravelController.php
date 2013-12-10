@@ -18,6 +18,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TRDestination;
+use Opit\Notes\TravelBundle\Helper\TravelBundleUtils;
+
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
 /**
  * Description of TravelController
@@ -77,12 +82,26 @@ class TravelController extends Controller
      */
     public function showDetailsAction()
     {
-        $travelRequest = $this->getTravelRequest();
+        $travelRequest = new TravelRequest();
+        $request = $this->getRequest();
+        $travelRequestPreview = $request->request->get('preview');
+        
+        // for creating entities for the travel request preview
+        if (null !== $travelRequestPreview) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $form = $this->createForm(new TravelType(), $travelRequest, array('em' => $entityManager));
+            # bind travel request to form and set data to it
+            $form->handleRequest($request);
+        } else {
+            $travelRequest = $this->getTravelRequest();
+        }
         
         return array('travelRequest' => $travelRequest);
     }
     
     /**
+     * Method to show and edit travel request
+     *
      * @Route("/secured/travel/show/{id}", name="OpitNotesTravelBundle_travel_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Template()
      */
@@ -108,6 +127,7 @@ class TravelController extends Controller
         
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
+
             if ($form->isValid()) {
                 // Persist deleted destinations/accomodations
                 $this->removeChildNodes($entityManager, $travelRequest, $children);
@@ -148,6 +168,8 @@ class TravelController extends Controller
     }
     
     /**
+     * Method to delete one or more travel requests
+     *
      * @Route("/secured/travel/delete", name="OpitNotesTravelBundle_travel_delete")
      * @Template()
      * @Method({"POST"})

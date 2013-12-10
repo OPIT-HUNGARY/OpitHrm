@@ -34,8 +34,10 @@
   });
 
   $('#searchFormTitle').click(function() {
-    $(this).children('i').toggleClass('fa-chevron-down');
-    return $(this).next().slideToggle();
+    if (!$(this).next().is(':animated')) {
+      $(this).children('i').toggleClass('fa-chevron-down');
+      return $(this).next().slideToggle();
+    }
   });
 
 }).call(this);

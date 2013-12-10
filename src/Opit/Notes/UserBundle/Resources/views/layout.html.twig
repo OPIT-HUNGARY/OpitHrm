@@ -11,8 +11,9 @@
 {% endblock %}           
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts 
-        '@OpitNotesUserBundle/Resources/public/js/main.js'
+    {% javascripts
+        'http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js'
+        'http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.min.js'
         '@OpitNotesUserBundle/Resources/public/js/search.js'
     output='js/notes_main.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>

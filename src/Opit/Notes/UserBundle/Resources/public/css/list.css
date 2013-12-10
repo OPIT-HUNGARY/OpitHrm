@@ -82,8 +82,8 @@ table .clickable:hover { cursor: pointer; text-decoration: underline; }
 #dialog-details-travel h2 { margin: 0 0 5px 0; font-size: 1.1em; }
 #dialog-details-travel table { width: 100%; }
 #dialog-details-travel .dialog-table-title { background-color: #f28c38; color: white; margin-top: 5px; padding: 5px; }
-#dialog-details-travel .bgGrey { background-color: #dbdbdb; }
-#dialog-details-travel .dialog-table-tr-seperator { border-bottom: #929292 solid 1px; }
+#dialog-details-travel .bgGrey { background-color: #d2d2d2; }
+#dialog-details-travel .dialog-table-tr-seperator { border-bottom: #929292 solid 2px; }
 
 select { -webkit-user-select: none; -moz-user-select: none; background-image: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5); background-image: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5); background-image: -ms-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5); background-image: -o-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5); background-repeat: no-repeat; border: 1px solid #aaa; color: #333; font-size: inherit; padding: 3px; }
 

@@ -24,5 +24,6 @@ $('#resetButton').click ->
   return
 
 $('#searchFormTitle').click ->
-  $(@).children('i').toggleClass 'fa-chevron-down'
-  $(@).next().slideToggle()
+    if not $(@).next().is(':animated')
+        $(@).children('i').toggleClass 'fa-chevron-down'
+        $(@).next().slideToggle()

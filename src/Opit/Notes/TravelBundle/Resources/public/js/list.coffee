@@ -1,24 +1,21 @@
-$("#list-table").on "click", ".clickable", ->
-  event.preventDefault()
-  id = $(@).attr "data-tr-id"
+$('#list-table').on 'click', '.clickable', ->
+  id = $(@).attr 'data-tr-id'
   $.ajax
     method: 'POST'
     url: $(document).data('OpitNotesTravelBundle').urls.OpitNotesTravelBundle_travel_show_details
     data: 'id': id
   .done (data) ->
     dialogWidth = 550
-    $('<div id="dialog-show-details-tr"></div>')
+    $('<div id="dialog-show-details-tr"></div>').html(data)
       .dialog
         open: ->
           $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Details')
-          $(@).html(data)
-        dialogClass: 'popup-dialog'
         width: dialogWidth
-        position: [($(window).width()-dialogWidth)/2,$(window).height()/20]
+        maxHeight: $(window).outerHeight()-100
         modal: on
         buttons:
           Close: ->
-             $('#dialog-show-details-tr').dialog "destroy"
+             $('#dialog-show-details-tr').dialog 'destroy'
              return
     return
   return
@@ -29,13 +26,13 @@ $('#list-table th i').click ->
 $('.deleteSingeTravelRequest').click ->
     event.preventDefault()
     self = $(@)
-    empName = self.closest('tr').children('td.employee-name').text()
+#    empName = self.closest('tr').children('td.employee-name').text()
     # Set checkbox
     $checkbox = self.closest('tr').find(':checkbox')
     $checkbox.prop 'checked', true
     # TODO: Add travel request ID to the dialog body text.
     #$('<div></div>').html("Are you sure you want to delete the travel request \"#{travel-request-id}\"?").dialog
-    $('<div></div>').html("Are you sure you want to delete the travel request?").dialog
+    $('<div></div>').html('Are you sure you want to delete the travel request?').dialog
         title: 'Travel request removal'
         buttons:
             Yes: ->
@@ -47,17 +44,17 @@ $('.deleteSingeTravelRequest').click ->
                     if data is '0' then self.parent().parent().remove()
                     return
                 .fail () ->
-                    $('<div></div>').html("The travel request could not be deleted due to an error.").dialog
+                    $('<div></div>').html('The travel request could not be deleted due to an error.').dialog
                         title: 'Error'
-                $(@).dialog "close"
+                $(@).dialog 'close'
                 return
             No: ->
                 # Unset checkbox
                 $checkbox.prop 'checked', false
-                $(@).dialog "close"
+                $(@).dialog 'close'
                 return
         close: ->
-            $(@).dialog "destroy"
+            $(@).dialog 'destroy'
             return
     return
         
@@ -82,14 +79,14 @@ $('#delete').click ->
                         $(@).remove()
                     return
                 .fail () ->
-                    $('<div></div>').html("The travel request could not be deleted due to an error.").dialog
+                    $('<div></div>').html('The travel request could not be deleted due to an error.').dialog
                         title: 'Error'                    
-                $(@).dialog "close"
+                $(@).dialog 'close'
                 return
             No: ->
-                $(@).dialog "close"
+                $(@).dialog 'close'
                 return
         close: ->
-            $(@).dialog "destroy"
+            $(@).dialog 'destroy'
             return
     return

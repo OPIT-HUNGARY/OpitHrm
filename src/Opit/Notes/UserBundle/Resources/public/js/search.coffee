@@ -23,6 +23,9 @@ $('#resetButton').click ->
     return
   return
 
+# method to make search form toggleable
 $('#searchFormTitle').click ->
-  $(@).children('i').toggleClass 'fa-chevron-down'
-  $(@).next().slideToggle()
+    # check if toogle animation is running to prevent a new animation
+    if not $(@).next().is(':animated')
+        $(@).children('i').toggleClass 'fa-chevron-down'
+        $(@).next().slideToggle()

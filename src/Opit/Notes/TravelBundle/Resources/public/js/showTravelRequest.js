@@ -192,4 +192,53 @@
     return $addButton.before($newForm);
   };
 
+  $.validator.setDefaults(function() {
+    ({
+      debug: true,
+      success: "valid"
+    });
+  });
+
+  $form = $('#travelRequestForm');
+
+  $form.validate();
+
+  $('#travelRequest_add_travel_request').click(function() {
+    event.preventDefault();
+    if ($form.valid()) {
+      $.ajax({
+        method: 'POST',
+        url: $form.data('preview'),
+        data: 'preview=1&' + $form.serialize()
+      }).done(function(data) {
+        var $preview;
+        $preview = $('<div id="dialog-travelrequest-preview"></div>').html(data);
+        return $preview.dialog({
+          open: function() {
+            return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
+          },
+          close: function() {
+            return $preview.dialog("destroy");
+          },
+          width: 550,
+          maxHeight: $(window).outerHeight() - 100,
+          modal: true,
+          buttons: {
+            Cancel: function() {
+              $preview.dialog("destroy");
+            },
+            Save: function() {
+              $form.submit();
+              $preview.dialog("destroy");
+            }
+          }
+        });
+      }).fail(function() {
+        return $('<div></div>').html('The travel request could not be saved due to an error.').dialog({
+          title: 'Error'
+        });
+      });
+    }
+  });
+
 }).call(this);

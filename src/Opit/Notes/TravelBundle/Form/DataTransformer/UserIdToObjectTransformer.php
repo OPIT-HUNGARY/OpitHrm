@@ -41,7 +41,7 @@ class UserIdToObjectTransformer implements DataTransformerInterface
 
         $object = $this->objectManager
             ->getRepository('OpitNotesUserBundle:User')
-            ->find(array('id' => $number));
+            ->find($number);
 
         if (null === $object) {
             throw new TransformationFailedException(sprintf(
@@ -49,7 +49,7 @@ class UserIdToObjectTransformer implements DataTransformerInterface
                 $number
             ));
         }
-
+        
         return $object;
     }
     

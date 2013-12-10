@@ -123,11 +123,11 @@ table {
     }
 
     .bgGrey{
-        background-color: $bgGrey;
+        background-color: $formDarkColor;
     }
 
     .dialog-table-tr-seperator{
-        border-bottom: $darkGrey solid 1px;
+        border-bottom: $darkGrey solid 2px;
     }
 }
 

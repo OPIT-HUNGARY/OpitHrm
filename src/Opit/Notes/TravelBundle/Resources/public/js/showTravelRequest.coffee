@@ -151,3 +151,42 @@ addForm = ($collectionHolder, $addButton) ->
 
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
+    
+$.validator.setDefaults ->
+  debug: true
+  success: "valid"
+  return
+
+# method to validate form before preview
+$form = $( '#travelRequestForm' )
+$form.validate()
+$( '#travelRequest_add_travel_request' ).click ->
+    event.preventDefault()
+    if $form.valid()
+        # if form is valid post ajax request to get view
+        $.ajax
+            method: 'POST'
+            url: $form.data 'preview'
+            data: 'preview=1&' + $form.serialize()
+        .done (data) ->
+            $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
+            $preview.dialog
+                open: ->
+                    $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Details'
+                close: ->
+                    $preview.dialog "destroy"
+                width: 550
+                maxHeight: $(window).outerHeight()-100
+                modal: on
+                buttons:
+                    Cancel: ->
+                        $preview.dialog "destroy"
+                        return
+                    Save: ->
+                        $form.submit()
+                        $preview.dialog "destroy"
+                        return
+        .fail () ->
+            $('<div></div>').html('The travel request could not be saved due to an error.').dialog
+                title: 'Error'
+    return

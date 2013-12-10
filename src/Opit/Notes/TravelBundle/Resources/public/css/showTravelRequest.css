@@ -14,3 +14,6 @@ and open the template in the editor.
 #travelRequest .formFieldset > div { margin-top: 5px; margin-bottom: 5px; }
 #travelRequest .marginLeft .inlineElements { margin-left: 1em; margin-right: 0; }
 #travelRequest .generalFormFieldset { padding: 10px; }
+#travelRequest input.error, #travelRequest select.error { border: solid 2px #aa0000; display: inline-block; }
+#travelRequest label.error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-top: 5px; display: inline-block; z-index: 4; margin: 0 0 0 4px; }
+#travelRequest label.valid { display: none !important; }
