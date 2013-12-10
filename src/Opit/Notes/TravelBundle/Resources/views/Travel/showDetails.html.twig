@@ -1,34 +1,37 @@
 <div id="dialog-details-travel">
     <h2>Travel Request Details</h2>
+   
     <div class="modalwindow">
-        <div class="dialog-table-title">
-            <span class="bold">General</span>
-        </div>
-        <table border='1'>
+        <table class="bordered">
+            <caption class="dialog-table-title">General</caption>
+            {% if travelRequest.id is defined %}
+                <tr>
+                    <td class="bgGrey width-40 bold">Id</td>
+                    <td>{{ travelRequest.id }}</td>
+                </tr>
+            {% endif %}
             <tr>
-                <td class="bgGrey width-40 bold">Id</td>
-                <td>{{ travelRequest.id }}</td>
-            </tr>
-            <tr>
-                <td class='bgGrey bold'>Employee Name</td>
+                <td class="bgGrey bold">Employee Name</td>
+                {% if travelRequest.user.employeeName is defined %}
                 <td>{{ travelRequest.user.employeeName }}</td>
+                {% endif %}
             </tr>
             <tr>
-                <td class='bgGrey bold'>Departure date</td>
+                <td class="bgGrey bold">Departure date</td>
                 <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>Arrival date</td>
+                <td class="bgGrey bold">Arrival date</td>
                 <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>Trip purpose</td>
+                <td class="bgGrey bold">Trip purpose</td>
                 <td>{{ travelRequest.tripPurpose }}</td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>Customer related</td>
+                <td class="bgGrey bold">Customer related</td>
                 <td>
-                    {% if travelRequest.customerRelated == 1%}
+                    {% if travelRequest.customerRelated == 0%}
                         Yes
                     {% else %}
                         No
@@ -36,7 +39,7 @@
                 </td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>Opportunity name</td>
+                <td class="bgGrey bold">Opportunity name</td>
                 <td>
                     {% if travelRequest.opportunityName is empty %}
                         [Empty]
@@ -46,7 +49,7 @@
                 </td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>Team Manager</td>
+                <td class="bgGrey bold">Team Manager</td>
                 <td>
                     {% if travelRequest.teamManager is null %}
                         [Empty]
@@ -56,59 +59,58 @@
                 </td>
             </tr>
             <tr>
-                <td class='bgGrey bold'>General Manager</td>
+                <td class="bgGrey bold">General Manager</td>
                 <td>{{ travelRequest.generalManager.employeeName }}</td>
             </tr>
         </table>
-
+        {% if travelRequest.destinations is defined %}
         {% if travelRequest.destinations|length > 0 %}  
-        <div class="dialog-table-title">
-            <span class="bold">Destination</span>
-        </div>
-        <table border='1'>
+        <table class="bordered">
+            <caption class="dialog-table-title">Destination</caption>
             {% for dest in travelRequest.destinations %}
-                    <tr>
-                        <td class='bgGrey bold width-40'>Name</td>
-                        <td>{{ dest.name }}</td>
-                    </tr>
-                    <tr>
-                        <td class='bgGrey bold'>Cost</td>
-                        <td>{{ dest.cost }}</td>
-                    </tr>
-                    {% if dest.transportationType is not null %}
-                    <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
-                        <td class='bgGrey bold'>Transportation type</td>
-                        <td>{{ dest.transportationType.name }}</td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
+            <tr>
+                <td class="bgGrey bold width-40">Name</td>
+                <td>{{ dest.name }}</td>
+                <td class="width-24-fix align-center" rowspan="3">{{ loop.index }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">Cost</td>
+                <td>{{ dest.cost }}</td>
+            </tr>
+            <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+                <td class="bgGrey bold">Transportation type</td>
+                <td>{{ dest.transportationType.name }}</td>
+            </tr>
+            {% endfor %}
         </table>
         {% endif %}
+        {% endif %}
         
-        {% if travelRequest.accomodations|length > 0 %}
-        <div class="dialog-table-title">
-            <span class="bold">Accomodation</span>
-        </div> 
-        <table border='1'>
+        {% if travelRequest.accomodations is defined %}
+            {% if travelRequest.accomodations|length > 0 %}
+            <table class="bordered">
+                <caption class="dialog-table-title">Accomodation</caption>
                 {% for accom in travelRequest.accomodations %}
-                    <tr>
-                        <td  class='bgGrey bold width-40'>Hotel name</td>
-                        <td>{{ accom.hotelName }}</td>
-                    </tr>
-                    <tr>
-                        <td class='bgGrey bold'>City</td>
-                        <td>{{ accom.city }}</td>
-                    </tr>
-                    <tr>
-                        <td class='bgGrey bold'>Number of nights</td>
-                        <td>{{ accom.numberOfNights }}</td>
-                    </tr>
-                    <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
-                        <td class='bgGrey bold'>Cost</td>
-                        <td>{{ accom.cost }}</td>
-                    </tr>
+                <tr>
+                    <td  class="bgGrey bold width-40">Hotel name</td>
+                    <td>{{ accom.hotelName }}</td>
+                    <td class="width-24-fix align-center" rowspan="4">{{ loop.index }}</td>
+                </tr>
+                <tr>
+                    <td class="bgGrey bold">City</td>
+                    <td>{{ accom.city }}</td>
+                </tr>
+                <tr>
+                    <td class="bgGrey bold">Number of nights</td>
+                    <td>{{ accom.numberOfNights }}</td>
+                </tr>
+                <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+                    <td class="bgGrey bold">Cost</td>
+                    <td>{{ accom.cost }}</td>
+                </tr>
                 {% endfor %}            
-        </table>
+            </table>
+            {% endif %}
         {% endif %}
     </div>
 </div>

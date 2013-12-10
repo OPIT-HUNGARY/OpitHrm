@@ -9,19 +9,17 @@ and open the template in the editor.
 */
 
 $defaultDarkColor: rgba(180, 180, 180, 1);
-$darkGrey: rgba(100, 100, 100, 1);
 $defaultLightColor: rgba(235, 235, 235, 1);
-$orangeColor: #f28c38;
+$darkGrey: rgba(100, 100, 100, 1);
 $darkerGrayColor: rgba(80, 80, 80, 1);
 $lightGrayColor: rgba(220, 220, 220, 0.8);
 $lightGrayHover: rgba(200, 200, 200, 1);
-
+$formLightColor: rgba(235, 235, 235, 1);
+$formDarkColor: rgba(210, 210, 210, 1);
 
 $defaultRed: rgb(170, 0, 0);
 $defaultGreen: rgb(0, 100, 0);
-
-$formLightColor: rgba(235, 235, 235, 1);
-$formDarkColor: rgba(210, 210, 210, 1);
+$orangeColor: #f28c38;
 
 $defaultFontSize: 13px;
 
@@ -156,6 +154,16 @@ $alertGreen: #dff0d8;
 
 .vertical-align-top {
     vertical-align: top;
+}
+
+.align-center{
+    text-align: center;
+}
+
+table.bordered{
+    tr, td, th{
+        @extend .default-border;
+    }
 }
 
 .modalwindow {
