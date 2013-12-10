@@ -9,10 +9,9 @@
         id: 0
       })
     }).done(function(data) {
-      $('<div id="dialog-edititem"></div>').dialog({
+      $('<div id="dialog-edititem"></div>').html(data).dialog({
         open: function() {
-          $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Create User');
-          return $(this).html(data);
+          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Create User');
         },
         dialogClass: 'popup-dialog',
         width: 750,
@@ -38,7 +37,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "create", "User created successful");
+                return showAlert(response, "create", "User created successfully");
               });
             });
           },
@@ -61,10 +60,9 @@
         id: id
       })
     }).done(function(data) {
-      $('<div id="dialog-edititem"></div>').dialog({
+      $('<div id="dialog-edititem"></div>').html(data).dialog({
         open: function() {
-          $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit User');
-          return $(this).html(data);
+          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit User');
         },
         dialogClass: 'popup-dialog',
         width: 750,
@@ -90,7 +88,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "update", "User modified successful");
+                return showAlert(response, "update", "User modified successfully");
               });
             });
           },
@@ -113,7 +111,7 @@
         id: id
       })
     }).done(function(data) {
-      $('<div id="dialog-edititem"></div>').dialog({
+      $('<div id="dialog-edititem"></div>').html(data).dialog({
         open: function() {
           $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Reset Password');
           return $(this).html(data);
@@ -133,7 +131,7 @@
             }).done(function(data) {
               var response;
               response = data;
-              return showAlert(response, "update", "Password reset successful");
+              return showAlert(response, "update", "Password reset successfully");
             });
           },
           Close: function() {
@@ -153,28 +151,45 @@
         return users.push($(this).val());
       }
     });
-    return $.ajax({
-      type: 'POST',
-      global: false,
-      url: Routing.generate('OpitNotesUserBundle_user_delete'),
-      data: {
-        "userIds": users
-      }
-    }).done(function(data) {
-      var response;
-      response = data;
-      return $.ajax({
-        type: 'POST',
-        global: false,
-        url: Routing.generate('OpitNotesUserBundle_user_list'),
-        data: {
-          "showList": 1
+    if (users.length > 0) {
+      $('<div></div>').html('Are you sure you want to delete the travel request?').dialog({
+        title: 'Travel request removal',
+        buttons: {
+          Yes: function() {
+            $.ajax({
+              type: 'POST',
+              global: false,
+              url: Routing.generate('OpitNotesUserBundle_user_delete'),
+              data: {
+                "userIds": users
+              }
+            }).done(function(data) {
+              var response;
+              response = data;
+              return $.ajax({
+                type: 'POST',
+                global: false,
+                url: Routing.generate('OpitNotesUserBundle_user_list'),
+                data: {
+                  "showList": 1
+                }
+              }).done(function(data) {
+                $('#list-table').html(data);
+                return showAlert(response, "delete", "The user(s) deleted successfully");
+              });
+            });
+            $(this).dialog('destroy');
+          },
+          No: function() {
+            $('input:checkbox').removeAttr('checked');
+            $(this).dialog('destroy');
+          }
+        },
+        close: function() {
+          $(this).dialog('destroy');
         }
-      }).done(function(data) {
-        $('#list-table').html(data);
-        showAlert(response, "delete", "deleted the user(s)");
       });
-    });
+    }
   });
 
   showAlert = function(response, actionType, message) {

@@ -3,11 +3,10 @@ $("#add").click ->
     method: 'GET'
     url: Routing.generate 'OpitNotesUserBundle_user_show', id: 0
   .done (data) ->
-    $('<div id="dialog-edititem"></div>')
+    $('<div id="dialog-edititem"></div>').html(data)
       .dialog
           open: ->
             $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Create User')
-            $(@).html(data)
           dialogClass: 'popup-dialog'
           width: 750
           modal: on
@@ -41,11 +40,10 @@ $("#list-table").on "click", ".list-username", ->
     method: 'GET'
     url: Routing.generate 'OpitNotesUserBundle_user_show', id: id 
   .done (data) ->
-    $('<div id="dialog-edititem"></div>')
+    $('<div id="dialog-edititem"></div>').html(data)
       .dialog
           open: ->
             $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Edit User')
-            $(@).html(data)
           dialogClass: 'popup-dialog'
           width: 750
           modal: on
@@ -79,7 +77,7 @@ $("#list-table").on "click", ".list-change-password", ->
     method: 'GET'
     url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id 
   .done (data) ->
-    $('<div id="dialog-edititem"></div>')
+    $('<div id="dialog-edititem"></div>').html(data)
       .dialog
           open: ->
             $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
@@ -108,22 +106,36 @@ $('#delete').click ->
   $('.list-delete-user').each ->
     if(@.checked)
       users.push $(@).val()
-  $.ajax
-    type: 'POST'
-    global: false
-    url: Routing.generate 'OpitNotesUserBundle_user_delete'
-    data: "userIds" : users
-  .done (data)->
-    response = data
-    $.ajax
-      type: 'POST'
-      global: false
-      url: Routing.generate 'OpitNotesUserBundle_user_list'
-      data: "showList" : 1
-    .done (data)->
-      $('#list-table').html data
-      showAlert response, "delete","deleted the user(s)"
-      return
+  if users.length > 0
+    $('<div></div>').html('Are you sure you want to delete the travel request?').dialog
+        title: 'Travel request removal'
+        buttons:
+            Yes: ->
+              $.ajax
+                type: 'POST'
+                global: false
+                url: Routing.generate 'OpitNotesUserBundle_user_delete'
+                data: "userIds" : users
+              .done (data)->
+                response = data
+                $.ajax
+                  type: 'POST'
+                  global: false
+                  url: Routing.generate 'OpitNotesUserBundle_user_list'
+                  data: "showList" : 1
+                .done (data)->
+                  $('#list-table').html data
+                  showAlert response, "delete","The user(s) deleted successfully"
+               $(@).dialog 'destroy'
+               return
+             No: ->
+                $('input:checkbox').removeAttr('checked')
+                $(@).dialog 'destroy'
+                return
+        close: ->
+            $(@).dialog 'destroy'
+            return
+    return
 
 showAlert = (response, actionType, message) ->
   $('#reply-message').addClass "alert-message"
