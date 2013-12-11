@@ -205,13 +205,16 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $userIds = $request->request->get('userIds');
+        $ids = (array) $request->request->get('delete-user');
         $result = array('response' => 'error');
 
-        try {
-           $users = $em->getRepository('OpitNotesUserBundle:User')->findUsersUsingIn($userIds);
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
 
-            foreach ($users as $user) {
+        try {
+            foreach ($ids as $id) {
+                $user = $this->getUserObject($id);
                 $em->remove($user);
             }
             $em->flush();

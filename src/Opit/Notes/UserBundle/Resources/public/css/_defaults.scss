@@ -166,6 +166,10 @@ table.bordered{
     }
 }
 
+.no-text-decoration {
+    text-decoration: none !important;
+}
+
 .modalwindow {
     border: 1px solid $darkGrey;
     background-color: $defaultLightColor;

@@ -4,11 +4,13 @@
         {% for propertyName in propertyNames %}
         <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
         {% endfor %}
-        <th>Actions</th>
+        <th><span>Actions</span></th>
         {% for key,value in propertyValues %}
             <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
                 <td class="width-24-fix">
-                    <input type="checkbox" class="list-delete-user" value="{{ key }}" >
+                    <form  class="delete-checkbox-form">
+                        <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" >
+                    </form>
                 </td>
             {% for propertyName in propertyNames %}
                 {% if propertyName == "roles" %}
@@ -30,11 +32,16 @@
                 {% else %}
                     <td>{{ attribute(value, propertyName) }}</td>
                 {% endif %}
-
             {% endfor %}
                     <td>
-                        <span class="list-change-password clickable" data-user-id="{{ key }}">
-                           Reset Password
+                        <span class="list-change-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
+                           <i class="fa fa-key"></i>
+                        </span>
+                        <span class="list-username clickable no-text-decoration" data-user-id="{{ key }}" title="Edit user">
+                           <i class="fa fa-pencil-square-o"></i>
+                        </span>
+                        <span class="delete-single-user clickable no-text-decoration" data-user-id="{{ key }}" title="Delete user">
+                           <i class="fa fa-trash-o"></i>
                         </span>
                     </td>
             </tr>

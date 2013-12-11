@@ -101,41 +101,22 @@ $("#list-table").on "click", ".list-change-password", ->
       return
     return
 
+# Delete button
 $('#delete').click ->
-  users = []
-  $('.list-delete-user').each ->
-    if(@.checked)
-      users.push $(@).val()
-  if users.length > 0
-    $('<div></div>').html('Are you sure you want to delete the travel request?').dialog
-        title: 'Travel request removal'
-        buttons:
-            Yes: ->
-              $.ajax
-                type: 'POST'
-                global: false
-                url: Routing.generate 'OpitNotesUserBundle_user_delete'
-                data: "userIds" : users
-              .done (data)->
-                response = data
-                $.ajax
-                  type: 'POST'
-                  global: false
-                  url: Routing.generate 'OpitNotesUserBundle_user_list'
-                  data: "showList" : 1
-                .done (data)->
-                  $('#list-table').html data
-                  showAlert response, "delete","The user(s) deleted successfully"
-               $(@).dialog 'destroy'
-               return
-             No: ->
-                $('input:checkbox').removeAttr('checked')
-                $(@).dialog 'destroy'
-                return
-        close: ->
-            $(@).dialog 'destroy'
-            return
-    return
+  deleteUser()
+
+# Delete icon in the table row
+$('#list-table').on "click", ".delete-single-user", ->
+  $checkbox = $(@).closest('tr').find(':checkbox')
+  $checkbox.prop 'checked', true
+  deleteUser()
+
+# Call the deleteAction from the app main.js
+deleteUser = () ->
+  title = 'User delete'
+  message = 'user(s)'
+  url = Routing.generate 'OpitNotesUserBundle_user_delete'
+  $(document).data('notes').funcs.deleteAction(title, message, url, '.delete-checkbox-form')
 
 showAlert = (response, actionType, message) ->
   $('#reply-message').addClass "alert-message"
@@ -166,12 +147,9 @@ showAlert = (response, actionType, message) ->
       .delay(2000)
       .slideUp(1000)
     $('#dialog-edititem').dialog 'destroy'
-    
-closeAlert = () ->
-  console.log "click"
-  $('#list-reply-message')
-    .hide
 
-$(document).ready ->
-  $('#list-reply-message').click ->
-    closeAlert()
+$('#list-table').on "click", "th i", ->
+  $('.list-delete-user').checkAll()
+
+$('#list-table').on "click", "#list-reply-message", ->
+  $(@).hide()
