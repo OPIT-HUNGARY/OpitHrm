@@ -37,8 +37,8 @@ class TravelController extends Controller
      */
     public function listAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $travelRequests = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
+        $entityManager = $this->getDoctrine()->getManager();
+        $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
 
         return array("travelRequests" => $travelRequests);
     }
@@ -59,8 +59,8 @@ class TravelController extends Controller
         if (array_key_exists('resetForm', $request) || empty($empty)) {
              list($travelRequests) = array_values($this->listAction());
         } else {
-            $em = $this->getDoctrine()->getManager();
-            $travelRequests = $em->getRepository('OpitNotesTravelBundle:TravelRequest')
+            $entityManager = $this->getDoctrine()->getManager();
+            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
                                  ->getTravelRequestsBySearchParams($request);
         }
         return $this->render(
@@ -130,11 +130,18 @@ class TravelController extends Controller
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
                 
+                // Persist travel request object again if travel request id is set (insert actions)
+                // set travel request id is handled inside its entity using lifecycle callbacks
+                if ($travelRequest->getTravelRequestId()) {
+                    $entityManager->persist($travelRequest);
+                    $entityManager->flush();
+                }
+                
                 return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
             }
         }
         
-        return array('form' => $form->createView());
+        return array('form' => $form->createView(), 'travelRequest' => $travelRequest);
     }
     
     /**

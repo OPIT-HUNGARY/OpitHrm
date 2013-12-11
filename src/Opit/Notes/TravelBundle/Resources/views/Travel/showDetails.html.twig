@@ -4,10 +4,10 @@
     <div class="modalwindow">
         <table class="bordered">
             <caption class="dialog-table-title">General</caption>
-            {% if travelRequest.id is defined %}
+            {% if travelRequest.travelRequestId is defined %}
                 <tr>
                     <td class="bgGrey width-40 bold">Id</td>
-                    <td>{{ travelRequest.id }}</td>
+                    <td>{{ travelRequest.travelRequestId }}</td>
                 </tr>
             {% endif %}
             <tr>

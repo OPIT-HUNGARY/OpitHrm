@@ -11,9 +11,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="notes_travel_request")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TravelRequestRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class TravelRequest
 {
+    private $trIdPattern = 'TR-{year}-{id}';
+    
     /**
      * @var integer
      *
@@ -93,6 +96,13 @@ class TravelRequest
      * @Assert\NotBlank(message="Accomodations date cannot be empty.")
      */
     private $accomodations;
+    
+    /**
+     *
+     * @var text
+     * @ORM\Column(name="travel_request_id", type="string", length=11, nullable=true)
+     */
+    private $travelRequestId;
 
     
     
@@ -362,5 +372,38 @@ class TravelRequest
     public function getGeneralManager()
     {
         return $this->generalManager;
+    }
+
+
+    /**
+     * Set travelRequestId
+     
+     * @ORM\PostPersist
+     * @param string $travelRequestId
+     * @return TravelRequest
+     */
+    public function setTravelRequestId($travelRequestId = null)
+    {
+        $this->travelRequestId = $travelRequestId;
+        #update travel request id on post persist event
+        if (null === $this->travelRequestId) {
+            $this->travelRequestId = str_replace(
+                array('{year}', '{id}'),
+                array(date('y'), sprintf('%05d', $this->id)),
+                $this->trIdPattern
+            );
+        }
+    
+        return $this;
+    }
+
+    /**
+     * Get travelRequestId
+     *
+     * @return string 
+     */
+    public function getTravelRequestId()
+    {
+        return $this->travelRequestId;
     }
 }
