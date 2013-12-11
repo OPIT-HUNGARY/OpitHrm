@@ -4,13 +4,76 @@
 
   $(document).data('OpitNotesUserBundle', {});
 
-  $(document).data('OpitNotesTravelBundle', {});
+  $.extend(true, $(document).data('OpitNotesUserBundle'), {
+    funcs: {
+      userEdit: function(userId, successCallback) {
+        return $.ajax({
+          method: 'GET',
+          url: Routing.generate('OpitNotesUserBundle_user_show', {
+            id: userId
+          })
+        }).done(function(data) {
+          $('<div id="dialog-edititem"></div>').html(data).dialog({
+            open: function() {
+              return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit User');
+            },
+            width: 750,
+            modal: true,
+            buttons: {
+              Save: function() {
+                return $.ajax({
+                  type: 'POST',
+                  url: Routing.generate('OpitNotesUserBundle_user_add', {
+                    id: userId
+                  }),
+                  data: $('#adduser_frm').serialize()
+                }).done(function(data) {
+                  var response, url;
+                  url = Routing.generate('OpitNotesUserBundle_user_list');
+                  if (url === window.location.pathname) {
+                    response = data;
+                    $.ajax({
+                      type: 'POST',
+                      url: url,
+                      data: {
+                        "showList": 1
+                      }
+                    }).done(function(data) {
+                      var postActions;
+                      $('#list-table').html(data);
+                      console.log(successCallback);
+                      if (successCallback != null) {
+                        postActions = successCallback(response, "update", "User modified successfully");
+                      }
+                      if (postActions || postActions === void 0) {
+                        return $('#dialog-edititem').dialog('destroy');
+                      }
+                    });
+                  } else {
+                    $('#dialog-edititem').dialog('destroy');
+                  }
+                });
+              },
+              Close: function() {
+                $('#dialog-edititem').dialog("destroy");
+              }
+            }
+          });
+          return;
+        });
+      }
+    }
+  });
 
-  $subMenuClone = '';
+  $subMenuClone = {};
 
   subMenuCloneClass = '.subMenuClone';
 
   $(document).ready(function() {
+    $('#loggedInUser').click(function() {
+      var _ref;
+      return $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).children('span').data('user-id'), (_ref = $(document).data('OpitNotesUserBundle').funcs) != null ? _ref.showAlert : void 0);
+    });
     cloneSubmenu();
     $('.menu .mainMenu').click(function() {
       $('.menu .mainMenu').removeClass('active');

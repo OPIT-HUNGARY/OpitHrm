@@ -19,14 +19,14 @@
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
-{% block header %}        
+{% block header %}
     <header>
         <a href="{{ path('OpitNotesUserBundle_user_list') }}" id="siteLogo">
             <span>NOTES</span>
             <span>New OPIT Travel Expense System</span>
         </a>
         <a href="{{ path('OpitNotesUserBundle_logout') }}" id="logoutButton">logout <i class="fa fa-sign-out"></i></a>
-        <div id="loggedInUser">
+        <div id="loggedInUser" class="pointer">
             <span data-user-id="{{app.user.id}}">{{ app.user.username }} <i class="fa fa-user"></i></span>
         </div>
         <div id="menuWrapper">

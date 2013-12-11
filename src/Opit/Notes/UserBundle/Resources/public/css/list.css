@@ -61,6 +61,8 @@ and open the template in the editor.
 
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
+.pointer { cursor: pointer; }
+
 table th { background-color: #f28c38; padding: 10px 10px 10px 10px; text-align: left; color: white; }
 table td { padding: 5px 10px 5px 10px; }
 table .delete { margin: 0 0 0 10px; background: linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -webkit-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -o-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); background: -moz-linear-gradient(#dc0a0a, #dc0a0a, #8c0a0a); box-shadow: 2px 2px 2px 1px #8c0a0a; -moz-box-shadow: 2px 2px 2px 1px #8c0a0a; -webkit-box-shadow: 2px 2px 2px 1px #8c0a0a; -o-box-shadow: 2px 2px 2px 1px #8c0a0a; }

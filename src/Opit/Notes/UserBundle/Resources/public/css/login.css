@@ -61,6 +61,8 @@ and open the template in the editor.
 
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
+.pointer { cursor: pointer; }
+
 #mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
 #mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }
 #mainWrapper #welcomeWrapper #welcomeText { padding: 15px 0 0 0; color: black; font-size: 8em; text-align: center; }

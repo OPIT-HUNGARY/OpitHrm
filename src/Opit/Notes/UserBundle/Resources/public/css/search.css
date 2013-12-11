@@ -68,6 +68,8 @@ and open the template in the editor.
 
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
+.pointer { cursor: pointer; }
+
 #userlistWrapper > table { width: 100%; }
 
 #searchFormWrapper { background-color: #ebebeb; margin-bottom: 20px; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }

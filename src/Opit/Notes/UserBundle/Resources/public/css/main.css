@@ -61,6 +61,8 @@ and open the template in the editor.
 
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
+.pointer { cursor: pointer; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 a { text-decoration: underline; color: black; }

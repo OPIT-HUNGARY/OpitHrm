@@ -1,4 +1,7 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    List users - {{ parent() }}
+{% endblock %}
 {% block body %}
     {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' %}
     <div id="userlistWrapper">

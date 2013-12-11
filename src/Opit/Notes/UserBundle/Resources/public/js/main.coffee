@@ -1,9 +1,54 @@
 $(document).data 'OpitNotesUserBundle', {}
-$(document).data 'OpitNotesTravelBundle', {}
-$subMenuClone = ''
+
+# Declare any generic user bundle functions here
+$.extend true, $(document).data('OpitNotesUserBundle'),
+    funcs:
+        userEdit: (userId, successCallback) ->
+          $.ajax
+            method: 'GET'
+            url: Routing.generate 'OpitNotesUserBundle_user_show', id: userId
+          .done (data) ->
+            $('<div id="dialog-edititem"></div>').html(data)
+              .dialog
+                  open: ->
+                    $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Edit User')
+                  width: 750
+                  modal: on
+                  buttons:
+                    Save: ->
+                      $.ajax
+                        type: 'POST'
+                        url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
+                        data: $('#adduser_frm').serialize()
+                      .done (data)->
+                          url = Routing.generate 'OpitNotesUserBundle_user_list'
+                          if url is window.location.pathname
+                            response = data
+                            $.ajax
+                              type: 'POST'
+                              url: url
+                              data: "showList" : 1
+                            .done (data)->
+                              $('#list-table').html data
+                              console.log successCallback
+                              postActions = successCallback response, "update","User modified successfully" if successCallback?
+                              $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
+                          else
+                            $('#dialog-edititem').dialog 'destroy'
+                          return
+                    Close: ->
+                       $('#dialog-edititem').dialog "destroy"
+                       return
+              return
+            return
+
+$subMenuClone = {}
 subMenuCloneClass = '.subMenuClone'
 $(document)
     .ready ->
+        $('#loggedInUser').click ->
+            $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('OpitNotesUserBundle').funcs?.showAlert
+    
         cloneSubmenu()
         # function to make header menu tabs selectable
         $('.menu .mainMenu')
@@ -30,7 +75,7 @@ cloneSubmenu = ->
     $subMenuClone = $('.active').children('.subMenu').clone()
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
-    
+
 # Place any jQuery/helper plugins in here.
 
 $.fn.extend
