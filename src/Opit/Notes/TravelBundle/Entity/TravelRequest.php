@@ -4,6 +4,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * travel_request
@@ -24,6 +25,7 @@ class TravelRequest
 
     /**
       * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequests")
+      * @Assert\NotBlank(message="Employee name cannot be empty.")
       * @var TravelRequestUserInterface
      */
     private $user;
@@ -32,6 +34,8 @@ class TravelRequest
      * @var \DateTime
      *
      * @ORM\Column(name="departure_date", type="date")
+     * @Assert\NotBlank(message="Departure date cannot be empty.")
+     * @Assert\Date()
      */
     private $departureDate;
 
@@ -39,6 +43,8 @@ class TravelRequest
      * @var \DateTime
      *
      * @ORM\Column(name="arrival_date", type="date")
+     * @Assert\NotBlank(message="Arrival date cannot be empty.")
+     * @Assert\Date()
      */
     private $arrivalDate;
 
@@ -46,6 +52,7 @@ class TravelRequest
      * @var string
      *
      * @ORM\Column(name="trip_purpose", type="string", length=255)
+     * @Assert\NotBlank(message="Trip purpose cannot be empty.")
      */
     private $tripPurpose;
 
@@ -57,6 +64,7 @@ class TravelRequest
 
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequestsGM")
+     * @Assert\NotBlank(message="General manager cannot be empty.")
      * @var TravelRequestUserInterface
      */
     private $generalManager;
@@ -70,18 +78,19 @@ class TravelRequest
 
     /**
      * @var string
-     *
      * @ORM\Column(name="opportunity_name", type="string", nullable=true)
      */
     private $opportunityName;
     
     /**
      * @ORM\OneToMany(targetEntity="TRDestination", mappedBy="travelRequest", cascade={"persist", "remove"})
+     * @Assert\NotBlank(message="Destinations cannot be empty.")
      */
     private $destinations;
     
     /**
      * @ORM\OneToMany(targetEntity="TRAccomodation", mappedBy="travelRequest", cascade={"persist", "remove"})
+     * @Assert\NotBlank(message="Accomodations date cannot be empty.")
      */
     private $accomodations;
 

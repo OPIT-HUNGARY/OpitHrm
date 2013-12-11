@@ -152,29 +152,44 @@ addForm = ($collectionHolder, $addButton) ->
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
 
-#$.validator.setDefaults ->
-#  debug: true
-#  success: "valid"
-#  return
-
 # method to validate form before preview
-$form = $( '#travelRequestForm' )
-    
-# method to validate if departure date is smaller than arrival date
-$.validator.addMethod "compare", (value, element) ->
-    departureDate = $('#travelRequest_departure_date').prop 'value'
-    arrivalDate = $('#travelRequest_arrival_date').prop 'value'
-    return departureDate < arrivalDate
-, "Arrival date should be smaller than departure date."
+$form = $('#travelRequestForm')
 
+$errorMessages = $('#travelRequestForm ul');
+$errorMessages.remove();
+
+# method to validate if departure date is smaller than arrival date
+$.validator.addMethod 'compare', (value, element) ->
+    departureDate = $('#travelRequest_departure_date').val()
+    arrivalDate = $('#travelRequest_arrival_date').val()
+    return departureDate < arrivalDate
+, 'Arrival date should be smaller than departure date.'
+
+# check if element and the hidden id field for the element is empty
+$.validator.addMethod 'checkId', (value, element) ->
+    $element = $(element)
+    id = $(element).attr 'id'
+    $idElement = $('#'+id.substr(0, id.length-3))
+    
+    if $element.val()
+        if not $idElement.val() then return false else return true
+    else return false
+
+, 'This field is required.'
+
+# assing custom validation rules to arrival date, user, general manager
 $form.validate
+    ignore: []
     rules:
         "travelRequest[arrival_date]": "compare"
+        "travelRequest[user_ac]": "checkId"
+        "travelRequest[general_manager_ac]": "checkId"
 
 $( '#travelRequest_add_travel_request' ).click ->
     event.preventDefault()
+    #validate form on client side
     if $form.valid()
-        # if form is valid post ajax request to get view
+        # if form is valid post ajax request to get the preview
         $.ajax
             method: 'POST'
             url: $form.data 'preview'

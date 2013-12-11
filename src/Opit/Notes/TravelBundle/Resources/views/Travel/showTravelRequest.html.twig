@@ -11,6 +11,14 @@
         
 {% block body %}
     <h1>{{ (app.request.get('id')=="new") ? 'New' : 'Edit' }} Travel Request</h1>
+
+{% if form_errors(form)|length > 0 %}
+<div class="alert-message error-message">
+    <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
+    {{ form_errors(form) }}
+</div>
+{% endif %}
+    
 {{ form(form, {
     'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
     'method': 'POST',
