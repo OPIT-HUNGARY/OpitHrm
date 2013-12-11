@@ -31,8 +31,6 @@ use Symfony\Component\Serializer\Serializer;
  */
 class TravelController extends Controller
 {
-    protected $jsRoutes;
-
     /**
      * @Route("/secured/travel/list", name="OpitNotesTravelBundle_travel_list")
      * @Template()
@@ -42,10 +40,7 @@ class TravelController extends Controller
         $em = $this->getDoctrine()->getManager();
         $travelRequests = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
 
-        // urls for js scripts
-        $this->jsRoutes = $this->generateJsRoutes();
-
-        return array("travelRequests" => $travelRequests, 'urls' => $this->jsRoutes);
+        return array("travelRequests" => $travelRequests);
     }
 
     /**
@@ -234,24 +229,5 @@ class TravelController extends Controller
                 $entityManager->remove($child);
             }
         }
-    }
-    
-    /**
-     * Generates notes routes for use in js scripts
-     *
-     * @return array Genrated notes routes collection
-     */
-    protected function generateJsRoutes()
-    {
-        $router = $this->container->get('router');
-
-        $jsRoutes = array();
-        foreach ($router->getRouteCollection()->all() as $name => $route) {
-            if (strpos($name, 'OpitNotesTravelBundle') !== false) {
-                $jsRoutes[$name] = $this->generateUrl($name);
-            }
-        }
-
-        return $jsRoutes;
     }
 }

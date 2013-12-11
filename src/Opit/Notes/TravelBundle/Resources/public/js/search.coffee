@@ -1,12 +1,11 @@
 $form = $('#searchTravelForm')
-url = $form.attr 'action'
 $('#searchButton').click ->
   event.preventDefault()
   return if not $form.formIsEmpty()
 
   $.ajax
       method: 'POST'
-      url: url
+      url: Routing.generate 'OpitNotesTravelBundle_travel_search'
       data: $form.serialize()
   .done (response) ->
     $('#list-table').html response
@@ -16,7 +15,7 @@ $('#searchButton').click ->
 $('#resetButton').click ->
   $.ajax
       method: 'POST'
-      url: url
+      url: Routing.generate 'OpitNotesTravelBundle_travel_search'
       data: 'resetForm': true
   .done (response) ->
     $('#list-table').html response

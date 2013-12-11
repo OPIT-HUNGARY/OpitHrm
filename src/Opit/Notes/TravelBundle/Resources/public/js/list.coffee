@@ -2,7 +2,7 @@ $('#list-table').on 'click', '.clickable', ->
   id = $(@).attr 'data-tr-id'
   $.ajax
     method: 'POST'
-    url: $(document).data('OpitNotesTravelBundle').urls.OpitNotesTravelBundle_travel_show_details
+    url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
     data: 'id': id
   .done (data) ->
     dialogWidth = 550
@@ -38,7 +38,7 @@ $('.deleteSingeTravelRequest').click ->
             Yes: ->
                 $.ajax
                   method: 'POST'
-                  url: self.attr 'href'
+                  url: Routing.generate 'OpitNotesTravelBundle_travel_delete'
                   data: 'id': self.data 'id'
                 .done (data) ->
                     if data is '0' then self.parent().parent().remove()
@@ -72,7 +72,7 @@ $('#delete').click ->
             Yes: ->
                 $.ajax
                   method: 'POST'
-                  url: $('.deleteSingeTravelRequest').attr 'href'
+                  url: Routing.generate 'OpitNotesTravelBundle_travel_delete'
                   data: 'id': travelRequests
                 .done (data) ->
                     $(selectedTravelRequestRow).each ->

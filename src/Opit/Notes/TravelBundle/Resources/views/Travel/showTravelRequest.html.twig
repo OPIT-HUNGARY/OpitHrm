@@ -22,11 +22,7 @@
 {{ form(form, {
     'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
     'method': 'POST',
-    'attr':{
-        'id': 'travelRequestForm',
-        'data-search': path('OpitNotesTravelBundle_travel_userSearch'),
-        'data-preview': path('OpitNotesTravelBundle_travel_show_details')
-    }
+    'attr':{'id': 'travelRequestForm'}
    })
 }}
 {% endblock %}

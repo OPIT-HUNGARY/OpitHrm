@@ -96,10 +96,9 @@ if not Modernizr.inputtypes.date
         $(@).datepicker {altField:'#altDate'+id, altFormat: 'yy-mm-dd'}
 
 $form = $('#travelRequestForm')
-url = $form.data 'search'
 
 $('#travelRequest_user_ac').autocomplete
-    source: url+'?user=all'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'all'
     minLength: 2
     response: (event, ui) ->
         return  
@@ -108,14 +107,14 @@ $('#travelRequest_user_ac').autocomplete
         return
     
 $('#travelRequest_team_manager_ac').autocomplete
-    source: url+'?user=team_manager'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'team_manager'
     minLength: 2
     select: (event, ui) ->
         $('#travelRequest_team_manager').val ui.item.id
         return
     
 $('#travelRequest_general_manager_ac').autocomplete
-    source: url+'?user=general_manager'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'general_manager'
     minLength: 2
     select: (event, ui) ->
         $('#travelRequest_general_manager').val ui.item.id
@@ -192,7 +191,7 @@ $( '#travelRequest_add_travel_request' ).click ->
         # if form is valid post ajax request to get the preview
         $.ajax
             method: 'POST'
-            url: $form.data 'preview'
+            url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
             data: 'preview=1&' + $form.serialize()
         .done (data) ->
             $preview = $('<div id="dialog-travelrequest-preview"></div>').html data

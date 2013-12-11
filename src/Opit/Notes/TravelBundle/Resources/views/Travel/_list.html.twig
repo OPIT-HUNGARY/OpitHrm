@@ -1,6 +1,6 @@
 <table id="list-table">
     <tr>
-        <th><i class="fa fa-trash-o"></i></th>
+        <th class="width-24-fix"><i class="fa fa-trash-o"></i></th>
         <th>Employee Name</th>
         <th>Departure date</th>
         <th>Arrival date</th>
@@ -21,7 +21,7 @@
         {% endfor %}
         </td>
         <td>
-            <a href="{{ path('OpitNotesTravelBundle_travel_delete') }}" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
+            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
             <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
         </td>
     </tr>

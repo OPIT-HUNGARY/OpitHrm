@@ -11,18 +11,6 @@
 </table>
 {% include 'OpitNotesTravelBundle:Travel:_list.html.twig' %}
 {% endblock %}
-{% block scripts %}
-    {{ parent() }}
-    <script>
-    $.extend(true, $(document).data('OpitNotesTravelBundle'), {
-        urls: {
-            {% for key, url in urls %}
-            '{{ key }}': '{{ url }}',
-            {% endfor %}
-        }
-    });
-    </script>
-{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts

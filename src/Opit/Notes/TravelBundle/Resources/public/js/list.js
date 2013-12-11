@@ -5,7 +5,7 @@
     id = $(this).attr('data-tr-id');
     $.ajax({
       method: 'POST',
-      url: $(document).data('OpitNotesTravelBundle').urls.OpitNotesTravelBundle_travel_show_details,
+      url: Routing.generate('OpitNotesTravelBundle_travel_show_details'),
       data: {
         'id': id
       }
@@ -44,7 +44,7 @@
         Yes: function() {
           $.ajax({
             method: 'POST',
-            url: self.attr('href'),
+            url: Routing.generate('OpitNotesTravelBundle_travel_delete'),
             data: {
               'id': self.data('id')
             }
@@ -86,7 +86,7 @@
         Yes: function() {
           $.ajax({
             method: 'POST',
-            url: $('.deleteSingeTravelRequest').attr('href'),
+            url: Routing.generate('OpitNotesTravelBundle_travel_delete'),
             data: {
               'id': travelRequests
             }
