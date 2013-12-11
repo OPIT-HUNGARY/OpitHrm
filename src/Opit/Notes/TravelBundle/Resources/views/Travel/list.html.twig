@@ -1,6 +1,14 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block body %}
 {% include 'OpitNotesTravelBundle:Travel:_searchForm.html.twig' %}
+<table>
+    <tr>
+        <td class="no-padding">
+            <a href="{{ path('OpitNotesTravelBundle_travel_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
 {% include 'OpitNotesTravelBundle:Travel:_list.html.twig' %}
 {% endblock %}
 {% block scripts %}
