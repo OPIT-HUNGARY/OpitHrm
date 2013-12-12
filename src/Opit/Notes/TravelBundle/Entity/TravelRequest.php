@@ -27,7 +27,7 @@ class TravelRequest
     private $id;
 
     /**
-      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequests")
+      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="userTravelRequests")
       * @Assert\NotBlank(message="Employee name cannot be empty.")
       * @var TravelRequestUserInterface
      */
@@ -60,13 +60,13 @@ class TravelRequest
     private $tripPurpose;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequestsTM")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="tmTravelRequests")
      * @var TravelRequestUserInterface
      */
     private $teamManager;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="travelRequestsGM")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelRequestUserInterface", inversedBy="gmTravelRequests")
      * @Assert\NotBlank(message="General manager cannot be empty.")
      * @var TravelRequestUserInterface
      */

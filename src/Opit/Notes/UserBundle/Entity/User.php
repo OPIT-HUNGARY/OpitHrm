@@ -102,13 +102,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
 
     /**
      * General manager travel requests
-     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="generalManager", cascade={"remove"})
      */
     protected $gmTravelRequests;
 
     /**
      * Team manager travel requests
-     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmTravelRequests;
 
