@@ -28,7 +28,9 @@
             {{ travelRequest.accomodations|length }}
         </td>
         <td>
+            {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
             <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
+            {% endif %}
             <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
         </td>
     </tr>
