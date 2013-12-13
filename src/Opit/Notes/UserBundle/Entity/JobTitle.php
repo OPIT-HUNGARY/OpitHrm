@@ -5,18 +5,18 @@ namespace Opit\Notes\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Job
- * The job names are related to the users.
- * 
+ * JobTitle
+ * The job titles are related to the users.
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
  * @subpackage Notes
  *
- * @ORM\Table(name="notes_jobs")
- * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\JobRepository")
+ * @ORM\Table(name="notes_job_titles")
+ * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\JobTitleRepository")
  */
-class Job
+class JobTitle
 {
     /**
      * @var integer
@@ -45,7 +45,7 @@ class Job
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,14 +61,14 @@ class Job
     public function setTitle($title)
     {
         $this->title = $title;
-    
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -84,14 +84,14 @@ class Job
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
