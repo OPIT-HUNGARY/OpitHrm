@@ -70,6 +70,14 @@ and open the template in the editor.
 
 .pointer { cursor: pointer; }
 
+.absolute { position: absolute; }
+
+.relative { position: relative; }
+
+input.icon-prefix-indent { text-indent: 18px; background-color: white; }
+
+.input-prefix-position { top: 18px; left: 5px; }
+
 #userlistWrapper > table { width: 100%; }
 
 #searchFormWrapper { background-color: #ebebeb; margin-bottom: 20px; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }

@@ -211,3 +211,23 @@ table.bordered{
 .pointer{
     cursor:pointer;
 }
+
+.absolute {
+    position: absolute;
+}
+
+.relative {
+    position: relative;
+}
+
+input {
+    &.icon-prefix-indent {
+        text-indent: 18px;
+        background-color: white;
+    }
+}
+
+.input-prefix-position {
+    top: 18px;
+    left: 5px;
+}

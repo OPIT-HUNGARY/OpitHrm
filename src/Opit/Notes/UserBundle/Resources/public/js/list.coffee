@@ -34,13 +34,11 @@ $("#add").click ->
     return
 
 $("#list-table").on "click", ".list-username", ->
-    event.preventDefault()
     id = $(@).attr "data-user-id"
     $(document).data('OpitNotesUserBundle').funcs.userEdit id, $(document).data('OpitNotesUserBundle').funcs.showAlert
     return
 
 $("#list-table").on "click", ".list-change-password", ->
-  event.preventDefault()
   id = $(@).attr "data-user-id"
   $.ajax
     method: 'GET'

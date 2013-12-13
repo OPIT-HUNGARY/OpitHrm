@@ -52,14 +52,12 @@
 
   $("#list-table").on("click", ".list-username", function() {
     var id;
-    event.preventDefault();
     id = $(this).attr("data-user-id");
     $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('OpitNotesUserBundle').funcs.showAlert);
   });
 
   $("#list-table").on("click", ".list-change-password", function() {
     var id;
-    event.preventDefault();
     id = $(this).attr("data-user-id");
     return $.ajax({
       method: 'GET',

@@ -88,13 +88,6 @@ $('#travelRequest_customer_related').change ->
         travelOpportunity.parent().css {display: 'none'}
         travelOpportunity.removeAttr 'required'
 
-if not Modernizr.inputtypes.date
-    $('input[type=date]').each ->
-        name = $(@).attr 'name'
-        id = $(@).attr('id')
-        $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
-        $(@).datepicker {altField:'#altDate'+id, altFormat: 'yy-mm-dd'}
-
 $form = $('#travelRequestForm')
 
 $('#travelRequest_user_ac').autocomplete

@@ -115,19 +115,6 @@
     }
   });
 
-  if (!Modernizr.inputtypes.date) {
-    $('input[type=date]').each(function() {
-      var id, name;
-      name = $(this).attr('name');
-      id = $(this).attr('id');
-      $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" />');
-      return $(this).datepicker({
-        altField: '#altDate' + id,
-        altFormat: 'yy-mm-dd'
-      });
-    });
-  }
-
   $form = $('#travelRequestForm');
 
   $('#travelRequest_user_ac').autocomplete({

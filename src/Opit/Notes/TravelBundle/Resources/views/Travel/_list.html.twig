@@ -1,14 +1,17 @@
 <table id="list-table">
     <tr>
         <th class="width-24-fix"><i class="fa fa-trash-o"></i></th>
-        <th>ID</th>
-        <th>Employee Name</th>
-        <th>Departure date</th>
-        <th>Arrival date</th>
-        <th>Opportunity name</th>
-        <th>Destinations</th>
-        <th>Accomodations</th>
-        <th></th>
+        {% set orderIcon %}
+            <i class="fa fa-sort default-right"></i>
+        {% endset %}
+        <th>{{ orderIcon }}ID</th>
+        <th>{{ orderIcon }}Employee Name</th>
+        <th>{{ orderIcon }}Departure date</th>
+        <th>{{ orderIcon }}Arrival date</th>
+        <th>{{ orderIcon }}Opportunity name</th>
+        <th>{{ orderIcon }}Destinations</th>
+        <th>{{ orderIcon }}Accomodations</th>
+        <th>Actions</th>
     </tr>
     {% for travelRequest in travelRequests %}
     <tr class="clickableTableRow">
@@ -23,7 +26,7 @@
         </td>
         <td>
             {{ travelRequest.accomodations|length }}
-        </td>        
+        </td>
         <td>
             <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
             <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}"><i class="fa fa-pencil-square-o"></i></a>

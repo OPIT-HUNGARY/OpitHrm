@@ -63,6 +63,14 @@ and open the template in the editor.
 
 .pointer { cursor: pointer; }
 
+.absolute { position: absolute; }
+
+.relative { position: relative; }
+
+input.icon-prefix-indent { text-indent: 18px; background-color: white; }
+
+.input-prefix-position { top: 18px; left: 5px; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 a { text-decoration: underline; color: black; }
@@ -96,7 +104,7 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
 .formFieldset .deleteFormFieldsetChild { color: #aa0000; }
 .formFieldset .addFormFieldsetChild { color: darkgreen; margin-left: 1em; }
 
-.inlineElements { display: inline-block; margin-right: 1em; }
+.inlineElements { display: inline-block; vertical-align: top; margin-right: 1em; }
 
 .default-right { float: right; }
 

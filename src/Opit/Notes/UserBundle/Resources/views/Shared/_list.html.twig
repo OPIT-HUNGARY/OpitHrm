@@ -1,8 +1,11 @@
 <table id="list-table">
     {% if propertyNames is defined %}
-        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></th>
+        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></i></th>
         {% for propertyName in propertyNames %}
-        <th>{{ propertyName|underscore|humanize }} <span class="default-right"><i class="fa fa-sort"></i></span></th>
+        <th>
+            <i class="fa fa-sort default-right"></i>
+            {{ propertyName|underscore|humanize }}
+        </th>
         {% endfor %}
         <th><span>Actions</span></th>
         {% for key,value in propertyValues %}
@@ -13,17 +16,17 @@
                     </form>
                 </td>
             {% for propertyName in propertyNames %}
-                {% if propertyName == "roles" %}
+                {% if propertyName == 'roles' %}
                     <td>
                         {{ attribute(value, propertyName)|join(', ') }}
                     </td>
-                {% elseif propertyName == "username" %}
+                {% elseif propertyName == 'username' %}
                     <td >
                         <span class="list-username clickable" data-user-id="{{ key }}">
                             {{ attribute(value, propertyName)|join(', ') }}
                         </span>
                     </td>
-                {% elseif propertyName == "isActive" %}
+                {% elseif propertyName == 'isActive' %}
                     {% if attribute(value, propertyName) == 1 %}
                         <td>Active</td>
                     {% else %}
@@ -33,17 +36,17 @@
                     <td>{{ attribute(value, propertyName) }}</td>
                 {% endif %}
             {% endfor %}
-                    <td>
-                        <span class="list-change-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
-                           <i class="fa fa-key"></i>
-                        </span>
-                        <span class="list-username clickable no-text-decoration" data-user-id="{{ key }}" title="Edit user">
-                           <i class="fa fa-pencil-square-o"></i>
-                        </span>
-                        <span class="delete-single-user clickable no-text-decoration" data-user-id="{{ key }}" title="Delete user">
-                           <i class="fa fa-trash-o"></i>
-                        </span>
-                    </td>
+                <td>
+                    <span class="list-change-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
+                       <i class="fa fa-key"></i>
+                    </span>
+                    <span class="list-username clickable no-text-decoration" data-user-id="{{ key }}" title="Edit user">
+                       <i class="fa fa-pencil-square-o"></i>
+                    </span>
+                    <span class="delete-single-user clickable no-text-decoration" data-user-id="{{ key }}" title="Delete user">
+                       <i class="fa fa-trash-o"></i>
+                    </span>
+                </td>
             </tr>
         {% endfor %}
     {% endif %}
