@@ -90,10 +90,10 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     private $isActive;
 
     /**
-     * @ORM\Column(name="job_id", type="integer", nullable=true)
-     * @ORM\ManyToOne(targetEntity="Job", inversedBy="users")
+     * @ORM\JoinColumn(name="job_title_id", referencedColumnName="id", nullable=true)
+     * @ORM\OneToOne(targetEntity="JobTitle")
      */
-    private $job;
+    protected $jobTitle;
 
     /**
      * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
@@ -173,9 +173,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * @inheritDoc
      */
-    public function getJob()
+    public function getJobTitle()
     {
-        return $this->job;
+        return $this->jobTitle;
     }
 
     /**
@@ -198,7 +198,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @inheritDoc
      */
     public function getRoles()
-    {     
+    {
         return $this->groups->toArray();
     }
 
@@ -253,7 +253,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
         $this->employeeName = $employeeName;
     
         return $this;
-    }    
+    }
 
     /**
      * Set salt
@@ -274,9 +274,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @param string $job
      * @return User
      */
-    public function setJob($job)
+    public function setJobTitle($jobTitle)
     {
-        $this->job = $job;
+        $this->jobTitle = $jobTitle;
 
         return $this;
     }
@@ -292,7 +292,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
         $this->password = $password;
     
         return $this;
-    }    
+    }
     
     /**
      * Set isActive

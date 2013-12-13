@@ -73,6 +73,12 @@ class UserShowType extends AbstractType
         )));
         $builder->add('isActive', 'choice', array('choices' => $this->status
         ));
+        $builder->add('jobTitle', 'entity', array(
+            'class' => 'OpitNotesUserBundle:JobTitle',
+            'property' => 'title',
+            'multiple' => false,
+            'data' => $dataArr->getJobTitle()
+        ));
         $builder->add('groups', 'entity', array(
             'class' => 'OpitNotesUserBundle:Groups',
             'property' => 'name',

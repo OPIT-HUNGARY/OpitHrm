@@ -53,7 +53,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
         $factory = $this->container->get('security.encoder_factory');
         $user = new User();
         $encoder = $factory->getEncoder($user);
-        
+
         for($i = 0; $i < 10; $i++) {
             $testUser = new User();
             $testUser->setUsername("test".$i."Name");
@@ -64,7 +64,6 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
             $testUser->setEmployeeName("empname".$i);
             $testUser->setIsActive(1);
             $testUser->addGroup($this->getReference('admin-group'));
-            $testUser->setJob(1);
 
             $manager->persist($testUser);
         }
