@@ -268,7 +268,6 @@ header{
          nav:first-child .active{
             background-color:$orangeColor;
             color:white;
-            font-weight: bold;
         }
 
          nav:first-child .active:hover{
@@ -303,16 +302,13 @@ header{
     }
 
     ul{
-        float:left;
-        position:absolute;
         background-color:$darkGrey;
-        top:inherit;
+        top: inherit;
         left:inherit;
         margin:0;
         padding:0;
-        margin: -10px 0 0 0;
+        margin: -9px 0 0 0;
         display:none;
-        width:100%;
         min-width:100px;
         @include border-bottom-left-radius(5px);
         @include border-bottom-right-radius(5px);
@@ -331,16 +327,14 @@ header{
         }
 
         li:hover{
-            background-color:$darkGrey;
+            background-color:$darkerGrayColor;
         }
     }
 }
 
 .subMenuItem:hover{
-    a{
+    >a{
         background-color:$darkGrey;
-    }
-    a.dropdown{
         @include border-bottom-left-radius(0);
         @include border-bottom-right-radius(0);
     }

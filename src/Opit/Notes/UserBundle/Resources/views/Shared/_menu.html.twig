@@ -2,11 +2,16 @@
 {% set module = splitText(app.request.attributes.get('_route'), '_', 1) %}
 <nav class="menu">
     <div>
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="mainMenu">
         Admin
         <div class="subMenu">
+            <div class="subMenuItem">
+                <a href="#">User</a>
+            </div>
         </div>
     </div>
+    {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
     <div class="mainMenu {{ (module == 'user') ? 'active' : '' }}" id="userMenuTab">
         Users
