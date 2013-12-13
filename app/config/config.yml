@@ -61,6 +61,10 @@ doctrine:
         auto_mapping: true
         resolve_target_entities:
             Opit\Notes\TravelBundle\Model\TravelRequestUserInterface: Opit\Notes\UserBundle\Entity\User
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true
 
 # Swiftmailer Configuration
 swiftmailer:
@@ -72,3 +76,10 @@ swiftmailer:
 
 fos_js_routing:
     routes_to_expose: [ OpitNotesUserBundle_\w+, OpitNotesTravelBundle_\w+ ]
+    
+# Doctrine Extensions Configuration
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            softdeleteable: true

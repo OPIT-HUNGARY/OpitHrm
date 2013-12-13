@@ -33,7 +33,7 @@ security:
             form_login:
                 check_path: OpitNotesUserBundle_check
                 login_path: OpitNotesUserBundle_security_login
-                default_target_path: OpitNotesUserBundle_user_list
+                default_target_path: OpitNotesTravelBundle_travel_list
             logout:
                 path:   OpitNotesUserBundle_logout
                 target: OpitNotesUserBundle_security_login
@@ -44,3 +44,6 @@ security:
     access_control:
         - { path: ^/secured, roles: ROLE_USER }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
+
+    acl:
+        connection: default

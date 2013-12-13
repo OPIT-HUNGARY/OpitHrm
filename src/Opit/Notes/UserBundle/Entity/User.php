@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Description of User
@@ -28,6 +29,7 @@ use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
  *
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity(fields={"username"}, message="The username is already used.")
  * @UniqueEntity(fields={"email"}, message="The email is already used.")
  * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.")
@@ -41,6 +43,11 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      */
     protected $id;
 
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+    
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank(message="The username should not be blank.")
@@ -367,5 +374,15 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function getGroups()
     {
         return $this->groups;
+    }
+    
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
 }

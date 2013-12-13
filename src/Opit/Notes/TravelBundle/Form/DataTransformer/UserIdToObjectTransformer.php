@@ -38,17 +38,10 @@ class UserIdToObjectTransformer implements DataTransformerInterface
         if (!$number) {
             return null;
         }
-
+        
         $object = $this->objectManager
             ->getRepository('OpitNotesUserBundle:User')
             ->find($number);
-
-//        if (null === $object) {
-//            throw new TransformationFailedException(sprintf(
-//                'An issue with number "%s" does not exist!',
-//                $number
-//            ));
-//        }
         
         return $object;
     }
