@@ -7,6 +7,7 @@
         <div class="subMenu">
         </div>
     </div>
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="mainMenu {{ (module == 'user') ? 'active' : '' }}" id="userMenuTab">
         Users
         <div class="subMenu">
@@ -15,6 +16,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     {# TravelRequestBundle #}
     <div class="mainMenu {{ (module == 'travel') ? 'active': '' }}">
         Travel

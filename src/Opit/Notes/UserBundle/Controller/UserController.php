@@ -10,18 +10,27 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\UserBundle\Form\UserShowType;
 use Opit\Notes\UserBundle\Form\ChangePasswordType;
 use Opit\Notes\UserBundle\Entity\User;
+use JMS\SecurityExtraBundle\Annotation\Secure;
 
 class UserController extends Controller
 {
     /**
      * @Route("/secured/user/list", name="OpitNotesUserBundle_user_list")
+     * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
     public function listAction()
     {
         //get all rows from database table
-        $users = $this->getDoctrine()->getRepository('OpitNotesUserBundle:User')->findAll();
         $entityManager = $this->getDoctrine()->getManager();
+        /* TODO: Add special behavior for admin users to view and re-enable users
+        $securityContext = $this->get('security.context');
+        if ($securityContext->isGranted('ROLE_ADMIN')) {
+            $filters = $entityManager->getFilters();
+            $filters->disable('softdeleteable');
+        }*/
+        
+        $users = $entityManager->getRepository('OpitNotesUserBundle:User')->findAll();
         $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();

@@ -18,11 +18,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TRDestination;
-use Opit\Notes\TravelBundle\Helper\TravelBundleUtils;
 
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
+use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 
 /**
  * Description of TravelController
@@ -38,9 +38,23 @@ class TravelController extends Controller
     public function listAction()
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $securityContext = $this->get('security.context');
+        // Disable softdeleteable filter for user entity to allow persistence
+        $entityManager->getFilters()->disable('softdeleteable');
         $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
 
-        return array("travelRequests" => $travelRequests);
+        if (!$securityContext->isGranted('ROLE_ADMIN')) {
+            $allowedTRs = new ArrayCollection();
+            foreach ($travelRequests as $travelRequest) {
+                if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
+                    $allowedTRs->add($travelRequest);
+                }
+            }
+        } else {
+            $allowedTRs = $travelRequests;
+        }
+        
+        return array("travelRequests" => $allowedTRs);
     }
 
     /**
@@ -79,13 +93,15 @@ class TravelController extends Controller
     {
         $travelRequest = new TravelRequest();
         $request = $this->getRequest();
+        $entityManager = $this->getDoctrine()->getManager();
         $travelRequestPreview = $request->request->get('preview');
+        
+        // Disable softdeleteable filter for user entity to allow persistence
+        $entityManager->getFilters()->disable('softdeleteable');
         
         // for creating entities for the travel request preview
         if (null !== $travelRequestPreview) {
-            $entityManager = $this->getDoctrine()->getManager();
             $form = $this->createForm(new TravelType(), $travelRequest, array('em' => $entityManager));
-            # bind travel request to form and set data to it
             $form->handleRequest($request);
         } else {
             $travelRequest = $this->getTravelRequest();
@@ -104,8 +120,9 @@ class TravelController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
+        $isNewTravelRequest = "new" !== $travelRequestId;
         
-        $travelRequest = ("new" == $travelRequestId) ? new TravelRequest() : $this->getTravelRequest($travelRequestId);
+        $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
         
         // Track current persisted destination objects
         $children = new ArrayCollection();
@@ -117,6 +134,9 @@ class TravelController extends Controller
         foreach ($travelRequest->getAccomodations() as $accomodation) {
             $children->add($accomodation);
         }
+        
+        // Disable softdeleteable filter for user entity to allow persistence
+        $entityManager->getFilters()->disable('softdeleteable');
         
         $form = $this->createForm(new TravelType(), $travelRequest, array('em' => $entityManager));
         
@@ -135,9 +155,36 @@ class TravelController extends Controller
                 if ($travelRequest->getTravelRequestId()) {
                     $entityManager->persist($travelRequest);
                     $entityManager->flush();
+                    
+                    $this->grantAccess($travelRequest, array(
+                        array(
+                            'user' => $this->get('security.context')->getToken()->getUser(),
+                            'mask' => MaskBuilder::MASK_OWNER
+                        ),
+                        array(
+                            'user' => $travelRequest->getGeneralManager(),
+                            'mask' => MaskBuilder::MASK_EDIT
+                        ),
+                        array(
+                            'user' => $travelRequest->getTeamManager(),
+                            'mask' => MaskBuilder::MASK_EDIT
+                        )
+                    ));
                 }
                 
                 return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+            }
+        }
+        
+        if ($isNewTravelRequest) {
+            $securityContext = $this->get('security.context');
+            if (true === $securityContext->isGranted('ROLE_ADMIN') ||
+                true === $securityContext->isGranted('EDIT', $travelRequest)) {
+                return array('form' => $form->createView(), 'travelRequest' => $travelRequest);
+            } else {
+                throw new AccessDeniedException(
+                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+                );
             }
         }
         
@@ -178,6 +225,7 @@ class TravelController extends Controller
      */
     public function deleteTravelRequestAction(Request $request)
     {
+        $securityContext = $this->get('security.context');
         $ids = $request->request->get('id');
         if (!is_array($ids)) {
             $ids = array($ids);
@@ -186,8 +234,12 @@ class TravelController extends Controller
         foreach ($ids as $id) {
             $entityManager = $this->getDoctrine()->getManager();
             $travelRequest = $this->getTravelRequest($id);
-
-            $entityManager->remove($travelRequest);
+            
+            // Ensure that no travel requests without permission get deleted
+            if ($securityContext->isGranted('ROLE_ADMIN') ||
+                true === $securityContext->isGranted('DELETE', $travelRequest)) {
+                $entityManager->remove($travelRequest);
+            }
         }
         
         $entityManager->flush();
@@ -236,5 +288,33 @@ class TravelController extends Controller
                 $entityManager->remove($child);
             }
         }
+    }
+    
+    protected function grantAccess(TravelRequest $object,  $users)
+    {
+        $aclProvider = $this->container->get('security.acl.provider');
+        // try to find acl, used when travel request was modified
+        try {
+            $acl = $aclProvider->findAcl(ObjectIdentity::fromDomainObject($object));
+        // create new acl user when new travel request was created
+        } catch (AclNotFoundException $e) {
+            $acl = $aclProvider->createAcl(ObjectIdentity::fromDomainObject($object));
+        }
+        
+        // loop through users and grant all of them the permission (mask) passed in the array
+        if (is_array($users)) {
+            foreach ($users as $user) {
+                if (null !== $user['user']) {
+                    $this->grantUserAccess($user['user'], $user['mask'], $aclProvider, $acl);
+                }
+            }
+        }
+    }
+    
+    protected function grantUserAccess($user, $mask, $aclProvider, $acl)
+    {
+        $securityId = UserSecurityIdentity::fromAccount($user);
+        $acl->insertObjectAce($securityId, $mask);
+        $aclProvider->updateAcl($acl);
     }
 }
