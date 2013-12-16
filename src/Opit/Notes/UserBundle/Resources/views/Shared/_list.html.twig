@@ -7,12 +7,23 @@
             {{ propertyName|underscore|humanize }}
         </th>
         {% endfor %}
+        {% if numberOfRelations is defined %}
+        <th>Number of relations</th>
+        {% endif %}
         <th><span>Actions</span></th>
         {% for key,value in propertyValues %}
-            <tr class="{% if loop.index0 is even %}oddRow{% endif %}">
+            <tr>
                 <td class="width-24-fix">
                     <form  class="delete-checkbox-form">
+                    {% if attribute(value, 'Role') is defined %}
+                        {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER' %}
+                            <i class="fa fa-cog darker-gray-color"></i>
+                        {% else %}
+                            <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
+                        {% endif %}
+                    {% else %}
                         <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" >
+                    {% endif %}
                     </form>
                 </td>
             {% for propertyName in propertyNames %}
@@ -36,16 +47,36 @@
                     <td>{{ attribute(value, propertyName) }}</td>
                 {% endif %}
             {% endfor %}
+                {% if numberOfRelations is defined %}
                 <td>
+                    {{ numberOfRelations[attribute(value, 'id')] }}
+                </td>
+                {% endif %}
+                <td>
+                    {% if hideReset is not defined %}
                     <span class="list-change-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
                        <i class="fa fa-key"></i>
                     </span>
-                    <span class="list-username clickable no-text-decoration" data-user-id="{{ key }}" title="Edit user">
-                       <i class="fa fa-pencil-square-o"></i>
-                    </span>
-                    <span class="delete-single-user clickable no-text-decoration" data-user-id="{{ key }}" title="Delete user">
-                       <i class="fa fa-trash-o"></i>
-                    </span>
+                    {% endif %}
+                    
+                    {% set actionIcons %}
+                        <span class="list-username clickable no-text-decoration edit-group" data-user-id="{{ key }}" title="Edit user">
+                           <i class="fa fa-pencil-square-o"></i>
+                        </span>
+                        <span class="delete-single-user clickable no-text-decoration remove-group" data-user-id="{{ key }}" title="Delete user">
+                           <i class="fa fa-trash-o"></i>
+                        </span>
+                    {% endset %}
+                    
+                    {% if attribute(value, 'Role') is defined %}
+                        {% if attribute(value, 'Role') != 'ROLE_ADMIN' and
+                            attribute(value, 'Role') != 'ROLE_USER' and
+                            attribute(value, 'id') not in disabledRoles %}
+                            {{ actionIcons }}
+                        {% endif %}
+                    {% else %}
+                        {{ actionIcons }}
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

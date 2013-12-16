@@ -44,6 +44,16 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
 
 $subMenuClone = {}
 subMenuCloneClass = '.subMenuClone'
+
+cloneSubmenu = ->
+    # if header submenu exists in body delete it
+    if $('body').children(subMenuCloneClass).length
+        $('body').find(subMenuCloneClass).remove()
+    # create clone of submenu
+    $subMenuClone = $('.active').children('.subMenu').clone()
+    $subMenuClone.addClass 'subMenuClone'
+    $('body').append $subMenuClone
+
 $(document)
     .ready ->
         $('#loggedInUser').click ->
@@ -58,23 +68,16 @@ $(document)
                 cloneSubmenu()
         # scroll method for sticky header
         $(window).scroll ->
+            $menuWrapperActive = $('#menuWrapper .active')
             # if page scroll is below submenu top show submenu clone
-            if $('.active').children('.subMenu').offset().top < $(window).scrollTop()
-                if $('body').has(subMenuCloneClass).length
-                    $subMenuClone.css({display: 'block'})
-            # if page scroll is above submenu top hide submenu clone
-            if $('.active').children('.subMenu').offset().top > $(window).scrollTop()
-                if $('body').has(subMenuCloneClass).length
-                    $subMenuClone.css({display: 'none'})
-
-cloneSubmenu = ->
-    # if header submenu exists in body delete it
-    if $('body').children(subMenuCloneClass).length
-        $('body').find(subMenuCloneClass).remove()
-    # create clone of submenu
-    $subMenuClone = $('.active').children('.subMenu').clone()
-    $subMenuClone.addClass 'subMenuClone'
-    $('body').append $subMenuClone
+            if $menuWrapperActive.length > 0
+                if $menuWrapperActive.children('.subMenu').offset().top < $(window).scrollTop()
+                    if $('body').has(subMenuCloneClass).length
+                        $subMenuClone.css({display: 'block'})
+                # if page scroll is above submenu top hide submenu clone
+                if $menuWrapperActive.children('.subMenu').offset().top > $(window).scrollTop()
+                    if $('body').has(subMenuCloneClass).length
+                        $subMenuClone.css({display: 'none'})
 
 # Place any jQuery/helper plugins in here.
 

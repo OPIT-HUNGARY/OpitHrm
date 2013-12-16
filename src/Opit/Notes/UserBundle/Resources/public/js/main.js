@@ -69,6 +69,15 @@
 
   subMenuCloneClass = '.subMenuClone';
 
+  cloneSubmenu = function() {
+    if ($('body').children(subMenuCloneClass).length) {
+      $('body').find(subMenuCloneClass).remove();
+    }
+    $subMenuClone = $('.active').children('.subMenu').clone();
+    $subMenuClone.addClass('subMenuClone');
+    return $('body').append($subMenuClone);
+  };
+
   $(document).ready(function() {
     $('#loggedInUser').click(function() {
       var _ref;
@@ -81,31 +90,26 @@
       return cloneSubmenu();
     });
     return $(window).scroll(function() {
-      if ($('.active').children('.subMenu').offset().top < $(window).scrollTop()) {
-        if ($('body').has(subMenuCloneClass).length) {
-          $subMenuClone.css({
-            display: 'block'
-          });
+      var $menuWrapperActive;
+      $menuWrapperActive = $('#menuWrapper .active');
+      if ($menuWrapperActive.length > 0) {
+        if ($menuWrapperActive.children('.subMenu').offset().top < $(window).scrollTop()) {
+          if ($('body').has(subMenuCloneClass).length) {
+            $subMenuClone.css({
+              display: 'block'
+            });
+          }
         }
-      }
-      if ($('.active').children('.subMenu').offset().top > $(window).scrollTop()) {
-        if ($('body').has(subMenuCloneClass).length) {
-          return $subMenuClone.css({
-            display: 'none'
-          });
+        if ($menuWrapperActive.children('.subMenu').offset().top > $(window).scrollTop()) {
+          if ($('body').has(subMenuCloneClass).length) {
+            return $subMenuClone.css({
+              display: 'none'
+            });
+          }
         }
       }
     });
   });
-
-  cloneSubmenu = function() {
-    if ($('body').children(subMenuCloneClass).length) {
-      $('body').find(subMenuCloneClass).remove();
-    }
-    $subMenuClone = $('.active').children('.subMenu').clone();
-    $subMenuClone.addClass('subMenuClone');
-    return $('body').append($subMenuClone);
-  };
 
   $.fn.extend({
     formIsEmpty: function(element) {

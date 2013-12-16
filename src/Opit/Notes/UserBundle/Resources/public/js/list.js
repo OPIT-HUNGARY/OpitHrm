@@ -37,7 +37,7 @@
                 }
               }).done(function(data) {
                 $('#list-table').html(data);
-                return showAlert(response, "create", "User created successfully");
+                return $(document).data('notes').funcs.showAlert(response, "create", "User created successfully");
               });
             });
           },
@@ -53,7 +53,7 @@
   $("#list-table").on("click", ".list-username", function() {
     var id;
     id = $(this).attr("data-user-id");
-    $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('OpitNotesUserBundle').funcs.showAlert);
+    $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('notes').funcs.showAlert);
   });
 
   $("#list-table").on("click", ".list-change-password", function() {
@@ -84,7 +84,7 @@
             }).done(function(data) {
               var response;
               response = data;
-              return showAlert(response, "update", "Password reset successfully");
+              return $(document).data('notes').funcs.showAlert(response, "update", "Password reset successfully");
             });
           },
           Close: function() {
@@ -114,32 +114,6 @@
     url = Routing.generate('OpitNotesUserBundle_user_delete');
     return $(document).data('notes').funcs.deleteAction(title, message, url, '.delete-checkbox-form');
   };
-
-  $.extend(true, $(document).data('OpitNotesUserBundle').funcs, {
-    showAlert: function(response, actionType, message) {
-      var errorString, i, returnVal, _i, _len, _ref;
-      $('#reply-message').addClass("alert-message");
-      if (response[0].response === 'error') {
-        if ("update" === actionType || "create" === actionType) {
-          errorString = "<ul>";
-          _ref = response[0].errorMessage;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            i = _ref[_i];
-            errorString += "<li>" + i + "</li>";
-          }
-          errorString += "</ul>";
-          $('#reply-message').html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>" + errorString).removeClass('success-message').addClass('error-message');
-        } else if ("delete" === actionType) {
-          $('#list-reply-message').html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ").removeClass('success-message').addClass('error-message').fadeIn(200).delay(5000).slideUp(1000);
-        }
-        returnVal = false;
-      } else {
-        $('#list-reply-message').html("<i class='fa fa-check-square'></i> " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
-        returnVal = true;
-      }
-      return returnVal;
-    }
-  });
 
   $('#list-table').on("click", "th i", function() {
     return $('.list-delete-user').checkAll();

@@ -26,7 +26,7 @@ $("#add").click ->
                     data: "showList" : 1
                   .done (data)->
                     $('#list-table').html data
-                    showAlert response, "create", "User created successfully"
+                    $(document).data('notes').funcs.showAlert response, "create", "User created successfully"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -35,7 +35,7 @@ $("#add").click ->
 
 $("#list-table").on "click", ".list-username", ->
     id = $(@).attr "data-user-id"
-    $(document).data('OpitNotesUserBundle').funcs.userEdit id, $(document).data('OpitNotesUserBundle').funcs.showAlert
+    $(document).data('OpitNotesUserBundle').funcs.userEdit id, $(document).data('notes').funcs.showAlert
     return
 
 $("#list-table").on "click", ".list-change-password", ->
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-change-password", ->
                 data: $('#changePassword_frm').serialize()
               .done (data)->
                   response = data
-                  showAlert response, "update","Password reset successfully"
+                  $(document).data('notes').funcs.showAlert response, "update","Password reset successfully"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -83,40 +83,6 @@ deleteUser = () ->
   message = 'user(s)'
   url = Routing.generate 'OpitNotesUserBundle_user_delete'
   $(document).data('notes').funcs.deleteAction(title, message, url, '.delete-checkbox-form')
-    
-$.extend true, $(document).data('OpitNotesUserBundle').funcs,
-    showAlert: (response, actionType, message) ->
-        $('#reply-message').addClass "alert-message"
-        if response[0].response == 'error'
-          if "update" == actionType or "create" == actionType
-            errorString = "<ul>"
-            for i in response[0].errorMessage
-              errorString += "<li>"+i+"</li>"
-            errorString += "</ul>"
-            $('#reply-message')
-              .html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>"+errorString)
-              .removeClass('success-message')
-              .addClass('error-message')
-          else if "delete" == actionType
-            $('#list-reply-message')
-              .html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ")
-              .removeClass('success-message')
-              .addClass('error-message')
-              .fadeIn(200)
-              .delay(5000)
-              .slideUp(1000)
-          returnVal = off
-        else
-          $('#list-reply-message')
-            .html("<i class='fa fa-check-square'></i> "+message+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
-            .addClass("alert-message")
-            .addClass('success-message')
-            .fadeIn(200)
-            .delay(2000)
-            .slideUp(1000)
-          returnVal = on
-
-        return returnVal
         
 $('#list-table').on "click", "th i", ->
   $('.list-delete-user').checkAll()

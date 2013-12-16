@@ -1,0 +1,28 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    Admin - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesUserBundle/Resources/public/js/Admin/Group/list.js'
+        output='js/notes_admin_groups_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}    
+{% endblock %}    
+{% block body %}
+    <table>
+        <tr>
+            <td class="no-padding">
+                <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
+        'propertyNames': propertyNames,
+        'propertyValues': propertyValues,
+        'hideReset': hideReset
+        } %}
+{% endblock %}    
