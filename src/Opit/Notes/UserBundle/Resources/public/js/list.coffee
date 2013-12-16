@@ -69,24 +69,23 @@ $("#list-table").on "click", ".list-change-password", ->
 
 # Delete button
 $('#delete').click ->
-  deleteUser()
+    deleteUser()
 
 # Delete icon in the table row
 $('#list-table').on "click", ".delete-single-user", ->
-  $checkbox = $(@).closest('tr').find(':checkbox')
-  $checkbox.prop 'checked', true
-  deleteUser()
+    $checkbox = $(@).closest('tr').find(':checkbox')
+    $checkbox.prop 'checked', true
+    deleteUser()
 
 # Call the deleteAction from the app main.js
 deleteUser = () ->
-  title = 'User delete'
-  message = 'user(s)'
-  url = Routing.generate 'OpitNotesUserBundle_user_delete'
-  $(document).data('notes').funcs.deleteAction(title, message, url, '.delete-checkbox-form')
+    title = 'User delete'
+    message = 'user(s)'
+    url = Routing.generate 'OpitNotesUserBundle_user_delete'
+    $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
         
 $('#list-table').on "click", "th i", ->
-  $('.list-delete-user').checkAll()
+    $('.list-delete-user').checkAll()
     
 $('#list').on "click", "#list-reply-message", ->
-  console.log $(@)
-  $(@).hide()
+    $(@).hide()

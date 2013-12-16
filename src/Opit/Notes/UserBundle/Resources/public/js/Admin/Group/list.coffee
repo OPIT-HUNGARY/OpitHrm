@@ -1,4 +1,4 @@
-showRoleDialog = (groupId, groupName, url, title) ->
+showRoleDialog = (groupId, groupName, url, title, flashMessage) ->
     selfDialog = $('<div>')
     selfDialog.html "<label class='margin-top-2 inlineElements' for='group'>Role name: </label><input class='inlineElements' type='text' id='group' name='group' value='#{ groupName }' />"
     selfDialog.dialog
@@ -17,7 +17,7 @@ showRoleDialog = (groupId, groupName, url, title) ->
                         $(document).data('notes').funcs.showAlert data, 'create', 'Role already exists', true
                     else
                         $('#list-table').replaceWith data
-                        $(document).data('notes').funcs.showAlert data, 'create', "#{ title } successfully"
+                        $(document).data('notes').funcs.showAlert data, 'create', flashMessage
                     selfDialog.dialog 'destroy'
             Close: ->
                 selfDialog.dialog 'destroy'
@@ -41,7 +41,7 @@ deleteGroup = (groupId, roleName) ->
                             $(document).data('notes').funcs.showAlert data, 'create', 'Deletion not allowed for roles with relations', true
                         else
                             $('#list-table').replaceWith data
-                            $(document).data('notes').funcs.showAlert data, 'create', 'Role deletion successfully!'
+                            $(document).data('notes').funcs.showAlert data, 'create', 'Role(s) successfully deleted!'
                     selfDialog.dialog 'destroy'                        
                 Cancel: ->
                     $('#list-table').find('input:checkbox').each ->
@@ -49,13 +49,13 @@ deleteGroup = (groupId, roleName) ->
                     selfDialog.dialog 'destroy'
 
 $('#main-wrapper').on 'click','#add', ->
-    showRoleDialog('new', '', 'OpitNotesUserBundle_admin_groups_show', 'Create role')
+    showRoleDialog('new', '', 'OpitNotesUserBundle_admin_groups_show', 'Create role', 'Role successfully created!')
     
 $('#main-wrapper').on 'click','.edit-group', ->
     groupId = $(@).closest('tr').children('td:nth-child(2)').html()
     groupName = $(@).closest('tr').children('td:nth-child(3)').html()
     
-    showRoleDialog(groupId, groupName, 'OpitNotesUserBundle_admin_groups_show', 'Edit role')
+    showRoleDialog(groupId, groupName, 'OpitNotesUserBundle_admin_groups_show', 'Edit role', 'Role successfully edited!')
     
 $('#main-wrapper').on 'click','.remove-group', ->
     parentTr = $(@).closest('tr')

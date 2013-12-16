@@ -2,7 +2,7 @@
 (function() {
   var deleteGroup, showRoleDialog;
 
-  showRoleDialog = function(groupId, groupName, url, title) {
+  showRoleDialog = function(groupId, groupName, url, title, flashMessage) {
     var selfDialog;
     selfDialog = $('<div>');
     selfDialog.html("<label class='margin-top-2 inlineElements' for='group'>Role name: </label><input class='inlineElements' type='text' id='group' name='group' value='" + groupName + "' />");
@@ -27,7 +27,7 @@
               $(document).data('notes').funcs.showAlert(data, 'create', 'Role already exists', true);
             } else {
               $('#list-table').replaceWith(data);
-              $(document).data('notes').funcs.showAlert(data, 'create', "" + title + " successfully");
+              $(document).data('notes').funcs.showAlert(data, 'create', flashMessage);
             }
             return selfDialog.dialog('destroy');
           });
@@ -61,7 +61,7 @@
                 return $(document).data('notes').funcs.showAlert(data, 'create', 'Deletion not allowed for roles with relations', true);
               } else {
                 $('#list-table').replaceWith(data);
-                return $(document).data('notes').funcs.showAlert(data, 'create', 'Role deletion successfully!');
+                return $(document).data('notes').funcs.showAlert(data, 'create', 'Role(s) successfully deleted!');
               }
             });
             return selfDialog.dialog('destroy');
@@ -78,14 +78,14 @@
   };
 
   $('#main-wrapper').on('click', '#add', function() {
-    return showRoleDialog('new', '', 'OpitNotesUserBundle_admin_groups_show', 'Create role');
+    return showRoleDialog('new', '', 'OpitNotesUserBundle_admin_groups_show', 'Create role', 'Role successfully created!');
   });
 
   $('#main-wrapper').on('click', '.edit-group', function() {
     var groupId, groupName;
     groupId = $(this).closest('tr').children('td:nth-child(2)').html();
     groupName = $(this).closest('tr').children('td:nth-child(3)').html();
-    return showRoleDialog(groupId, groupName, 'OpitNotesUserBundle_admin_groups_show', 'Edit role');
+    return showRoleDialog(groupId, groupName, 'OpitNotesUserBundle_admin_groups_show', 'Edit role', 'Role successfully edited!');
   });
 
   $('#main-wrapper').on('click', '.remove-group', function() {

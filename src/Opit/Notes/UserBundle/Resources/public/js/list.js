@@ -112,7 +112,7 @@
     title = 'User delete';
     message = 'user(s)';
     url = Routing.generate('OpitNotesUserBundle_user_delete');
-    return $(document).data('notes').funcs.deleteAction(title, message, url, '.delete-checkbox-form');
+    return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
   };
 
   $('#list-table').on("click", "th i", function() {
@@ -120,7 +120,6 @@
   });
 
   $('#list').on("click", "#list-reply-message", function() {
-    console.log($(this));
     return $(this).hide();
   });
 
