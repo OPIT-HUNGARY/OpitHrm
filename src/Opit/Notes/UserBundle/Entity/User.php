@@ -91,7 +91,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
 
     /**
      * @ORM\JoinColumn(name="job_title_id", referencedColumnName="id", nullable=true)
-     * @ORM\OneToOne(targetEntity="JobTitle")
+     * @ORM\ManyToOne(targetEntity="JobTitle")
      */
     protected $jobTitle;
 

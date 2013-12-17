@@ -78,6 +78,30 @@
     return $('body').append($subMenuClone);
   };
 
+  
+
+  $.fn.extend({
+    formIsEmpty: function(element) {
+      var $el, exists;
+      $el = element ? $(element) : $(this);
+      exists = false;
+      $el.find(':input').each(function() {
+        if ($(this).val()) {
+          return exists = true;
+        }
+      });
+      return exists;
+    },
+    checkAll: function(selector) {
+      var $el, checkAll;
+      $el = selector ? $(selector) : $(this);
+      checkAll = $el.filter(':checked').length === $el.length ? false : true;
+      return $el.each(function() {
+        return $(this).prop('checked', checkAll);
+      });
+    }
+  });
+
   $(document).ready(function() {
     $('#loggedInUser').click(function() {
       var _ref;
@@ -109,28 +133,6 @@
         }
       }
     });
-  });
-
-  $.fn.extend({
-    formIsEmpty: function(element) {
-      var $el, exists;
-      $el = element ? $(element) : $(this);
-      exists = false;
-      $el.find(':input').each(function() {
-        if ($(this).val()) {
-          return exists = true;
-        }
-      });
-      return exists;
-    },
-    checkAll: function(selector) {
-      var $el, checkAll;
-      $el = selector ? $(selector) : $(this);
-      checkAll = $el.filter(':checked').length === $el.length ? false : true;
-      return $el.each(function() {
-        return $(this).prop('checked', checkAll);
-      });
-    }
   });
 
 }).call(this);

@@ -108,8 +108,16 @@ $alertGreen: #dff0d8;
     width: 40%!important;
 }
 
+.width-96 {
+    width: 96%!important;
+}
+
 .width-98 {
     width: 98%!important;
+}
+
+.width-15-fix {
+    width: 15px!important;
 }
 
 .width-24-fix {
@@ -138,6 +146,10 @@ $alertGreen: #dff0d8;
 
 .height-20{
     height: 20px;
+}
+
+.height-50{
+    height: 50px;
 }
 
 .height-60{
@@ -179,6 +191,14 @@ table.bordered{
     @include border-top-left-radius(5px);
     @include border-bottom-right-radius(5px);
     @include border-bottom-left-radius(5px);
+}
+
+.modal-description {
+    background-color: $orangeColor;
+    color: white;
+    margin-bottom:5px;
+    padding:5px;
+    @include border-radius(5px);
 }
 
 .alert-message {

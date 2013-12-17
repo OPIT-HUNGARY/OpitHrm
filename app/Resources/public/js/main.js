@@ -17,7 +17,11 @@
                   url: url,
                   data: $(identifier).serialize()
                 }).done(function(data) {
-                  $(identifier + ':checked').closest('tr').remove();
+                  if (data[0].userRelated) {
+                    return $(document).data('notes').funcs.showAlert(data, 'create', 'Deletion not allowed for roles with relations', true);
+                  } else {
+                    $(identifier + ':checked').closest('tr').remove();
+                  }
                 }).fail(function() {
                   return $('<div></div>').html('The ' + message + ' could not be deleted due to an error.').dialog({
                     title: 'Error'

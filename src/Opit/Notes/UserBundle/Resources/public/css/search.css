@@ -31,7 +31,11 @@ and open the template in the editor.
 
 .width-40 { width: 40% !important; }
 
+.width-96 { width: 96% !important; }
+
 .width-98 { width: 98% !important; }
+
+.width-15-fix { width: 15px !important; }
 
 .width-24-fix { width: 24px !important; }
 
@@ -47,6 +51,8 @@ and open the template in the editor.
 
 .height-20 { height: 20px; }
 
+.height-50 { height: 50px; }
+
 .height-60 { height: 60px; }
 
 .default-border, table.bordered tr, table.bordered td, table.bordered th { border: 1px solid #929292; }
@@ -60,6 +66,8 @@ and open the template in the editor.
 .no-text-decoration { text-decoration: none !important; }
 
 .modalwindow { border: 1px solid #929292; background-color: #ebebeb; font-size: 0.9em; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+
+.modal-description { background-color: #f28c38; color: white; margin-bottom: 5px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 .alert-message { border: 1px solid transparent; margin-top: 10px; margin-bottom: 10px; padding: 10px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
 .alert-message ul { margin: 3px; }
