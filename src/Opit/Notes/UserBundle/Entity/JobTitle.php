@@ -3,8 +3,6 @@
 namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * JobTitle
@@ -17,7 +15,6 @@ use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @ORM\Table(name="notes_job_titles")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\JobTitleRepository")
- * @UniqueEntity(fields={"title"}, message="The title is already used.")
  */
 class JobTitle
 {
@@ -34,7 +31,6 @@ class JobTitle
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=100)
-     * @Assert\NotBlank(message="The title should not be blank.")
      */
     private $title;
 
@@ -42,11 +38,6 @@ class JobTitle
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
-     * @Assert\NotBlank(message="The description should not be blank.")
-     * @Assert\Length(
-     *      max = "255",
-     *      maxMessage = "The password should not be longer than {{ limit }} characters length"
-     * )
      */
     private $description;
 

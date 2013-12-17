@@ -3,18 +3,21 @@
 <nav class="menu">
     <div>
     {% if is_granted('ROLE_ADMIN') %}
-    <div class="mainMenu{{ (module == 'admin') ? ' active' : '' }}">
+    <div class="mainMenu {{ (module == 'admin') ? 'active' : '' }}">
         Admin
         <div class="subMenu">
             <div class="subMenuItem">
                 <a href="#" class='dropdown'>User</a>
                 <ul>
-                    <li><a href='{{ path('OpitNotesUserBundle_admin_groups_list') }}'>Role management</a></li>
-                    <li><a href="{{ path('OpitNotesUserBundle_admin_list_jobtitle') }}">JobTitles management</a></li>
+                    <li>
+                        <a href='{{ path('OpitNotesUserBundle_admin_groups_list') }}'>Role management</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="mainMenu {{ (module == 'user') ? 'active' : '' }}" id="userMenuTab">
         Users
         <div class="subMenu">

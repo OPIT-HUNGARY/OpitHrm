@@ -897,17 +897,17 @@
         },
         {
             "name": "friendsofsymfony/jsrouting-bundle",
-            "version": "1.4.2",
+            "version": "1.4.1",
             "target-dir": "FOS/JsRoutingBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSJsRoutingBundle.git",
-                "reference": "408af3a8fd106454eb561b1e1b550d0acff967f4"
+                "reference": "ca856bcd25c8486d42e52279391fcb1dfc288dba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSJsRoutingBundle/zipball/408af3a8fd106454eb561b1e1b550d0acff967f4",
-                "reference": "408af3a8fd106454eb561b1e1b550d0acff967f4",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSJsRoutingBundle/zipball/ca856bcd25c8486d42e52279391fcb1dfc288dba",
+                "reference": "ca856bcd25c8486d42e52279391fcb1dfc288dba",
                 "shasum": ""
             },
             "require": {
@@ -943,14 +943,12 @@
                     "homepage": "https://github.com/friendsofsymfony/FOSJsRoutingBundle/contributors"
                 }
             ],
-            "description": "A pretty nice way to expose your Symfony2 routing to client applications.",
+            "description": "Symfony FOSJsRoutingBundle",
             "homepage": "http://friendsofsymfony.github.com",
             "keywords": [
-                "Js Routing",
-                "javascript",
-                "routing"
+                "Js Routing"
             ],
-            "time": "2013-12-13 09:35:50"
+            "time": "2013-10-21 13:22:09"
         },
         {
             "name": "gedmo/doctrine-extensions",

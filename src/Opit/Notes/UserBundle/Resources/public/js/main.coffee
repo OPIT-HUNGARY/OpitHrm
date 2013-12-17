@@ -54,23 +54,6 @@ cloneSubmenu = ->
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
 
-
-# Place any jQuery/helper plugins in here.
-
-$.fn.extend
-    formIsEmpty: (element) ->
-        $el = if element then $(element) else $(@)
-        exists = no
-        $el.find(':input').each ->
-            exists = yes if($(@).val())
-        return exists
-  
-    checkAll: (selector) ->
-        $el = if selector then $(selector) else $(@)
-        checkAll = if $el.filter(':checked').length is $el.length then false else true
-        $el.each ->
-            $(@).prop 'checked', checkAll
-
 $(document)
     .ready ->
         $('#loggedInUser').click ->
@@ -96,4 +79,19 @@ $(document)
                     if $('body').has(subMenuCloneClass).length
                         $subMenuClone.css({display: 'none'})
 
+# Place any jQuery/helper plugins in here.
 
+$.fn.extend
+    formIsEmpty: (element) ->
+        $el = if element then $(element) else $(@)
+        exists = no
+        $el.find(':input').each ->
+            exists = yes if($(@).val())
+        return exists
+  
+    checkAll: (selector) ->
+        $el = if selector then $(selector) else $(@)
+        checkAll = if $el.filter(':checked').length is $el.length then false else true
+        $el.each ->
+            $(@).prop 'checked', checkAll
+        

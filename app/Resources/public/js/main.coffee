@@ -12,9 +12,6 @@ $.extend true, $(document).data('notes'),
                         url: url
                         data: $(identifier).serialize()
                       .done (data) ->
-                        if data[0].userRelated
-                            $(document).data('notes').funcs.showAlert data, 'create', 'Deletion not allowed for roles with relations', true
-                        else
                           $(identifier+':checked').closest('tr').remove()
                           return
                       .fail () ->
