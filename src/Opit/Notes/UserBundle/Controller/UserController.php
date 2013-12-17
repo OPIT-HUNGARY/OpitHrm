@@ -205,7 +205,7 @@ class UserController extends Controller
     }
 
     /**
-     * To add/edit user in Notes
+     * To delete user in Notes
      *
      * @Route("/secured/user/delete", name="OpitNotesUserBundle_user_delete")
      * @Method({"POST"})

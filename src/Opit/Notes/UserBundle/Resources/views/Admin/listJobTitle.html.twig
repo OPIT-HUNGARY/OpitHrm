@@ -1,0 +1,27 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    List job titles - {{ parent() }}
+{% endblock %}
+{% block body %}
+<div  id="list">
+    <table>
+        <tr>
+            <td class="no-padding">
+                <button id="addJobTitle" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitNotesUserBundle:Admin:_listJobTitle.html.twig' %}
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesUserBundle/Resources/public/js/admin.js'
+        '@OpitNotesUserBundle/Resources/public/js/list.js'
+    output='js/notes_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
