@@ -19,6 +19,30 @@
     });
   };
 
+  compareDays = function() {
+    var $accomodationWrapper, $errorMessage, accomodationDays, arrivalDate, departureDate, diffDays;
+    departureDate = new Date($('#travelRequest_departure_date').val());
+    arrivalDate = new Date($('#travelRequest_arrival_date').val());
+    diffDays = (arrivalDate.getTime() - departureDate.getTime()) / (24 * 60 * 60 * 1000);
+    accomodationDays = '0';
+    $('#travelRequest_accomodations').find('.number-of-nights').each(function() {
+      return accomodationDays = parseInt($(this).val()) + parseInt(accomodationDays);
+    });
+    $accomodationWrapper = $('#travelRequest_accomodations');
+    if (accomodationDays > diffDays) {
+      if ($accomodationWrapper.children('label.custom-error').length === 0) {
+        $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass('custom-error');
+        $accomodationWrapper.prepend('<br />');
+        $accomodationWrapper.prepend($errorMessage);
+      }
+      return false;
+    } else {
+      $accomodationWrapper.children('label.custom-error').remove();
+      $accomodationWrapper.children('br').remove();
+      return true;
+    }
+  };
+
   $('label.required').each(function() {
     if ($(this).text() === '0') {
       $(this).remove();
@@ -94,6 +118,7 @@
     if ($('#travelRequest_accomodations :input[type=text]').val() === "") {
       travelRequestAccomodations0.parent().remove();
     } else {
+      numberOfNightsListener(travelRequestAccomodations0.parent());
       travelRequestAccomodations0.parent().addClass('formFieldsetChild');
       travelRequestAccomodations0.parent().append(addFormDeleteButton);
     }
@@ -201,30 +226,6 @@
   $('#travelRequest_arrival_date').on('change', function() {
     return compareDays();
   });
-
-  compareDays = function() {
-    var $accomodationWrapper, $errorMessage, accomodationDays, arrivalDate, departureDate, diffDays;
-    departureDate = new Date($('#travelRequest_departure_date').val());
-    arrivalDate = new Date($('#travelRequest_arrival_date').val());
-    diffDays = (arrivalDate.getTime() - departureDate.getTime()) / (24 * 60 * 60 * 1000);
-    accomodationDays = '0';
-    $('#travelRequest_accomodations').find('.number-of-nights').each(function() {
-      return accomodationDays = parseInt($(this).val()) + parseInt(accomodationDays);
-    });
-    $accomodationWrapper = $('#travelRequest_accomodations');
-    if (accomodationDays > diffDays) {
-      if ($accomodationWrapper.children('label.custom-error').length === 0) {
-        $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass('custom-error');
-        $accomodationWrapper.prepend('<br />');
-        $accomodationWrapper.prepend($errorMessage);
-      }
-      return false;
-    } else {
-      $accomodationWrapper.children('label.custom-error').remove();
-      $accomodationWrapper.children('br').remove();
-      return true;
-    }
-  };
 
   $form = $('#travelRequestForm');
 

@@ -9,6 +9,34 @@ numberOfNightsListener = (form) ->
         form.find('input[type=number]').first().addClass 'number-of-nights'
         form.find('input[type=number]').first().on 'keyup', ->
             compareDays()
+            
+# custom compare validator to compare length of trip and number of nights
+compareDays = () ->
+    #get arrival and departure date value
+    departureDate = new Date $('#travelRequest_departure_date').val()
+    arrivalDate = new Date $('#travelRequest_arrival_date').val()
+    
+    #get days between arrival and departure
+    diffDays = (arrivalDate.getTime() - departureDate.getTime())/(24*60*60*1000)#one day
+    accomodationDays = '0'
+    
+    # get all days from all accomodations
+    $('#travelRequest_accomodations').find('.number-of-nights').each ->
+        accomodationDays = parseInt($(@).val()) + parseInt(accomodationDays)
+
+    $accomodationWrapper = $('#travelRequest_accomodations')
+    
+    # check if trip is longer than accomodations
+    if accomodationDays > diffDays
+        if $accomodationWrapper.children('label.custom-error').length is 0
+            $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'custom-error'
+            $accomodationWrapper.prepend '<br />'
+            $accomodationWrapper.prepend $errorMessage
+        return false
+    else
+        $accomodationWrapper.children('label.custom-error').remove()
+        $accomodationWrapper.children('br').remove()
+        return true
 
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()
@@ -77,6 +105,8 @@ else
     if $('#travelRequest_accomodations :input[type=text]').val() is ""
         travelRequestAccomodations0.parent().remove()
     else
+        numberOfNightsListener(travelRequestAccomodations0.parent())
+        
         travelRequestAccomodations0.parent().addClass 'formFieldsetChild'
         travelRequestAccomodations0.parent().append addFormDeleteButton
 
@@ -159,34 +189,6 @@ $('#travelRequest_departure_date').on 'change', ->
     compareDays()
 $('#travelRequest_arrival_date').on 'change', ->
     compareDays()
-
-# custom compare validator to compare length of trip and number of nights
-compareDays = () ->
-    #get arrival and departure date value
-    departureDate = new Date $('#travelRequest_departure_date').val()
-    arrivalDate = new Date $('#travelRequest_arrival_date').val()
-    
-    #get days between arrival and departure
-    diffDays = (arrivalDate.getTime() - departureDate.getTime())/(24*60*60*1000)#one day
-    accomodationDays = '0'
-    
-    # get all days from all accomodations
-    $('#travelRequest_accomodations').find('.number-of-nights').each ->
-        accomodationDays = parseInt($(@).val()) + parseInt(accomodationDays)
-
-    $accomodationWrapper = $('#travelRequest_accomodations')
-    
-    # check if trip is longer than accomodations
-    if accomodationDays > diffDays
-        if $accomodationWrapper.children('label.custom-error').length is 0
-            $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'custom-error'
-            $accomodationWrapper.prepend '<br />'
-            $accomodationWrapper.prepend $errorMessage
-        return false
-    else
-        $accomodationWrapper.children('label.custom-error').remove()
-        $accomodationWrapper.children('br').remove()
-        return true
 
 # method to validate form before preview
 $form = $('#travelRequestForm')
