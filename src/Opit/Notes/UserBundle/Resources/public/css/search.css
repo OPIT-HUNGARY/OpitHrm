@@ -90,6 +90,8 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .darker-gray-color { color: #505050; }
 
+.display-none { display: none; }
+
 #userlistWrapper > table { width: 100%; }
 
 #searchFormWrapper { background-color: #ebebeb; margin-bottom: 20px; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }

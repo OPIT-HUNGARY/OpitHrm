@@ -9,7 +9,11 @@
         output='js/notes_admin_groups_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}    
-{% endblock %}    
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotesuser/css/list.css')  }}"
+{% endblock %}
 {% block body %}
     <table>
         <tr>
@@ -25,4 +29,21 @@
         'propertyValues': propertyValues,
         'hideReset': hideReset
         } %}
+    <div id="roleForm" class="display-none">
+        <div id="dialog-edititem">
+            <h2></h2>
+            <div class="description default-border-radius"></div>
+            <div class="modalwindow">
+                <div class="wdith-medium">
+                    <div class="vertical-align-top item-input-box-header height-20">
+                        <label class="margin-top-2 inlineElements" for="group">Role name: </label>
+                    </div>
+                    <div class="vertical-align-top item-input-box height-60">
+                        <input class="inlineElements" type="text" id="group" name="group" value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}    
