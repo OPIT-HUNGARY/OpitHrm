@@ -100,7 +100,7 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
         background-color: $formDarkColor;
         padding:10px;
         @include border-radius(5px);
-        margin-right:2.2em;
+        margin-left:1em;
 
         display:inline-block;
         vertical-align: top;            
@@ -114,10 +114,6 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
         padding-left:1em;
         background-color:$orangeColor;
         color:white;
-    }
-
-    .formFieldsetChild:first-child{
-        margin-left:1em;
     }
 
     .formFieldsetButton{

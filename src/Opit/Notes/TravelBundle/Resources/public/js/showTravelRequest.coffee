@@ -3,7 +3,12 @@ addFormDeleteButton = ->
     $deleteButton.addClass 'deleteFormFieldsetChild formFieldsetButton'
     $deleteButton.click ->
         $(@).parent().remove()
-    return $deleteButton        
+    return $deleteButton
+    
+numberOfNightsListener = (form) ->
+        form.find('input[type=number]').first().addClass 'number-of-nights'
+        form.find('input[type=number]').first().on 'keyup', ->
+            compareDays()
 
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()
@@ -63,6 +68,8 @@ else
 travelRequestAccomodations0 = $('#travelRequest_accomodations_0')
 if $('#travelRequest_accomodations :input[type=text]').length > 2
     $('#travelRequest_accomodations').children().each ->
+        numberOfNightsListener($(@))
+        
         $(@).addClass 'formFieldsetChild'
         $(@).children().remove 'label'
         $(@).append addFormDeleteButton
@@ -76,16 +83,16 @@ else
 #check customer related value
 travelOpportunity = $('#travelRequest_opportunity_name')
 if travelOpportunity.val() is ''
-    travelOpportunity.parent().css {display: 'none'}
+    travelOpportunity.parent().css {visibility: 'hidden'}
 else
     $('#travelRequest_customer_related').val('0')
 
 $('#travelRequest_customer_related').change ->
     if $(@).val() is "0"
-        travelOpportunity.parent().css {display: 'inline-block'}
+        travelOpportunity.parent().css {visibility: 'visible'}
         travelOpportunity.attr('required', 'required')
     else 
-        travelOpportunity.parent().css {display: 'none'}
+        travelOpportunity.parent().css {visibility: 'hidden'}
         travelOpportunity.removeAttr 'required'
 
 $form = $('#travelRequestForm')
@@ -128,10 +135,10 @@ $accomodationCollection = $('#travelRequest_accomodations').append $addAccomodat
 $accomodationCollection.data 'index', $accomodationCollection.find(':input').length
 $addAccomodation.click (e) ->
     e.preventDefault()
-    addForm $accomodationCollection, $addAccomodation
+    addForm $accomodationCollection, $addAccomodation, true
     return
 
-addForm = ($collectionHolder, $addButton) ->
+addForm = ($collectionHolder, $addButton, addListener) ->
     prototype = $collectionHolder.data 'prototype'
     index = $collectionHolder.data 'index'
     newForm = prototype.replace '<label class="required">__name__label__</label>', ''
@@ -141,14 +148,51 @@ addForm = ($collectionHolder, $addButton) ->
     $newForm = $newForm.append addFormDeleteButton
     $newForm.addClass 'formFieldsetChild'
 
+    # add keyup event listener to number of nights on newly created accomodation
+    if addListener
+        numberOfNightsListener($newForm)
+
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
+
+$('#travelRequest_departure_date').on 'change', ->
+    compareDays()
+$('#travelRequest_arrival_date').on 'change', ->
+    compareDays()
+
+# custom compare validator to compare length of trip and number of nights
+compareDays = () ->
+    #get arrival and departure date value
+    departureDate = new Date $('#travelRequest_departure_date').val()
+    arrivalDate = new Date $('#travelRequest_arrival_date').val()
+    
+    #get days between arrival and departure
+    diffDays = (arrivalDate.getTime() - departureDate.getTime())/(24*60*60*1000)#one day
+    accomodationDays = '0'
+    
+    # get all days from all accomodations
+    $('#travelRequest_accomodations').find('.number-of-nights').each ->
+        accomodationDays = parseInt($(@).val()) + parseInt(accomodationDays)
+
+    $accomodationWrapper = $('#travelRequest_accomodations')
+    
+    # check if trip is longer than accomodations
+    if accomodationDays > diffDays
+        if $accomodationWrapper.children('label.custom-error').length is 0
+            $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'custom-error'
+            $accomodationWrapper.prepend '<br />'
+            $accomodationWrapper.prepend $errorMessage
+        return false
+    else
+        $accomodationWrapper.children('label.custom-error').remove()
+        $accomodationWrapper.children('br').remove()
+        return true
 
 # method to validate form before preview
 $form = $('#travelRequestForm')
 
-$errorMessages = $('#travelRequestForm ul');
-$errorMessages.remove();
+$errorMessages = $('#travelRequestForm ul')
+$errorMessages.remove()
 
 # method to validate if departure date is smaller than arrival date
 $.validator.addMethod 'compare', (value, element) ->
@@ -179,8 +223,9 @@ $form.validate
 
 $( '#travelRequest_add_travel_request' ).click ->
     event.preventDefault()
-    #validate form on client side
-    if $form.valid()
+    
+#    validate form on client side
+    if $form.valid() and compareDays()
         # if form is valid post ajax request to get the preview
         $.ajax
             method: 'POST'
