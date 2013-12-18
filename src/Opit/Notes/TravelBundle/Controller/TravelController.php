@@ -24,6 +24,7 @@ use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
+use Symfony\Component\Form\FormError;
 
 /**
  * Description of TravelController
@@ -122,8 +123,15 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
         $isNewTravelRequest = "new" !== $travelRequestId;
+        $securityContext = $this->get('security.context');
+        $currentUser = $securityContext->getToken()->getUser();
         
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
+        
+        if (false === $isNewTravelRequest) {
+            // the currently logged in user is always set as default
+            $travelRequest->setUser($currentUser);
+        }
         
         // Track current persisted destination objects
         $children = new ArrayCollection();
@@ -139,12 +147,32 @@ class TravelController extends Controller
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
         
-        $form = $this->createForm(new TravelType(), $travelRequest, array('em' => $entityManager));
+        $form = $this->setTravelRequestForm($travelRequest, $entityManager);
+        
+        $oldUser = $travelRequest->getUser();
         
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-
+            
+            // checks if new travel request is being created by a user or by an admin
+            if ('new' !== $isNewTravelRequest && !$securityContext->isGranted('ROLE_ADMIN')) {
+                // if user is owner of travel request
+                if (true === $securityContext->isGranted('OWNER', $travelRequest)) {
+                    // if travel request user does not exist or travel request user id does not match current user id
+                    if (null === $travelRequest->getUser() ||
+                        $travelRequest->getUser()->getId() !== $currentUser->getId()) {
+                        // reset travel request user
+                        $travelRequest->setUser($oldUser);
+                        // recreate travel request form
+                        $form = $this->setTravelRequestForm($travelRequest, $entityManager);
+                        // add error to form so it will not validate
+                        $form->addError(new FormError('Invalid employee name.'));
+                    }
+                }
+            }
+            
             if ($form->isValid()) {
+                
                 // Persist deleted destinations/accomodations
                 $this->removeChildNodes($entityManager, $travelRequest, $children);
 
@@ -159,17 +187,17 @@ class TravelController extends Controller
                     
                     $this->grantAccess($travelRequest, array(
                         array(
-                            'user' => $this->get('security.context')->getToken()->getUser(),
-                            'mask' => MaskBuilder::MASK_OWNER
-                        ),
-                        array(
                             'user' => $travelRequest->getGeneralManager(),
                             'mask' => MaskBuilder::MASK_EDIT
                         ),
                         array(
                             'user' => $travelRequest->getTeamManager(),
                             'mask' => MaskBuilder::MASK_EDIT
-                        )
+                        ),
+                        array(
+                            'user' => $securityContext->getToken()->getUser(),
+                            'mask' => MaskBuilder::MASK_OWNER
+                        ),
                     ));
                 }
                 
@@ -177,8 +205,9 @@ class TravelController extends Controller
             }
         }
         
+        // only allow edit of travel request if user has editor or admin rights
         if ($isNewTravelRequest) {
-            $securityContext = $this->get('security.context');
+            $securityContext = $securityContext;
             if (true === $securityContext->isGranted('ROLE_ADMIN') ||
                 true === $securityContext->isGranted('EDIT', $travelRequest)) {
                 return array('form' => $form->createView(), 'travelRequest' => $travelRequest);
@@ -291,7 +320,7 @@ class TravelController extends Controller
         }
     }
     
-    protected function grantAccess(TravelRequest $object,  $users)
+    protected function grantAccess(TravelRequest $object, $users)
     {
         $aclProvider = $this->container->get('security.acl.provider');
         // try to find acl, used when travel request was modified
@@ -317,5 +346,16 @@ class TravelController extends Controller
         $securityId = UserSecurityIdentity::fromAccount($user);
         $acl->insertObjectAce($securityId, $mask);
         $aclProvider->updateAcl($acl);
+    }
+    
+    protected function setTravelRequestForm(TravelRequest $travelRequest, $entityManager)
+    {
+        $form = $this->createForm(
+            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN')),
+            $travelRequest,
+            array('em' => $entityManager)
+        );
+        
+        return $form;
     }
 }

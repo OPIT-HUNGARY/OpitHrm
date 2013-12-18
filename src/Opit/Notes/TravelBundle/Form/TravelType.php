@@ -20,6 +20,13 @@ use Opit\Notes\TravelBundle\Form\DataTransformer\UserIdToObjectTransformer;
  */
 class TravelType extends AbstractType
 {
+    private $isGranted;
+    
+    public function __construct($roleFlag = false)
+    {
+      $this->isGranted = $roleFlag;
+    }
+    
     /**
      * Builds a form with given fields.
      *
@@ -31,12 +38,21 @@ class TravelType extends AbstractType
         $entityManager = $options['em'];
         $transformer = new UserIdToObjectTransformer($entityManager);
         
+        $employeeAttributes = array('placeholder' => 'Employee name');
+        
+        // if travel request user exists
+        if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
+            if (false === $this->isGranted) {
+                $employeeAttributes['disabled'] = 'disabled';
+            }
+        }
+        
         $builder->add($builder->create('user', 'hidden')->addModelTransformer($transformer));
         $builder->add('user_ac', 'text', array(
             'label' => 'Employee name',
             'data' => ($user = $options['data']->getUser()) ? $user->getEmployeeName() : null,
             'mapped' => false,
-            'attr' => array('placeholder' => 'Employee name', 'class' => 'test')
+            'attr' => $employeeAttributes
         ));
         $builder->add('departure_date', 'date', array(
             'widget' => 'single_text',
@@ -105,7 +121,7 @@ class TravelType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\TravelBundle\Entity\TravelRequest',
+            'data_class' => 'Opit\Notes\TravelBundle\Entity\TravelRequest'
         ))
         ->setRequired(array(
             'em',
