@@ -118,6 +118,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmTravelRequests;
+    
+    /**
+     * User travel expenses
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelExpense", mappedBy="user", cascade={"remove"})
+     */
+    protected $userTravelExpenses;
 
     public function __construct()
     {
@@ -127,6 +133,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
         $this->userTravelRequests = new ArrayCollection();
         $this->gmTravelRequests = new ArrayCollection();
         $this->tmTravelRequests = new ArrayCollection();
+        $this->userTravelExpenses = new ArrayCollection();
         $this->setSalt("");
     }
 

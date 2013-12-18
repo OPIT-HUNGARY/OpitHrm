@@ -67,6 +67,17 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
 
             $manager->persist($testUser);
         }
+        $testUser = new User();
+        $testUser->setUsername("admin");
+        $password = $encoder->encodePassword("admin", "");
+        $testUser->setPassword($password);
+        $testUser->setSalt("");
+        $testUser->setEmail("admin@mail.com");
+        $testUser->setEmployeeName("admin");
+        $testUser->setIsActive(1);
+        $testUser->addGroup($this->getReference('admin-group'));
+        $manager->persist($testUser);
+        
         
         $manager->flush();
     }
