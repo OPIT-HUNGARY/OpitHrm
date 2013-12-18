@@ -1,4 +1,4 @@
-$form = $('#searchForm')
+$form = $('#searchFormWrapper').find 'form'
 url = $form.attr 'action'
 $('#searchButton').click ->
   event.preventDefault()

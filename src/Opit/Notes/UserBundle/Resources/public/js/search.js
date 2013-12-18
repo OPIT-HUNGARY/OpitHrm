@@ -2,7 +2,7 @@
 (function() {
   var $form, url;
 
-  $form = $('#searchForm');
+  $form = $('#searchFormWrapper').find('form');
 
   url = $form.attr('action');
 
