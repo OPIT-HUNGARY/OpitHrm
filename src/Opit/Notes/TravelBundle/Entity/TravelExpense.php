@@ -4,6 +4,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * TravelExpense
  *
@@ -114,7 +115,7 @@ class TravelExpense
     private $taxIdentification;
 
     /**
-     * @ORM\OneToMany(targetEntity="TEPaidExpenses", mappedBy="travelExpense", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="TEPaidExpense", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
     private $paidExpenses;
     
@@ -437,10 +438,10 @@ class TravelExpense
     /**
      * Add paidExpenses
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpenses $paidExpenses
+     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses
      * @return TravelExpense
      */
-    public function addPaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpenses $paidExpenses)
+    public function addPaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses)
     {
         $this->paidExpenses[] = $paidExpenses;
     
@@ -450,9 +451,9 @@ class TravelExpense
     /**
      * Remove paidExpenses
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpenses $paidExpenses
+     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses
      */
-    public function removePaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpenses $paidExpenses)
+    public function removePaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses)
     {
         $this->paidExpenses->removeElement($paidExpenses);
     }

@@ -8,13 +8,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * TEPaidExpenses
  *
- * @ORM\Table(name="notes_te_paid_expenses")
+ * @ORM\Table(name="notes_te_paid_expense")
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
- * @ORM\DiscriminatorMap({"userPaidExpenses" = "TEUserPaidExpenses", "companyPaidExpenses" = "TECompanyPaidExpenses"})
+ * @ORM\DiscriminatorMap({"upe" = "TEUserPaidExpense", "cpe" = "TECompanyPaidExpense"})
  */
-class TEPaidExpenses
+abstract class TEPaidExpense
 {
     /**
      * @var integer
@@ -24,13 +24,6 @@ class TEPaidExpenses
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="currency", type="string", length=30)
-     */
-    protected $currency;
 
     /**
      * @var \DateTime
@@ -43,14 +36,7 @@ class TEPaidExpenses
     /**
      * @var integer
      *
-     * @ORM\Column(name="excahnge_rate", type="integer")
-     */
-    protected $excahngeRate;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="amount", type="integer")
+     * @ORM\Column(name="amount", type="float")
      */
     protected $amount;
 
@@ -70,28 +56,22 @@ class TEPaidExpenses
     protected $expenseType;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="cost_huf", type="integer")
-     */
-    protected $costHuf;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="cost_euro", type="integer")
-     */
-    protected $costEuro;
-
-    /**
      * @ORM\ManyToOne(targetEntity="TravelExpense", inversedBy="paidExpenses")
      */
     protected $travelExpense;
   
     /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=255)
+     */
+    protected $description;
+   
+
+    /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -99,33 +79,10 @@ class TEPaidExpenses
     }
 
     /**
-     * Set currency
-     *
-     * @param string $currency
-     * @return TEExpensesPaid
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-    
-        return $this;
-    }
-
-    /**
-     * Get currency
-     *
-     * @return string
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
-    }
-
-    /**
      * Set date
      *
      * @param \DateTime $date
-     * @return TEExpensesPaid
+     * @return TEPaidExpense
      */
     public function setDate($date)
     {
@@ -137,7 +94,7 @@ class TEPaidExpenses
     /**
      * Get date
      *
-     * @return \DateTime
+     * @return \DateTime 
      */
     public function getDate()
     {
@@ -145,33 +102,10 @@ class TEPaidExpenses
     }
 
     /**
-     * Set excahngeRate
-     *
-     * @param integer $excahngeRate
-     * @return TEExpensesPaid
-     */
-    public function setExcahngeRate($excahngeRate)
-    {
-        $this->excahngeRate = $excahngeRate;
-    
-        return $this;
-    }
-
-    /**
-     * Get excahngeRate
-     *
-     * @return integer
-     */
-    public function getExcahngeRate()
-    {
-        return $this->excahngeRate;
-    }
-
-    /**
      * Set amount
      *
      * @param integer $amount
-     * @return TEExpensesPaid
+     * @return TEPaidExpense
      */
     public function setAmount($amount)
     {
@@ -183,7 +117,7 @@ class TEPaidExpenses
     /**
      * Get amount
      *
-     * @return integer
+     * @return integer 
      */
     public function getAmount()
     {
@@ -194,7 +128,7 @@ class TEPaidExpenses
      * Set destination
      *
      * @param string $destination
-     * @return TEExpensesPaid
+     * @return TEPaidExpense
      */
     public function setDestination($destination)
     {
@@ -206,20 +140,43 @@ class TEPaidExpenses
     /**
      * Get destination
      *
-     * @return string
+     * @return string 
      */
     public function getDestination()
     {
         return $this->destination;
     }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return TEPaidExpense
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
     /**
      * Set expenseType
      *
-     * @param integer expenseType
-     * @return TEExpensesPaid
+     * @param \Opit\Notes\TravelBundle\Entity\TEExpenseType $expenseType
+     * @return TEPaidExpense
      */
-    public function setExpenseType($expenseType)
+    public function setExpenseType(\Opit\Notes\TravelBundle\Entity\TEExpenseType $expenseType = null)
     {
         $this->expenseType = $expenseType;
     
@@ -229,7 +186,7 @@ class TEPaidExpenses
     /**
      * Get expenseType
      *
-     * @return integer
+     * @return \Opit\Notes\TravelBundle\Entity\TEExpenseType 
      */
     public function getExpenseType()
     {
@@ -237,56 +194,10 @@ class TEPaidExpenses
     }
 
     /**
-     * Set costHuf
-     *
-     * @param integer $costHuf
-     * @return TEExpensesPaid
-     */
-    public function setCostHuf($costHuf)
-    {
-        $this->costHuf = $costHuf;
-    
-        return $this;
-    }
-
-    /**
-     * Get costHuf
-     *
-     * @return integer
-     */
-    public function getCostHuf()
-    {
-        return $this->costHuf;
-    }
-
-    /**
-     * Set costEuro
-     *
-     * @param integer $costEuro
-     * @return TEExpensesPaid
-     */
-    public function setCostEuro($costEuro)
-    {
-        $this->costEuro = $costEuro;
-    
-        return $this;
-    }
-
-    /**
-     * Get costEuro
-     *
-     * @return integer
-     */
-    public function getCostEuro()
-    {
-        return $this->costEuro;
-    }
-
-    /**
      * Set travelExpense
      *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return TEExpensesPaid
+     * @return TEPaidExpense
      */
     public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense = null)
     {

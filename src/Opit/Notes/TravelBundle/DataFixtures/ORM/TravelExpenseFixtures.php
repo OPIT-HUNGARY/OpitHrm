@@ -24,7 +24,7 @@ use Opit\Notes\TravelBundle\Entity\TravelExpense;
  * @package Opit
  * @subpackage TravelBundle
  */
-class TravelExpenseTypeFixtures extends AbstractFixture implements OrderedFixtureInterface
+class TravelExpenseFixtures extends AbstractFixture implements OrderedFixtureInterface
 {
     /**
      * {@inheritDoc}
@@ -69,6 +69,6 @@ class TravelExpenseTypeFixtures extends AbstractFixture implements OrderedFixtur
      */
     public function getOrder()
     {
-        return 0; // the order in which fixtures will be loaded
+        return 11; // the order in which fixtures will be loaded
     }
 }

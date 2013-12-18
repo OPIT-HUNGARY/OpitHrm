@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opit\EdkBundle\DataFixtures\ORM;
+namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -56,6 +56,6 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
      */
     public function getOrder()
     {
-        return 1; // the order in which fixtures will be loaded
+        return 0; // the order in which fixtures will be loaded
     }
 }
