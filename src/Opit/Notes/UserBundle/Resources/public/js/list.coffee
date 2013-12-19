@@ -61,6 +61,7 @@ $("#list-table").on "click", ".list-change-password", ->
               .done (data)->
                   response = data
                   $(document).data('notes').funcs.showAlert response, "update","Password reset successfully"
+                  $('#dialog-edititem').dialog "destroy"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return

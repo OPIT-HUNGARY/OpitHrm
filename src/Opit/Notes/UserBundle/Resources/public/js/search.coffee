@@ -1,6 +1,6 @@
 $form = $('#searchFormWrapper').find 'form'
 url = $form.attr 'action'
-$('#searchButton').click ->
+$('#searchButton').click (event) ->
   event.preventDefault()
   return if not $form.formIsEmpty()
   

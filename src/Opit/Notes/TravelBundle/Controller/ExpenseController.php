@@ -51,4 +51,30 @@ class ExpenseController extends Controller
         }
         return array("travelExpenses" => $allowedTEs);
     }
+
+    /**
+     * @Route("/secured/expense/search", name="OpitNotesTravelBundle_expense_search")
+     * @Template()
+     */
+    public function searchAction()
+    {
+        $request = $this->getRequest()->request->all();
+        $empty = array_filter($request, function ($value) {
+            return !empty($value);
+        });
+
+        $travelExpenses = null;
+
+        if (array_key_exists('resetForm', $request) || empty($empty)) {
+             list($travelExpenses) = array_values($this->listAction());
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $travelExpenses = $em->getRepository('OpitNotesTravelBundle:TravelExpense')
+                                 ->getTravelExpensesBySearchParams($request);
+        }
+        return $this->render(
+            'OpitNotesTravelBundle:Expense:_list.html.twig',
+            array("travelExpenses" => $travelExpenses)
+        );
+    }
 }

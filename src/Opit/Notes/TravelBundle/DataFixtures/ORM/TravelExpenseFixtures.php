@@ -34,9 +34,9 @@ class TravelExpenseFixtures extends AbstractFixture implements OrderedFixtureInt
         $travelExpense1 = new TravelExpense();
         $travelExpense1->setRechargeable(0)
             ->setUser($this->getReference('testUser-user'))
-            ->setDepartureDateTime(new \DateTime('2012-07-08 11:14:15.638276'))
+            ->setDepartureDateTime(new \DateTime('2013-12-15 11:14:15'))
             ->setDepartureCountry("Germany")
-            ->setArrivalDateTime(new \DateTime('2012-07-08 11:14:15.638276'))
+            ->setArrivalDateTime(new \DateTime('2013-12-17 21:26:45'))
             ->setArrivalCountry("Austria")
             ->setAdvancesRecieved(0)
             ->setAdvancesPayback(3000)
@@ -50,9 +50,9 @@ class TravelExpenseFixtures extends AbstractFixture implements OrderedFixtureInt
         $travelExpense2 = new TravelExpense();
         $travelExpense2->setRechargeable(1)
             ->setUser($this->getReference('testUser-user'))
-            ->setDepartureDateTime(new \DateTime('2012-07-08 11:14:15.638276'))
+            ->setDepartureDateTime(new \DateTime('2013-12-16 07:49:10'))
             ->setDepartureCountry("Finland")
-            ->setArrivalDateTime(new \DateTime('2012-07-08 11:14:15.638276'))
+            ->setArrivalDateTime(new \DateTime('2013-12-21 17:37:12'))
             ->setArrivalCountry("Estonia")
             ->setAdvancesRecieved(0)
             ->setAdvancesPayback(1500)

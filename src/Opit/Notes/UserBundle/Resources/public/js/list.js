@@ -84,7 +84,8 @@
             }).done(function(data) {
               var response;
               response = data;
-              return $(document).data('notes').funcs.showAlert(response, "update", "Password reset successfully");
+              $(document).data('notes').funcs.showAlert(response, "update", "Password reset successfully");
+              return $('#dialog-edititem').dialog("destroy");
             });
           },
           Close: function() {

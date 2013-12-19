@@ -6,7 +6,7 @@
 
   url = $form.attr('action');
 
-  $('#searchButton').click(function() {
+  $('#searchButton').click(function(event) {
     event.preventDefault();
     if (!$form.formIsEmpty()) {
       return;
