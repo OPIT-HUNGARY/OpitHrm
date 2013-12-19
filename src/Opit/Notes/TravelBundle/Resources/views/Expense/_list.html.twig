@@ -1,0 +1,31 @@
+<form>
+    <table id="list-table">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o"></i></th>
+            {% set orderIcon %}
+                <i class="fa fa-sort default-right"></i>
+            {% endset %}
+            <th>{{ orderIcon }}Employee name</th>
+            <th>{{ orderIcon }}Departure date</th>
+            <th>{{ orderIcon }}Arrival date</th>
+            <th>{{ orderIcon }}Departure country</th>
+            <th>{{ orderIcon }}Arrival country</th>
+            <th>Actions</th>
+        </tr>
+        {% for travelExpense in travelExpenses %}
+        <tr class="clickableTableRow">
+            <td><input type="checkbox" class="deleteMultipleTravelExpense" name="deleteMultipleTravelExpense[]" value="{{ travelExpense.id }}" /></td>
+            <td>
+                {% if travelExpense.user is not null %}
+                    {{ travelExpense.user.employeeName }}
+                {% endif %}
+            </td>
+            <td>{{ travelExpense.departureDateTime|date('d  F  Y (D)') }}</td>
+            <td>{{ travelExpense.arrivalDateTime|date('d  F  Y (D)') }}</td>
+            <td>{{ travelExpense.departureCountry }}</td>
+            <td>{{ travelExpense.arrivalCountry}}</td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>

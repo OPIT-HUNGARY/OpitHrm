@@ -132,10 +132,10 @@ class TravelExpense
     /**
      * Set user
      *
-     * @param \entity $user
+     * @param \Opit\Notes\UserBundle\Entity\User $user
      * @return TravelExpense
      */
-    public function setUser(\entity $user)
+    public function setUser(\Opit\Notes\UserBundle\Entity\User $user)
     {
         $this->user = $user;
     

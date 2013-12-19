@@ -1,0 +1,12 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block body %}
+<table>
+    <tr>
+        <td class="no-padding">
+            <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
+{% include 'OpitNotesTravelBundle:Expense:_list.html.twig' %}
+{% endblock %}

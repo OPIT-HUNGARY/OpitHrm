@@ -48,13 +48,13 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager) 
+    public function load(ObjectManager $manager)
     {
         $factory = $this->container->get('security.encoder_factory');
         $user = new User();
         $encoder = $factory->getEncoder($user);
 
-        for($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $testUser = new User();
             $testUser->setUsername("test".$i."Name");
             $password = $encoder->encodePassword("test".$i."Password", "");
@@ -67,6 +67,8 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
 
             $manager->persist($testUser);
         }
+        $this->addReference('testUser-user', $testUser);
+
         $testUser = new User();
         $testUser->setUsername("admin");
         $password = $encoder->encodePassword("admin", "");
@@ -89,5 +91,4 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
     {
         return 1; // the order in which fixtures will be loaded
     }
-
 }
