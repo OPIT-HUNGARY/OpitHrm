@@ -15,53 +15,6 @@
 </div>
 <form name="adduser_frm" id="adduser_frm" method="post">
     <div class="modalwindow width-98 default-border height-auto overflow-hidden">
-        <div class="float-left width-30">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.username) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60">
-                {{ form_widget(form.username) }}
-             </div>
-        </div>
-        <div class="float-left width-30">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.email) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60">
-                {{ form_widget(form.email) }}
-             </div>
-        </div>
-        <div class="float-left width-30">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.employeeName) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60">
-                {{ form_widget(form.employeeName) }}
-             </div>
-        </div>
-        <div class="float-left width-30">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.isActive) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60">
-                {{ form_widget(form.isActive) }}
-             </div>
-        </div>
-        <div class="float-left width-30">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.jobTitle) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60">
-                {{ form_widget(form.jobTitle) }}
-             </div>
-        </div>
-        <div class="float-left width-30 groups">
-            <div class="vertical-align-top item-input-box-header float-left height-20">
-                {{ form_label(form.groups) }}
-            </div>
-            <div class="vertical-align-top item-input-box float-left height-60 groups-input">
-                {{ form_widget(form.groups, {'attr': {'class': 'groups'}}) }}
-             </div>
-        </div>
+        {{ form(form) }}
     </div>
 </form>
