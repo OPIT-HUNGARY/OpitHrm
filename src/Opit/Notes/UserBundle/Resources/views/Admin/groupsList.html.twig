@@ -30,6 +30,12 @@
         'hideReset': hideReset
         } %}
     <div id="roleForm" class="display-none">
+        <div id="reply-message" class="alert-message error-message">
+            <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
+            <ul>
+                <li>The role name should not be blank.</li>
+            </ul>
+        </div>
         <div id="dialog-edititem">
             <h2></h2>
             <div class="description default-border-radius"></div>
@@ -39,7 +45,7 @@
                         <label class="margin-top-2 inlineElements" for="group">Role name: </label>
                     </div>
                     <div class="vertical-align-top item-input-box height-60">
-                        <input class="inlineElements" type="text" id="group" name="group" value="" />
+                        <input class="inlineElements roleNameField" type="text" id="group" name="group" placeholder="Role name" />
                     </div>
                 </div>
             </div>

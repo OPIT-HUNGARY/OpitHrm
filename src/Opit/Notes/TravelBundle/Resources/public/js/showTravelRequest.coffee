@@ -201,7 +201,7 @@ $.validator.addMethod 'compare', (value, element) ->
     departureDate = $('#travelRequest_departure_date').val()
     arrivalDate = $('#travelRequest_arrival_date').val()
     return departureDate < arrivalDate
-, 'Arrival date should be smaller than departure date.'
+, 'Arrival date should not be smaller than departure date.'
 
 # check if element and the hidden id field for the element is empty
 $.validator.addMethod 'checkId', (value, element) ->

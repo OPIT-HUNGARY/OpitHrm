@@ -2,6 +2,10 @@
 (function() {
   var deleteGroup, showRoleDialog;
 
+  $('#reply-message').css({
+    display: 'none'
+  });
+
   showRoleDialog = function(groupId, groupName, description, url, title, flashMessage) {
     var selfDialog;
     $('#dialog-edititem h2').html(title);
@@ -16,24 +20,30 @@
       buttons: {
         Create: function() {
           var group;
-          group = selfDialog.find('#group').val();
-          return $.ajax({
-            type: 'POST',
-            url: Routing.generate(url, {
-              id: groupId
-            }),
-            data: {
-              'group': group
-            }
-          }).done(function(data) {
-            if (data.duplicate) {
-              $(document).data('notes').funcs.showAlert(data, 'create', 'Role already exists', true);
-            } else {
-              $('#list-table').replaceWith(data);
-              $(document).data('notes').funcs.showAlert(data, 'create', flashMessage);
-            }
-            return selfDialog.dialog('destroy');
-          });
+          if (selfDialog.find('#group').val()) {
+            group = selfDialog.find('#group').val();
+            return $.ajax({
+              type: 'POST',
+              url: Routing.generate(url, {
+                id: groupId
+              }),
+              data: {
+                'group': group
+              }
+            }).done(function(data) {
+              if (data.duplicate) {
+                $(document).data('notes').funcs.showAlert(data, 'create', 'Role already exists', true);
+              } else {
+                $('#list-table').replaceWith(data);
+                $(document).data('notes').funcs.showAlert(data, 'create', flashMessage);
+              }
+              return selfDialog.dialog('destroy');
+            });
+          } else {
+            return selfDialog.find('#reply-message').css({
+              display: 'block'
+            });
+          }
         },
         Close: function() {
           return selfDialog.dialog('destroy');

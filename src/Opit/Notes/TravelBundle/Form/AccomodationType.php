@@ -39,11 +39,13 @@ class AccomodationType extends AbstractType
         $builder->add('number_of_nights', 'integer', array(
             'label'=>'Number of nights',
             'attr' => array(
-                'placeholder' => 'Number of nights'
+                'placeholder' => 'Number of nights',
+                'min' => '1'
             )
         ));
         $builder->add('cost', 'integer', array('attr' => array(
-            'placeholder' => 'Cost'
+            'placeholder' => 'Cost',
+            'min' => '1'
         )));
     }
     

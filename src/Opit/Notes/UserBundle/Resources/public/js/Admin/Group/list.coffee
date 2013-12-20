@@ -1,3 +1,5 @@
+$('#reply-message').css display:'none'
+
 showRoleDialog = (groupId, groupName, description, url, title, flashMessage) ->
     $('#dialog-edititem h2').html title
     $('.description').html description
@@ -10,18 +12,21 @@ showRoleDialog = (groupId, groupName, description, url, title, flashMessage) ->
         title: title
         buttons:
             Create: ->
-                group = selfDialog.find('#group').val()
-                $.ajax
-                    type: 'POST'
-                    url: Routing.generate url, {id: groupId}
-                    data: 'group': group
-                .done (data)->
-                    if data.duplicate
-                        $(document).data('notes').funcs.showAlert data, 'create', 'Role already exists', true
-                    else
-                        $('#list-table').replaceWith data
-                        $(document).data('notes').funcs.showAlert data, 'create', flashMessage
-                    selfDialog.dialog 'destroy'
+                if selfDialog.find('#group').val()
+                    group = selfDialog.find('#group').val()
+                    $.ajax
+                        type: 'POST'
+                        url: Routing.generate url, {id: groupId}
+                        data: 'group': group
+                    .done (data)->
+                        if data.duplicate
+                            $(document).data('notes').funcs.showAlert data, 'create', 'Role already exists', true
+                        else
+                            $('#list-table').replaceWith data
+                            $(document).data('notes').funcs.showAlert data, 'create', flashMessage
+                        selfDialog.dialog 'destroy'
+                else
+                    selfDialog.find('#reply-message').css display:'block'
             Close: ->
                 selfDialog.dialog 'destroy'
               

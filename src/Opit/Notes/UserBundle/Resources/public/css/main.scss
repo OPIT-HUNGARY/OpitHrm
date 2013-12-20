@@ -74,22 +74,6 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
     cursor:pointer;
 }
 
-.subMenuClone{
-    @include border-radius(0);
-    position:fixed;
-    width:100%;
-    height:42px;
-    left:0;
-    top:0;
-    display:none;
-    background-color:$orangeColor;
-    z-index:5;
-    
-    .subMenuItem{
-        margin-top:12px;
-    }
-}
-
 .formFieldset{
     background-color: $formLightColor;
     @include border-radius(5px);
@@ -350,5 +334,31 @@ header{
     
     ul{
         display:block;
+    }
+}
+
+.subMenuClone{
+    @include border-radius(0);
+    position:fixed;
+    width:100%;
+    height:42px;
+    left:0;
+    top:0;
+    display:none;
+    background-color:$orangeColor;
+    z-index:5;
+    
+    .subMenuItem{
+        margin-top:12px;
+        ul{
+            margin-top:4px;
+            list-style-type:none;
+            li{
+                padding: 15px 0 15px 10px;
+                a{
+                    
+                }
+            }
+        }
     }
 }

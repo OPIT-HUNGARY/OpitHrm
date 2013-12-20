@@ -28,19 +28,20 @@
     <div class="mainMenu {{ (module == 'travel' or module == 'expense') ? 'active': '' }}">
         Travel
         <div class="subMenu">
-            <div class="subMenuItem">
-                <a href="#" class='dropdown'>Request</a>
-                <ul>
-                    <li><a href="{{ path('OpitNotesTravelBundle_travel_list') }}">List</a></li>
-                    <li><a href="{{ path('OpitNotesTravelBundle_travel_show') }}">Create</a></li>
-                </ul>
-            </div>
-            <div class="subMenuItem">
-                <a href="#" class='dropdown'>Expense</a>
-                <ul>
-                    <li><a href="{{ path('OpitNotesTravelBundle_expense_list') }}">Expense list</a></li>
-                </ul>
-            </div>
+        <div class="subMenuItem">
+            <a href="#" class='dropdown'>Request</a>
+            <ul>
+                <li><a href='{{ path('OpitNotesTravelBundle_travel_show') }}'>Create</a></li>
+                <li><a href="{{ path('OpitNotesTravelBundle_travel_list') }}">List</a></li>
+            </ul>
+        </div>
+        <div class="subMenuItem">
+            <a href="#" class='dropdown'>Expense</a>
+            <ul>
+                <li><a href='{{ path('OpitNotesTravelBundle_expense_show') }}'>Create</a></li>
+                <li><a href="{{ path('OpitNotesTravelBundle_expense_list') }}">List</a></li>
+            </ul>
+        </div>
         </div>
     </div>
 </nav>

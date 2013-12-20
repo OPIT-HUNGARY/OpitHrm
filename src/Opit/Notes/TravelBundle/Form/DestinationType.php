@@ -48,7 +48,8 @@ class DestinationType extends AbstractType
         
         $builder->add('cost', 'integer', array(
             'attr' => array(
-                'placeholder' => 'Cost'
+                'placeholder' => 'Cost',
+                'min' => '1'
             )
         ));
     }

@@ -11,7 +11,7 @@
         
 {% block body %}
     <h1>
-        {% if travelRequest.id is empty %}
+        {% if travelRequest.id is empty or travelRequest.id == 'new' %}
         New Travel Request
         {% else %}
         Edit Travel Request ({{ travelRequest.travelRequestId }})
