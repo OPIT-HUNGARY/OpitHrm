@@ -14,7 +14,7 @@
 
   numberOfNightsListener = function(form) {
     form.find('input[type=number]').first().addClass('number-of-nights');
-    return form.find('input[type=number]').first().on('keyup', function() {
+    return form.find('input[type=number]').first().on('change', function() {
       return compareDays();
     });
   };

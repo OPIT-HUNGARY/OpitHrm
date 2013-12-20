@@ -7,7 +7,7 @@ addFormDeleteButton = ->
     
 numberOfNightsListener = (form) ->
         form.find('input[type=number]').first().addClass 'number-of-nights'
-        form.find('input[type=number]').first().on 'keyup', ->
+        form.find('input[type=number]').first().on 'change', ->
             compareDays()
             
 # custom compare validator to compare length of trip and number of nights
@@ -178,7 +178,7 @@ addForm = ($collectionHolder, $addButton, addListener) ->
     $newForm = $newForm.append addFormDeleteButton
     $newForm.addClass 'formFieldsetChild'
 
-    # add keyup event listener to number of nights on newly created accomodation
+    # add change event listener to number of nights on newly created accomodation
     if addListener
         numberOfNightsListener($newForm)
 
