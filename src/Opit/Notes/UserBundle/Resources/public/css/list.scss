@@ -168,8 +168,6 @@ select {
     max-width: 92%;
     min-width: 92%;
     margin-bottom: 10px;
-    min-height: 25px;
-    max-height: 70px;
     overflow: auto;
     background-image: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
     background-image: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
@@ -183,4 +181,8 @@ select {
     padding: 3px;    
     @include border-bottom-right-radius(5px);
     @include border-bottom-left-radius(5px);
+    
+    input[type=text], input[type=password] {
+        width: 96%;
+    }
 }

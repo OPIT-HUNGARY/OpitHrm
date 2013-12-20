@@ -78,8 +78,6 @@
     return $('body').append($subMenuClone);
   };
 
-  
-
   $.fn.extend({
     formIsEmpty: function(element) {
       var $el, exists;
