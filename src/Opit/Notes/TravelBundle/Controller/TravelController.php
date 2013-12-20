@@ -147,7 +147,7 @@ class TravelController extends Controller
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
         
-        $form = $this->setTravelRequestForm($travelRequest, $entityManager);
+        $form = $this->setTravelRequestForm($travelRequest, $entityManager, $isNewTravelRequest);
         
         $oldUser = $travelRequest->getUser();
         
@@ -348,10 +348,10 @@ class TravelController extends Controller
         $aclProvider->updateAcl($acl);
     }
     
-    protected function setTravelRequestForm(TravelRequest $travelRequest, $entityManager)
+    protected function setTravelRequestForm(TravelRequest $travelRequest, $entityManager, $isNewTravelRequest)
     {
         $form = $this->createForm(
-            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN')),
+            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelRequest),
             $travelRequest,
             array('em' => $entityManager)
         );

@@ -21,10 +21,12 @@ use Opit\Notes\TravelBundle\Form\DataTransformer\UserIdToObjectTransformer;
 class TravelType extends AbstractType
 {
     private $isGranted;
+    private $isNew;
     
-    public function __construct($roleFlag = false)
+    public function __construct($roleFlag = false, $isNew = false)
     {
-      $this->isGranted = $roleFlag;
+        $this->isGranted = $roleFlag;
+        $this->isNew = $isNew;
     }
     
     /**
@@ -113,7 +115,7 @@ class TravelType extends AbstractType
         ));
         
         $builder->add('add_travel_request', 'submit', array(
-            'label'=>$options['data']->getUser() ? 'Edit travel request' : 'Add travel request',
+            'label'=>$this->isNew ? 'Edit travel request' : 'Add travel request',
             'attr' => array('class' => 'button')
         ));
     }

@@ -113,11 +113,16 @@ class TravelExpense
      * @ORM\Column(name="tax_identification", type="integer")
      */
     private $taxIdentification;
-
+    
     /**
-     * @ORM\OneToMany(targetEntity="TEPaidExpense", mappedBy="travelExpense", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="TECompanyPaidExpense", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
-    private $paidExpenses;
+    private $companyPaidExpenses;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="TEUserPaidExpense", mappedBy="travelExpense", cascade={"persist", "remove"})
+     */
+    private $userPaidExpenses;
     
     /**
      * Get id
@@ -432,39 +437,75 @@ class TravelExpense
      */
     public function __construct()
     {
-        $this->paidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->userPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->companyPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
     /**
-     * Add paidExpenses
+     * Add companyPaidExpenses
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses
+     * @param \Opit\Notes\TravelBundle\Entity\TECompanyPaidExpense $companyPaidExpenses
      * @return TravelExpense
      */
-    public function addPaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses)
+    public function addCompanyPaidExpense(\Opit\Notes\TravelBundle\Entity\TECompanyPaidExpense $companyPaidExpenses)
     {
-        $this->paidExpenses[] = $paidExpenses;
+        $this->companyPaidExpenses[] = $companyPaidExpenses;
+        $companyPaidExpenses->setTravelExpense($this); // synchronously updating inverse side
+        
+        return $this;
+    }
+
+    /**
+     * Remove companyPaidExpenses
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TECompanyPaidExpense $companyPaidExpenses
+     */
+    public function removeCompanyPaidExpense(\Opit\Notes\TravelBundle\Entity\TECompanyPaidExpense $companyPaidExpenses)
+    {
+        $this->companyPaidExpenses->removeElement($companyPaidExpenses);
+    }
+
+    /**
+     * Get companyPaidExpenses
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCompanyPaidExpenses()
+    {
+        return $this->companyPaidExpenses;
+    }
+
+    /**
+     * Add userPaidExpenses
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEUserPaidExpense $userPaidExpenses
+     * @return TravelExpense
+     */
+    public function addUserPaidExpense(\Opit\Notes\TravelBundle\Entity\TEUserPaidExpense $userPaidExpenses)
+    {
+        $this->userPaidExpenses[] = $userPaidExpenses;
+        $userPaidExpenses->setTravelExpense($this); // synchronously updating inverse side
     
         return $this;
     }
 
     /**
-     * Remove paidExpenses
+     * Remove userPaidExpenses
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses
+     * @param \Opit\Notes\TravelBundle\Entity\TEUserPaidExpense $userPaidExpenses
      */
-    public function removePaidExpense(\Opit\Notes\TravelBundle\Entity\TEPaidExpense $paidExpenses)
+    public function removeUserPaidExpense(\Opit\Notes\TravelBundle\Entity\TEUserPaidExpense $userPaidExpenses)
     {
-        $this->paidExpenses->removeElement($paidExpenses);
+        $this->userPaidExpenses->removeElement($userPaidExpenses);
     }
 
     /**
-     * Get paidExpenses
+     * Get userPaidExpenses
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getPaidExpenses()
+    public function getUserPaidExpenses()
     {
-        return $this->paidExpenses;
+        return $this->userPaidExpenses;
     }
 }

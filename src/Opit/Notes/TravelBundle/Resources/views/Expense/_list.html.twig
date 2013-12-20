@@ -24,7 +24,9 @@
             <td>{{ travelExpense.arrivalDateTime|date('d  F  Y (D) H:i:s') }}</td>
             <td>{{ travelExpense.departureCountry }}</td>
             <td>{{ travelExpense.arrivalCountry}}</td>
-            <td></td>
+            <td>
+                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
+            </td>
         </tr>
         {% endfor %}
     </table>

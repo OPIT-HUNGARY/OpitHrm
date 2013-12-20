@@ -1,0 +1,42 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelExpense.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
+{% endblock %}        
+        
+{% block body %}
+    <h1>
+        {% if travelExpense.id == 'new' or travelExpense.id is empty %}
+        New Travel Expense
+        {% else %}
+        Edit Travel Expense
+        {% endif %}
+    </h1>
+
+    {% if form_errors(form)|length > 0 %}
+    <div class="alert-message error-message">
+        <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
+        {{ form_errors(form) }}
+    </div>
+    {% endif %}    
+    
+    {% if form_errors(form)|length > 0 %}
+    <div class="alert-message error-message">
+        <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
+        {{ form_errors(form) }}
+    </div>
+    {% endif %}
+    
+    {{ form(form, {
+        'action': (path('OpitNotesTravelBundle_expense_show', { 'id': app.request.get('id')})),
+        'method': 'POST',
+        'attr':{'id': 'travelExpenseForm'}
+       })
+    }}
+{% endblock %}
