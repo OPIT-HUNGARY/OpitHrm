@@ -4,20 +4,12 @@ namespace Opit\Notes\TravelBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Doctrine\Common\Collections\ArrayCollection;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
-use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
-use Symfony\Component\Form\FormError;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
-use Opit\Notes\TravelBundle\Entity;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Description of ExpenseController
@@ -154,6 +146,37 @@ class ExpenseController extends Controller
         
         return array('travelExpense' => $travelExpense);
     }
+    
+    /**
+     * Method to delete one or more travel expense
+     *
+     * @Route("/secured/expense/delete", name="OpitNotesTravelBundle_expense_delete")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function deleteTravelExpenseAction(Request $request)
+    {
+        $securityContext = $this->get('security.context');
+        $ids = $request->request->get('id');
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        
+        foreach ($ids as $id) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $travelExpense = $this->getTravelExpense($id);
+            
+            // Ensure that no travel requests without permission get deleted
+            if ($securityContext->isGranted('ROLE_ADMIN') ||
+                true === $securityContext->isGranted('DELETE', $travelExpense)) {
+                $entityManager->remove($travelExpense);
+            }
+        }
+        
+        $entityManager->flush();
+        
+        return new JsonResponse('0');
+    }    
     
     /**
      * 

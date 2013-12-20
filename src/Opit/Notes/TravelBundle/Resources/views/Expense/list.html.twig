@@ -5,9 +5,17 @@
     <tr>
         <td class="no-padding">
             <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
-            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            <button id="delete" class="button delete expense"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
         </td>
     </tr>
 </table>
 {% include 'OpitNotesTravelBundle:Expense:_list.html.twig' %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/list.js'
+    output='js/notes_tr_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
 {% endblock %}

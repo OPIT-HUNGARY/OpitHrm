@@ -26,6 +26,9 @@
             <td>{{ travelExpense.arrivalCountry}}</td>
             <td>
                 <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
+                {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelExpense) %}
+                <a href="#" data-id="{{ travelExpense.id }}" class="deleteSingeTravelExpense"><i class="fa fa-trash-o"></i></a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

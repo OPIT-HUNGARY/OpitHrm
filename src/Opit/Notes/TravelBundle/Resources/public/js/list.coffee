@@ -1,3 +1,35 @@
+# type = expense or request
+deleteSingleRequest = (type, self) ->
+    $checkbox = self.closest('tr').find(':checkbox')
+    $checkbox.prop 'checked', true
+    # TODO: Add travel request ID to the dialog body text.
+    #$('<div></div>').html("Are you sure you want to delete the travel request \"#{travel-request-id}\"?").dialog
+    $('<div></div>').html("Are you sure you want to delete the travel #{ type }?").dialog
+        title: 'Travel request removal'
+        buttons:
+            Yes: ->
+                $.ajax
+                  method: 'POST'
+                  url: if type is 'expense' then Routing.generate 'OpitNotesTravelBundle_expense_delete' else Routing.generate 'OpitNotesTravelBundle_travel_delete'
+                  data: 'id': self.data 'id'
+                .done (data) ->
+                    if data is '0' then self.parent().parent().remove()
+                    return
+                .fail () ->
+                    $('<div></div>').html("The travel #{ type } could not be deleted due to an error.").dialog
+                        title: 'Error'
+                $(@).dialog 'close'
+                return
+            No: ->
+                # Unset checkbox
+                $checkbox.prop 'checked', false
+                $(@).dialog 'close'
+                return
+        close: ->
+            $(@).dialog 'destroy'
+            return
+    return
+
 $('#list-table').on 'click', '.clickable', ->
   id = $(@).attr 'data-tr-id'
   $.ajax
@@ -22,64 +54,51 @@ $('#list-table').on 'click', '.clickable', ->
 
 $('#list-table th i').click ->
     $('.deleteMultipleTravelRequest').checkAll()
+    $('.deleteMultipleTravelExpense').checkAll()
 
 $('.deleteSingeTravelRequest').click ->
     event.preventDefault()
-    self = $(@)
-#    empName = self.closest('tr').children('td.employee-name').text()
-    # Set checkbox
-    $checkbox = self.closest('tr').find(':checkbox')
-    $checkbox.prop 'checked', true
-    # TODO: Add travel request ID to the dialog body text.
-    #$('<div></div>').html("Are you sure you want to delete the travel request \"#{travel-request-id}\"?").dialog
-    $('<div></div>').html('Are you sure you want to delete the travel request?').dialog
-        title: 'Travel request removal'
-        buttons:
-            Yes: ->
-                $.ajax
-                  method: 'POST'
-                  url: Routing.generate 'OpitNotesTravelBundle_travel_delete'
-                  data: 'id': self.data 'id'
-                .done (data) ->
-                    if data is '0' then self.parent().parent().remove()
-                    return
-                .fail () ->
-                    $('<div></div>').html('The travel request could not be deleted due to an error.').dialog
-                        title: 'Error'
-                $(@).dialog 'close'
-                return
-            No: ->
-                # Unset checkbox
-                $checkbox.prop 'checked', false
-                $(@).dialog 'close'
-                return
-        close: ->
-            $(@).dialog 'destroy'
-            return
-    return
+    deleteSingleRequest('request', $(@))
+    
+$('.deleteSingeTravelExpense').click ->
+    event.preventDefault()
+    deleteSingleRequest('expense', $(@))
+    
         
 $('#delete').click ->
+    warningMessage = 'Are you sure you want to delete the selected travel requests?'
+    checkBoxClass = '.deleteMultipleTravelRequest'
+    url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
+    title = 'Travel request removal'
+    errorText = 'The travel request could not be deleted due to an error.'
+    if $(@).hasClass 'expense'
+        warningMessage = 'Are you sure you want to delete the selected travel expenses?'
+        checkBoxClass = '.deleteMultipleTravelExpense'
+        url = Routing.generate 'OpitNotesTravelBundle_expense_delete'
+        title = 'Travel expense removal'
+        errorText = 'The travel expense could not be deleted due to an error.'
+        
     travelRequests = []
     selectedTravelRequestRow = []
-    $('.deleteMultipleTravelRequest').each ->
+    $(checkBoxClass).each ->
         if $(@).is ':checked'
             travelRequests.push $(@).val()
             selectedTravelRequestRow.push $(@).parent().parent()
             
-    $('<div></div>').html('Are you sure you want to delete the selected travel requests?').dialog
-        title: 'Travel request removal'
+    $('<div></div>').html(warningMessage).dialog
+        title: title
         buttons:
             Yes: ->
                 $.ajax
                   method: 'POST'
-                  url: Routing.generate 'OpitNotesTravelBundle_travel_delete'
+                  url: url
                   data: 'id': travelRequests
                 .done (data) ->
                     $(selectedTravelRequestRow).each ->
                         $(@).remove()
                     return
                 .fail () ->
-                    $('<div></div>').html('The travel request could not be deleted due to an error.').dialog
+                    $('<div></div>').html(errorText).dialog
                         title: 'Error'                    
                 $(@).dialog 'close'
                 return
