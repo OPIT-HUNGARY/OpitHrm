@@ -66,7 +66,10 @@
     $('#travelExpense_companyPaidExpenses').data('index', companyPaidExpensesIndex);
     $('#travelExpense_userPaidExpenses').data('index', userPaidExpensesIndex);
     $('#travelExpense_companyPaidExpenses').parent().children('label').remove();
-    return $('#travelExpense_userPaidExpenses').parent().children('label').remove();
+    $('#travelExpense_userPaidExpenses').parent().children('label').remove();
+    return $('#travelExpense').css({
+      display: 'block'
+    });
   });
 
   $formFieldset = $('<div>');

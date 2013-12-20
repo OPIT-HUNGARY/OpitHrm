@@ -64,6 +64,8 @@ $(document).ready ->
     $('#travelExpense_userPaidExpenses').data 'index', userPaidExpensesIndex
     $('#travelExpense_companyPaidExpenses').parent().children('label').remove()
     $('#travelExpense_userPaidExpenses').parent().children('label').remove()
+    
+    $('#travelExpense').css display: 'block'
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'

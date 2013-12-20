@@ -38,6 +38,9 @@ compareDays = () ->
         $accomodationWrapper.children('br').remove()
         return true
 
+$(document).ready ->
+    $('#travelRequest').css display: 'block'
+
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()
     return

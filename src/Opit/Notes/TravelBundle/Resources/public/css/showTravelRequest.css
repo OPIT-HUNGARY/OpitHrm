@@ -11,6 +11,8 @@ and open the template in the editor.
 
 .display-none { display: none !important; }
 
+#travelRequest { display: none; }
+
 #travelRequest label, .travelForm label { display: block; }
 #travelRequest .formFieldset, .travelForm .formFieldset { margin: 20px 0 20px 0; }
 #travelRequest .formFieldset > div, .travelForm .formFieldset > div { margin-top: 5px; margin-bottom: 5px; }

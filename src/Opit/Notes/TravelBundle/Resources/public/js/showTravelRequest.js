@@ -43,6 +43,12 @@
     }
   };
 
+  $(document).ready(function() {
+    return $('#travelRequest').css({
+      display: 'block'
+    });
+  });
+
   $('label.required').each(function() {
     if ($(this).text() === '0') {
       $(this).remove();
