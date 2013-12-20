@@ -1,4 +1,7 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+        Travel request list - {{ parent() }}
+{% endblock %}
 {% block body %}
 {% include 'OpitNotesTravelBundle:Travel:_searchForm.html.twig' %}
 <table>

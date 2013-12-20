@@ -1,5 +1,12 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
-
+{% block title %}
+        {% if travelExpense.id is empty or travelExpense.id == 'new' %}
+        New travel expense
+        {% else %}
+        Edit travel expense
+        {% endif %}
+        - {{ parent() }}
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>

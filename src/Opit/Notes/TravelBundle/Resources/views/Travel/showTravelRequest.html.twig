@@ -1,5 +1,12 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
-
+{% block title %}
+        {% if travelRequest.id is empty or travelRequest.id == 'new' %}
+        New travel request
+        {% else %}
+        Edit travel request
+        {% endif %}
+        - {{ parent() }}
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
