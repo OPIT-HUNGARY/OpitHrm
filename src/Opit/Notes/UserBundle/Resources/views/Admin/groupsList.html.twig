@@ -1,6 +1,6 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-    Role management list - {{ parent() }}
+    Role list - {{ parent() }}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotesuser/css/list.css')  }}" />
 {% endblock %}
 {% block body %}
+<h1>Role list</h1>
     <table>
         <tr>
             <td class="no-padding">
