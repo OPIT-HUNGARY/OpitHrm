@@ -42,7 +42,19 @@
   };
 
   $(document).ready(function() {
-    var companyPaidExpensesIndex, userPaidExpensesIndex;
+    var arrivalDate, arrivalTime, companyPaidExpensesIndex, departureDate, departureTime, userPaidExpensesIndex;
+    arrivalDate = $('#travelExpense_arrivalDateTime_date');
+    arrivalTime = $('#travelExpense_arrivalDateTime_time');
+    departureDate = $('#travelExpense_departureDateTime_date');
+    departureTime = $('#travelExpense_departureDateTime_time');
+    arrivalTime.addClass('inlineElements time-picker');
+    departureTime.addClass('inlineElements time-picker');
+    arrivalDate.css({
+      display: 'inline-block'
+    });
+    departureDate.css({
+      display: 'inline-block'
+    });
     $('#travelExpense').children('.formFieldset:nth-child(3)').append($addCompanyTagLink);
     $('#travelExpense').children('.formFieldset:nth-child(2)').append($addUserTagLink);
     companyPaidExpensesIndex = 0;
@@ -121,16 +133,27 @@
   $form = $('#travelExpenseForm');
 
   $.validator.addMethod('compare', function(value, element) {
-    var arrivalDate, departureDate;
-    departureDate = $('#travelExpense_departureDateTime').val();
-    arrivalDate = $('#travelExpense_arrivalDateTime').val();
-    return departureDate < arrivalDate;
+    var arrival, arrivalDate, arrivalTimeHour, arrivalTimeMinute, departure, departureDate, departureTimeHour, departureTimeMinute;
+    departureDate = $('#travelExpense_departureDateTime_date').val();
+    arrivalDate = $('#travelExpense_arrivalDateTime_date').val();
+    departureTimeHour = $('#travelExpense_departureDateTime_time_hour').val();
+    arrivalTimeHour = $('#travelExpense_arrivalDateTime_time_hour').val();
+    departureTimeMinute = $('#travelExpense_departureDateTime_time_minute').val();
+    arrivalTimeMinute = $('#travelExpense_arrivalDateTime_time_minute').val();
+    departure = departureDate + ' ' + departureTimeHour + ':' + departureTimeMinute;
+    arrival = arrivalDate + ' ' + arrivalTimeHour + ':' + arrivalTimeMinute;
+    departure = new Date(departure);
+    arrival = new Date(arrival);
+    $('#travelExpense_arrivalDateTime_time_minute').css({
+      border: 'solid 1px rgb(170, 170, 170)'
+    });
+    return departure < arrival;
   }, 'Arrival date should not be smaller than departure date.');
 
   $form.validate({
     ignore: [],
     rules: {
-      "travelExpense[arrivalDateTime]": "compare"
+      "travelExpense[arrivalDateTime][time][minute]": "compare"
     }
   });
 

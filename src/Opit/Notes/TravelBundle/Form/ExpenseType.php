@@ -81,8 +81,8 @@ class ExpenseType extends AbstractType
             'label' => 'Departure country',
             'attr' => array('placeholder' => 'Departure country', 'class' => 'te-claim')
         ));
-        $builder->add('departureDateTime', 'date', array(
-            'widget' => 'single_text',
+        $builder->add('departureDateTime', 'datetime', array(
+            'date_widget' => 'single_text',
             'label' => 'Departure date time',
             'attr' => array('placeholder' => 'Departure date time', 'class' => 'te-claim')
         ));
@@ -91,8 +91,8 @@ class ExpenseType extends AbstractType
             'label' => 'Arrival country',
             'attr' => array('placeholder' => 'Arrival country', 'class' => 'te-claim')
         ));
-        $builder->add('arrivalDateTime', 'date', array(
-            'widget' => 'single_text',
+        $builder->add('arrivalDateTime', 'datetime', array(
+            'date_widget' => 'single_text',
             'label' => 'Arrival date time',
             'attr' => array('placeholder' => 'Arrival date time', 'class' => 'te-claim')
         ));

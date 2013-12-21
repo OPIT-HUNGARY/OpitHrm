@@ -118,6 +118,8 @@ class ExpenseController extends Controller
                 
                 $entityManager->persist($travelExpense);
                 $entityManager->flush();
+                
+                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_expense_list'));
             }
         }
         

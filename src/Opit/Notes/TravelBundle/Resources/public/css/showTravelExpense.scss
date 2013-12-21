@@ -14,6 +14,10 @@ and open the template in the editor.
     display:none;
 }
 
+.time-picker{
+    margin: 2px 0 0 5px;
+}
+
 .selected-expense{
     margin:0;
     background-color:$darkerGrayColor;
