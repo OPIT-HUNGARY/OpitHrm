@@ -18,6 +18,7 @@
             'css/html5-boilerplate/normalize.css'
             'css/html5-boilerplate/main.css' 
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+            'libs/tipsy/css/tipsy.css'
             '//code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css'
            output='css/base.css' filter='?yui_css, cssrewrite'%}
             <link rel="stylesheet" href="{{ asset_url }}" />
@@ -44,6 +45,7 @@
             </script>
             {% javascripts 
                 'bundles/fosjsrouting/js/router.js'
+                'libs/tipsy/js/jquery.tipsy.js'
                 '../app/Resources/public/js/*.js'
                 '@OpitNotesUserBundle/Resources/public/js/main.js'
             output='js/base.js' filter='?yui_js' %}

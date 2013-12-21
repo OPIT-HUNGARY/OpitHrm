@@ -1,7 +1,7 @@
 <form>
 <table id="list-table">
     <tr>
-        <th class="width-24-fix"><i class="fa fa-trash-o"></i></th>
+        <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
         {% set orderIcon %}
             <i class="fa fa-sort default-right"></i>
         {% endset %}
@@ -29,10 +29,10 @@
             {{ travelRequest.accomodations|length }}
         </td>
         <td>
+            <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
             {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
-            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest"><i class="fa fa-trash-o"></i></a>
+            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
             {% endif %}
-            <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}"><i class="fa fa-pencil-square-o"></i></a>
         </td>
     </tr>
     {% endfor %}

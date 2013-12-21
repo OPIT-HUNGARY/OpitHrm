@@ -1,7 +1,7 @@
 <form  class="form-jobtitle">
     <table id="list-table">
         <tr>
-            <th class="width-24-fix"><i class="fa fa-trash-o"></i></th>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
             {% set orderIcon %}
                 <i class="fa fa-sort default-right"></i>
             {% endset %}
@@ -32,11 +32,11 @@
             <td>
                 {% if is_granted('ROLE_ADMIN')%}
                     {% if 'false' == disabledJobTitle %}
-                    <a href="#" data-id="{{ jobTitle.id }}" class="delete-single-jobtitle"><i class="fa fa-trash-o"></i></a>
+                    <a href="#" data-id="{{ jobTitle.id }}" class="delete-single-jobtitle" title="Delete job title"><i class="fa fa-trash-o"></i></a>
                     {% else %}
                         <span class="float-left width-15-fix">&nbsp;</span>
                     {% endif %}
-                <a href="#" class="list-jobtitle" data-id="{{ jobTitle.id }}"><i class="fa fa-pencil-square-o"></i></a>
+                    <a href="#" class="list-jobtitle" data-id="{{ jobTitle.id }}" title="Edit job title"><i class="fa fa-pencil-square-o"></i></a>
                 {% endif %}
             </td>
         </tr>

@@ -19,8 +19,8 @@
         buttons: {
           Create: function() {
             return $.ajax({
-              type: 'POST',
               global: false,
+              type: 'POST',
               url: Routing.generate('OpitNotesUserBundle_user_add', {
                 id: 0
               }),
@@ -30,15 +30,17 @@
               response = data;
               return $.ajax({
                 type: 'POST',
-                global: false,
                 url: Routing.generate('OpitNotesUserBundle_user_list'),
                 data: {
                   "showList": 1
                 }
               }).done(function(data) {
-                $('#list-table').html(data);
-                return $(document).data('notes').funcs.showAlert(response, "create", "User created successfully");
+                $('#user-list').html(data);
+                $(document).data('notes').funcs.showAlert(response, "create", "User created successfully");
+                return $('#dialog-edititem').dialog("destroy");
               });
+            }).fail(function(data) {
+              return $(document).data('notes').funcs.showAlert(data.responseText, "create", "Error");
             });
           },
           Close: function() {

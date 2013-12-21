@@ -29,10 +29,11 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                               url: url
                               data: "showList" : 1
                             .done (data)->
-                              $('#list-table').html data
-                              console.log successCallback
+                              $('#user-list').html data
                               postActions = successCallback response, "update","User modified successfully" if successCallback?
                               $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
+                            .fail (data) ->
+                              postActions = successCallback response, "update","User modified successfully" if successCallback?
                           else
                             $('#dialog-edititem').dialog 'destroy'
                           return

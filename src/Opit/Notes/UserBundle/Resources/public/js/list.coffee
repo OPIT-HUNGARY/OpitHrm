@@ -13,20 +13,22 @@ $("#add").click ->
           buttons:
             Create: ->
               $.ajax
-                type: 'POST'
                 global: false
+                type: 'POST'
                 url: Routing.generate 'OpitNotesUserBundle_user_add', id: 0
                 data: $('#adduser_frm').serialize()
               .done (data)->
                   response = data
                   $.ajax
                     type: 'POST'
-                    global: false
                     url: Routing.generate 'OpitNotesUserBundle_user_list'
                     data: "showList" : 1
                   .done (data)->
-                    $('#list-table').html data
+                    $('#user-list').html data
                     $(document).data('notes').funcs.showAlert response, "create", "User created successfully"
+                    $('#dialog-edititem').dialog "destroy"
+              .fail (data) ->
+                $(document).data('notes').funcs.showAlert data.responseText, "create","Error"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return

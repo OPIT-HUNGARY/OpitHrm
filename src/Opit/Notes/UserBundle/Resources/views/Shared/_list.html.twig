@@ -1,7 +1,7 @@
 <form  class="delete-checkbox-form">
 <table id="list-table">
     {% if propertyNames is defined %}
-        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x"></i></th>
+        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
         {% for propertyName in propertyNames %}
         <th>
             <i class="fa fa-sort default-right"></i>
@@ -17,7 +17,7 @@
                 <td class="width-24-fix">
                     {% if attribute(value, 'Role') is defined %}
                         {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER' %}
-                            <i class="fa fa-cog darker-gray-color"></i>
+                            <i class="fa fa-cog darker-gray-color" title="System role"></i>
                         {% else %}
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
                         {% endif %}
@@ -57,12 +57,18 @@
                        <i class="fa fa-key"></i>
                     </span>
                     {% endif %}
-                    
+                    {% set title %}
+                        {% if 'groups' in app.request.attributes.get('_route') %}
+                            role
+                        {% else %}
+                            user
+                        {% endif %}
+                    {% endset %}
                     {% set actionIcons %}
-                        <span class="list-username clickable no-text-decoration edit-group" data-user-id="{{ key }}" title="Edit user">
+                        <span class="list-username clickable no-text-decoration edit-group" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
                            <i class="fa fa-pencil-square-o"></i>
                         </span>
-                        <span class="delete-single-user clickable no-text-decoration remove-group" data-user-id="{{ key }}" title="Delete user">
+                        <span class="delete-single-user clickable no-text-decoration remove-group" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
                            <i class="fa fa-trash-o"></i>
                         </span>
                     {% endset %}

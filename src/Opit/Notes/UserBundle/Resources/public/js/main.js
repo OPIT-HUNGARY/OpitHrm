@@ -40,13 +40,17 @@
                       }
                     }).done(function(data) {
                       var postActions;
-                      $('#list-table').html(data);
-                      console.log(successCallback);
+                      $('#user-list').html(data);
                       if (successCallback != null) {
                         postActions = successCallback(response, "update", "User modified successfully");
                       }
                       if (postActions || postActions === void 0) {
                         return $('#dialog-edititem').dialog('destroy');
+                      }
+                    }).fail(function(data) {
+                      var postActions;
+                      if (successCallback != null) {
+                        return postActions = successCallback(response, "update", "User modified successfully");
                       }
                     });
                   } else {

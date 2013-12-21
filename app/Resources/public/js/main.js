@@ -43,6 +43,9 @@
       showAlert: function(response, actionType, message, forceClass) {
         var errorString, i, returnVal, _i, _len, _ref;
         $('#reply-message').addClass("alert-message");
+        if (typeof response === !"string") {
+          response = $.parseJSON(response);
+        }
         if ((response[0] != null) && response[0].response === 'error') {
           if ("update" === actionType || "create" === actionType) {
             errorString = "<ul>";
@@ -60,9 +63,9 @@
         } else {
           $('#list-reply-message').html("<i class='fa fa-check-square'></i> " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
           returnVal = true;
-          if (forceClass) {
-            $('#list-reply-message').removeClass('success-message').addClass('error-message');
-          }
+        }
+        if (forceClass) {
+          $('#list-reply-message').removeClass('success-message').addClass('error-message');
         }
         return returnVal;
       }
@@ -114,12 +117,25 @@
       name = $(this).attr('name');
       id = $(this).attr('id');
       $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" />');
-      $(this);
       return $(this).datepicker({
         altField: '#altDate' + id,
         altFormat: 'yy-mm-dd'
       });
     });
   }
+
+  $(document).ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
+    var id;
+    id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/);
+    if ((id != null ? id[1] : void 0) != null) {
+      return $("#" + id[1] + " *[title]").tipsy();
+    }
+  });
+
+  $(document).ready(function() {
+    return $('[title]').each(function() {
+      return $(this).tipsy();
+    });
+  });
 
 }).call(this);

@@ -155,6 +155,7 @@ class UserController extends Controller
         $id = $request->attributes->get('id');
         $errorMessages = array();
         $result = array('response' => 'error');
+        $statusCode = 200;
 
         if ($id) {
             $user = $this->getUserObject($request->attributes->get('id'));
@@ -198,10 +199,11 @@ class UserController extends Controller
                foreach ($errors as $e) {
                     $errorMessages[] = $e->getMessage();
                 }
+                $statusCode = 500;
             }
             $result['errorMessage'] = $errorMessages;
         }
-        return new JsonResponse(array($result));
+        return new JsonResponse(array($result), $statusCode);
     }
 
     /**
