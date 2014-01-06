@@ -85,6 +85,15 @@ class UserShowType extends AbstractType
             'multiple' => true,
             'expanded' => true
         ));
+        $builder->add('bankAccountNumber', 'text', array('attr' => array(
+            'placeholder' => 'Bank account number'
+        )));
+        $builder->add('bankName', 'text', array('attr' => array(
+            'placeholder' => 'Bank Name'
+        )));
+        $builder->add('taxIdentification', 'text', array('attr' => array(
+            'placeholder' => 'Tax number'
+        )));
         if (null === $userId) {
             $builder->add('password', 'repeated', array(
                 'first_name' => 'password',
