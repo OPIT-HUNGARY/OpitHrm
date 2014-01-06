@@ -64,7 +64,9 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
             $testUser->setEmployeeName("empname".$i);
             $testUser->setIsActive(1);
             $testUser->addGroup($this->getReference('admin-group'));
-
+            $testUser->setBankAccountNumber("11112222-22223333-4444".$i.$i.$i.$i);
+            $testUser->setBankName("Fictive Bank");
+            $testUser->setTaxIdentification("843". $i . $i%2 . $i%4 ."4". $i%3 .$i%5);
             $manager->persist($testUser);
         }
         $this->addReference('testUser-user', $testUser);
@@ -78,6 +80,9 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
         $testUser->setEmployeeName("admin");
         $testUser->setIsActive(1);
         $testUser->addGroup($this->getReference('admin-group'));
+        $testUser->setBankAccountNumber("11112222-99999999-99999999");
+        $testUser->setBankName("Fictive Bank");
+        $testUser->setTaxIdentification("888888888");
         $manager->persist($testUser);
         
         

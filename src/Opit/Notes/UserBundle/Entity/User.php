@@ -94,6 +94,27 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\ManyToOne(targetEntity="JobTitle")
      */
     protected $jobTitle;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="bank_account_number", type="string", length=50)
+     */
+    protected $bankAccountNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="bank_name", type="string", length=30)
+     */
+    protected $bankName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="tax_identification", type="integer", unique=true, nullable=true)
+     */
+    protected $taxIdentification;
 
     /**
      * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
@@ -383,13 +404,92 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
         return $this->groups;
     }
     
+    /**
+     * Get deletedAt
+     *
+     * @return datetime
+     */
     public function getDeletedAt()
     {
         return $this->deletedAt;
     }
 
+    /**
+     * Set deletedAt
+     *
+     * @param datetime $deletedAt
+     */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
     }
+
+    /**
+     * Set bankAccountNumber
+     *
+     * @param string $bankAccountNumber
+     * @return User
+     */
+    public function setBankAccountNumber($bankAccountNumber)
+    {
+        $this->bankAccountNumber = $bankAccountNumber;
+    
+        return $this;
+    }
+
+    /**
+     * Get bankAccountNumber
+     *
+     * @return string
+     */
+    public function getBankAccountNumber()
+    {
+        return $this->bankAccountNumber;
+    }
+
+    /**
+     * Set bankName
+     *
+     * @param string $bankName
+     * @return User
+     */
+    public function setBankName($bankName)
+    {
+        $this->bankName = $bankName;
+    
+        return $this;
+    }
+
+    /**
+     * Get bankName
+     *
+     * @return string
+     */
+    public function getBankName()
+    {
+        return $this->bankName;
+    }
+
+    /**
+     * Set taxIdentification
+     *
+     * @param integer $taxIdentification
+     * @return User
+     */
+    public function setTaxIdentification($taxIdentification)
+    {
+        $this->taxIdentification = $taxIdentification;
+    
+        return $this;
+    }
+
+    /**
+     * Get taxIdentification
+     *
+     * @return integer
+     */
+    public function getTaxIdentification()
+    {
+        return $this->taxIdentification;
+    }   
 }
