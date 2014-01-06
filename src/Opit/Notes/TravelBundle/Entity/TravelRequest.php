@@ -98,13 +98,16 @@ class TravelRequest
     private $accomodations;
     
     /**
-     *
      * @var text
      * @ORM\Column(name="travel_request_id", type="string", length=11, nullable=true)
      */
     private $travelRequestId;
-
     
+    /**
+     * @var TravelExpense
+     * @ORM\OneToOne(targetEntity="TravelExpense", mappedBy="travelRequest", cascade={"persist", "remove"})
+     */
+    private $travelExpense;
     
     public function __construct()
     {
@@ -405,5 +408,28 @@ class TravelRequest
     public function getTravelRequestId()
     {
         return $this->travelRequestId;
+    }
+
+    /**
+     * Set travelExpense
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
+     * @return TravelRequest
+     */
+    public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense = null)
+    {
+        $this->travelExpense = $travelExpense;
+    
+        return $this;
+    }
+
+    /**
+     * Get travelExpense
+     *
+     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
+     */
+    public function getTravelExpense()
+    {
+        return $this->travelExpense;
     }
 }

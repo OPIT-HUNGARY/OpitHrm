@@ -125,6 +125,13 @@ class TravelExpense
     private $userPaidExpenses;
     
     /**
+     * @var TravelRequest
+     *
+     * @ORM\OneToOne(targetEntity="TravelRequest", inversedBy="travelExpense")
+     */
+    private $travelRequest;
+    
+    /**
      * Get id
      *
      * @return integer
@@ -507,5 +514,28 @@ class TravelExpense
     public function getUserPaidExpenses()
     {
         return $this->userPaidExpenses;
+    }
+
+    /**
+     * Set travelRequest
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @return TravelExpense
+     */
+    public function setTravelRequest(\Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest = null)
+    {
+        $this->travelRequest = $travelRequest;
+    
+        return $this;
+    }
+
+    /**
+     * Get travelRequest
+     *
+     * @return \Opit\Notes\TravelBundle\Entity\TravelRequest
+     */
+    public function getTravelRequest()
+    {
+        return $this->travelRequest;
     }
 }
