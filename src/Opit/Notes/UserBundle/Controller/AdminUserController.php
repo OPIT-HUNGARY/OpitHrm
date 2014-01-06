@@ -20,7 +20,7 @@ use Opit\Notes\UserBundle\Entity\Groups;
  *
  * @author OPIT\Notes
  */
-class AdminController extends Controller
+class AdminUserController extends Controller
 {
     /**
      * To generate list job title
@@ -62,9 +62,13 @@ class AdminController extends Controller
         }
 
         $form = $this->createForm(
-            new JobTitleType(),$jobTitle
+            new JobTitleType(),
+            $jobTitle
         );
-        return $this->render('OpitNotesUserBundle:Admin:showJobTitleForm.html.twig', array('form' => $form->createView()));        
+        return $this->render(
+            'OpitNotesUserBundle:Admin:showJobTitleForm.html.twig',
+            array('form' => $form->createView())
+        );
     }
 
     /**
@@ -79,7 +83,6 @@ class AdminController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $id = $request->attributes->get('id');
-        $jobTitleId = $request->attributes->get('id');
         $errorMessages = array();
         $result = array('response' => 'error');
 
@@ -106,8 +109,8 @@ class AdminController extends Controller
 
             if (count($errors) > 0) {
                foreach ($errors as $e) {
-                    $errorMessages[] = $e->getMessage();
-                }
+                   $errorMessages[] = $e->getMessage();
+               }
             }
             $result['errorMessage'] = $errorMessages;
         }
@@ -201,12 +204,7 @@ class AdminController extends Controller
         return $disabledJobTitles;
     }
 
-    /**
-     * @Route("/secured/admin/groups/list", name="OpitNotesUserBundle_admin_groups_list")
-     * @Secure(roles="ROLE_ADMIN")
-     * @Template()
-     */
-    public function groupsListAction()
+    public function getAllGroups()
     {
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
         $disabledRoles = array();
@@ -221,11 +219,24 @@ class AdminController extends Controller
         }
         
         return array(
-                'propertyNames' => array('id', 'name', 'role'),
-                'propertyValues' => $group,
-                'hideReset' => true,
-                'disabledRoles' => $disabledRoles,
-                'numberOfRelations' => $numberOfRelations
+            'propertyNames' => array('id', 'name', 'role'),
+            'propertyValues' => $group,
+            'hideReset' => true,
+            'disabledRoles' => $disabledRoles,
+            'numberOfRelations' => $numberOfRelations
+        );
+    }
+    
+    /**
+     * @Route("/secured/admin/groups/list", name="OpitNotesUserBundle_admin_groups_list")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function groupsListAction()
+    {
+        return $this->render(
+            'OpitNotesUserBundle:Admin:groupsList.html.twig',
+            $this->getAllGroups()
         );
     }
    
@@ -234,25 +245,25 @@ class AdminController extends Controller
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
-     */    
+     */
     public function groupsShowAction()
     {
         $entityManager = $this->getDoctrine()->getEntityManager();
         $request = $this->getRequest();
         $groupId = $request->attributes->get('id');
         
-        $requestGroup = $request->request->get('group');
+        $requestGroup = $request->request->get('value');
         $groupRoleName = 'ROLE_' . strtoupper($requestGroup);
         $groupName = ucfirst($requestGroup);
         
         if ('new' === $groupId) {
             $group = new Groups();
         } else {
-            $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($groupId);            
+            $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($groupId);
         }
         
         $group->setName($groupName);
-        $group->setRole($groupRoleName);    
+        $group->setRole($groupRoleName);
         $entityManager->persist($group);
         
         $role = $this->getDoctrine()
@@ -262,14 +273,12 @@ class AdminController extends Controller
         if (null !== $role) {
             return new JsonResponse(array('duplicate' => true));
         } else {
-            $entityManager->flush();   
+            $entityManager->flush();
         }
         
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
         
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', 
-            $this->groupsListAction()
-        );
+        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
     }
     
     /**
@@ -277,7 +286,7 @@ class AdminController extends Controller
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
-     */      
+     */
     public function deleteGroupAction()
     {
         $entityManager = $this->getDoctrine()->getEntityManager();
@@ -305,12 +314,10 @@ class AdminController extends Controller
         
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
         
-        if(count($userRelated) > 0) {
+        if (count($userRelated) > 0) {
             return new JsonResponse(array('userRelated' => $userRelated));
         }
         
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', 
-            $this->groupsListAction()
-        );
+        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
     }
 }

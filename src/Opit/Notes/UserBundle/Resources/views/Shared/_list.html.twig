@@ -60,6 +60,8 @@
                     {% set title %}
                         {% if 'groups' in app.request.attributes.get('_route') %}
                             role
+                        {% elseif 'travelexpensetype' in app.request.attributes.get('_route') or 'expensetype' in app.request.attributes.get('_route') %}
+                            expense type
                         {% else %}
                             user
                         {% endif %}

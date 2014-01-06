@@ -1,0 +1,45 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    Expense type list - {{ parent() }}
+{% endblock %}
+    {% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotesuser/css/list.css')  }}" />
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'expenseTypeForm';
+        var valueField = 'expenseType';
+        var url = 'OpitNotesUserBundle_admin_travelexpensetype_show';
+        var removeUrl = 'OpitNotesUserBundle_admin_expensetype_delete';
+        var propertyName = 'expense type';
+        var propertyNameCapital = 'Expense type';
+    </script>
+    {% javascripts
+        '@OpitNotesUserBundle/Resources/public/js/Admin/et_role_funcs.js'
+        output='js/notes_admin_groups_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block body %}
+<h1>Expense Type List</h1>
+<table>
+    <tr>
+        <td class="no-padding">
+            <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
+<div id="list-reply-message"></div>
+{% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
+    'propertyNames': propertyNames,
+    'propertyValues': propertyValues,
+    'hideReset': ''
+    } %}
+{% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
+        'fieldName': 'expenseType',
+        'fieldLabel': 'Expense type'
+    } %}
+{% endblock %}

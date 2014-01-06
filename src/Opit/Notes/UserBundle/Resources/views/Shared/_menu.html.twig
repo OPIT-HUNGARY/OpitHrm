@@ -13,6 +13,12 @@
                     <li><a href="{{ path('OpitNotesUserBundle_admin_list_jobtitle') }}">JobTitles management</a></li>
                 </ul>
             </div>
+            <div class="subMenuItem">
+                <a href="#" class='dropdown'>Travel</a>
+                <ul>
+                    <li><a href='{{ path('OpitNotesUserBundle_admin_travelexpensetype_list') }}'>Travel expense type</a></li>
+                </ul>
+            </div>
         </div>
     </div>
     <div class="mainMenu {{ (module == 'user') ? 'active' : '' }}" id="userMenuTab">

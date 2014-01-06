@@ -6,33 +6,33 @@
     display: 'none'
   });
 
-  showRoleDialog = function(groupId, groupName, description, url, title, flashMessage) {
+  showRoleDialog = function(id, name, description, url, title, flashMessage) {
     var selfDialog;
     $('#dialog-edititem h2').html(title);
     $('.description').html(description);
     selfDialog = $('<div>');
-    selfDialog.html($('#roleForm').html());
-    selfDialog.find('#group').val(groupName);
-    return selfDialog.dialog({
+    selfDialog.html($("#" + valueForm).html());
+    selfDialog.find("#" + valueField).val(name);
+    selfDialog.dialog({
       width: 400,
       modal: true,
       title: title,
       buttons: {
         Create: function() {
-          var group;
-          if (selfDialog.find('#group').val()) {
-            group = selfDialog.find('#group').val();
+          var value;
+          if (selfDialog.find("#" + valueField).val()) {
+            value = selfDialog.find("#" + valueField).val();
             return $.ajax({
               type: 'POST',
               url: Routing.generate(url, {
-                id: groupId
+                id: id
               }),
               data: {
-                'group': group
+                'value': value
               }
             }).done(function(data) {
               if (data.duplicate) {
-                $(document).data('notes').funcs.showAlert(data, 'create', 'Role already exists', true);
+                $(document).data('notes').funcs.showAlert(data, 'create', "" + propertyName + " already exists", true);
               } else {
                 $('#list-table').replaceWith(data);
                 $(document).data('notes').funcs.showAlert(data, 'create', flashMessage);
@@ -50,31 +50,34 @@
         }
       }
     });
+    if (name) {
+      return $('.ui-dialog-buttonset .ui-button:first-child .ui-button-text').text('Edit');
+    }
   };
 
-  deleteGroup = function(groupId, roleName) {
+  deleteGroup = function(id, name) {
     var selfDialog;
-    if (!!roleName) {
+    if (!!name) {
       selfDialog = $('<div>');
-      selfDialog.html("Are you sure you want to delete role(s) \"" + roleName + "\"?");
+      selfDialog.html("Are you sure you want to delete " + propertyName + "(s) \"" + name + "\"?");
       return selfDialog.dialog({
         width: 400,
         modal: true,
-        title: 'Delete role',
+        title: "Delete " + propertyName,
         buttons: {
           Continue: function() {
             $.ajax({
               type: 'POST',
-              url: Routing.generate('OpitNotesUserBundle_admin_groups_delete'),
+              url: Routing.generate(removeUrl),
               data: {
-                id: groupId
+                id: id
               }
             }).done(function(data) {
               if (data.userRelated) {
-                return $(document).data('notes').funcs.showAlert(data, 'create', 'Deletion not allowed for roles with relations', true);
+                return $(document).data('notes').funcs.showAlert(data, 'create', "Deletion not allowed for " + propertyName + "(s) with relations", true);
               } else {
                 $('#list-table').replaceWith(data);
-                return $(document).data('notes').funcs.showAlert(data, 'create', 'Role(s) successfully deleted!');
+                return $(document).data('notes').funcs.showAlert(data, 'create', "" + propertyNameCapital + "(s) successfully deleted!");
               }
             });
             return selfDialog.dialog('destroy');
@@ -91,39 +94,39 @@
   };
 
   $('#main-wrapper').on('click', '#add', function() {
-    return showRoleDialog('new', '', 'Create a new role.', 'OpitNotesUserBundle_admin_groups_show', 'Create role', 'Role successfully created!');
+    return showRoleDialog('new', '', "Create a new " + propertyName + ".", url, "Create " + propertyName, "" + propertyNameCapital + " successfully created!");
   });
 
   $('#main-wrapper').on('click', '.edit-group', function() {
-    var groupId, groupName;
-    groupId = $(this).closest('tr').children('td:nth-child(2)').html();
-    groupName = $(this).closest('tr').children('td:nth-child(3)').html();
-    return showRoleDialog(groupId, groupName, 'Edit selected role.', 'OpitNotesUserBundle_admin_groups_show', 'Edit role', 'Role successfully edited!');
+    var id, name;
+    id = $(this).closest('tr').children('td:nth-child(2)').html();
+    name = $(this).closest('tr').children('td:nth-child(3)').html();
+    return showRoleDialog(id, name, "Edit selected " + propertyName + ".", url, "Edit " + propertyName, "" + propertyNameCapital + " successfully edited!");
   });
 
   $('#main-wrapper').on('click', '.remove-group', function() {
-    var groupId, parentTr, roleName;
+    var id, name, parentTr;
     parentTr = $(this).closest('tr');
-    roleName = parentTr.children('td:nth-child(3)').html();
-    groupId = parentTr.children('td:nth-child(2)').html();
+    name = parentTr.children('td:nth-child(3)').html();
+    id = parentTr.children('td:nth-child(2)').html();
     parentTr.find('input').attr('checked', true);
-    return deleteGroup(groupId, roleName);
+    return deleteGroup(id, name);
   });
 
   $('#delete').on('click', function() {
-    var groupIds, roleName;
-    groupIds = [];
-    roleName = '';
+    var ids, names;
+    ids = [];
+    names = '';
     $('.list-delete-user').each(function() {
       var parentTr;
       if ($(this).prop('checked')) {
         parentTr = $(this).closest('tr');
-        groupIds.push(parentTr.children('td:nth-child(2)').html());
-        return roleName += parentTr.children('td:nth-child(3)').html() + ', ';
+        ids.push(parentTr.children('td:nth-child(2)').html());
+        return names += parentTr.children('td:nth-child(3)').html() + ', ';
       }
     });
-    roleName = roleName.substring(0, roleName.length - 2);
-    return deleteGroup(groupIds, roleName);
+    names = names.substring(0, names.length - 2);
+    return deleteGroup(ids, names);
   });
 
   $('.width-24-fix .fa-trash-o').on('click', function() {
