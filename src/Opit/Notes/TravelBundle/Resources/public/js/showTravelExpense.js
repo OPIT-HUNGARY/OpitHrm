@@ -153,7 +153,16 @@
   $form.validate({
     ignore: [],
     rules: {
-      "travelExpense[arrivalDateTime][time][minute]": "compare"
+      'travelExpense[arrivalDateTime][time][minute]': 'compare',
+      'travelExpense[taxIdentification]': {
+        maxlength: 9
+      },
+      'travelExpense[advancesPayback]': {
+        digits: true
+      },
+      'travelExpense[toSettle]': {
+        digits: true
+      }
     }
   });
 

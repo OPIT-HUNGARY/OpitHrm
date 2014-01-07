@@ -142,7 +142,10 @@ $.validator.addMethod 'compare', (value, element) ->
 $form.validate
     ignore: []
     rules:
-        "travelExpense[arrivalDateTime][time][minute]": "compare"
+        'travelExpense[arrivalDateTime][time][minute]': 'compare',
+        'travelExpense[taxIdentification]': {maxlength: 9},
+        'travelExpense[advancesPayback]': {digits: true},
+        'travelExpense[toSettle]': {digits: true}
  
 $('#travelExpense_add_travel_expense').on 'click', ->
     event.preventDefault()

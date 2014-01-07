@@ -36,6 +36,19 @@ class ExpenseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $userAttributes = array('placeholder' => 'Name', 'class' => 'te-claim');
+        $user = $options['data']->getUser();
+        $taxId = null;
+        $bankName = null;
+        $bankAccountNumber = null;
+        $employeeName = null;
+        
+        if (null !== $user) {
+            $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getTaxIdentification();
+            $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getBankname();
+            $bankAccountNumber = ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getBankAccountNumber();
+            $employeeName = ($eName = $options['data']->getUser()->getEmployeeName()) ? $eName : $user->getEmployeeName();
+        }
+        
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
             if (false === $this->isGranted) {
                 $userAttributes['disabled'] = 'disabled';
@@ -45,12 +58,13 @@ class ExpenseType extends AbstractType
         $builder->add('user_name', 'text', array(
             'label' => 'Epmloyee name',
             'mapped' => false,
-            'data' => ($user = $options['data']->getUser()) ? $user->getEmployeeName() : null,
+            'data' => $employeeName,
             'attr' => $userAttributes
         ));
         
         $builder->add('taxIdentification', 'text', array(
             'label' => 'Tax id',
+            'data' => $taxId,
             'attr' => array('placeholder' => 'Tax id', 'class' => 'te-claim')
         ));
         
@@ -69,11 +83,13 @@ class ExpenseType extends AbstractType
         
         $builder->add('bankName', 'text', array(
             'label' => 'Bank name',
+            'data' => $bankName,
             'attr' => array('placeholder' => 'Bank name', 'class' => 'te-claim')
         ));
         
         $builder->add('bankAccountNumber', 'text', array(
             'label' => 'Bank account number',
+            'data' => $bankAccountNumber,
             'attr' => array('placeholder' => 'Bank account number', 'class' => 'te-claim')
         ));
         
