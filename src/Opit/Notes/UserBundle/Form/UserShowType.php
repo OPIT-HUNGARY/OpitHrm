@@ -91,7 +91,7 @@ class UserShowType extends AbstractType
         $builder->add('bankName', 'text', array('attr' => array(
             'placeholder' => 'Bank Name'
         )));
-        $builder->add('taxIdentification', 'text', array('attr' => array(
+        $builder->add('taxIdentification', 'integer', array('attr' => array(
             'placeholder' => 'Tax number'
         )));
         if (null === $userId) {

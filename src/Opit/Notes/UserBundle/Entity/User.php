@@ -124,12 +124,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="tax_identification", type="integer", unique=true, nullable=true)
+     * @ORM\Column(name="tax_identification", type="bigint", unique=true, nullable=true)
      * @Assert\NotBlank(message="The Tax number should not be blank.")
      * @Assert\Type(type="integer", message="The Tax  number {{ value }} should be only numbers.")
-     * @Assert\Length(
-     *      min = "10",
-     *      max = "11",
+     * @Assert\Range(
+     *      min = "1000000000",
+     *      max = "9999999999",
      *      minMessage = "The Tax number should not be at least {{ limit }} characters length",
      *      maxMessage = "The Tax number number should not be longer than {{ limit }} characters length"
      * )
