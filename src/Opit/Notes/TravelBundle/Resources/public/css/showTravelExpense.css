@@ -11,6 +11,8 @@ and open the template in the editor.
 
 .display-none { display: none !important; }
 
+.red-text { color: #aa0000; }
+
 #travelExpense { display: none; }
 
 .time-picker { margin: 2px 0 0 5px; }

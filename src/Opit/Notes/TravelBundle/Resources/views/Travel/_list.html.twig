@@ -12,9 +12,10 @@
         <th>{{ orderIcon }}Opportunity name</th>
         <th>{{ orderIcon }}Destinations</th>
         <th>{{ orderIcon }}Accomodations</th>
+        <th>Travel expense</th>
         <th>Actions</th>
     </tr>
-    {% for travelRequest in travelRequests %}
+    {% for i, travelRequest in travelRequests %}
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
         <td class="clickable" data-tr-id='{{ travelRequest.id }}'>{{ travelRequest.travelRequestId }}</td>
@@ -27,6 +28,13 @@
         </td>
         <td>
             {{ travelRequest.accomodations|length }}
+        </td>
+        <td>
+            {% if teIds[i] == 'new' %}
+            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" title="Add travel expense"><i class="fa fa-plus-square"></i></a>
+            {% else %}
+            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" title="Edit travel expense"><i class="fa fa-pencil-square-o"></i></a>
+            {% endif %}
         </td>
         <td>
             <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>

@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
+use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TRDestination;
 
@@ -44,19 +45,36 @@ class TravelController extends Controller
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
         $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
-
+        $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
+        $teIds = array();
+        
         if (!$securityContext->isGranted('ROLE_ADMIN')) {
             $allowedTRs = new ArrayCollection();
             foreach ($travelRequests as $travelRequest) {
                 if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
                     $allowedTRs->add($travelRequest);
+                    $travelExpense = ($travelExpenses->findOneBy(array('travelRequest_id' => $travelRequest)));
+                    if (null !== $travelExpense) {
+                        $teIds[] = $travelExpense->getId();
+                    } else {
+                        $teIds[] = 'new';
+                    }
                 }
             }
         } else {
+            foreach ($travelRequests as $travelRequest) {
+                $travelExpense = ($travelExpenses->findOneBy(array('travelRequest' => $travelRequest)));
+                if (null !== $travelExpense) {
+                    $teIds[] = $travelExpense->getId();
+                } else {
+                    $teIds[] = 'new';
+                }
+            }
+            
             $allowedTRs = $travelRequests;
         }
         
-        return array("travelRequests" => $allowedTRs);
+        return array('travelRequests' => $allowedTRs, 'teIds' => $teIds);
     }
 
     /**

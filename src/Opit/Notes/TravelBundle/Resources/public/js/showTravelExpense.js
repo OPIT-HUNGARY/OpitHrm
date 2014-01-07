@@ -47,6 +47,8 @@
     arrivalTime = $('#travelExpense_arrivalDateTime_time');
     departureDate = $('#travelExpense_departureDateTime_date');
     departureTime = $('#travelExpense_departureDateTime_time');
+    arrivalDate.attr('readonly', 'readonly');
+    departureDate.attr('readonly', 'readonly');
     arrivalTime.addClass('inlineElements time-picker');
     departureTime.addClass('inlineElements time-picker');
     arrivalDate.css({

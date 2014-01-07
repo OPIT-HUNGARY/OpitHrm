@@ -11,6 +11,8 @@ and open the template in the editor.
 
 .display-none { display: none !important; }
 
+.red-text { color: #aa0000; }
+
 #travelRequest { display: none; }
 
 #travelRequest label, .travelForm label { display: block; }

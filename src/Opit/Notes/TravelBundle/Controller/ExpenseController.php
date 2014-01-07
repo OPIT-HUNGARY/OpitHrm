@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
+use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -82,9 +83,20 @@ class ExpenseController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpenseId = $request->attributes->get('id');
+        $trId = $request->query->get('tr');
         $isNewTravelExpense = "new" !== $travelExpenseId;
         $securityContext = $this->get('security.context');
         $currentUser = $securityContext->getToken()->getUser();
+        
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
+
+        if (null === $travelRequest) {
+            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+        }
+        
+        $travelRequestId = $travelRequest->getTravelRequestId();
+        $trArrivalDate = $travelRequest->getArrivalDate();
+        $trDepartureDate = $travelRequest->getDepartureDate();
         
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
         
@@ -104,6 +116,9 @@ class ExpenseController extends Controller
         
         $entityManager->getFilters()->disable('softdeleteable');
         
+        $travelExpense->setArrivalDateTime($trArrivalDate);
+        $travelExpense->setDepartureDateTime($trDepartureDate);
+        
         $form = $this->createForm(
             new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
             $travelExpense,
@@ -116,14 +131,20 @@ class ExpenseController extends Controller
             if ($form->isValid()) {
                 $this->removeChildNodes($entityManager, $travelExpense, $children);
                 
+                $travelExpense->setTravelRequest($travelRequest);
+                
                 $entityManager->persist($travelExpense);
                 $entityManager->flush();
                 
-                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_expense_list'));
+                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
             }
         }
         
-        return array('form' => $form->createView(), 'travelExpense' => $travelExpense);
+        return array(
+            'form' => $form->createView(),
+            'travelExpense' => $travelExpense,
+            'trId' => $travelRequestId
+            );
     }
     
     /**
@@ -178,7 +199,7 @@ class ExpenseController extends Controller
         $entityManager->flush();
         
         return new JsonResponse('0');
-    }    
+    }
     
     /**
      * 

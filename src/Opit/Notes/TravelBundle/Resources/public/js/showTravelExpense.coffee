@@ -48,6 +48,9 @@ $(document).ready ->
     departureDate = $('#travelExpense_departureDateTime_date')
     departureTime = $('#travelExpense_departureDateTime_time')
     
+    arrivalDate.attr 'readonly', 'readonly'
+    departureDate.attr 'readonly', 'readonly'
+    
     arrivalTime.addClass 'inlineElements time-picker'
     departureTime.addClass 'inlineElements time-picker'
     
