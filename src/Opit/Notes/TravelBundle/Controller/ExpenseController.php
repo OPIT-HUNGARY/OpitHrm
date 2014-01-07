@@ -28,6 +28,9 @@ class ExpenseController extends Controller
      */
     public function listAction()
     {
+        //show error message to disable use of this function
+        throw $this->createNotFoundException('Page not found!');
+        
         $entityManager = $this->getDoctrine()->getManager();
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
@@ -54,6 +57,9 @@ class ExpenseController extends Controller
      */
     public function searchAction()
     {
+        //show error message to disable use of this function
+        throw $this->createNotFoundException('Page not found!');
+        
         $request = $this->getRequest()->request->all();
         $empty = array_filter($request, function ($value) {
             return !empty($value);
@@ -88,10 +94,15 @@ class ExpenseController extends Controller
         $securityContext = $this->get('security.context');
         $currentUser = $securityContext->getToken()->getUser();
         
+        if (null === $trId) {
+            throw $this->createNotFoundException('No travel request was found with the given id!');
+        }
+        
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
 
         if (null === $travelRequest) {
-            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+            //show error message if no travel request was found with the given id
+            throw $this->createNotFoundException('No travel request was found with the given id!');
         }
         
         $travelRequestId = $travelRequest->getTravelRequestId();
