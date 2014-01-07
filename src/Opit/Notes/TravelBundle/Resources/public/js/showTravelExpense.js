@@ -157,7 +157,7 @@
     rules: {
       'travelExpense[arrivalDateTime][time][minute]': 'compare',
       'travelExpense[taxIdentification]': {
-        maxlength: 9
+        maxlength: 11
       },
       'travelExpense[advancesPayback]': {
         digits: true

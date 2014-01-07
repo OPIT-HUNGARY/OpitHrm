@@ -12,8 +12,8 @@
         <th>{{ orderIcon }}Opportunity name</th>
         <th>{{ orderIcon }}Destinations</th>
         <th>{{ orderIcon }}Accomodations</th>
-        <th>Travel expense</th>
         <th>Actions</th>
+        <th>Travel claim</th>
     </tr>
     {% for i, travelRequest in travelRequests %}
     <tr class="clickableTableRow">
@@ -30,16 +30,22 @@
             {{ travelRequest.accomodations|length }}
         </td>
         <td>
-            {% if teIds[i] == 'new' %}
-            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" title="Add travel expense"><i class="fa fa-plus-square"></i></a>
-            {% else %}
-            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" title="Edit travel expense"><i class="fa fa-pencil-square-o"></i></a>
-            {% endif %}
-        </td>
-        <td>
             <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
             {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
             <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
+            {% endif %}
+        </td>
+        <td>
+            {% if teIds[i] == 'new' %}
+            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
+                <i class="fa fa-plus-square fa-1x"></i>
+                <span>Add travel expense</span>
+            </a>
+            {% else %}
+            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
+                <i class="fa fa-pencil-square-o"></i>
+                <span>Edit travel expense</span>
+            </a>
             {% endif %}
         </td>
     </tr>

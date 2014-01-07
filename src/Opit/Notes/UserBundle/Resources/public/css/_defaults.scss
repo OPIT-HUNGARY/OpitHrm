@@ -271,3 +271,17 @@ input {
 .display-none{
     display:none;
 }
+
+.small-button{
+    padding:3px 10px 3px 10px;
+    background-color: $darkGrey;
+    color:white !important;
+    @include border-radius(5px);
+    i{
+        float:left;
+        margin:3px 5px 0 0;
+    }
+    span{
+        display:inline-block;
+    }
+}

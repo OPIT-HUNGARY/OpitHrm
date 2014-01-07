@@ -20,9 +20,9 @@
 {% block body %}
     <h1>
         {% if travelExpense.id == 'new' or travelExpense.id is empty %}
-        Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
+        Add Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% else %}
-        Edit Travel Expense ({{ trId }})
+        Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% endif %}
     </h1>
 

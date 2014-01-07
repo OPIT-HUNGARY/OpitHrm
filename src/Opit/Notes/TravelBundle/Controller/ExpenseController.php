@@ -113,6 +113,9 @@ class ExpenseController extends Controller
         
         if (false === $isNewTravelExpense) {
             $travelExpense->setUser($currentUser);
+        } else {
+            $trArrivalDate = $travelExpense->getArrivalDateTime();
+            $trDepartureDate = $travelExpense->getDepartureDateTime();
         }
         
         $children = new ArrayCollection();
@@ -239,11 +242,14 @@ class ExpenseController extends Controller
     protected function removeChildNodes(&$entityManager, $travelExpense, $children)
     {
         foreach ($children as $child) {
-            $getter = ($child instanceof TEUserPaidExpense) ? 'getUserPaidExpenses' : 'getCompanyPaidExpenses';
+            $getter =
+                (strstr(get_class($child), 'TEUserPaidExpense')) ? 'getUserPaidExpenses' : 'getCompanyPaidExpenses';
+            
             if (false === $travelExpense->$getter()->contains($child)) {
                 $child->setTravelExpense(null);
                 $entityManager->remove($child);
             }
         }
+        //exit;
     }
 }
