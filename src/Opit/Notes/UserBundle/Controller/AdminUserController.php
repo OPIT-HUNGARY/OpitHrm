@@ -35,7 +35,7 @@ class AdminUserController extends Controller
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
         $jobTitles = $em->getRepository('OpitNotesUserBundle:JobTitle')->findAll();
-        $disabledJobTitles = $this->_getAssignedJobTitlesToUsers();
+        $disabledJobTitles = $this->getAssignedJobTitlesToUsers();
 
         return $this->render(
             $showList ? 'OpitNotesUserBundle:Admin:_listJobTitle.html.twig' : 'OpitNotesUserBundle:Admin:listJobTitle.html.twig',
@@ -108,7 +108,7 @@ class AdminUserController extends Controller
             $errors = $validator->validate($jobTitle);
 
             if (count($errors) > 0) {
-               foreach ($errors as $e) {
+                foreach ($errors as $e) {
                    $errorMessages[] = $e->getMessage();
                }
             }
@@ -126,7 +126,7 @@ class AdminUserController extends Controller
     public function deleteJobTitleAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $disabledJobTitles = $this->_getAssignedJobTitlesToUsers();
+        $disabledJobTitles = $this->getAssignedJobTitlesToUsers();
         $request = $this->getRequest();
         $ids = (array) $request->request->get('delete-jobtitle');
         $result = array('response' => 'error');
@@ -185,7 +185,7 @@ class AdminUserController extends Controller
      *
      * @return array $disabledJobTitles key is job title id, value is the number of relations.
      */
-    private function _getAssignedJobTitlesToUsers()
+    private function getAssignedJobTitlesToUsers()
     {
         $em = $this->getDoctrine()->getManager();
         $users = $em->getRepository('OpitNotesUserBundle:User')->findAll();

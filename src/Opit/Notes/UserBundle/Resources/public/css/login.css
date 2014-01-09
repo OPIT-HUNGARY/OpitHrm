@@ -66,6 +66,14 @@ and open the template in the editor.
 
 .modal-description { background-color: #f28c38; color: white; margin-bottom: 5px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
+input.error, select.error { border: solid 2px #aa0000; display: block; }
+
+label.error, label.custom-label-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-top: 5px; display: block; z-index: 4; }
+
+label.custom-label-error { display: inline-block; }
+
+label.valid { display: none !important; }
+
 .alert-message { border: 1px solid transparent; margin-top: 10px; margin-bottom: 10px; padding: 10px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
 .alert-message ul { margin: 3px; }
 
@@ -74,6 +82,8 @@ and open the template in the editor.
 .success-message { color: #3c763d; background-color: #dff0d8; border-color: #3c763d; }
 
 .pointer { cursor: pointer; }
+
+.no-pointer { cursor: default !important; }
 
 .absolute { position: absolute; }
 
@@ -84,6 +94,12 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 .input-prefix-position { top: 18px; left: 5px; }
 
 .margin-top-2 { margin-top: 2px; }
+
+.margin-top-20 { margin-top: 20px; }
+
+.padding-top-20 { padding-top: 20px; }
+
+.margin-left-10 { margin-left: 10px; }
 
 .darker-gray-color { color: #505050; }
 

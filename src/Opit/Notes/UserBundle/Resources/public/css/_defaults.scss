@@ -35,47 +35,47 @@ $successGreen: #3c763d;
 $alertGreen: #dff0d8;
 
 @mixin border-radius($radius) {
-  -webkit-border-radius: $radius;
-     -moz-border-radius: $radius;
-      -ms-border-radius: $radius;
-       -o-border-radius: $radius;
-          border-radius: $radius;
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
 }
 
 @mixin border-top-left-radius($radius) {
-  -webkit-border-top-left-radius: $radius;
-     -moz-border-top-left-radius: $radius;
-      -ms-border-top-left-radius: $radius;
-       -o-border-top-left-radius: $radius;
-          border-top-left-radius: $radius;
+    -webkit-border-top-left-radius: $radius;
+    -moz-border-top-left-radius: $radius;
+    -ms-border-top-left-radius: $radius;
+    -o-border-top-left-radius: $radius;
+    border-top-left-radius: $radius;
 }
 @mixin border-top-right-radius($radius) {
-  -webkit-border-top-right-radius: $radius;
-     -moz-border-top-right-radius: $radius;
-      -ms-border-top-right-radius: $radius;
-       -o-border-top-right-radius: $radius;
-          border-top-right-radius: $radius;
+    -webkit-border-top-right-radius: $radius;
+    -moz-border-top-right-radius: $radius;
+    -ms-border-top-right-radius: $radius;
+    -o-border-top-right-radius: $radius;
+    border-top-right-radius: $radius;
 }
 @mixin border-bottom-left-radius($radius) {
-  -webkit-border-bottom-left-radius: $radius;
-     -moz-border-bottom-left-radius: $radius;
-      -ms-border-bottom-left-radius: $radius;
-       -o-border-bottom-left-radius: $radius;
-          border-bottom-left-radius: $radius;
+    -webkit-border-bottom-left-radius: $radius;
+    -moz-border-bottom-left-radius: $radius;
+    -ms-border-bottom-left-radius: $radius;
+    -o-border-bottom-left-radius: $radius;
+    border-bottom-left-radius: $radius;
 }
 @mixin border-bottom-right-radius($radius) {
-  -webkit-border-bottom-right-radius: $radius;
-     -moz-border-bottom-right-radius: $radius;
-      -ms-border-bottom-right-radius: $radius;
-       -o-border-bottom-right-radius: $radius;
-          border-bottom-right-radius: $radius;
+    -webkit-border-bottom-right-radius: $radius;
+    -moz-border-bottom-right-radius: $radius;
+    -ms-border-bottom-right-radius: $radius;
+    -o-border-bottom-right-radius: $radius;
+    border-bottom-right-radius: $radius;
 }
 
 @mixin gradient($color1, $color2, $color3){
-        background: linear-gradient($color1, $color2, $color3);
-        background: -webkit-linear-gradient($color1, $color2, $color3);
-        background: -o-linear-gradient($color1, $color2, $color3);
-        background: -moz-linear-gradient($color1, $color2, $color3);
+    background: linear-gradient($color1, $color2, $color3);
+    background: -webkit-linear-gradient($color1, $color2, $color3);
+    background: -o-linear-gradient($color1, $color2, $color3);
+    background: -moz-linear-gradient($color1, $color2, $color3);
 }
 @mixin box-shadow($left, $top, $scatter, $size, $color){
     box-shadow: $left $top $scatter $size $color;
@@ -209,6 +209,30 @@ table.bordered{
     @include border-radius(5px);
 }
 
+input.error, select.error{
+    border:solid 2px $defaultRed;
+    display:block;
+}
+
+label.error, label.custom-label-error{
+    color:$defaultRed;
+    background-color:$lightGrayHover;
+    padding:2px;
+    border:solid 2px $defaultRed;
+    @include border-radius(5px);
+    margin-top:5px;
+    display:block;
+    z-index:4;
+}
+
+label.custom-label-error{
+    display:inline-block;
+}
+
+label.valid{
+    display:none !important;
+}
+
 .alert-message {
     border: 1px solid transparent;
     margin-top: 10px;
@@ -218,7 +242,7 @@ table.bordered{
     @include border-top-left-radius(5px);
     @include border-bottom-right-radius(5px);
     @include border-bottom-left-radius(5px);
-    
+
     ul {
         margin: 3px;
     }
@@ -239,7 +263,9 @@ table.bordered{
 .pointer{
     cursor:pointer;
 }
-
+.no-pointer{
+    cursor:default !important;
+}
 .absolute {
     position: absolute;
 }
@@ -262,6 +288,17 @@ input {
 
 .margin-top-2 {
     margin-top: 2px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+.padding-top-20 {
+    padding-top: 20px;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
 }
 
 .darker-gray-color{

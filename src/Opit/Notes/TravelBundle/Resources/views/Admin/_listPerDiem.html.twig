@@ -1,0 +1,5 @@
+<div class="container  padding-top-20">
+    {% for perDiem in perDiems %}
+       {{ render(controller('OpitNotesUserBundle:AdminTravel:showPerDiem', { 'id': perDiem.getId })) }}
+    {% endfor %}
+</div>

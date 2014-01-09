@@ -130,8 +130,8 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @Assert\Range(
      *      min = "1000000000",
      *      max = "9999999999",
-     *      minMessage = "The Tax number should not be at least {{ limit }} characters length",
-     *      maxMessage = "The Tax number number should not be longer than {{ limit }} characters length"
+     *      minMessage = "The Tax number should not be at least 10 characters length",
+     *      maxMessage = "The Tax number number should not be longer than 10 characters length"
      * )
      */
     protected $taxIdentification;
