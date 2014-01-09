@@ -4,6 +4,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * TravelExpense
@@ -131,6 +132,12 @@ class TravelExpense
      */
     private $travelRequest;
     
+
+    /**
+     * @ORM\OneToMany(targetEntity="StatesTravelExpenses", mappedBy="travelExpense", cascade={"persist", "remove"})
+     */
+    protected $states;
+
     /**
      * Get id
      *
@@ -446,6 +453,7 @@ class TravelExpense
     {
         $this->userPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
         $this->companyPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->states = new ArrayCollection();
     }
 
     /**
@@ -537,5 +545,39 @@ class TravelExpense
     public function getTravelRequest()
     {
         return $this->travelRequest;
+    }
+
+    /**
+     * Add states
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $states
+     * @return TravelExpense
+     */
+    public function addState(\Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $states)
+    {
+        $states->setTravelExpense($this); // synchronously updating inverse side
+        $this->states[] = $states;
+
+        return $this;
+    }
+
+    /**
+     * Remove states
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $states
+     */
+    public function removeState(\Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $states)
+    {
+        $this->states->removeElement($states);
+    }
+
+    /**
+     * Get states
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStates()
+    {
+        return $this->states;
     }
 }

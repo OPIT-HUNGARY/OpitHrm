@@ -109,10 +109,16 @@ class TravelRequest
      */
     private $travelExpense;
     
+    /**
+     * @ORM\OneToMany(targetEntity="StatesTravelRequests", mappedBy="travelRequest", cascade={"persist", "remove"})
+     */
+    protected $states;
+
     public function __construct()
     {
         $this->destinations = new ArrayCollection();
         $this->accomodations = new ArrayCollection();
+        $this->states = new ArrayCollection();
     }
 
     /**
@@ -431,5 +437,39 @@ class TravelRequest
     public function getTravelExpense()
     {
         return $this->travelExpense;
+    }
+
+    /**
+     * Add states
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states
+     * @return TravelRequest
+     */
+    public function addState(\Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states)
+    {
+        $states->setTravelRequest($this); // synchronously updating inverse side
+        $this->states[] = $states;
+
+        return $this;
+    }
+
+    /**
+     * Remove states
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states
+     */
+    public function removeState(\Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states)
+    {
+        $this->states->removeElement($states);
+    }
+
+    /**
+     * Get states
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStates()
+    {
+        return $this->states;
     }
 }
