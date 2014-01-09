@@ -18,11 +18,11 @@ class PerDiemType extends AbstractType
         $inArray = array_key_exists('data',$options);
         $builder->add('hours', 'integer', array(
             'label' => 'Hours',
-            'attr' => array('placeholder' => 'Hours', 'class' => 'te-claim hours', 'min'=>0, 'max'=>24)
+            'attr' => array('placeholder' => 'Hours', 'class' => 'te-claim hours width-80-fix', 'min'=>0, 'max'=>24)
         ));
         $builder->add('ammount', 'integer', array(
             'label' => 'Amount',
-            'attr' => array('placeholder' => 'Amount', 'class' => 'te-claim amount', 'min'=>0)
+            'attr' => array('placeholder' => 'Amount', 'class' => 'te-claim amount width-80-fix', 'min'=>0)
         ));
         $builder->add('id', 'hidden', array(
             'mapped'=>false,

@@ -9,11 +9,11 @@
     <div id="list-reply-message"></div>
    <form class="formFieldset">
         {% include 'OpitNotesTravelBundle:Admin:_listPerDiem.html.twig' %}
-        <div class="addFormFieldsetChild formFieldsetButton">
-            <div id="addPerDiem">
+        <div class="addFormFieldsetChild formFieldsetButton no-pointer">
+            <span id="addPerDiem" class="pointer">
                 <i class="fa fa-plus-square"></i>
                 Add Per diem
-            </div>
+            </span>
         </div>
     </form>
     <a href="{{ path('OpitNotesUserBundle_admin_save_perdiem') }}"><button id="save" class="button">Save</button></a>

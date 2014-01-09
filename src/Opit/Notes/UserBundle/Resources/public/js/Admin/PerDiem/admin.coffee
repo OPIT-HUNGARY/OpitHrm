@@ -43,11 +43,10 @@ validationOfGreaterThan0 = (valueOfAmount) ->
         isGreaterThan0 = false
     return isGreaterThan0
 
-# validation - key up validation for hours
-$('.container').on 'change', '.hours', ->
-    isLessThen24 = validationOfLessThan24($(@).val())
+hoursCheck = (hoursElement) ->
+    isLessThen24 = validationOfLessThan24(hoursElement.val())
     isUnique = validationOfHoursCompare()
-    $wrapper = $(@).parent()
+    $wrapper = hoursElement.parent()
     # check if hour less than 24
     if !isLessThen24
         if $wrapper.children('label.custom-lablel-error').length is 0
@@ -62,11 +61,22 @@ $('.container').on 'change', '.hours', ->
             $wrapper.prepend errorMessage
         return false
     else
-        $wrapper.children('label.custom-label-error').remove()
-        $wrapper.children('br').remove()
-        return true
+        hours = $('form').find('.hours')
+        hours.each (index) ->
+            $wrapper = $(@).parent()
+            $wrapper.children('label.custom-label-error').remove()
+            $wrapper.children('br').remove()
+            return true
 
-# validation - key up validation for amount
+# validation - change validation for hours
+$('.container').on 'change', '.hours', ->
+    hoursCheck($(@))
+
+# validation - keyup validation for hours
+$('.container').on 'keyup', '.hours', ->
+    hoursCheck($(@))
+
+# validation - change validation for amount
 $('.container').on 'change', '.amount', ->
     isGreaterThan0 = validationOfGreaterThan0($(@).val())
     $wrapper = $(@).parent()

@@ -3,10 +3,10 @@
     {{ form_row(form.hours, {'full_name': 'hours['~form.id.vars.value~']' }) }}
     {{ form_row(form.ammount, { 'full_name': 'ammount['~form.id.vars.value~']'}) }}
     {{ form_row(form.isToDelete, { 'full_name': 'isToDelete['~form.id.vars.value~']'}) }}
-    <div class='deleteFormFieldsetChild formFieldsetButton'>
-        <div class='deletePerDiem'>
+    <div class='deleteFormFieldsetChild formFieldsetButton no-pointer'>
+        <span class='deletePerDiem pointer'>
             <i class='fa fa-minus-square'></i>
             Delete
-        </div>
+        </span>
     </div>
 </div>
