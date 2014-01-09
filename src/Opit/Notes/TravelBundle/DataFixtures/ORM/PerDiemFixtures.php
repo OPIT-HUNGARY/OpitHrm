@@ -32,9 +32,9 @@ class PerDiemFixtures extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         $perDiems = array(
-            array(4,50),
-            array(6,90),
-            array(8,100)
+            array(8,6),
+            array(14,12),
+            array(24,24)
             );
 
         foreach ($perDiems as $key => $value) {

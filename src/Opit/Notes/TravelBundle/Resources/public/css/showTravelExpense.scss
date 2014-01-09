@@ -30,3 +30,20 @@ and open the template in the editor.
     text-align:center;
     margin-bottom:4px;
 }
+
+.per-diem-amounts{
+    position:absolute;
+    margin:-70px 0 0 90px;
+    background-color: #000;
+    color: #FFF;
+    
+    @include border-radius(5px);
+}
+
+.perDiemTable{
+    margin:0 0 10px 10px;
+}
+
+.fa-question-circle:hover{
+    cursor:pointer;
+}

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * TEPerDiem
  *
  * @ORM\Table(name="notes_te_per_diem")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TEPerDiemRepository")
  */
 class TEPerDiem
 {

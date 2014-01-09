@@ -243,7 +243,7 @@
     var arrivalDate, departureDate;
     departureDate = $('#travelRequest_departure_date').val();
     arrivalDate = $('#travelRequest_arrival_date').val();
-    return departureDate < arrivalDate;
+    return departureDate <= arrivalDate;
   }, 'Arrival date should not be smaller than departure date.');
 
   $.validator.addMethod('checkId', function(value, element) {

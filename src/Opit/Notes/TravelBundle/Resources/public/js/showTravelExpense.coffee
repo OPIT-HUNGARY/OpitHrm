@@ -42,6 +42,87 @@ addNewForm = (collectionHolder, parent) ->
 
     parent.append $formFieldsetChild
     
+createTableRow = (text, value, rowTitle) ->
+    $row = $('<tr>')
+    
+    $textColumn = $('<td>')
+    $textColumn.addClass 'bgGrey bold'
+    $textColumn.html text + ' <i class="fa fa-clock-o" title="'+rowTitle+'"></i>'
+    
+    $valueColumn = $('<td>')
+    $valueColumn.text value + ' EUR'
+    
+    if text == 'Total'
+        $textColumn.html ''
+        $valueColumn.html '<strong>Total</strong><br /> ' + value + ' EUR'
+        
+    $row.append $textColumn
+    $row.append $valueColumn
+    
+    return $row
+    
+$perDiem = $('<div>')
+    
+getHoursBetween = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
+    departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
+    arrival = new Date "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
+    
+    $.ajax
+        method: 'POST'
+        url: Routing.generate 'OpitNotesTravelBundle_expense_perdiem'
+        data: {arrival: arrival, departure: departure}
+    .done (data) ->
+        $('.perDiemTable').remove()
+        $perDiemTable = $('<table>')
+        $perDiemTable.addClass 'perDiemTable bordered'
+        
+        $perDiemHeader = $('<tr>')
+        $perDiemDay = $('<th>')
+        $perDiemDay.text 'Day'
+        
+        $perDiemAmount = $('<th>')
+        $perDiemAmount.text 'Amount'
+        
+        $perDiemHeader.append $perDiemDay
+        $perDiemHeader.append $perDiemAmount
+        $perDiemTable.append $perDiemHeader
+        
+        if data['totalTravelHoursOnSameDay'] > 0
+            $perDiemTable.append createTableRow(
+                'Travel hours',
+                data['totalTravelHoursOnSameDay'],
+                ""
+            )                 
+            
+            $perDiemTable.append createTableRow(
+                'Total',
+                data['totalPerDiem'],
+                ""
+            )
+            
+        else
+            $perDiemTable.append createTableRow(
+                'Departure',
+                data['departurePerDiem'],
+                "Number of hours traveled on departure day #{ data['departureHours'] }."
+            )
+        
+            $perDiemTable.append createTableRow(
+                "Full (#{ data['daysBetween'] })", 
+                data['daysBetweenPerDiem'], 
+                "Number of full days #{ data['daysBetween'] }."
+            )        
+        
+            $perDiemTable.append createTableRow(
+                'Arrival',
+                data['arrivalPerDiem'],
+                "Number of hours traveled on arrival day #{ data['arrivalHours'] }."
+            )
+
+            $perDiemTable.append createTableRow('Total', data['totalPerDiem'])
+            
+            $perDiem.append $perDiemTable
+
 $(document).ready ->
     arrivalDate = $('#travelExpense_arrivalDateTime_date')
     arrivalTime = $('#travelExpense_arrivalDateTime_time')
@@ -80,6 +161,68 @@ $(document).ready ->
     $('#travelExpense_userPaidExpenses').parent().children('label').remove()
     
     $('#travelExpense').css display: 'block'
+    
+    $perDiemAmountsTable = $('<table>')
+    $perDiemAmountsTable.addClass 'per-diem-amounts display-none'
+    $.ajax
+        method: 'POST'
+        url: Routing.generate 'OpitNotesTravelBundle_expense_perdiemvalues'
+    .done (data) ->
+        for key, value of data
+            $tr = $('<tr>')
+            $tdHours = $('<td>')
+            $tdHours.attr 'width', '100px'
+            $tdHours.text "Over #{ key } hours"
+            $tdAmount = $('<td>')
+            $tdAmount.text value + ' EUR'
+            
+            $tr.append $tdHours
+            $tr.append $tdAmount
+            
+            $perDiemAmountsTable.append $tr
+    $tr = $('<tr>')
+    $td = $('<td>')
+    $td.attr 'colspan', 2
+    $td.html 'Per diem is given to employee considering the following slab.'
+    $tr.append $td
+    $perDiemAmountsTable.prepend $tr
+    $perDiem.append $perDiemAmountsTable
+    
+    $perDiemTitle = $('<h3>')
+    $perDiemTitle.html 'Per diem <i class="fa fa-question-circle"></i>';
+    $perDiem.append $perDiemTitle
+    $perDiem.addClass 'formFieldset'
+    $perDiem.insertBefore($('#travelExpense_add_travel_expense').parent())
+    
+    $('.fa-question-circle').on 'mouseover', ->
+        $('.per-diem-amounts').removeClass 'display-none'
+    $('.fa-question-circle').on 'mouseout', ->
+        $('.per-diem-amounts').addClass 'display-none'
+    
+    $departureHour = $('#travelExpense_departureDateTime_time_hour')
+    $departureMinute = $('#travelExpense_departureDateTime_time_minute')
+    $arrivalHour = $('#travelExpense_arrivalDateTime_time_hour')
+    $arrivalMinute = $('#travelExpense_arrivalDateTime_time_minute')
+    
+    departureDateVal = departureDate.val()
+    departureHourVal = $departureHour.val()
+    departureMinuteVal = $departureMinute.val()
+    arrivalDateVal = arrivalDate.val()
+    arrivalHourVal = $arrivalHour.val()
+    arrivalMinuteVal = $arrivalMinute.val()
+    
+    $departureHour.on 'change', ->
+        departureHourVal = $departureHour.val()
+        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+    $departureMinute.on 'change', ->
+        departureMinuteVal = $departureMinute.val()
+        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+    $arrivalHour.on 'change', ->
+        arrivalHourVal = $arrivalHour.val()
+        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+    $arrivalMinute.on 'change', ->
+        arrivalMinuteVal = $arrivalMinute.val()
+        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'

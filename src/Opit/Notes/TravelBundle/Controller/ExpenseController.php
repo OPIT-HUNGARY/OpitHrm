@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
+use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -216,6 +217,111 @@ class ExpenseController extends Controller
     }
     
     /**
+     * Method to fetch per diem from database
+     *
+     * @Route("/secured/expense/perdiem", name="OpitNotesTravelBundle_expense_perdiem")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function fetchPerDiemAction(Request $request)
+    {
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $perDiemAmount = 0;
+        $daysBetweenArrivalDeparture = 0;
+        $totalTravelHoursOnSameDay = 0;
+        $daysBetweenPerDiem = 0;
+        
+        $departureDayTravelHours = 0;
+        $departureDayPerDiem = 0;
+        $departureDateTime = new \DateTime($request->request->get('departure'));
+        $departureTimeHour = intval($departureDateTime->format('H'));
+        $departureDay = intval($departureDateTime->format('d'));
+        $departureDate = $departureDateTime->format('Y-m-d');
+        
+        $arrivalDayTravelHours = 0;
+        $arrivalDayPerDiem = 0;
+        $arrivalDateTime = new \DateTime($request->request->get('arrival'));
+        $arrivalTimeHour = intval($arrivalDateTime->format('H'));
+        $arrivalDay = intval($arrivalDateTime->format('d'));
+        $arrivalDate = $arrivalDateTime->format('Y-m-d');
+        
+        if ($departureDate !== $arrivalDate) {
+            
+            while ($departureTimeHour < 24) {
+                $departureTimeHour++;
+                $departureDayTravelHours++;
+            }
+
+            $departureDayPerDiem =
+                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAmountToPay(
+                    $departureDayTravelHours
+                );
+            
+            $perDiemAmount += $departureDayPerDiem;
+            
+            while ($arrivalTimeHour > 0) {
+                $arrivalTimeHour--;
+                $arrivalDayTravelHours++;
+            }
+
+            $arrivalDayPerDiem =
+                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                ->findAmountToPay($arrivalDayTravelHours);
+            
+            $perDiemAmount += $arrivalDayPerDiem;
+            
+            $daysBetweenArrivalDeparture = ($arrivalDay - $departureDay) - 1;
+            $daysBetweenPerDiem =
+                ($entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                ->findAmountToPay(24)*$daysBetweenArrivalDeparture);
+            
+            $perDiemAmount += $daysBetweenPerDiem;
+        } else {
+            $totalTravelHoursOnSameDay = 0;
+            while ($departureTimeHour < $arrivalTimeHour) {
+                $departureTimeHour++;
+                $totalTravelHoursOnSameDay++;
+            }
+            $perDiemAmount +=
+                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                ->findAmountToPay($totalTravelHoursOnSameDay);
+        }
+
+        $detailsOfPerDiem = array(
+            'totalTravelHoursOnSameDay' => $totalTravelHoursOnSameDay,
+            'departureHours' => $departureDayTravelHours,
+            'departurePerDiem' => $departureDayPerDiem,
+            'arrivalHours' => $arrivalDayTravelHours,
+            'arrivalPerDiem' => $arrivalDayPerDiem,
+            'daysBetween' => $daysBetweenArrivalDeparture,
+            'daysBetweenPerDiem' => $daysBetweenPerDiem,
+            'totalPerDiem' => $perDiemAmount
+        );
+        
+        return new JsonResponse($detailsOfPerDiem);
+    }
+    
+    /**
+     * Method to fetch per diem from database
+     *
+     * @Route("/secured/expense/perdiemvalues", name="OpitNotesTravelBundle_expense_perdiemvalues")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function fetchPerDiemValuesAction(Request $request)
+    {
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $perDiemAmounts = $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
+        $values = array();
+        foreach ($perDiemAmounts as $key => $value) {
+            $values[$value->getHours()] = $value->getAmmount();
+        }
+        return new JsonResponse($values);
+    }
+    
+    /**
      * 
      * @param integer $travelExpenseId
      * @return mixed TravelExpense or null
@@ -250,6 +356,5 @@ class ExpenseController extends Controller
                 $entityManager->remove($child);
             }
         }
-        //exit;
     }
 }

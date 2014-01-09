@@ -25,14 +25,18 @@
         Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% endif %}
     </h1>
-
+    
+    <div class="modal-description default-border-radius">
+        Travel expense can be added from here.
+    </div>
+    
     {% if form_errors(form)|length > 0 %}
     <div class="alert-message error-message">
         <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
         {{ form_errors(form) }}
     </div>
     {% endif %}
-    
+
     {{ form(form, {
         'action': (path('OpitNotesTravelBundle_expense_show', { 'id': app.request.get('id'), 'tr': app.request.get('tr')})),
         'method': 'POST',
