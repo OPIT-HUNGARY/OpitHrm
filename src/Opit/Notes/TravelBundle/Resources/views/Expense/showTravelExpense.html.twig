@@ -1,6 +1,6 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-        {% if travelExpense.id is empty or travelExpense.id == 'new' %}
+        {% if travelExpense.id is empty %}
         New travel expense
         {% else %}
         Edit travel expense
@@ -9,6 +9,10 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        // to check if new travel expense or not
+        var isNewTravelExpense = {% if travelExpense.id is empty %}true{% else %}null{% endif %};
+    </script>
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
@@ -19,7 +23,7 @@
         
 {% block body %}
     <h1>
-        {% if travelExpense.id == 'new' or travelExpense.id is empty %}
+        {% if travelExpense.id is empty %}
         Add Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% else %}
         Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>

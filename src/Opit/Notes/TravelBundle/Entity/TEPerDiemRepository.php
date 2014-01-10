@@ -10,7 +10,7 @@ class TEPerDiemRepository extends EntityRepository
     {
         $dq = $this->createQueryBuilder('pd')
                 ->where("pd.hours <= (:hours)")
-                ->orderBy('pd.id', 'ASC')
+                ->orderBy('pd.hours', 'ASC')
                 ->setParameter(':hours', $hours)
                 ->getQuery();
                 

@@ -63,7 +63,7 @@ createTableRow = (text, value, rowTitle) ->
     
 $perDiem = $('<div>')
     
-getHoursBetween = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
+calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
     departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
     arrival = new Date "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
     
@@ -211,20 +211,21 @@ $(document).ready ->
     arrivalHourVal = $arrivalHour.val()
     arrivalMinuteVal = $arrivalMinute.val()
     
-    getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+    if not isNewTravelExpense
+        calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
     
     $departureHour.on 'change', ->
         departureHourVal = $departureHour.val()
-        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+        calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
     $departureMinute.on 'change', ->
         departureMinuteVal = $departureMinute.val()
-        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+        calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
     $arrivalHour.on 'change', ->
         arrivalHourVal = $arrivalHour.val()
-        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+        calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
     $arrivalMinute.on 'change', ->
         arrivalMinuteVal = $arrivalMinute.val()
-        getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+        calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'
