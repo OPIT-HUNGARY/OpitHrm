@@ -29,9 +29,13 @@ class TravelRequestRepository extends EntityRepository
          * @var array
          */
         $params = array();
-
+        
         $qb = $this->createQueryBuilder('tr');
 
+        if ($parameters['trId']!="") {
+            $params['trId'] = '%'.$parameters['trId'].'%';
+            $qb->andWhere($qb->expr()->like('tr.travelRequestId', ':trId'));
+        }
         if ($parameters['employeeName']!="") {
             $qb->leftJoin('tr.user', 'u', 'WITH');
             $params['employeeName'] = '%'.$parameters['employeeName'].'%';

@@ -36,17 +36,19 @@
             {% endif %}
         </td>
         <td>
-            {% if teIds[i] == 'new' %}
-            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
-                <i class="fa fa-plus-square fa-1x"></i>
-                <span>Add travel expense</span>
-            </a>
-            {% else %}
-            <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
-                <i class="fa fa-pencil-square-o"></i>
-                <span>Edit travel expense</span>
-            </a>
-            <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+            {% if teIds is defined %}
+                {% if teIds[i] == 'new' %}
+                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
+                    <i class="fa fa-plus-square fa-1x"></i>
+                    <span>Add travel expense</span>
+                </a>
+                {% else %}
+                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <span>Edit travel expense</span>
+                </a>
+            	<a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+                {% endif %}
                 <i class="fa fa-pencil-square-o"></i>
                 <span>View travel expense</span>
             </a>
