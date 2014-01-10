@@ -1,9 +1,27 @@
+{% if print is defined %}
+        {% stylesheets
+            'bundles/opitnotesuser/css/list.css'
+            'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+           output='css/base.css' filter='?yui_css, cssrewrite'%}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />
+    <img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" />
+    <img src="{{ asset('/images/pdf-download-icon.png') }}" class="icons" />
+    <i class="fa fa-print fa-2x icons"></i>
+{% endif %}
 <div id="dialog-details-travel">
-    <h2>Travel Expense Details</h2>
+    {% if print is not defined %}
+        <h2>Travel Expense Details</h2>
+    {% else %}
+        <h1>Travel Expense Details</h1>
+    {% endif %}
    
     <div class="modalwindow">
         <table class="bordered">
+            {% if print is not defined %}
             <caption class="dialog-table-title">General</caption>
+            {% endif %}
             {% if travelExpense.travelExpenseId is defined %}
                 <tr>
                     <td class="bgGrey width-40 bold">Id</td>
@@ -69,9 +87,14 @@
             <caption class="dialog-table-title">User paid expenses</caption>
             {% for userPaidExpenses in travelExpense.userPaidExpenses %}
             <tr>
+                {% if print is defined %}
+                <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
+                {% endif %}
                 <td class="bgGrey bold width-40">Destination</td>
                 <td>{{ userPaidExpenses.destination }}</td>
+                {% if print is not defined %}
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
+                {% endif %}
             </tr>  
             <tr>
                 <td class="bgGrey bold">Description</td>
@@ -100,9 +123,14 @@
             <caption class="dialog-table-title">Company paid expenses</caption>
             {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
             <tr>
+                {% if print is defined %}
+                <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
+                {% endif %}                
                 <td class="bgGrey bold width-40">Destination</td>
                 <td>{{ companyPaidExpenses.destination }}</td>
+                {% if print is not defined %}
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
+                {% endif %}
             </tr>  
             <tr>
                 <td class="bgGrey bold">Description</td>
@@ -126,3 +154,20 @@
         {% endif %}        
     </div>
 </div>
+{% if print is defined %}
+    <div class="signiture">
+        ____________________<br />
+        {{ generalManager }}
+    </div>
+    <div class="signiture">
+        ____________________<br />
+        {{ employee }}
+    </div>
+    <div class="date-time-now">{{ datetime }}</div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.js'
+        output='js/notes_tr_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>    
+    {% endjavascripts %}
+{% endif %}

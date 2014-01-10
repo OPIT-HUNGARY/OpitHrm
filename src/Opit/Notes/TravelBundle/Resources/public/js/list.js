@@ -2,6 +2,14 @@
 (function() {
   var deleteSingleRequest;
 
+  $('.print-view').on('click', function() {
+    var url, win;
+    event.preventDefault();
+    url = $(this).attr('href');
+    win = window.open(url, '_blank');
+    return win.focus();
+  });
+
   deleteSingleRequest = function(type, self) {
     var $checkbox;
     $checkbox = self.closest('tr').find(':checkbox');

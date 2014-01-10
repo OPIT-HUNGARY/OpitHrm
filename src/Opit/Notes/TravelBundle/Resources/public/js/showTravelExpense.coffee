@@ -211,6 +211,8 @@ $(document).ready ->
     arrivalHourVal = $arrivalHour.val()
     arrivalMinuteVal = $arrivalMinute.val()
     
+    getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+    
     $departureHour.on 'change', ->
         departureHourVal = $departureHour.val()
         getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)

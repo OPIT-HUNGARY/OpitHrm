@@ -322,6 +322,30 @@ class ExpenseController extends Controller
     }
     
     /**
+     * Method to delete one or more travel expense
+     *
+     * @Route("/secured/expense/view/{id}", name="OpitNotesTravelBundle_expense_view", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Template()
+     */
+    public function viewTravelExpenseAction(Request $request)
+    {
+        $travelExpenseId = $request->attributes->get('id');
+        $travelExpense = $this->getTravelExpense($travelExpenseId);
+        $travelRequest = $travelExpense->getTravelRequest();
+        $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
+        $employee = $travelRequest->getUser()->getEmployeeName();
+        $dateTimeNow = date("Y-m-d H:i");
+        
+        return $this->render(
+            'OpitNotesTravelBundle:Expense:showDetails.html.twig',
+            array(
+                'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
+                'employee' => $employee, 'datetime' => $dateTimeNow
+            )
+        );
+    }
+    
+    /**
      * 
      * @param integer $travelExpenseId
      * @return mixed TravelExpense or null

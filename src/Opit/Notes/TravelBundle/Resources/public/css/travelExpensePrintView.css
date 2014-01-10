@@ -1,0 +1,28 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Jan 9, 2014, 3:14:17 PM Author     : OPIT\kaufmann
+*/
+h1 { text-align: center; }
+
+.fa-print { float: right; }
+
+.bordered { margin: 10px 0 0 0; }
+
+.signiture { display: none; margin: 15px 0 15px 0; }
+
+.date-time-now { display: none; }
+
+.icons:hover { cursor: pointer; }
+
+.icons { float: right; width: 36px; height: 36px; margin: 0 0 0 5px; }
+
+#opitLogo { width: 200px; height: 50px; display: none; }
+
+@media print { .icons { display: none; }
+  .dialog-table-title { background-color: white; color: black !important; }
+  .date-time-now { display: block; }
+  .signiture { display: block; }
+  #opitLogo { display: block; } }

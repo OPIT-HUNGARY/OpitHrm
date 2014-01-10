@@ -1,3 +1,9 @@
+$('.print-view').on 'click', ->
+    event.preventDefault()
+    url =  $(@).attr 'href'
+    win=window.open url, '_blank'
+    win.focus()
+
 # type = expense or request
 deleteSingleRequest = (type, self) ->
     $checkbox = self.closest('tr').find(':checkbox')

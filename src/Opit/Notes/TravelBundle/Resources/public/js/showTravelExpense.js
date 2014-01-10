@@ -190,6 +190,7 @@
     arrivalDateVal = arrivalDate.val();
     arrivalHourVal = $arrivalHour.val();
     arrivalMinuteVal = $arrivalMinute.val();
+    getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal);
     $departureHour.on('change', function() {
       departureHourVal = $departureHour.val();
       return getHoursBetween(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal);
