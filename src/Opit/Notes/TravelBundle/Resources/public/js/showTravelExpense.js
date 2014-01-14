@@ -7,7 +7,8 @@
     $deleteButton = $('<div>');
     $deleteButton.addClass('deleteFormFieldsetChild formFieldsetButton').html('<i class="fa fa-minus-square"></i>Delete');
     $deleteButton.on('click', function() {
-      return $(this).parent().remove();
+      $(this).parent().remove();
+      return calculateAdvancesPayback();
     });
     return $deleteButton;
   };
@@ -75,7 +76,9 @@
       }
     });
     if (payback <= advancesRecieved && payback >= 0) {
-      $('#travelExpense_advancesPayback').val(payback);
+      $('#travelExpense_advancesSpent').html(advancesRecieved - payback);
+      $('#travelExpense_advancesPayback').html(payback);
+      console.log(payback);
       $('.custom-error').each(function() {
         $(this).parent().children().remove('br');
         return $(this).remove();
@@ -85,7 +88,7 @@
       if ($('.formFieldset:nth-child(2)').children('.custom-error').length === 0) {
         $break = $('<br>');
         $errorLabel = $('<label>');
-        $errorLabel.text('Amount spent cannot exceed advances recieved.');
+        $errorLabel.text('Advance amount spent cannot exceed advances recieved.');
         $errorLabel.addClass('custom-error');
         $errorLabel.insertAfter($('.formFieldset:nth-child(2) h3'));
         $break.insertAfter($errorLabel);
@@ -132,7 +135,7 @@
   };
 
   $(document).ready(function() {
-    var $arrivalHour, $arrivalMinute, $departureHour, $departureMinute, $perDiemAmountsTable, $perDiemTitle, $td, $tr, arrivalDate, arrivalDateVal, arrivalHourVal, arrivalMinuteVal, arrivalTime, companyPaidExpensesIndex, departureDate, departureDateVal, departureHourVal, departureMinuteVal, departureTime, userPaidExpensesIndex;
+    var $advancesPayback, $advancesPaybackLabel, $advancesPaybackText, $advancesRecieved, $arrivalHour, $arrivalMinute, $departureHour, $departureMinute, $perDiemAmountsTable, $perDiemTitle, $td, $toSettle, $toSettleLabel, $toSettleText, $tr, arrivalDate, arrivalDateVal, arrivalHourVal, arrivalMinuteVal, arrivalTime, companyPaidExpensesIndex, departureDate, departureDateVal, departureHourVal, departureMinuteVal, departureTime, userPaidExpensesIndex;
     arrivalDate = $('#travelExpense_arrivalDateTime_date');
     arrivalTime = $('#travelExpense_arrivalDateTime_time');
     departureDate = $('#travelExpense_departureDateTime_date');
@@ -245,6 +248,33 @@
       arrivalMinuteVal = $arrivalMinute.val();
       return calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal);
     });
+    $advancesRecieved = $('#travelExpense_advancesRecieved');
+    if ($advancesRecieved.val() === '') {
+      $advancesRecieved.val(0);
+    }
+    $advancesPayback = $('<div>');
+    $advancesPayback.addClass('inlineElements');
+    $advancesPaybackLabel = $('<label>');
+    $advancesPaybackLabel.html('Advances payback');
+    $advancesPaybackText = $('<div>');
+    $advancesPaybackText.html('0');
+    $advancesPaybackText.addClass('custom-field');
+    $advancesPaybackText.attr('id', 'travelExpense_advancesPayback');
+    $advancesPayback.append($advancesPaybackLabel);
+    $advancesPayback.append($advancesPaybackText);
+    $toSettle = $('<div>');
+    $toSettle.addClass('inlineElements');
+    $toSettleLabel = $('<label>');
+    $toSettleLabel.html('Advances spent');
+    $toSettleText = $('<div>');
+    $toSettleText.html('0');
+    $toSettleText.addClass('custom-field');
+    $toSettleText.attr('id', 'travelExpense_advancesSpent');
+    $toSettle.append($toSettleLabel);
+    $toSettle.append($toSettleText);
+    $('#travelExpense_advancesRecieved').parent().after($toSettle);
+    $toSettle.after($advancesPayback);
+    calculateAdvancesPayback();
     $('#travelExpense_advancesRecieved').on('change', function() {
       return calculateAdvancesPayback();
     });

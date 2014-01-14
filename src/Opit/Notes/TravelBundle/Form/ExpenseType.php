@@ -120,16 +120,6 @@ class ExpenseType extends AbstractType
             'attr' => array('class' => 'te-claim')
         ));
         
-        $builder->add('advancesPayback', 'number', array(
-            'label' => 'Advances payback',
-            'attr' => array('placeholder' => 'Advances payback', 'class' => 'te-claim', 'readonly' => 'readonly')
-        ));
-        
-        $builder->add('toSettle', 'number', array(
-            'label' => 'To settle',
-            'attr' => array('placeholder' => 'To settle', 'class' => 'te-claim')
-        ));
-        
         $builder->add('companyPaidExpenses', 'collection', array(
             'type' => new CompanyPaidExpenseType(),
             'allow_add' => true,

@@ -32,3 +32,5 @@ and open the template in the editor.
 .fa-question-circle:hover { cursor: pointer; }
 
 label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; display: inline-block; z-index: 4; margin-left: 1em !important; margin-bottom: 10px !important; }
+
+.custom-field { background-color: #d2d2d2; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; width: 110px; padding: 3px; }

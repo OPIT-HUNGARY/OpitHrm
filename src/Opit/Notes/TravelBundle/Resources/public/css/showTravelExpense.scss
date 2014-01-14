@@ -64,3 +64,10 @@ label.custom-error{
     margin-left:1em !important;
     margin-bottom:10px !important;
 }
+
+.custom-field{
+    background-color:$formDarkColor;
+    @include border-radius(5px);
+    width:110px;
+    padding:3px;
+}

@@ -3,6 +3,7 @@ createDeleteButton = ->
     $deleteButton.addClass('deleteFormFieldsetChild formFieldsetButton').html '<i class="fa fa-minus-square"></i>Delete'
     $deleteButton.on 'click', ->
         $(@).parent().remove()
+        calculateAdvancesPayback()
         
     return $deleteButton
 
@@ -19,8 +20,6 @@ reCreateExpenses = (self) ->
 
 addNewForm = (collectionHolder, parent) ->
     event.preventDefault()
-    
-    #collectionHolder.data 'index', collectionHolder.find(':input').length
     
     # get form data from collection holder
     prototype = collectionHolder.data 'prototype'
@@ -72,9 +71,11 @@ calculateAdvancesPayback = () ->
             amount = parseInt $(@).val()
             if not isNaN(amount)
                 payback -= amount
-
+                
     if payback <= advancesRecieved and payback >= 0
-        $('#travelExpense_advancesPayback').val(payback)
+        $('#travelExpense_advancesSpent').html(advancesRecieved - payback)
+        $('#travelExpense_advancesPayback').html payback
+        console.log payback
         $('.custom-error').each ->
             $(@).parent().children().remove('br')
             $(@).remove()
@@ -83,7 +84,7 @@ calculateAdvancesPayback = () ->
         if $('.formFieldset:nth-child(2)').children('.custom-error').length is 0
             $break = $('<br>')
             $errorLabel = $('<label>')
-            $errorLabel.text 'Amount spent cannot exceed advances recieved.'
+            $errorLabel.text 'Advance amount spent cannot exceed advances recieved.'
             $errorLabel.addClass 'custom-error'
             $errorLabel.insertAfter $('.formFieldset:nth-child(2) h3')
             $break.insertAfter $errorLabel
@@ -253,7 +254,38 @@ $(document).ready ->
     $arrivalMinute.on 'change', ->
         arrivalMinuteVal = $arrivalMinute.val()
         calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+       
+    $advancesRecieved = $('#travelExpense_advancesRecieved')
+    if $advancesRecieved.val() is ''
+        $advancesRecieved.val(0)
         
+    $advancesPayback = $('<div>')
+    $advancesPayback.addClass 'inlineElements'
+    $advancesPaybackLabel = $('<label>')
+    $advancesPaybackLabel.html 'Advances payback'
+    $advancesPaybackText = $('<div>')
+    $advancesPaybackText.html '0'
+    $advancesPaybackText.addClass 'custom-field'
+    $advancesPaybackText.attr 'id', 'travelExpense_advancesPayback'
+    $advancesPayback.append $advancesPaybackLabel
+    $advancesPayback.append $advancesPaybackText
+    
+    $toSettle = $('<div>')
+    $toSettle.addClass 'inlineElements'
+    $toSettleLabel = $('<label>')
+    $toSettleLabel.html 'Advances spent'
+    $toSettleText = $('<div>')
+    $toSettleText.html '0'
+    $toSettleText.addClass 'custom-field'
+    $toSettleText.attr 'id', 'travelExpense_advancesSpent'
+    $toSettle.append $toSettleLabel
+    $toSettle.append $toSettleText
+    
+    $('#travelExpense_advancesRecieved').parent().after $toSettle
+    $toSettle.after $advancesPayback
+    
+    calculateAdvancesPayback()
+    
     $('#travelExpense_advancesRecieved').on 'change', ->
         calculateAdvancesPayback()
     $('.formFieldset').on 'change', '.amount', ->

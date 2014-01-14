@@ -125,14 +125,23 @@ class ExpenseController extends Controller
             $children->add($companyPaidExpenses);
         }
         
+        $amountSpent = 0;
+        $advancesReceived = $travelExpense->getAdvancesRecieved();
+        $advancesPayback = 0;
+            
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
+            $amountSpent += $userPaidExpenses->getAmount();
             $children->add($userPaidExpenses);
         }
+        
+        $advancesPayback = $advancesReceived - $amountSpent;
         
         $entityManager->getFilters()->disable('softdeleteable');
         
         $travelExpense->setArrivalDateTime($trArrivalDate);
         $travelExpense->setDepartureDateTime($trDepartureDate);
+        $travelExpense->setAdvancesPayback($advancesPayback);
+        $travelExpense->setToSettle($amountSpent);
         
         $form = $this->createForm(
             new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
