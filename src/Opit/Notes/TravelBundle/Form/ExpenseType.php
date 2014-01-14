@@ -45,8 +45,10 @@ class ExpenseType extends AbstractType
         if (null !== $user) {
             $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getTaxIdentification();
             $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getBankname();
-            $bankAccountNumber = ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getBankAccountNumber();
-            $employeeName = ($eName = $options['data']->getUser()->getEmployeeName()) ? $eName : $user->getEmployeeName();
+            $bankAccountNumber =
+                ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getBankAccountNumber();
+            $employeeName =
+                ($eName = $options['data']->getUser()->getEmployeeName()) ? $eName : $user->getEmployeeName();
         }
         
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
@@ -56,7 +58,7 @@ class ExpenseType extends AbstractType
         }
         
         $builder->add('user_name', 'text', array(
-            'label' => 'Epmloyee name',
+            'label' => 'Employee name',
             'mapped' => false,
             'data' => $employeeName,
             'attr' => $userAttributes
@@ -113,15 +115,14 @@ class ExpenseType extends AbstractType
             'attr' => array('placeholder' => 'Arrival date time', 'class' => 'te-claim')
         ));
         
-        $builder->add('advancesRecieved', 'choice', array(
+        $builder->add('advancesRecieved', 'number', array(
             'label' => 'Advances recieved',
-            'choices' => array('1'=>'No', '0'=>'Yes'),
             'attr' => array('class' => 'te-claim')
         ));
         
         $builder->add('advancesPayback', 'number', array(
             'label' => 'Advances payback',
-            'attr' => array('placeholder' => 'Advances payback', 'class' => 'te-claim')
+            'attr' => array('placeholder' => 'Advances payback', 'class' => 'te-claim', 'readonly' => 'readonly')
         ));
         
         $builder->add('toSettle', 'number', array(

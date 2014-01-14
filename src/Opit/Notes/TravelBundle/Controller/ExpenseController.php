@@ -337,7 +337,7 @@ class ExpenseController extends Controller
         $dateTimeNow = date("Y-m-d H:i");
         
         return $this->render(
-            'OpitNotesTravelBundle:Expense:showDetails.html.twig',
+            'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
                 'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
                 'employee' => $employee, 'datetime' => $dateTimeNow

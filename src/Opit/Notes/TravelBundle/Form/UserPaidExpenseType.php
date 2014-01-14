@@ -21,6 +21,15 @@ class UserPaidExpenseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add('description', 'text', array(
+            'label' => 'Description',
+            'attr' => array('placeholder' => 'Description')
+        ));
+        $builder->add('date', 'date', array(
+            'widget' => 'single_text',
+            'label' => 'Date',
+            'attr' => array('placeholder' => 'Date')
+        ));
         $builder->add('expense_type', 'entity', array(
             'class'  => 'OpitNotesTravelBundle:TEExpenseType',
             'property' => 'name',
@@ -31,24 +40,19 @@ class UserPaidExpenseType extends AbstractType
             'query_builder' => function(EntityRepository $repository) {
                  return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
             }
-         ));
-        
-        $builder->add('date', 'date', array(
-            'widget' => 'single_text',
-            'label' => 'Date',
-            'attr' => array('placeholder' => 'Date')
         ));
         $builder->add('amount', 'integer', array(
             'label' => 'Amount',
-            'attr' => array('placeholder' => 'Amount', 'min' => '1')
+            'attr' => array('placeholder' => 'Amount', 'min' => '1', 'class' => 'amount')
         ));
         $builder->add('destination', 'text', array(
             'label' => 'Destination',
             'attr' => array('placeholder' => 'Destination')
         ));
-        $builder->add('description', 'text', array(
-            'label' => 'Description',
-            'attr' => array('placeholder' => 'Description')
+        $builder->add('paid_in_advance', 'choice', array(
+            'label' => 'Paid in advance',
+            'choices' => array('1'=>'No', '0'=>'Yes'),
+            'attr' => array('class' => 'paid-in-advance')
         ));
     }
     

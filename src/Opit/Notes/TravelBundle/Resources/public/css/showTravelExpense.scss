@@ -31,13 +31,18 @@ and open the template in the editor.
     margin-bottom:4px;
 }
 
-.per-diem-amounts{
+.formFieldsetDescription{
     position:absolute;
     margin:-70px 0 0 100px;
+    padding:5px;
     background-color: #000;
     color: #FFF;
     
     @include border-radius(5px);
+}
+
+.short-description{
+    margin:-60px 0 0 190px !important;
 }
 
 .perDiemTable{

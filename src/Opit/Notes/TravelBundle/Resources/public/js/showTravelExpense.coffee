@@ -8,7 +8,7 @@ createDeleteButton = ->
 
 reCreateExpenses = (self) ->
     $selectedExpense = $('<span>').addClass 'selected-expense'
-    $selectedExpense.html self.find('select').find(':selected').text()
+    $selectedExpense.html self.find('.te-expense-type').find(':selected').text()
     $container = $('<div>').addClass 'formFieldsetChild'
     self.children('label:first').remove()
     $container.append self
@@ -40,7 +40,7 @@ addNewForm = (collectionHolder, parent) ->
     
     collectionHolder.data 'index', index + 1
 
-    parent.append $formFieldsetChild
+    parent.find('.addFormFieldsetChild').before $formFieldsetChild
     
 createTableRow = (text, value, rowTitle) ->
     $row = $('<tr>')
@@ -62,6 +62,30 @@ createTableRow = (text, value, rowTitle) ->
     return $row
     
 $perDiem = $('<div>')
+    
+calculateAdvancesPayback = () ->
+    advancesRecieved = parseInt $('#travelExpense_advancesRecieved').val()
+    payback = advancesRecieved
+    $('.amount').each ->
+        paidInAdvance = $(@).closest('.formFieldsetChild').find('.paid-in-advance').val()
+        if paidInAdvance is '0'
+            amount = parseInt $(@).val()
+            payback -= amount
+    $('#travelExpense_advancesPayback').val(payback)
+    if payback <= advancesRecieved and payback >= 0
+        $('.custom-error').each ->
+            $(@).parent().children().remove('br')
+            $(@).remove()
+        return true
+    else
+        if $('.formFieldset:nth-child(2)').children('.custom-error').length is 0
+            $break = $('<br>')
+            $errorLabel = $('<label>')
+            $errorLabel.text 'Amount spent cannot exceed advances recieved.'
+            $errorLabel.addClass 'custom-error'
+            $errorLabel.insertAfter $('.formFieldset:nth-child(2) h3')
+            $break.insertAfter $errorLabel
+        return false
     
 calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
     departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
@@ -146,13 +170,13 @@ $(document).ready ->
     if $('#travelExpense_companyPaidExpenses').children('div').length > 0
         $('#travelExpense_companyPaidExpenses').children('div').each ->
             $container = reCreateExpenses($(@))
-            $('#travelExpense').children('.formFieldset:nth-child(3)').append $container
+            $('#travelExpense').children('.formFieldset:nth-child(3)').find('.addFormFieldsetChild').before $container
             companyPaidExpensesIndex++
         
     if $('#travelExpense_userPaidExpenses').children('div').length > 0
         $('#travelExpense_userPaidExpenses').children('div').each ->
             $container = reCreateExpenses($(@))
-            $('#travelExpense').children('.formFieldset:nth-child(2)').append $container     
+            $('#travelExpense').children('.formFieldset:nth-child(2)').find('.addFormFieldsetChild').before $container
             userPaidExpensesIndex++
     
     $('#travelExpense_companyPaidExpenses').data 'index', companyPaidExpensesIndex
@@ -163,7 +187,7 @@ $(document).ready ->
     $('#travelExpense').css display: 'block'
     
     $perDiemAmountsTable = $('<table>')
-    $perDiemAmountsTable.addClass 'per-diem-amounts display-none'
+    $perDiemAmountsTable.addClass 'formFieldsetDescription display-none'
     $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_expense_perdiemvalues'
@@ -189,15 +213,16 @@ $(document).ready ->
     $perDiem.append $perDiemAmountsTable
     
     $perDiemTitle = $('<h3>')
-    $perDiemTitle.html 'Per diem <i class="fa fa-question-circle"></i>';
+    $perDiemTitle.html 'Per diem <i class="fa fa-question-circle per-diem-question"></i>';
     $perDiem.append $perDiemTitle
     $perDiem.addClass 'formFieldset'
     $perDiem.insertBefore($('#travelExpense_add_travel_expense').parent())
     
     $('.fa-question-circle').on 'mouseover', ->
-        $('.per-diem-amounts').removeClass 'display-none'
+        $description = $(@).parent().parent().find('.formFieldsetDescription')
+        $description.removeClass 'display-none'
     $('.fa-question-circle').on 'mouseout', ->
-        $('.per-diem-amounts').addClass 'display-none'
+        $('.formFieldsetDescription').addClass 'display-none'
     
     $departureHour = $('#travelExpense_departureDateTime_time_hour')
     $departureMinute = $('#travelExpense_departureDateTime_time_minute')
@@ -226,18 +251,36 @@ $(document).ready ->
     $arrivalMinute.on 'change', ->
         arrivalMinuteVal = $arrivalMinute.val()
         calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
+        
+    $('#travelExpense_advancesRecieved').on 'change', ->
+        calculateAdvancesPayback()
+    $('.amount').on 'change', ->
+        calculateAdvancesPayback()
+    $('.paid-in-advance').on 'change', ->
+        calculateAdvancesPayback()
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'
 
 $generalFormFieldset = $formFieldset.clone().addClass 'generalFormFieldset'
-$expensesPaidByMe = $formFieldset.clone().append $('<h3>').html 'Expenses paid by me'
-$expensesPaidByOpit = $formFieldset.clone().append $('<h3>').html 'Expenses paid by opit'
+$expensesPaidByMe = $formFieldset.clone().append $('<h3>').html 'Expenses paid by me <i class="fa fa-question-circle"></i>'
+$expensesPaidByOpit = $formFieldset.clone().append $('<h3>').html 'Expenses paid by opit <i class="fa fa-question-circle"></i>'
 
 $('#travelExpense').prepend $expensesPaidByOpit
 $('#travelExpense').prepend $expensesPaidByMe
 $('#travelExpense').prepend $generalFormFieldset
 $('#travelExpense').addClass 'travelForm'
+        
+$expensesPaidByOpitDesc = $('<div>')
+$expensesPaidByOpitDesc.html 'Expenses paid by opit pre paid etc etc etc.'
+$expensesPaidByOpitDesc.addClass 'formFieldsetDescription short-description display-none'
+
+$expensesPaidByMeDesc = $('<div>')
+$expensesPaidByMeDesc.html 'Expenses paid by me.'
+$expensesPaidByMeDesc.addClass 'formFieldsetDescription short-description display-none'
+
+$expensesPaidByOpit.append $expensesPaidByOpitDesc
+$expensesPaidByMe.append $expensesPaidByMeDesc
         
 $('.formFieldset').on 'change', '.te-expense-type', ->
     $(@).closest('.formFieldsetChild').children('.selected-expense').html $("##{ $(@).attr 'id' } :selected").text()
@@ -282,23 +325,21 @@ $.validator.addMethod 'compare', (value, element) ->
     
     departure = new Date(departure)
     arrival = new Date(arrival)
-    
     $('#travelExpense_arrivalDateTime_time_minute').css border: 'solid 1px rgb(170, 170, 170)'
     
     return departure < arrival
-, 'Arrival date should not be smaller than departure date.'    
+, 'Arrival date should not be smaller than departure date.'
     
 $form.validate
     ignore: []
     rules:
         'travelExpense[arrivalDateTime][time][minute]': 'compare',
         'travelExpense[taxIdentification]': {maxlength: 11},
-        'travelExpense[advancesPayback]': {digits: true},
         'travelExpense[toSettle]': {digits: true}
  
 $('#travelExpense_add_travel_expense').on 'click', ->
     event.preventDefault()
-    if $form.valid()
+    if $form.valid() and calculateAdvancesPayback()
         console.log 'valid'
         $.ajax
             method: 'POST'

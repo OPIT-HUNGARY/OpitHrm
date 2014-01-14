@@ -60,3 +60,29 @@ $defaultFontSize: 13px;
 .red-text{
     color:$defaultRed;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+label.error, label.custom-error{
+    color:$defaultRed;
+    background-color:$lightGrayHover;
+    padding:2px;
+    border:solid 2px $defaultRed;
+    @include border-radius(5px);
+    margin-top:5px;
+    display:inline-block !important;
+    z-index:4;
+    margin: 0 0 0 4px;
+}
+
+label.custom-error{
+    display:inline-block;
+    margin-bottom:10px;
+    margin-left: 1em;
+}
+
+label.valid{
+    display:none !important;
+}

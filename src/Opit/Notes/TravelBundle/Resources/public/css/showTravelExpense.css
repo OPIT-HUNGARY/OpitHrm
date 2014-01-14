@@ -13,13 +13,23 @@ and open the template in the editor.
 
 .red-text { color: #aa0000; }
 
+.bold { font-weight: bold; }
+
+label.error, label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-top: 5px; display: inline-block !important; z-index: 4; margin: 0 0 0 4px; }
+
+label.custom-error { display: inline-block; margin-bottom: 10px; margin-left: 1em; }
+
+label.valid { display: none !important; }
+
 #travelExpense { display: none; }
 
 .time-picker { margin: 2px 0 0 5px; }
 
 .selected-expense { margin: 0; background-color: #505050; color: white; display: block; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; top: -10px; left: -10px; padding: 1px; text-align: center; margin-bottom: 4px; }
 
-.per-diem-amounts { position: absolute; margin: -70px 0 0 100px; background-color: #000; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.formFieldsetDescription { position: absolute; margin: -70px 0 0 100px; padding: 5px; background-color: #000; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+
+.short-description { margin: -60px 0 0 190px !important; }
 
 .perDiemTable { margin: 0 0 10px 10px; }
 

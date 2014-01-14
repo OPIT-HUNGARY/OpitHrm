@@ -8,25 +8,28 @@ and open the template in the editor.
     Author     : OPIT\kaufmann
 */
 
-h1{
-    text-align:center;
-}
+@import '_defaults';
 
 .fa-print{
     float:right;
 }
 
+h2{
+    margin:0.4em 0 0.4em 0;
+}
+
 .bordered{
     margin:10px 0 0 0;
+    td{
+        padding:4px;
+    }
 }
 
 .signiture{
     display:none;
-    margin:40px 0 0 0;
+    margin:29px 20px 0 0;
 }
-.date-time-now{
-    display:none;
-}
+
 .icons:hover{
     cursor:pointer;
 }
@@ -36,10 +39,35 @@ h1{
     height:36px;
     margin:0 0 0 5px;
 }
+
 #opitLogo{
     width:200px;
     height:50px;
     display:none;
+}
+
+table{    
+    width: 550px;
+    
+    tr{
+        .fixed-width{
+            width:200px;
+        }
+        .incrementation{
+            width:20px;
+            min-width:20px;
+        }
+    }
+    .table-title{
+        background-color:lightgrey;
+        padding: 0 0 0 5px;    
+        font-weight:bold;
+        text-align:left;
+    }    
+}
+
+.page-break-after{
+    page-break-after: always;
 }
 
 @media print
@@ -52,13 +80,15 @@ h1{
         color:black !important;
     }
     
-    .date-time-now{
-        display:block;
-    }
     .signiture{
-        display:block;
+        display:inline-block;
     }
+    
     #opitLogo{
         display:block;
+    }
+    
+    .dialog-table-title{
+        background-color:lightgrey;
     }
 }

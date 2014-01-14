@@ -69,7 +69,7 @@ class TravelExpense
     /**
      * @var boolean
      *
-     * @ORM\Column(name="advances_recieved", type="boolean")
+     * @ORM\Column(name="advances_recieved", type="float")
      */
     private $advancesRecieved;
 

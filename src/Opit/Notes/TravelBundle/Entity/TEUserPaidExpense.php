@@ -3,6 +3,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\TravelBundle\Entity\TEPaidExpense;
 
 /**
@@ -48,6 +49,13 @@ class TEUserPaidExpense extends TEPaidExpense
      */
     protected $travelExpense;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="paid_in_advance", type="boolean")
+     * @Assert\GreaterThanOrEqual(value = 0)
+     */
+    protected $paidInAdvance;
 
     /**
      * Get id
@@ -190,10 +198,33 @@ class TEUserPaidExpense extends TEPaidExpense
     /**
      * Get travelExpense
      *
-     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense 
+     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
      */
     public function getTravelExpense()
     {
         return $this->travelExpense;
+    }
+    
+    /**
+     * Get paidInAdvance
+     *
+     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
+     */
+    public function getPaidInAdvance()
+    {
+        return $this->paidInAdvance;
+    }
+    
+    /**
+     * Set paidInAdvance
+     *
+     * @param type $paidInAdvance
+     * @return \Opit\Notes\TravelBundle\Entity\TEUserPaidExpense
+     */
+    public function setPaidInAdvance($paidInAdvance)
+    {
+        $this->paidInAdvance = $paidInAdvance;
+        
+        return $this;
     }
 }

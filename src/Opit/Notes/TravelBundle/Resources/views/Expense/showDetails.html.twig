@@ -1,27 +1,9 @@
-{% if print is defined %}
-        {% stylesheets
-            'bundles/opitnotesuser/css/list.css'
-            'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-           output='css/base.css' filter='?yui_css, cssrewrite'%}
-            <link rel="stylesheet" href="{{ asset_url }}" />
-        {% endstylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />
-    <img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" />
-    <img src="{{ asset('/images/pdf-download-icon.png') }}" class="icons" />
-    <i class="fa fa-print fa-2x icons"></i>
-{% endif %}
 <div id="dialog-details-travel">
-    {% if print is not defined %}
         <h2>Travel Expense Details</h2>
-    {% else %}
-        <h1>Travel Expense Details</h1>
-    {% endif %}
    
     <div class="modalwindow">
         <table class="bordered">
-            {% if print is not defined %}
             <caption class="dialog-table-title">General</caption>
-            {% endif %}
             {% if travelExpense.travelExpenseId is defined %}
                 <tr>
                     <td class="bgGrey width-40 bold">Id</td>
@@ -45,7 +27,7 @@
             <tr>
                 <td class="bgGrey bold">Pay in euro</td>
                 <td>{% if travelExpense.payInEuro == 0 %}Yes{% else %}No{% endif %}</td>
-            </tr>            
+            </tr>
             <tr>
                 <td class="bgGrey bold">Bank account number</td>
                 <td>{{ travelExpense.bankAccountNumber }}</td>
@@ -57,7 +39,7 @@
             <tr>
                 <td class="bgGrey bold">Departure date time</td>
                 <td>{{ travelExpense.departureDateTime|date('Y-m-d H:i') }}</td>
-            </tr>            
+            </tr>
             <tr>
                 <td class="bgGrey bold">Arrival country</td>
                 <td>{{ travelExpense.arrivalCountry }}</td>
@@ -65,21 +47,19 @@
             <tr>
                 <td class="bgGrey bold">Arrival date time</td>
                 <td>{{ travelExpense.arrivalDateTime|date('Y-m-d H:i') }}</td>
-            </tr>            
+            </tr>
             <tr>
-                <td class="bgGrey bold">Advances revieved</td>
-                <td>{% if travelExpense.advancesRecieved == 0 %}Yes{% else %}No{% endif %}</td>
-            </tr>   
+                <td class="bgGrey bold">Advances recieved</td>
+                <td>{{ travelExpense.advancesRecieved }}</td>
+            </tr>
             <tr>
                 <td class="bgGrey bold">Advances payback</td>
                 <td>{{ travelExpense.advancesPayback }}</td>
-            </tr>              
+            </tr>
             <tr>
                 <td class="bgGrey bold">To settle</td>
                 <td>{{ travelExpense.toSettle }}</td>
-            </tr>  
-{#            userPaidExpenses
-            companyPaidExpenses#}
+            </tr>
         </table>
         {% if travelExpense.userPaidExpenses is defined %}
         {% if travelExpense.userPaidExpenses|length > 0 %}  
@@ -87,27 +67,22 @@
             <caption class="dialog-table-title">User paid expenses</caption>
             {% for userPaidExpenses in travelExpense.userPaidExpenses %}
             <tr>
-                {% if print is defined %}
-                <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
-                {% endif %}
                 <td class="bgGrey bold width-40">Destination</td>
                 <td>{{ userPaidExpenses.destination }}</td>
-                {% if print is not defined %}
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
-                {% endif %}
-            </tr>  
+            </tr>
             <tr>
                 <td class="bgGrey bold">Description</td>
                 <td>{{ userPaidExpenses.description }}</td>
-            </tr>            
+            </tr>
             <tr>
                 <td class="bgGrey bold">Expense type</td>
                 <td>{{ userPaidExpenses.expenseType.name }}</td>
-            </tr>              
+            </tr>
             <tr>
                 <td class="bgGrey bold">Amount</td>
                 <td>{{ userPaidExpenses.amount }}</td>
-            </tr>                        
+            </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Date</td>
                 <td>{{ userPaidExpenses.date|date('Y-m-d') }}</td>
@@ -123,27 +98,22 @@
             <caption class="dialog-table-title">Company paid expenses</caption>
             {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
             <tr>
-                {% if print is defined %}
-                <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
-                {% endif %}                
                 <td class="bgGrey bold width-40">Destination</td>
                 <td>{{ companyPaidExpenses.destination }}</td>
-                {% if print is not defined %}
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
-                {% endif %}
-            </tr>  
+            </tr>
             <tr>
                 <td class="bgGrey bold">Description</td>
                 <td>{{ companyPaidExpenses.description }}</td>
-            </tr>            
+            </tr>
             <tr>
                 <td class="bgGrey bold">Expense type</td>
                 <td>{{ companyPaidExpenses.expenseType.name }}</td>
-            </tr>              
+            </tr>
             <tr>
                 <td class="bgGrey bold">Amount</td>
                 <td>{{ companyPaidExpenses.amount }}</td>
-            </tr>                        
+            </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Date</td>
                 <td>{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
@@ -154,20 +124,3 @@
         {% endif %}        
     </div>
 </div>
-{% if print is defined %}
-    <div class="signiture">
-        ____________________<br />
-        {{ generalManager }}
-    </div>
-    <div class="signiture">
-        ____________________<br />
-        {{ employee }}
-    </div>
-    <div class="date-time-now">{{ datetime }}</div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    {% javascripts
-        '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.js'
-        output='js/notes_tr_list.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>    
-    {% endjavascripts %}
-{% endif %}
