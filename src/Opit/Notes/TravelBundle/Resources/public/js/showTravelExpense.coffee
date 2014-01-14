@@ -70,9 +70,11 @@ calculateAdvancesPayback = () ->
         paidInAdvance = $(@).closest('.formFieldsetChild').find('.paid-in-advance').val()
         if paidInAdvance is '0'
             amount = parseInt $(@).val()
-            payback -= amount
-    $('#travelExpense_advancesPayback').val(payback)
+            if not isNaN(amount)
+                payback -= amount
+
     if payback <= advancesRecieved and payback >= 0
+        $('#travelExpense_advancesPayback').val(payback)
         $('.custom-error').each ->
             $(@).parent().children().remove('br')
             $(@).remove()
@@ -254,9 +256,9 @@ $(document).ready ->
         
     $('#travelExpense_advancesRecieved').on 'change', ->
         calculateAdvancesPayback()
-    $('.amount').on 'change', ->
+    $('.formFieldset').on 'change', '.amount', ->
         calculateAdvancesPayback()
-    $('.paid-in-advance').on 'change', ->
+    $('.formFieldset').on 'change', '.paid-in-advance', ->
         calculateAdvancesPayback()
 
 $formFieldset = $('<div>')
@@ -272,11 +274,11 @@ $('#travelExpense').prepend $generalFormFieldset
 $('#travelExpense').addClass 'travelForm'
         
 $expensesPaidByOpitDesc = $('<div>')
-$expensesPaidByOpitDesc.html 'Expenses paid by opit pre paid etc etc etc.'
+$expensesPaidByOpitDesc.html 'Expenses paid by OPIT (already paid by OPIT).'
 $expensesPaidByOpitDesc.addClass 'formFieldsetDescription short-description display-none'
 
 $expensesPaidByMeDesc = $('<div>')
-$expensesPaidByMeDesc.html 'Expenses paid by me.'
+$expensesPaidByMeDesc.html 'Expenses paid by employee (payable to your own bank account).'
 $expensesPaidByMeDesc.addClass 'formFieldsetDescription short-description display-none'
 
 $expensesPaidByOpit.append $expensesPaidByOpitDesc

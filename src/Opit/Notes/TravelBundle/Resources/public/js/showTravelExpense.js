@@ -69,11 +69,13 @@
       paidInAdvance = $(this).closest('.formFieldsetChild').find('.paid-in-advance').val();
       if (paidInAdvance === '0') {
         amount = parseInt($(this).val());
-        return payback -= amount;
+        if (!isNaN(amount)) {
+          return payback -= amount;
+        }
       }
     });
-    $('#travelExpense_advancesPayback').val(payback);
     if (payback <= advancesRecieved && payback >= 0) {
+      $('#travelExpense_advancesPayback').val(payback);
       $('.custom-error').each(function() {
         $(this).parent().children().remove('br');
         return $(this).remove();
@@ -246,10 +248,10 @@
     $('#travelExpense_advancesRecieved').on('change', function() {
       return calculateAdvancesPayback();
     });
-    $('.amount').on('change', function() {
+    $('.formFieldset').on('change', '.amount', function() {
       return calculateAdvancesPayback();
     });
-    return $('.paid-in-advance').on('change', function() {
+    return $('.formFieldset').on('change', '.paid-in-advance', function() {
       return calculateAdvancesPayback();
     });
   });
@@ -274,13 +276,13 @@
 
   $expensesPaidByOpitDesc = $('<div>');
 
-  $expensesPaidByOpitDesc.html('Expenses paid by opit pre paid etc etc etc.');
+  $expensesPaidByOpitDesc.html('Expenses paid by OPIT (already paid by OPIT).');
 
   $expensesPaidByOpitDesc.addClass('formFieldsetDescription short-description display-none');
 
   $expensesPaidByMeDesc = $('<div>');
 
-  $expensesPaidByMeDesc.html('Expenses paid by me.');
+  $expensesPaidByMeDesc.html('Expenses paid by employee (payable to your own bank account).');
 
   $expensesPaidByMeDesc.addClass('formFieldsetDescription short-description display-none');
 
