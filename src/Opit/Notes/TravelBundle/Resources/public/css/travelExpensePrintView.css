@@ -17,30 +17,35 @@ and open the template in the editor.
 
 .deleteFormFieldsetChild { display: inline-block; }
 
+.height-20 { height: 20px; }
+
+.width-420 { width: 420px; }
+
+.width-80 { width: 80px; }
+
+.width-50 { width: 50px; }
+
 .fa-print { float: right; }
 
-h2 { margin: 0.4em 0 0.4em 0; }
+h3 { margin: 0.4em 0 0.4em 0; }
 
-.bordered { margin: 10px 0 0 0; }
-.bordered td { padding: 4px; }
+.bordered td { padding: 3.5px; }
 
-.signiture { display: none; margin: 29px 20px 0 0; }
+.signiture { display: none; margin: 0 20px 0 0; }
 
 .icons:hover { cursor: pointer; }
 
 .icons { float: right; width: 36px; height: 36px; margin: 0 0 0 5px; }
 
-#opitLogo { width: 200px; height: 50px; display: none; }
+#opitLogo { width: 100px; height: 23px; display: none; }
 
 table { width: 550px; }
-table tr .fixed-width { width: 200px; }
 table tr .incrementation { width: 20px; min-width: 20px; }
 table .table-title { background-color: lightgrey; padding: 0 0 0 5px; font-weight: bold; text-align: left; }
 
 .page-break-after { page-break-after: always; }
 
 @media print { .icons { display: none; }
-  .dialog-table-title { background-color: white; color: black !important; }
   .signiture { display: inline-block; }
   #opitLogo { display: block; }
-  .dialog-table-title { background-color: lightgrey; } }
+  a { display: none; } }

@@ -4,229 +4,264 @@
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />
-<img src="{{ asset('/images/pdf-download-icon.png') }}" class="icons" />
+<a href="{{ path('OpitNotesTravelBundle_expense_export', {'id': app.request.get('id')}) }}">
+    <img src="{{ asset('/images/pdf-download-icon.png') }}" class="icons" />
+</a>
 <i class="fa fa-print fa-2x icons"></i>
 {% set companyPaidExpense = 0 %}
 {% set employeePaidExpense = 0 %}
-<div id="dialog-details-travel">
-    <img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" />
-    <h2>Travel Expense Details</h2>
-    <div class="modalwindow">
-        <table class="bordered" border="1">
-            <caption class="table-title">User info</caption>
-            <tr>
-                <td class="bold fixed-width">Employee Name</td>
-                {% if travelExpense.user.employeeName is defined %}
-                <td>{{ travelExpense.user.employeeName }}</td>
-                {% endif %}
-            </tr>
-            <tr>
-                <td class="bold">Tax id</td>
-                <td>{{ travelExpense.taxIdentification }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Bank account number</td>
-                <td>{{ travelExpense.bankAccountNumber }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Bank name</td>
-                <td>{{ travelExpense.bankAccountNumber }}</td>
-            </tr>
-        </table>
-        <table class="bordered" border="1">
-            <caption class="table-title">Reason for travel</caption>
-            <tr>
-                <td class="fixed-width" colspan="2">TAO days.</td>
-            </tr>
-        </table>
-        <table class="bordered" border="1">
-            <caption class="table-title">Travel dates</caption>
-            <tr class="bold">
-                <td class="fixed-width"></td>
-                <td>Date</td>
-                <td>Time</td>
-                <td>Country</td>
-            </tr>
-            <tr>
-                <td class="bold">Departure</td>
-                <td>{{ travelExpense.departureDateTime|date('Y-m-d') }}</td>
-                <td>{{ travelExpense.departureDateTime|date('H:i') }}</td>
-                <td>{{ travelExpense.departureCountry }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Arrival</td>
-                <td>{{ travelExpense.arrivalDateTime|date('Y-m-d') }}</td>
-                <td>{{ travelExpense.arrivalDateTime|date('H:i') }}</td>
-                <td>{{ travelExpense.arrivalCountry }}</td>
-            </tr>
-        </table>
-        <table class="bordered" border="1">
-            <caption class="table-title">Summarization</caption>
-            <tr class="bold">
-                <td class="fixed-width"></td>
-                <td>Total</td>
-                <td>Currency</td>
-                <td>Total</td>
-            </tr>
-            <tr>
-                <td class="bold">Advance recieved</td>
-                <td>{{ travelExpense.advancesRecieved }}</td>
-                <td>EUR</td>
-                <td>{{ travelExpense.advancesRecieved }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Advances spent</td>
-                <td>{{ travelExpense.toSettle }}</td>
-                <td>EUR</td>
-                <td>{{ travelExpense.toSettle }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Advance payback</td>
-                <td>{{ travelExpense.advancesPayback }}</td>
-                <td>EUR</td>
-                <td>{{ travelExpense.advancesPayback }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Per Diem in EUR</td>
-                <td>66</td>
-                <td>EUR</td>
-                <td>66</td>
-            </tr>
-        </table>
-        <table class="bordered" border="1">
-            <caption class="table-title">Total amount of expenses</caption>
-            <tr>
-                <td class="bold">Expenses paid by OPIT (already paid by OPIT)</td>
-                <td id="employeePaidExpenseVal"></td>
-                <td>HUF</td>
-            </tr>
-            <tr>
-                <td class="bold"></td>
-                <td>0</td>
-                <td>EUR</td>
-            </tr>
-            <tr>
-                <td class="bold">Expenses paid by employee (payable to your own bank account)</td>
-                <td id="companyPaidExpenseVal"></td>
-                <td>HUF</td>
-            </tr>
-            <tr>
-                <td class="bold"></td>
-                <td>0</td>
-                <td>EUR</td>
-            </tr>
-            <tr class="bold">
-                <td>Total expenses in HUF (OPIT + Employee + Per diem)</td>
-                <td id="totalExpenseVal"></td>
-                <td>HUF</td>
-            </tr>
-            <tr class="bold">
-                <td>Total expenses in EUR (OPIT + Employee + Per diem)</td>
-                <td>200</td>
-                <td>EUR</td>
-            </tr>
-        </table>
-        <div class="signiture">
-            ____________________<br />
-            {{ employee }}
-        </div>
-        <div class="signiture">
-            Approved by {{ generalManager }} on {{ datetime }}.
-        </div>
-        <div class="page-break-after"></div>
-        
-        {% if travelExpense.userPaidExpenses is defined %}
-        {% if travelExpense.userPaidExpenses|length > 0 %}  
-        <table class="bordered" border="1">
-            <caption class="table-title">Employee paid expenses</caption>
-            {% for userPaidExpenses in travelExpense.userPaidExpenses %}
-            <tr>
-                <td class="incrementation" rowspan="5">{{ loop.index }}</td>
-                <td class="bold fixed-width">Destination</td>
-                <td>{{ userPaidExpenses.destination }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Description</td>
-                <td>{{ userPaidExpenses.description }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Expense type</td>
-                <td>{{ userPaidExpenses.expenseType.name }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Amount</td>
-                <td>{{ userPaidExpenses.amount }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Date</td>
-                <td>{{ userPaidExpenses.date|date('Y-m-d') }}</td>
-            </tr>
-            {% if loop.index != travelExpense.companyPaidExpenses|length %}
-            <tr>
-                <td colspan="3">&nbsp;</td>
-            </tr>
-            {% endif %}
-            {% set employeePaidExpense = employeePaidExpense + userPaidExpenses.amount %}
-            {% endfor %}
-        </table>
-        <div class="signiture">
-            ____________________<br />
-            {{ employee }}
-        </div>
-        <div class="signiture">
-            Approved by {{ generalManager }} on {{ datetime }}.
-        </div>
-        <div class="page-break-after"></div>
+<br />
+<img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" />
+<h3>Travel Expense Details - {{ trId }}</h3>
+<table class="bordered" border="1">
+    <tr>
+        <td colspan="2" class="table-title">
+            User info
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">Employee Name</td>
+        {% if travelExpense.user.employeeName is defined %}
+        <td>{{ travelExpense.user.employeeName }}</td>
         {% endif %}
-        {% endif %}      
-        
-        {% if travelExpense.companyPaidExpenses is defined %}
-        {% if travelExpense.companyPaidExpenses|length > 0 %}  
-        <table class="bordered" border="1">
-            <caption class="table-title">Company paid expenses</caption>
-            {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
-            <tr>
-                <td class="incrementation" rowspan="5">{{ loop.index }}</td>
-                <td class="bold fixed-width">Destination</td>
-                <td>{{ companyPaidExpenses.destination }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Description</td>
-                <td>{{ companyPaidExpenses.description }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Expense type</td>
-                <td>{{ companyPaidExpenses.expenseType.name }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Amount</td>
-                <td>{{ companyPaidExpenses.amount }}</td>
-            </tr>
-            <tr>
-                <td class="bold">Date</td>
-                <td>{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
-            </tr>
-            {% if loop.index != travelExpense.companyPaidExpenses|length %}
-            <tr>
-                <td colspan="3">&nbsp</td>
-            </tr>
-            {% endif %}
-            {% set companyPaidExpense = companyPaidExpense + companyPaidExpenses.amount %}
-            {% endfor %}
-        </table>
-        <div class="signiture">
-            ____________________<br />
-            {{ employee }}
-        </div>
-        <div class="signiture">
-            Approved by {{ generalManager }} on {{ datetime }}.
-        </div>        
-        {% endif %}
-        {% endif %}
-    </div>
+    </tr>
+    <tr>
+        <td class="bold">Tax id</td>
+        <td>{{ travelExpense.taxIdentification }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Bank account number</td>
+        <td>{{ travelExpense.bankAccountNumber }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Bank name</td>
+        <td>{{ travelExpense.bankAccountNumber }}</td>
+    </tr>
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<table border="1">
+    <tr>
+        <td colspan="2" class="table-title">
+            Reason for travel
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">TAO days.</td>
+    </tr>
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<table class="bordered" border="1">
+    <tr>
+        <td colspan="4" class="table-title">
+            Travel dates
+        </td>
+    </tr>
+    <tr class="bold">
+        <td></td>
+        <td>Date</td>
+        <td>Time</td>
+        <td>Country</td>
+    </tr>
+    <tr>
+        <td class="bold">Departure</td>
+        <td>{{ travelExpense.departureDateTime|date('Y-m-d') }}</td>
+        <td>{{ travelExpense.departureDateTime|date('H:i') }}</td>
+        <td>{{ travelExpense.departureCountry }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Arrival</td>
+        <td>{{ travelExpense.arrivalDateTime|date('Y-m-d') }}</td>
+        <td>{{ travelExpense.arrivalDateTime|date('H:i') }}</td>
+        <td>{{ travelExpense.arrivalCountry }}</td>
+    </tr>
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<table border="1">
+    <tr>
+        <td colspan="4" class="table-title">
+            Summarization
+        </td>
+    </tr>
+    <tr class="bold">
+        <td></td>
+        <td>Total</td>
+        <td>Currency</td>
+        <td>Total</td>
+    </tr>
+    <tr>
+        <td class="bold">Advance recieved</td>
+        <td>{{ travelExpense.advancesRecieved }}</td>
+        <td>EUR</td>
+        <td>{{ travelExpense.advancesRecieved }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Advances spent</td>
+        <td>{{ travelExpense.toSettle }}</td>
+        <td>EUR</td>
+        <td>{{ travelExpense.toSettle }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Advance payback</td>
+        <td>{{ travelExpense.advancesPayback }}</td>
+        <td>EUR</td>
+        <td>{{ travelExpense.advancesPayback }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Per Diem in EUR</td>
+        <td>66</td>
+        <td>EUR</td>
+        <td>66</td>
+    </tr>
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<table class="bordered" border="1">
+    <tr>
+        <td colspan="3" class="table-title">
+            Total amount of expenses
+        </td>
+    </tr>
+    <tr>
+        <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
+        <td id="employeePaidExpenseVal" class="width-80">
+            <div id="employeePaidExpense" class="display-none">{{ employeePaidExpense }}</div>
+        </td>
+        <td class="width-50">HUF</td>
+    </tr>
+    <tr>
+        <td class="bold"></td>
+        <td>0</td>
+        <td>EUR</td>
+    </tr>
+    <tr>
+        <td class="bold">Expenses paid by employee (payable to your own bank account)</td>
+        <td id="companyPaidExpenseVal">
+            <div id="companyPaidExpense" class="display-none">{{ companyPaidExpense }}</div>
+        </td>
+        <td>HUF</td>
+    </tr>
+    <tr>
+        <td class="bold"></td>
+        <td>0</td>
+        <td>EUR</td>
+    </tr>
+    <tr class="bold">
+        <td>Total expenses in HUF (OPIT + Employee + Per diem)</td>
+        <td id="totalExpenseVal"></td>
+        <td>HUF</td>
+    </tr>
+    <tr class="bold">
+        <td>Total expenses in EUR (OPIT + Employee + Per diem)</td>
+        <td>200</td>
+        <td>EUR</td>
+    </tr>
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    {{ employee }}
 </div>
-<div id="companyPaidExpense" class="display-none">{{ companyPaidExpense }}</div>
-<div id="employeePaidExpense" class="display-none">{{ employeePaidExpense }}</div>
+<div class="signiture">
+    Approved by {{ generalManager }} on {{ datetime }}.
+</div>
+
+{% if travelExpense.userPaidExpenses is defined %}
+{% if travelExpense.userPaidExpenses|length > 0 %}
+<div class="page-break-after"></div>
+<table class="bordered" border="1">
+    <tr>
+        <td colspan="3" class="table-title">
+            Employee paid expenses
+        </td>
+    </tr>
+    {% for userPaidExpenses in travelExpense.userPaidExpenses %}
+    <tr>
+        <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold">Destination</td>
+        <td>{{ userPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Description</td>
+        <td>{{ userPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Expense type</td>
+        <td>{{ userPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Amount</td>
+        <td>{{ userPaidExpenses.amount }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Date</td>
+        <td>{{ userPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    {% if loop.index != travelExpense.companyPaidExpenses|length %}
+    <tr>
+        <td colspan="3">&nbsp;</td>
+    </tr>
+    {% endif %}
+    {% set employeePaidExpense = employeePaidExpense + userPaidExpenses.amount %}
+    {% endfor %}
+</table>
+<table class="height-20"><tr><td></td></tr></table>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    {{ employee }}
+</div>
+<div class="signiture">
+    Approved by {{ generalManager }} on {{ datetime }}.
+</div>
+{% endif %}
+{% endif %}
+
+{% if travelExpense.companyPaidExpenses is defined %}
+{% if travelExpense.companyPaidExpenses|length > 0 %}
+<div class="page-break-after"></div>
+<table class="bordered" border="1">
+    <tr>
+        <td colspan="3" class="table-title">
+            Company paid expenses
+        </td>
+    </tr>
+    {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
+    <tr>
+        <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold">Destination</td>
+        <td>{{ companyPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Description</td>
+        <td>{{ companyPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Expense type</td>
+        <td>{{ companyPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Amount</td>
+        <td>{{ companyPaidExpenses.amount }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Date</td>
+        <td>{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    {% if loop.index != travelExpense.companyPaidExpenses|length %}
+    <tr>
+        <td colspan="3">&nbsp</td>
+    </tr>
+    {% endif %}
+    {% set companyPaidExpense = companyPaidExpense + companyPaidExpenses.amount %}
+    {% endfor %}
+</table>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    {{ employee }}
+</div>
+<div class="signiture">
+    Approved by {{ generalManager }} on {{ datetime }}.
+</div>
+{% endif %}
+{% endif %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 {% javascripts
     '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.js'

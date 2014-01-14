@@ -17,6 +17,14 @@ and open the template in the editor.
 
 .deleteFormFieldsetChild { display: inline-block; }
 
+.height-20 { height: 20px; }
+
+.width-420 { width: 420px; }
+
+.width-80 { width: 80px; }
+
+.width-50 { width: 50px; }
+
 #travelExpense { display: none; }
 
 .time-picker { margin: 2px 0 0 5px; }

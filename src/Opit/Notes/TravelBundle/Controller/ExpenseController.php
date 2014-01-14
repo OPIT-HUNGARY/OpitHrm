@@ -12,6 +12,7 @@ use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use TCPDF;
 
 /**
  * Description of ExpenseController
@@ -339,21 +340,67 @@ class ExpenseController extends Controller
     public function viewTravelExpenseAction(Request $request)
     {
         $travelExpenseId = $request->attributes->get('id');
-        $travelExpense = $this->getTravelExpense($travelExpenseId);
-        $travelRequest = $travelExpense->getTravelRequest();
-        $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
-        $employee = $travelRequest->getUser()->getEmployeeName();
-        $dateTimeNow = date("Y-m-d H:i");
-        
-        return $this->render(
-            'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
-            array(
-                'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
-                'employee' => $employee, 'datetime' => $dateTimeNow
-            )
-        );
+        $page = $this->getTravelExpensePage($travelExpenseId);
+
+        return $page;
     }
     
+    /**
+     * Method to export expense to pdf
+     *
+     * @Route("/secured/expense/export/{id}", name="OpitNotesTravelBundle_expense_export", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Template()
+     */
+    public function exportExpenseToPDFAction(Request $request)
+    {
+        $travelExpenseId = $request->attributes->get('id');
+        if ('new' !== $travelExpenseId) {
+            $page = $this->getTravelExpensePage($travelExpenseId);
+
+            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+            $pdf->SetCreator(PDF_CREATOR);
+            $pdf->SetAuthor('NOTES');
+            $pdf->SetTitle('Travel Expense');
+            $pdf->SetSubject('Travel Expense details');
+            $pdf->SetKeywords('travel, expense, notes');
+            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+            $pdf->SetMargins(PDF_MARGIN_LEFT, 15, PDF_MARGIN_RIGHT);
+            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->SetFont('', '', 12);
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
+            $pdf->AddPage();
+            $pdf->writeHTML($page, true, true, false, '');
+            $pdf->lastPage();
+
+            $filename = 'test.pdf';
+
+            $pdf->Output($filename, 'D');
+        }
+    }
+    
+    protected function getTravelExpensePage($travelExpenseId)
+    {
+            $travelExpense = $this->getTravelExpense($travelExpenseId);
+            $travelRequest = $travelExpense->getTravelRequest();
+            $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
+            $employee = $travelRequest->getUser()->getEmployeeName();
+            $dateTimeNow = date("Y-m-d H:i");
+
+            $page = $this->render(
+                'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
+                array(
+                    'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
+                    'employee' => $employee, 'datetime' => $dateTimeNow,
+                    'trId' => $travelRequest->getTravelRequestId()
+                )
+            );
+            
+            return $page;
+    }
+
+
     /**
      * 
      * @param integer $travelExpenseId

@@ -14,20 +14,20 @@ and open the template in the editor.
     float:right;
 }
 
-h2{
+h3{
     margin:0.4em 0 0.4em 0;
 }
 
 .bordered{
-    margin:10px 0 0 0;
+    
     td{
-        padding:4px;
+        padding:3.5px;
     }
 }
 
 .signiture{
     display:none;
-    margin:29px 20px 0 0;
+    margin:0 20px 0 0;
 }
 
 .icons:hover{
@@ -41,8 +41,8 @@ h2{
 }
 
 #opitLogo{
-    width:200px;
-    height:50px;
+    width:100px;
+    height:23px;
     display:none;
 }
 
@@ -50,9 +50,6 @@ table{
     width: 550px;
     
     tr{
-        .fixed-width{
-            width:200px;
-        }
         .incrementation{
             width:20px;
             min-width:20px;
@@ -75,10 +72,6 @@ table{
     .icons{
         display:none;
     }
-    .dialog-table-title{
-        background-color:white;
-        color:black !important;
-    }
     
     .signiture{
         display:inline-block;
@@ -88,7 +81,7 @@ table{
         display:block;
     }
     
-    .dialog-table-title{
-        background-color:lightgrey;
+    a{
+        display:none;
     }
 }

@@ -17,6 +17,14 @@ and open the template in the editor.
 
 .deleteFormFieldsetChild { display: inline-block; }
 
+.height-20 { height: 20px; }
+
+.width-420 { width: 420px; }
+
+.width-80 { width: 80px; }
+
+.width-50 { width: 50px; }
+
 #travelRequest { display: none; }
 
 #travelRequest label, .travelForm label { display: block; }
