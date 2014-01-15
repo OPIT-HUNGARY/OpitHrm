@@ -75,7 +75,6 @@ calculateAdvancesPayback = () ->
     if payback <= advancesRecieved and payback >= 0
         $('#travelExpense_advancesSpent').html(advancesRecieved - payback)
         $('#travelExpense_advancesPayback').html payback
-        console.log payback
         $('.custom-error').each ->
             $(@).parent().children().remove('br')
             $(@).remove()
@@ -374,7 +373,6 @@ $form.validate
 $('#travelExpense_add_travel_expense').on 'click', ->
     event.preventDefault()
     if $form.valid() and calculateAdvancesPayback()
-        console.log 'valid'
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitNotesTravelBundle_expense_show_details'

@@ -108,9 +108,9 @@
     </tr>
     <tr>
         <td class="bold">Per Diem in EUR</td>
-        <td>66</td>
+        <td>{{ perDiem['totalPerDiem'] }}</td>
         <td>EUR</td>
-        <td>66</td>
+        <td>{{ perDiem['totalPerDiem'] }}</td>
     </tr>
 </table>
 <table class="height-20"><tr><td></td></tr></table>
@@ -122,43 +122,40 @@
     </tr>
     <tr>
         <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
-        <td id="employeePaidExpenseVal" class="width-80">
-            <div id="employeePaidExpense" class="display-none">{{ employeePaidExpense }}</div>
-        </td>
+        <td class="width-80">{{ expensesPaidByCompany }}</td>
         <td class="width-50">HUF</td>
     </tr>
     <tr>
         <td class="bold"></td>
-        <td>0</td>
+        <td>{{ expensesPaidByCompany }}</td>
         <td>EUR</td>
     </tr>
     <tr>
         <td class="bold">Expenses paid by employee (payable to your own bank account)</td>
-        <td id="companyPaidExpenseVal">
-            <div id="companyPaidExpense" class="display-none">{{ companyPaidExpense }}</div>
-        </td>
+        <td>{{ expensesPaidByEmployee }}</td>
         <td>HUF</td>
     </tr>
     <tr>
         <td class="bold"></td>
-        <td>0</td>
+        <td>{{ expensesPaidByEmployee }}</td>
         <td>EUR</td>
     </tr>
+    {% set totalExpenses = (expensesPaidByEmployee+expensesPaidByCompany+perDiem['totalPerDiem']) %}
     <tr class="bold">
         <td>Total expenses in HUF (OPIT + Employee + Per diem)</td>
-        <td id="totalExpenseVal"></td>
+        <td>{{ totalExpenses }}</td>
         <td>HUF</td>
     </tr>
     <tr class="bold">
         <td>Total expenses in EUR (OPIT + Employee + Per diem)</td>
-        <td>200</td>
+        <td>{{ totalExpenses }}</td>
         <td>EUR</td>
     </tr>
 </table>
 <table class="height-20"><tr><td></td></tr></table>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
-    {{ employee }}
+    &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
     Approved by {{ generalManager }} on {{ datetime }}.
@@ -206,7 +203,7 @@
 <table class="height-20"><tr><td></td></tr></table>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
-    {{ employee }}
+    &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
     Approved by {{ generalManager }} on {{ datetime }}.
@@ -247,7 +244,7 @@
     </tr>
     {% if loop.index != travelExpense.companyPaidExpenses|length %}
     <tr>
-        <td colspan="3">&nbsp</td>
+        <td colspan="3">&nbsp;</td>
     </tr>
     {% endif %}
     {% set companyPaidExpense = companyPaidExpense + companyPaidExpenses.amount %}
@@ -255,7 +252,7 @@
 </table>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
-    {{ employee }}
+    &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
     Approved by {{ generalManager }} on {{ datetime }}.

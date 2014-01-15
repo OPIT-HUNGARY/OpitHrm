@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TEPerDiem;
+use Opit\Notes\TravelBundle\Model\TravelExpenseExtension;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -81,7 +82,8 @@ class ExpenseController extends Controller
             array("travelExpenses" => $travelExpenses)
         );
     }
-        /**
+    
+    /**
      * Method to show and edit travel expense
      *
      * @Route("/secured/expense/show/{id}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
@@ -125,25 +127,16 @@ class ExpenseController extends Controller
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
             $children->add($companyPaidExpenses);
         }
-        
-        $amountSpent = 0;
-        $advancesReceived = $travelExpense->getAdvancesRecieved();
-        $advancesPayback = 0;
             
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $amountSpent += $userPaidExpenses->getAmount();
             $children->add($userPaidExpenses);
         }
-        
-        $advancesPayback = $advancesReceived - $amountSpent;
         
         $entityManager->getFilters()->disable('softdeleteable');
         
         $travelExpense->setArrivalDateTime($trArrivalDate);
         $travelExpense->setDepartureDateTime($trDepartureDate);
-        $travelExpense->setAdvancesPayback($advancesPayback);
-        $travelExpense->setToSettle($amountSpent);
-        
+
         $form = $this->createForm(
             new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
             $travelExpense,
@@ -154,6 +147,9 @@ class ExpenseController extends Controller
             $form->handleRequest($request);
             
             if ($form->isValid()) {
+                
+                $travelExpense = TravelExpenseExtension::calculateAdvances($travelExpense);
+                
                 $this->removeChildNodes($entityManager, $travelExpense, $children);
                 
                 $travelExpense->setTravelRequest($travelRequest);
@@ -192,6 +188,8 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense();
         }
         
+        $travelExpense = TravelExpenseExtension::calculateAdvances($travelExpense);
+        
         return array('travelExpense' => $travelExpense);
     }
     
@@ -227,7 +225,7 @@ class ExpenseController extends Controller
     }
     
     /**
-     * Method to fetch per diem from database
+     * Method to calculate and return per diem values
      *
      * @Route("/secured/expense/perdiem", name="OpitNotesTravelBundle_expense_perdiem")
      * @Template()
@@ -235,91 +233,24 @@ class ExpenseController extends Controller
      */
     public function fetchPerDiemAction(Request $request)
     {
-        
-        $entityManager = $this->getDoctrine()->getManager();
-        $perDiemAmount = 0;
-        $daysBetweenArrivalDeparture = 0;
-        $totalTravelHoursOnSameDay = 0;
-        $daysBetweenPerDiem = 0;
-        
-        $departureDayTravelHours = 0;
-        $departureDayPerDiem = 0;
         $departureDateTime = new \DateTime($request->request->get('departure'));
-        $departureTimeHour = intval($departureDateTime->format('H'));
-        $departureDay = intval($departureDateTime->format('d'));
-        $departureDate = $departureDateTime->format('Y-m-d');
-        
-        $arrivalDayTravelHours = 0;
-        $arrivalDayPerDiem = 0;
         $arrivalDateTime = new \DateTime($request->request->get('arrival'));
-        $arrivalTimeHour = intval($arrivalDateTime->format('H'));
-        $arrivalDay = intval($arrivalDateTime->format('d'));
-        $arrivalDate = $arrivalDateTime->format('Y-m-d');
-        
-        if ($departureDate !== $arrivalDate) {
-            
-            while ($departureTimeHour < 24) {
-                $departureTimeHour++;
-                $departureDayTravelHours++;
-            }
-
-            $departureDayPerDiem =
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAmountToPay(
-                    $departureDayTravelHours
-                );
-            
-            $perDiemAmount += $departureDayPerDiem;
-            
-            while ($arrivalTimeHour > 0) {
-                $arrivalTimeHour--;
-                $arrivalDayTravelHours++;
-            }
-
-            $arrivalDayPerDiem =
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
-                ->findAmountToPay($arrivalDayTravelHours);
-            
-            $perDiemAmount += $arrivalDayPerDiem;
-            
-            $daysBetweenArrivalDeparture = ($arrivalDay - $departureDay) - 1;
-            $daysBetweenPerDiem =
-                ($entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
-                ->findAmountToPay(24)*$daysBetweenArrivalDeparture);
-            
-            $perDiemAmount += $daysBetweenPerDiem;
-        } else {
-            $totalTravelHoursOnSameDay = 0;
-            while ($departureTimeHour < $arrivalTimeHour) {
-                $departureTimeHour++;
-                $totalTravelHoursOnSameDay++;
-            }
-            $perDiemAmount +=
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
-                ->findAmountToPay($totalTravelHoursOnSameDay);
-        }
-
-        $detailsOfPerDiem = array(
-            'totalTravelHoursOnSameDay' => $totalTravelHoursOnSameDay,
-            'departureHours' => $departureDayTravelHours,
-            'departurePerDiem' => $departureDayPerDiem,
-            'arrivalHours' => $arrivalDayTravelHours,
-            'arrivalPerDiem' => $arrivalDayPerDiem,
-            'daysBetween' => $daysBetweenArrivalDeparture,
-            'daysBetweenPerDiem' => $daysBetweenPerDiem,
-            'totalPerDiem' => $perDiemAmount
+        $detailsOfPerDiem = TravelExpenseExtension::calculatePerDiem(
+            $this->getDoctrine()->getManager(),
+            $arrivalDateTime, $departureDateTime
         );
         
         return new JsonResponse($detailsOfPerDiem);
     }
     
     /**
-     * Method to fetch per diem from database
+     * Method to fetch per diem values from database
      *
      * @Route("/secured/expense/perdiemvalues", name="OpitNotesTravelBundle_expense_perdiemvalues")
      * @Template()
      * @Method({"POST"})
      */
-    public function fetchPerDiemValuesAction(Request $request)
+    public function fetchPerDiemValuesAction()
     {
         
         $entityManager = $this->getDoctrine()->getManager();
@@ -332,7 +263,7 @@ class ExpenseController extends Controller
     }
     
     /**
-     * Method to delete one or more travel expense
+     * Method to view travel expense
      *
      * @Route("/secured/expense/view/{id}", name="OpitNotesTravelBundle_expense_view", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Template()
@@ -341,7 +272,7 @@ class ExpenseController extends Controller
     {
         $travelExpenseId = $request->attributes->get('id');
         $page = $this->getTravelExpensePage($travelExpenseId);
-
+        
         return $page;
     }
     
@@ -380,28 +311,56 @@ class ExpenseController extends Controller
         }
     }
     
+    /**
+     * Returns viewTravelExpense page rendered
+     * 
+     * @param integer $travelExpenseId
+     * @return mixed TravelExpense or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
     protected function getTravelExpensePage($travelExpenseId)
     {
-            $travelExpense = $this->getTravelExpense($travelExpenseId);
-            $travelRequest = $travelExpense->getTravelRequest();
-            $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
-            $employee = $travelRequest->getUser()->getEmployeeName();
-            $dateTimeNow = date("Y-m-d H:i");
+        $travelExpense = $this->getTravelExpense($travelExpenseId);
+        $travelRequest = $travelExpense->getTravelRequest();
+        $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
+        $employee = $travelRequest->getUser()->getEmployeeName();
+        $dateTimeNow = date("Y-m-d H:i");
+        $expensesPaidbyCompany = 0;
+        $expensesPaidByEmployee = 0;
 
-            $page = $this->render(
-                'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
-                array(
-                    'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
-                    'employee' => $employee, 'datetime' => $dateTimeNow,
-                    'trId' => $travelRequest->getTravelRequestId()
-                )
-            );
-            
-            return $page;
+        $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
+        $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
+        $perDiem = TravelExpenseExtension::calculatePerDiem(
+            $this->getDoctrine()->getManager(),
+            $arrivalDateTime, $departureDateTime
+        );
+
+        foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
+            $expensesPaidbyCompany += $companyPaidExpenses->getAmount();
+        }
+
+        foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
+            $expensesPaidByEmployee += $userPaidExpenses->getAmount();
+        }
+
+
+        $page = $this->render(
+            'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
+            array(
+                'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
+                'employee' => $employee, 'datetime' => $dateTimeNow,
+                'trId' => $travelRequest->getTravelRequestId(),
+                'perDiem' => $perDiem,
+                'expensesPaidByCompany' => $expensesPaidbyCompany,
+                'expensesPaidByEmployee' => $expensesPaidByEmployee
+            )
+        );
+
+        return $page;
     }
-
-
+    
     /**
+     * Return travel expense entity
      * 
      * @param integer $travelExpenseId
      * @return mixed TravelExpense or null

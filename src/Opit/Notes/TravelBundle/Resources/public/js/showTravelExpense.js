@@ -78,7 +78,6 @@
     if (payback <= advancesRecieved && payback >= 0) {
       $('#travelExpense_advancesSpent').html(advancesRecieved - payback);
       $('#travelExpense_advancesPayback').html(payback);
-      console.log(payback);
       $('.custom-error').each(function() {
         $(this).parent().children().remove('br');
         return $(this).remove();
@@ -384,7 +383,6 @@
   $('#travelExpense_add_travel_expense').on('click', function() {
     event.preventDefault();
     if ($form.valid() && calculateAdvancesPayback()) {
-      console.log('valid');
       return $.ajax({
         method: 'POST',
         url: Routing.generate('OpitNotesTravelBundle_expense_show_details'),

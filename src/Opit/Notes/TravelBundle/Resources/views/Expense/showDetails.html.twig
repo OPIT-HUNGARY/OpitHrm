@@ -53,12 +53,12 @@
                 <td>{{ travelExpense.advancesRecieved }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Advances payback</td>
-                <td>{{ travelExpense.advancesPayback }}</td>
+                <td class="bgGrey bold">Advances spent</td>
+                <td>{{ travelExpense.toSettle }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">To settle</td>
-                <td>{{ travelExpense.toSettle }}</td>
+                <td class="bgGrey bold">Advances payback</td>
+                <td>{{ travelExpense.advancesPayback }}</td>
             </tr>
         </table>
         {% if travelExpense.userPaidExpenses is defined %}
