@@ -34,6 +34,8 @@ $alertRed: #f2dede;
 $successGreen: #3c763d;
 $alertGreen: #dff0d8;
 
+$snowColor: rgb(250, 250, 250);
+
 @mixin border-radius($radius) {
     -webkit-border-radius: $radius;
     -moz-border-radius: $radius;
@@ -82,6 +84,13 @@ $alertGreen: #dff0d8;
     -moz-box-shadow: $left $top $scatter $size $color;
     -webkit-box-shadow: $left $top $scatter $size $color;
     -o-box-shadow: $left $top $scatter $size $color;
+}
+
+@mixin box-shadow-disabled(){
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    -o-box-shadow: none;
 }
 
 .bold {

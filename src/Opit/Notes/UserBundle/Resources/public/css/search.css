@@ -132,4 +132,3 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 #searchFormWrapper #searchFormProperties .searchProperty input[type="text"], #searchFormWrapper #searchFormProperties .searchProperty input[type="date"] { width: 100%; }
 #searchFormWrapper #searchFormProperties .searchProperty label { display: block; }
 #searchFormWrapper #searchFormButtons { margin: 10px 0 10px 15px; }
-#searchFormWrapper #searchFormButtons button.reset { margin: 0 0 0 10px; }

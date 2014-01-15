@@ -34,25 +34,6 @@ table {
         padding: 5px 10px 5px 10px;
     }
 
-    .delete{
-        margin:0 0 0 10px;
-        @include gradient($buttonDeleteLightColor, $buttonDeleteLightColor, $buttonDeleteDarkColor);
-        @include box-shadow(2px, 2px, 2px, 1px, $buttonDeleteDarkColor);        
-    }
-
-    .delete:hover{
-        background: $buttonDeleteDarkColor;
-    }
-
-    .add{
-        @include gradient($buttonAddLightColor, $buttonAddLightColor, $buttonAddDarkColor);
-        @include box-shadow(2px, 2px, 2px, 1px, $buttonAddDarkColor);               
-    }
-
-    .add:hover{
-        background: $buttonAddDarkColor;
-    }
-
     .clickable{
         text-decoration: underline;
     }

@@ -124,14 +124,20 @@ a > i { text-decoration: none !important; float: right; margin: 0 5px 0 0; }
 
 .no-padding { padding: 0; }
 
-.button { border: 0; margin: 0 0 10px 0; padding: 8px 24px 8px 24px; color: black; text-decoration: none; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; -moz-box-shadow: 2px 2px 2px 1px #969696; -webkit-box-shadow: 2px 2px 2px 1px #969696; -o-box-shadow: 2px 2px 2px 1px #969696; }
+.button { border: 0; margin: 0 10px 10px 0; padding: 8px 24px 8px 24px; color: black; text-decoration: none; -webkit-border-radius: 10px; -moz-border-radius: 10px; -ms-border-radius: 10px; -o-border-radius: 10px; border-radius: 10px; background: linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -webkit-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -o-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); background: -moz-linear-gradient(#ebebeb, #ebebeb, #b4b4b4); box-shadow: 2px 2px 2px 1px #969696; -moz-box-shadow: 2px 2px 2px 1px #969696; -webkit-box-shadow: 2px 2px 2px 1px #969696; -o-box-shadow: 2px 2px 2px 1px #969696; }
 .button i { margin: 0 5px 0 0; }
+
+.button:hover { background: #b4b4b4; box-shadow: 0 0 0 0 black; cursor: pointer; }
+
+.delete { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
+
+.button-disabled { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
+
+.button-disabled:hover { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"] { padding: 4px 0 4px 0; display: block; border: solid 1px #b4b4b4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; outline: 0; text-indent: 5px; }
 
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus { border: solid 1px #f28c38; }
-
-.button:hover { background: #b4b4b4; box-shadow: 0 0 0 0 black; cursor: pointer; }
 
 .formFieldset { background-color: #ebebeb; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; padding: 0 0 5px 0; margin: 20px 0 20px 0; }
 .formFieldset .formFieldsetChild { background-color: #d2d2d2; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-left: 1em; display: inline-block; vertical-align: top; }

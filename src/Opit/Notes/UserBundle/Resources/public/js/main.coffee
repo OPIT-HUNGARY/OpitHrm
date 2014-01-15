@@ -55,6 +55,16 @@ cloneSubmenu = ->
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
 
+changeDeleteButton = (disableInputCheck) ->
+    $deleteButton = $('#delete')
+    $deleteButton.attr 'disabled', 'disabled'
+    $deleteButton.addClass 'button-disabled'
+    if disableInputCheck is false
+        $('#list-table tr td input[type=checkbox]').each ->
+            if $(@).prop 'checked'
+                $deleteButton.removeClass 'button-disabled'
+                $deleteButton.removeAttr 'disabled'
+                return false
 
 # Place any jQuery/helper plugins in here.
 
@@ -71,11 +81,25 @@ $.fn.extend
         checkAll = if $el.filter(':checked').length is $el.length then false else true
         $el.each ->
             $(@).prop 'checked', checkAll
+        changeDeleteButton()
 
 $(document)
     .ready ->
         $('#loggedInUser').click ->
             $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('OpitNotesUserBundle').funcs?.showAlert
+            
+        $deleteButton = $('#delete')
+        $deleteButton.attr 'disabled', 'disabled'
+        $deleteButton.addClass 'button-disabled'
+        $deleteButton.removeClass 'delete'
+        $('#list-table tr td').on 'change', 'input[type=checkbox]', ->
+            changeDeleteButton()
+            
+        $(document).on 'click', '.ui-button-text', ->
+            buttonText = $(@).html()
+            if buttonText == 'Yes' or buttonText == 'Continue'
+                changeDeleteButton(true)
+            
     
         cloneSubmenu()
         # function to make header menu tabs selectable
@@ -96,5 +120,6 @@ $(document)
                 if $menuWrapperActive.children('.subMenu').offset().top > $(window).scrollTop()
                     if $('body').has(subMenuCloneClass).length
                         $subMenuClone.css({display: 'none'})
+                
 
 
