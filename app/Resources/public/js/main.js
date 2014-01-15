@@ -62,6 +62,7 @@
           returnVal = false;
         } else {
           $('#list-reply-message').html("<i class='fa fa-check-square'></i> " + message + "! <i class='float-right fa fa-chevron-circle-up'></i> ").addClass("alert-message").addClass('success-message').fadeIn(200).delay(2000).slideUp(1000);
+          $('#reply-message').removeClass('alert-message error-message').empty();
           returnVal = true;
         }
         if (forceClass) {

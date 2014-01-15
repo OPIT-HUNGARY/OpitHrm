@@ -63,6 +63,9 @@ $.extend true, $(document).data('notes'),
                   .fadeIn(200)
                   .delay(2000)
                   .slideUp(1000)
+                $('#reply-message')
+                  .removeClass('alert-message error-message')
+                  .empty()
                 returnVal = on
               
               if forceClass

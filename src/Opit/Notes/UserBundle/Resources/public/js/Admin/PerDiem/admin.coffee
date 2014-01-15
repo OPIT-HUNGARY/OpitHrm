@@ -1,26 +1,23 @@
+# declare per diem wrapper
+perDiemWrapper = ''
+idIteratorValue = 0
+isHadChild = false;
+
 # add new per diem form
 $addPerDiem = $('#addPerDiem')
+
 $addPerDiem.click (event) ->
     event.preventDefault()
-    $.ajax
-        method: 'POST'
-        url: Routing.generate 'OpitNotesUserBundle_admin_show_perdiem'
-    .done (data) ->
-        $('.container').append(data)
-        return
-    return
+    clonedPerDiemWrapper = perDiemWrapper
+    idIteratorValue++
+    clonedPerDiemWrapper = clonedPerDiemWrapper.replace /__index__/g, idIteratorValue
+    $('.container').append clonedPerDiemWrapper
 
 # delete per diem form
 $('.container').on 'click', '.deletePerDiem', ->
-    id = $(@).parent().parent().find('#id').val()
-    isDelete = $(@).parent().parent().find('#isToDelete')
-    if id > 0
-        isDelete.val(1)
-        $(@).parent().parent().hide()
-    else
-        $(@).parent().parent().remove()
-    return
+    $(@).parent().parent().remove()
 
+# validation for compare the hours
 validationOfHoursCompare = () ->
     isUnique = true
     hoursArray = []
@@ -31,34 +28,24 @@ validationOfHoursCompare = () ->
             hoursArray.push($(@).val())
     return isUnique
 
-validationOfLessThan24 = (valueOfHour) ->
-    isLessThan24 = true
-    if 24 < valueOfHour
-        isLessThan24 = false
-    return isLessThan24
-    
+#validation to checking the value is greater than 0
 validationOfGreaterThan0 = (valueOfAmount) ->
     isGreaterThan0 = true
     if 0 >= valueOfAmount
         isGreaterThan0 = false
     return isGreaterThan0
 
+#check the hours fields
 hoursCheck = (hoursElement) ->
-    isLessThen24 = validationOfLessThan24(hoursElement.val())
     isUnique = validationOfHoursCompare()
     $wrapper = hoursElement.parent()
-    # check if hour less than 24
-    if !isLessThen24
-        if $wrapper.children('label.custom-lablel-error').length is 0
-            errorMessage = $('<label>').html('The value of hours should be less than 24!').addClass 'custom-label-error'
-            $wrapper.prepend '<br />'
-            $wrapper.prepend errorMessage
-        return false
-    else if !isUnique
+    if !isUnique
+        # check if hour is not repeated value
         if $wrapper.children('label.custom-label-error').length is 0
-            errorMessage = $('<label>').html('The value of hours is a repeated value!').addClass 'custom-label-error'
+            errorMessage = $('<label>').html('The value of hours should be unique value!').addClass 'custom-label-error'
             $wrapper.prepend '<br />'
             $wrapper.prepend errorMessage
+            disableSaveButton(true)
         return false
     else
         hours = $('form').find('.hours')
@@ -66,70 +53,83 @@ hoursCheck = (hoursElement) ->
             $wrapper = $(@).parent()
             $wrapper.children('label.custom-label-error').remove()
             $wrapper.children('br').remove()
-            return true
+            disableSaveButton(false)
+         return true
 
-# validation - change validation for hours
-$('.container').on 'change', '.hours', ->
+#check hours on keyup event
+$(".container").on "keyup", ".hours", ->
+    hoursCheck($(@))
+#check hours on change event
+$(".container").on "change", ".hours", ->
     hoursCheck($(@))
 
-# validation - keyup validation for hours
-$('.container').on 'keyup', '.hours', ->
-    hoursCheck($(@))
-
-# validation - change validation for amount
-$('.container').on 'change', '.amount', ->
-    isGreaterThan0 = validationOfGreaterThan0($(@).val())
-    $wrapper = $(@).parent()
-    console.log isGreaterThan0
-    # check if amount greater than 24
+# check the amount fields
+checkAmount = (amountElement) ->
+    isGreaterThan0 = validationOfGreaterThan0(amountElement)
     if !isGreaterThan0
-        console.log 'greater'
-        if $wrapper.children('label.custom-lablel-error').length is 0
-            console.log 'wrapping'
-            errorMessage = $('<label>').html('The Amount should be greater than 0!').addClass 'custom-label-error'
-            $wrapper.prepend '<br />'
-            $wrapper.prepend errorMessage
-            disableSaveButton(true)
         return false
     else
-        $wrapper.children('label.custom-label-error').remove()
-        $wrapper.children('br').remove()
-        disableSaveButton(false)
         return true
-        
+
+# disable or enable the save button
 disableSaveButton = (disable) ->
     if disable is true
         $('#save').attr('disabled', true)
     else
         $('#save').removeAttr('disabled')
-    
+
+# document ready
+$(document).ready () ->
+    idIteratorValue = $('.formFieldsetChild').length
+    isHadChild = $('.container').children('.formFieldsetChild').length > 0
+    $.ajax
+        method: 'GET'
+        url: Routing.generate 'OpitNotesUserBundle_admin_show_perdiem'
+    .done (data) ->
+        perDiemWrapper = data
+        return
+    return
+
+# method to validate if departure date is smaller than arrival date
+$.validator.addMethod 'checkAmount', (value, element) ->
+    return checkAmount(value)
+, 'The Amount should be greater than 0!'
+
+$.validator.addClassRules(
+    'amount', {checkAmount: {elements: ".amount" }}
+);
+
 # save the per diems at the backend
 $('#save').click (event) ->
     event.preventDefault()
-    forms = $('form')
-    
-    if forms.valid() and validationOfHoursCompare()
+    form = $('form')
+    isHasChild = $('.container').children('.formFieldsetChild').length > 0
+
+    # If the form valid, Save it.
+    if form.valid() && validationOfHoursCompare() && (isHasChild || isHadChild)
         disableSaveButton(true)
         $.ajax
             method: 'POST'
-            data: forms.serialize()
+            data: form.serialize()
             dataType: 'json'
             url: Routing.generate 'OpitNotesUserBundle_admin_save_perdiem'
         .done (data) ->
             disableSaveButton(false)
             response = data
+            #refresh the per diem listing
             $.ajax
                 type: 'POST'
                 url: Routing.generate 'OpitNotesUserBundle_admin_list_perdiem'
                 data: "showList" : 1
             .done (data)->
-                $('.container').html data.list
-                $(document).data('notes').funcs.showAlert response, "create", "Per diems saved successfully!" 
+                $('.container').html data
+                $(document).data('notes').funcs.showAlert response, "create", "Per diems saved successfully!"
+                isHadChild = $('.container').children('.formFieldsetChild').length > 0
             .fail (data) ->
-                $(document).data('notes').funcs.showAlert data.responseText, "create","Error"
+                $(document).data('notes').funcs.showAlert response, "create", "Error", true
             return
         .fail (data) ->
-                $(document).data('notes').funcs.showAlert data.responseText, "create","Error"
+                $(document).data('notes').funcs.showAlert response, "create", "Error", true
         return
     else
         disableSaveButton(false)

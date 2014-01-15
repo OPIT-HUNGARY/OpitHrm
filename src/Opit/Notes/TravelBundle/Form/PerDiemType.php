@@ -15,22 +15,18 @@ class PerDiemType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $inArray = array_key_exists('data',$options);
+        $inArray = array_key_exists('data', $options);
         $builder->add('hours', 'integer', array(
             'label' => 'Hours',
-            'attr' => array('placeholder' => 'Hours', 'class' => 'te-claim hours width-80-fix', 'min'=>0, 'max'=>24)
+            'attr' => array('placeholder' => 'Hours', 'class' => 'te-claim hours width-80-fix', 'min'=>1, 'max'=>24)
         ));
-        $builder->add('ammount', 'integer', array(
+        $builder->add('amount', 'integer', array(
             'label' => 'Amount',
-            'attr' => array('placeholder' => 'Amount', 'class' => 'te-claim amount width-80-fix', 'min'=>0)
+            'attr' => array('placeholder' => 'Amount', 'class' => 'te-claim amount width-80-fix', 'min'=>1)
         ));
         $builder->add('id', 'hidden', array(
             'mapped'=>false,
-            'data' => $inArray?(($id = $options['data']->getId()) ? $id : 0):''
-        ));
-        $builder->add('isToDelete', 'hidden', array(
-            'data' => 0,
-            'mapped' => false,
+            'data' => $inArray?(($id = $options['data']->getId()) ? $id : ''):''
         ));
     }
     
@@ -51,5 +47,4 @@ class PerDiemType extends AbstractType
     {
         return '';
     }
-
 }

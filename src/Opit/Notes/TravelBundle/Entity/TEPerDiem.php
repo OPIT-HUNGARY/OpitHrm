@@ -3,12 +3,15 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * TEPerDiem
  *
  * @ORM\Table(name="notes_te_per_diem")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TEPerDiemRepository")
+ * @UniqueEntity(fields={"hours"}, message="The hours is already used.")
  */
 class TEPerDiem
 {
@@ -25,15 +28,27 @@ class TEPerDiem
      * @var float
      *
      * @ORM\Column(name="hours", type="float")
+     * @Assert\NotBlank(message="The hours should not be blank.")
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 24,
+     *      minMessage = "The hours should be least 1.",
+     *      maxMessage = "The hours should be greatest 24."
+     * )
      */
     private $hours;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="ammount", type="float")
+     * @ORM\Column(name="amount", type="float")
+     * @Assert\NotBlank(message="The amount should not be blank.")
+     * @Assert\Range(
+     *      min = 1,
+     *      minMessage = "The amount should be least 1."
+     * )
      */
-    private $ammount;
+    private $amount;
 
 
     /**
@@ -70,25 +85,25 @@ class TEPerDiem
     }
 
     /**
-     * Set ammount
+     * Set amount
      *
-     * @param float $ammount
+     * @param float $amount
      * @return TEPerDiem
      */
-    public function setAmmount($ammount)
+    public function setAmount($amount)
     {
-        $this->ammount = $ammount;
+        $this->amount = $amount;
     
         return $this;
     }
 
     /**
-     * Get ammount
+     * Get amount
      *
      * @return float
      */
-    public function getAmmount()
+    public function getAmount()
     {
-        return $this->ammount;
+        return $this->amount;
     }
 }

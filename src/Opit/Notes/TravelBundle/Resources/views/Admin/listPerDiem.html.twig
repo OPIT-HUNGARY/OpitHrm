@@ -1,14 +1,17 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-    Per Diem list - {{ parent() }}
+Per Diem list - {{ parent() }}
 {% endblock %}
 {% block body %}
 <h1>Per diem configuration</h1>
 <div class="modal-description default-border-radius">Per diem can be configured from here.</div>
 <div  id="list">
     <div id="list-reply-message"></div>
-   <form class="formFieldset">
+    <div id="reply-message"></div>
+    <form class="formFieldset">
+        <div class="container  padding-top-20">
         {% include 'OpitNotesTravelBundle:Admin:_listPerDiem.html.twig' %}
+        </div>
         <div class="addFormFieldsetChild formFieldsetButton no-pointer">
             <span id="addPerDiem" class="pointer">
                 <i class="fa fa-plus-square"></i>
@@ -24,7 +27,7 @@
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/Admin/PerDiem/admin.js'
     output='js/notes_admin.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>
+<script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
 

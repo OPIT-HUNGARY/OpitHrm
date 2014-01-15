@@ -7,10 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\TravelBundle\Entity\TEExpenseType;
 use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Form\PerDiemType;
+use Opit\Notes\TravelBundle\Helper\Utils;
 
 /**
  * Description of AdminController
@@ -123,7 +125,7 @@ class AdminTravelController extends Controller
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
         $perDiemList = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
-
+        
         return $this->render(
             $showList ? 'OpitNotesTravelBundle:Admin:_listPerDiem.html.twig' : 'OpitNotesTravelBundle:Admin:listPerDiem.html.twig',
             array('perDiems' => $perDiemList)
@@ -133,26 +135,30 @@ class AdminTravelController extends Controller
     /**
      * To show per diem
      *
-     * @Route("/secured/admin/show/perdiem", name="OpitNotesUserBundle_admin_show_perdiem")
+     * @Route("/secured/admin/show/perdiem", name="OpitNotesUserBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function showPerDiemAction()
+    public function showPerDiemAction(Request $request)
     {
-        $request = $this->getRequest();
         $id = $request->attributes->get('id');
         
-        if ($id) {
-            $perDiem = $this->getPerDiem($id);
-        } else {
+        if ($id == 'new') {
+            $index = null;
             $perDiem = new TEPerDiem();
+        } else {
+            $index = $request->attributes->get('index');
+            $perDiem = $this->getPerDiem($id);
         }
         
         $form = $this->createForm(
             new PerDiemType(),
             $perDiem
         );
-        return $this->render('OpitNotesTravelBundle:Admin:showPerDiemForm.html.twig', array('form' => $form->createView()));
+        return $this->render(
+            'OpitNotesTravelBundle:Admin:showPerDiemForm.html.twig',
+            array('form' => $form->createView(), 'index' => $index)
+        );
     }
     
     /**
@@ -165,40 +171,78 @@ class AdminTravelController extends Controller
     public function savePerDiemAction()
     {
         $request = $this->getRequest();
-        $params = $request->request->all();
+        $data = $request->request->all();
         $em = $this->getDoctrine()->getManager();
         $result['response'] = 'success';
-        $form = $this->setPerDiemtForm();
         $status = null;
-        
-        // If it was  a post
+
+        //If it was a post
         if ($request->isMethod('POST')) {
             
-            foreach ($params as $key => $value) {
-
-                foreach ($value as $v) {
-
-                    if ('id'==$key) {
-
-                        if (isset($value[$v])) {
-
-                            $perDiem  = $this->getPerDiem($value[$v], false);
-                            $hours = $params['hours'][$v];
-                            $amount = $params['ammount'][$v];
-                            $isToDelete = $params['isToDelete'][$v];
-
-                            $saveResult = $this->setPerDiem($em, $perDiem, $hours, $amount, $isToDelete);
-
-                            if (isset($saveResult['deletedElement']) &&  true===$saveResult['deletedElement']) {
-                                continue;
-                            }
-                            $status = $saveResult['status'];
-                        }
+            $perDiemList = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
+            $ids = Utils::arrayValueRecursive('id', $data);
+            
+            // Remove per diems
+            foreach ($perDiemList as $pd) {
+                if (!in_array($pd->getId(), $ids)) {
+                    // delete
+                    $perDiem = $this->getPerDiem($pd->getId(), false);
+                    $em->remove($perDiem);
+                    $em->flush();
+                }
+            }
+            if (!empty($data)) {
+                // Save per diems
+                foreach ($data['perdiem'] as $d) {
+                    // save
+                    $perDiem = $this->getPerDiem($d['id'], false);
+                    $result = $this->setPerDiem($perDiem, $d);
+                    if (500 === $result['status']) {
+                        $status = $result['status'];
+                        break;
                     }
                 }
             }
         }
         return new JsonResponse(array('code' => $status, $result));
+    }
+    
+    /**
+     * Set the per diem entity
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEPerDiem $perDiem
+     * @param array $data value of per diem
+     * @return int|boolean
+     */
+    protected function setPerDiem($perDiem, $data)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $result = array();
+        $result['status'] = 200;
+        
+        //If it is a new per diem create, else modify it.
+        if (false === $perDiem) {
+            // Create a new per diem and save it.
+            $perDiem = new TEPerDiem();
+        }
+        $perDiem->setHours($data['hours']);
+        $perDiem->setAmount($data['amount']);
+
+        $validator = $this->get('validator');
+        $errors = $validator->validate($perDiem);
+        // If the validation failed
+        if (count($errors) > 0) {
+            $result['status'] = 500;
+            $result['response'] = 'error';
+            // Get the error messages.
+            foreach ($errors as $e) {
+                    $result['errorMessage'][] = $e->getMessage();
+            }
+        } else {
+            $em->persist($perDiem);
+            $em->flush();
+        }
+        return $result;
     }
     
     /**
@@ -219,8 +263,8 @@ class AdminTravelController extends Controller
 
         $perDiem = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->find($perDiemId);
         
-        if (!$perDiem) {
-            
+        if (!$perDiem || null === $perDiem) {
+            //If this method throws error or just return with false value.
             if (true === $throwError) {
                 throw $this->createNotFoundException('Missing Per diem for id "' . $perDiem . '"');
             } else {
@@ -229,39 +273,6 @@ class AdminTravelController extends Controller
         }
         return $perDiem;
     }
-    
-    protected function setPerDiem($em, $perDiem, $hours, $amount, $isToDelete)
-    {
-        $result = array();
-        $result['status'] = 200;
-        
-        if (($amount > 0 && $hours > 0) && ($amount !== '' && $hours !== '')) {
-            if (false === $perDiem) {
-
-                    $perDiem = new TEPerDiem();
-                    $perDiem->setHours($hours);
-                    $perDiem->setAmmount($amount);
-                    $em->persist($perDiem);
-                    $em->flush();
-            } else {
-                
-                if ('1' == $isToDelete) {
-                    $em->remove($perDiem);
-                    $em->flush();
-                    $result['deletedElement'] = true;
-                    return $result;
-                }
-                $perDiem->setHours($hours);
-                $perDiem->setAmmount($amount);
-                $em->persist($perDiem);
-                $em->flush();
-            }
-        } else {
-            $result['status'] = 500;
-        }
-        return $result;
-    }
-
 
     /**
      *  Set the Per diem form
