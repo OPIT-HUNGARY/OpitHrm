@@ -12,6 +12,8 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\TravelBundle\Entity\TravelRequest;
 
 /**
  * This class is a container for the Travel Request Status model
@@ -22,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @subpackage TravelBundle
  *
  * @ORM\Table(name="notes_states_travel_requests")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatesTravelRequestsRepository")
  */
 class StatesTravelRequests
 {
@@ -45,9 +47,10 @@ class StatesTravelRequests
      */
     protected $status;
 
-    public function __construct(\Opit\Notes\TravelBundle\Entity\Status $status = null)
+    public function __construct(Status $status = null, TravelRequest $travelRequest = null)
     {
         $this->setStatus($status);
+        $this->setTravelRequest($travelRequest);
     }
 
     /**
@@ -66,7 +69,7 @@ class StatesTravelRequests
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @return StatesTravelRequests
      */
-    public function setTravelRequest(\Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest = null)
+    public function setTravelRequest(TravelRequest $travelRequest = null)
     {
         $this->travelRequest = $travelRequest;
 
@@ -80,7 +83,7 @@ class StatesTravelRequests
      */
     public function getTravelRequest()
     {
-        return $this->TravelRequest;
+        return $this->travelRequest;
     }
 
     /**
@@ -89,7 +92,7 @@ class StatesTravelRequests
      * @param \Opit\Notes\TravelBundle\Entity\Status $status
      * @return StatesTravelRequests
      */
-    public function setStatus(\Opit\Notes\TravelBundle\Entity\Status $status = null)
+    public function setStatus(Status $status = null)
     {
         $this->status = $status;
 

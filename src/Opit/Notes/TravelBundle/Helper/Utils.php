@@ -10,7 +10,8 @@ namespace Opit\Notes\TravelBundle\Helper;
  * @package Opit
  * @subpackage Notes
  */
-class Utils {
+class Utils
+{
 
     /**
      * Get all values from specific key in a multidimensional array
@@ -19,9 +20,10 @@ class Utils {
      * @param $arr array
      * @return array
      */
-    public static function arrayValueRecursive($key, array $arr) {
+    public static function arrayValueRecursive($key, array $arr)
+    {
         $val = array();
-        array_walk_recursive($arr, function($v, $k) use($key, &$val) {
+        array_walk_recursive ($arr, function ($v, $k) use($key, &$val){
             if ($k == $key) {
                 array_push($val, $v);
             }
@@ -29,5 +31,21 @@ class Utils {
         
         return $val;
     }
+    
+    /**
+     * Extracts and returns a class basename
+     *
+     * @param object $obj
+     * @return string  The class basename
+     */
+    public static function getClassBasename($obj)
+    {
+        $classname = get_class($obj);
 
+        if (preg_match('@\\\\([\w]+)$@', $classname, $matches)) {
+            $classname = $matches[1];
+        }
+
+        return $classname;
+    }
 }

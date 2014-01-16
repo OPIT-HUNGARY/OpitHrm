@@ -7,10 +7,14 @@
 
     <parameters>
         <parameter key="opit.model.travel_expense.class">Opit\Notes\UserBundle\Model\TravelExpense</parameter>
+        <parameter key="opit.manager.status_manager.class">Opit\Notes\TravelBundle\Manager\StatusManager</parameter>
     </parameters>
     <services>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
             <tag name="travel_expense.extension" />
+        </service>
+        <service id="opit.manager.status_manager" class="%opit.manager.status_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
     </services>
 </container>

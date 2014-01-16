@@ -12,6 +12,8 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\TravelBundle\Entity\TravelExpense;
 
 /**
  * This class is a container for the Travel Expense Status model
@@ -22,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @subpackage TravelBundle
  *
  * @ORM\Table(name="notes_states_travel_expense")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatesTravelExpensesRepository")
  */
 class StatesTravelExpenses
 {
@@ -45,9 +47,10 @@ class StatesTravelExpenses
      */
     protected $status;
 
-    public function __construct(\Opit\TravelBundle\Entity\Status $status = null)
+    public function __construct(Status $status = null, TravelExpense $travelExpense = null)
     {
         $this->setStatus($status);
+        $this->setTravelExpense($travelExpense);
     }
 
     /**
@@ -63,12 +66,12 @@ class StatesTravelExpenses
     /**
      * Set travel expense
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $TravelExpense
+     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return StatesTravelExpenses
      */
-    public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $TravelExpense = null)
+    public function setTravelExpense(TravelExpense $travelExpense = null)
     {
-        $this->TravelExpense = $TravelExpense;
+        $this->travelExpense = $travelExpense;
 
         return $this;
     }
@@ -80,7 +83,7 @@ class StatesTravelExpenses
      */
     public function getTravelExpense()
     {
-        return $this->TravelExpense;
+        return $this->travelExpense;
     }
 
     /**
@@ -89,7 +92,7 @@ class StatesTravelExpenses
      * @param \Opit\Notes\TravelBundle\Entity\Status $status
      * @return StatesTravelExpenses
      */
-    public function setStatus(\Opit\Notes\TravelBundle\Entity\Status $status = null)
+    public function setStatus(Status $status = null)
     {
         $this->status = $status;
 
@@ -105,5 +108,4 @@ class StatesTravelExpenses
     {
         return $this->status;
     }
-
 }

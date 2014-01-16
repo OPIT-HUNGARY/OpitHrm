@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @subpackage TravelBundle
  *
  * @ORM\Table(name="notes_status")
- * @ORM\Entity(repositoryClass="Opit\TravelBundle\Entity\StatusRepository")
+ * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatusRepository")
  */
 class Status
 {
