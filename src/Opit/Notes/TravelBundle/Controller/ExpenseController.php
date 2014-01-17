@@ -15,6 +15,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use TCPDF;
 
+use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\TravelBundle\Entity\StatusWorkflow;
+use Opit\Notes\TravelBundle\Manager\StatusManager;
+
 /**
  * Description of ExpenseController
  *
@@ -115,12 +119,37 @@ class ExpenseController extends Controller
         
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
         
+        // te = Travel Expense
+        $travelExpenseStates = array();
+        $isEditLocked = array();
+        $isStatusLocked = array();
+        $statusManager = $this->get('opit.manager.status_manager');
+        
+        // get travel expense current status
+        $currentStatus = $statusManager->getCurrentStatus($travelExpense);
+        $currentStatusName = $currentStatus->getName();
+        $currentStatusId = $currentStatus->getId();
+        
+        // set availabilty(edit, change status) for travel expense
+        $teAvailability =
+            $this->setTEAvailability($travelRequest->getGeneralManager()->getId(), $currentUser->getId(), $currentStatusName);
+        $isEditLocked = $teAvailability['isEditLocked'];
+        $isStatusLocked = $teAvailability['isStatusLocked'];
+        
         if (false === $isNewTravelExpense) {
             $travelExpense->setUser($currentUser);
         } else {
+            //if edit is locked because current status do not get all other available states
+            if (false === $isStatusLocked) {
+                $travelExpenseStates = $statusManager->getNextStates($currentStatus);
+            }
+            
             $trArrivalDate = $travelExpense->getArrivalDateTime();
             $trDepartureDate = $travelExpense->getDepartureDateTime();
         }
+        
+        // set current status for travel expense
+        $travelExpenseStates[$currentStatusId] = $currentStatusName;
         
         $children = new ArrayCollection();
         
@@ -164,8 +193,11 @@ class ExpenseController extends Controller
         return array(
             'form' => $form->createView(),
             'travelExpense' => $travelExpense,
-            'trId' => $travelRequestId
-            );
+            'trId' => $travelRequestId,
+            'travelExpenseStates' => $travelExpenseStates,
+            'isEditLocked' => $isEditLocked,
+            'isStatusLocked' => $isStatusLocked
+        );
     }
     
     /**
@@ -237,7 +269,8 @@ class ExpenseController extends Controller
         $arrivalDateTime = new \DateTime($request->request->get('arrival'));
         $detailsOfPerDiem = TravelExpenseExtension::calculatePerDiem(
             $this->getDoctrine()->getManager(),
-            $arrivalDateTime, $departureDateTime
+            $arrivalDateTime,
+            $departureDateTime
         );
         
         return new JsonResponse($detailsOfPerDiem);
@@ -257,7 +290,7 @@ class ExpenseController extends Controller
         $perDiemAmounts = $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
         $values = array();
         foreach ($perDiemAmounts as $key => $value) {
-            $values[$value->getHours()] = $value->getAmmount();
+            $values[$value->getHours()] = $value->getAmount();
         }
         return new JsonResponse($values);
     }
@@ -312,6 +345,26 @@ class ExpenseController extends Controller
     }
     
     /**
+     * Method to change state of travel expense
+     *
+     * @Route("/secured/expense/state/", name="OpitNotesTravelBundle_expense_state")
+     * @Template()
+     */
+    public function changeTravelExpenseStateAction(Request $request)
+    {
+        $statusId = $request->request->get('statusId');
+        $travelExpenseId = $request->request->get('travelExpenseId');
+        $entityManager = $this->getDoctrine()->getManager();
+        $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
+        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
+        
+        $statusManager = $this->get('opit.manager.status_manager');
+        $statusManager->addStatus($travelExpense, $statusId);
+        
+        return new JsonResponse();
+    }
+    
+    /**
      * Returns viewTravelExpense page rendered
      * 
      * @param integer $travelExpenseId
@@ -332,7 +385,8 @@ class ExpenseController extends Controller
         $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
         $perDiem = TravelExpenseExtension::calculatePerDiem(
             $this->getDoctrine()->getManager(),
-            $arrivalDateTime, $departureDateTime
+            $arrivalDateTime,
+            $departureDateTime
         );
 
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
@@ -395,5 +449,36 @@ class ExpenseController extends Controller
                 $entityManager->remove($child);
             }
         }
+    }
+    
+    /**
+     * Method to to enable or disable travel expense
+     * 
+     * @param integer $travelRequestGM
+     * @param integer $currentUser
+     * @param string $currentStatusName
+     * @return boolean $trAvailability
+     */
+    protected function setTEAvailability($travelRequestGM, $currentUser, $currentStatusName)
+    {
+        $teAvailability = array();
+        if ($travelRequestGM === $currentUser) {
+            $teAvailability['isEditLocked'] = true;
+            if ('Created' === $currentStatusName && 'Revise' === $currentStatusName) {
+                $teAvailability['isStatusLocked'] = true;
+            } else {
+                $teAvailability['isStatusLocked'] = false;
+            }
+        } else {
+            if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
+                $teAvailability['isEditLocked'] = false;
+                $teAvailability['isStatusLocked'] = false;
+            } else {
+                $teAvailability['isEditLocked'] = true;
+                $teAvailability['isStatusLocked'] = true;
+            }
+        }
+        
+        return $teAvailability;
     }
 }

@@ -291,6 +291,20 @@ $(document).ready ->
         calculateAdvancesPayback()
     $('.formFieldset').on 'change', '.paid-in-advance', ->
         calculateAdvancesPayback()
+        
+    $('.changeState').on 'change', ->
+        statusId = $(@).val()
+        parameters = window.location.pathname.split('/')
+        travelExpenseId = parameters[parameters.length - 1]
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesTravelBundle_expense_state'
+            data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
+        .done (data) ->
+            console.log data
+        .fail (data) ->
+            console.warn 'Error occured while saving state for travel expense.'
+        
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'

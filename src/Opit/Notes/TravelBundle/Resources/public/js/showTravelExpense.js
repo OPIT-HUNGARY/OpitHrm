@@ -280,8 +280,26 @@
     $('.formFieldset').on('change', '.amount', function() {
       return calculateAdvancesPayback();
     });
-    return $('.formFieldset').on('change', '.paid-in-advance', function() {
+    $('.formFieldset').on('change', '.paid-in-advance', function() {
       return calculateAdvancesPayback();
+    });
+    return $('.changeState').on('change', function() {
+      var parameters, statusId, travelExpenseId;
+      statusId = $(this).val();
+      parameters = window.location.pathname.split('/');
+      travelExpenseId = parameters[parameters.length - 1];
+      return $.ajax({
+        method: 'POST',
+        url: Routing.generate('OpitNotesTravelBundle_expense_state'),
+        data: {
+          'statusId': statusId,
+          'travelExpenseId': travelExpenseId
+        }
+      }).done(function(data) {
+        return console.log(data);
+      }).fail(function(data) {
+        return console.warn('Error occured while saving state for travel expense.');
+      });
     });
   });
 

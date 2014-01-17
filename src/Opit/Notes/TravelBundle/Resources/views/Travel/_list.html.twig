@@ -58,14 +58,16 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
-                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
-                    <i class="fa fa-pencil-square-o"></i>
-                    <span>Edit travel expense</span>
-                </a>
-                <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
-                    <i class="fa fa-pencil-square-o"></i>
-                    <span>View travel expense</span>
-                </a>
+                    {% if isTravelExpenseLocked[i] == 0 %}
+                    <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
+                        <i class="fa fa-pencil-square-o"></i>
+                        <span>Edit travel expense</span>
+                    </a>
+                    <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+                        <i class="fa fa-pencil-square-o"></i>
+                        <span>View travel expense</span>
+                    </a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
         </td>

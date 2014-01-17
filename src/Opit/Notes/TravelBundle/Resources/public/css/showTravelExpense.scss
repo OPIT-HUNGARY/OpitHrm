@@ -71,3 +71,18 @@ label.custom-error{
     width:110px;
     padding:3px;
 }
+
+h1{
+    display:inline-block;
+    margin-top:0;
+}
+
+#changeStateWrapper{
+    display:inline-block;
+    position:relative;
+    .changeState{
+        position:absolute;
+        margin-top:-23px;
+        margin-left:10px;
+    }
+}

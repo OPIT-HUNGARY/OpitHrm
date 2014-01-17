@@ -46,13 +46,18 @@ class StatusManager
     
     public function getCurrentStatus($resource)
     {
-        $id = $resource->getId();
-        $className = Utils::getClassBasename($resource);
-        $currentStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:States' . $className . 's')->getCurrentStatus($id);
-        if (null === $currentStatus) {
-            return $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find(1);
+        if (null === $resource) {
+            return null;
         } else {
-            return $currentStatus->getStatus();
+            $id = $resource->getId();
+            $className = Utils::getClassBasename($resource);
+            $currentStatus =
+                $this->entityManager->getRepository('OpitNotesTravelBundle:States' . $className . 's')->getCurrentStatus($id);
+            if (null === $currentStatus) {
+                return $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
+            } else {
+                return $currentStatus->getStatus();
+            }
         }
     }
     

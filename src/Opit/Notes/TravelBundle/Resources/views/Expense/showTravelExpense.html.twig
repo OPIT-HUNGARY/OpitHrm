@@ -12,6 +12,19 @@
     <script type="text/javascript">
         // to check if new travel expense or not
         var isNewTravelExpense = {% if travelExpense.id is empty %}true{% else %}null{% endif %};
+        {% if isEditLocked == 1 %}
+        $(document).ready(function(){
+            $('input').each(function(){
+                $(this).attr('disabled', 'disabled');
+            });
+            $('select').each(function(){
+                if (!$(this).hasClass('changeState')) {
+                    $(this).attr('disabled', 'disabled');
+                }
+            });
+            $('#travelExpense_add_travel_expense').addClass('button-disabled');
+        });
+        {% endif %}
     </script>
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
 {% endblock %}
@@ -29,6 +42,19 @@
         Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% endif %}
     </h1>
+    <div id="changeStateWrapper">
+        {% if isStatusLocked == 0 %}
+        <select class="changeState {% if travelExpenseStates|length < 2 %}dropdown-disabled{% endif %}" {% if travelExpenseStates|length < 2 %}disabled="disabled"{% endif %}>
+            {% for key, value in travelExpenseStates %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ travelExpenseStates|first }}</option>
+        </select>
+        {% endif %}
+    </div>
     
     <div class="modal-description default-border-radius">
         Travel expense can be added from here.

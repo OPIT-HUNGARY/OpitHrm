@@ -57,6 +57,7 @@ class TravelController extends Controller
         $isStatusLocked = array();
         $currentStatusNames = array();
         $hideTravelRequest = array();
+        $isTravelExpenseLocked = array();
         
         //if user is not an admin
         if (!$securityContext->isGranted('ROLE_ADMIN')) {
@@ -78,15 +79,19 @@ class TravelController extends Controller
                     $currentStatusName = $currentStatus->getName();
                     $currentStatusNames[] = $currentStatusName;
                     
+                    $travelExpenseStatus = $statusManager->getCurrentStatus($travelExpense);
+                    
                     $travelRequestGM = $travelRequest->getGeneralManager()->getId();
                     $currentUser = $this->get('security.context')->getToken()->getUser()->getId();
                     
-                    $trAvailability = $this->setTRAvailability($travelRequestGM, $currentUser, $currentStatusName);
+                    $trAvailability = 
+                        $this->setTRAvailability($travelRequestGM, $currentUser, $currentStatusName, $travelExpenseStatus);
                     $isAddTravelExpenseLocked[] = $trAvailability['isAddTravelExpenseLocked'];
                     $isEditLocked[] = $trAvailability['isEditLocked'];
                     $allActionsLocked[] = $trAvailability['allActionsLocked'];
                     $isStatusLocked[] = $trAvailability['isStatusLocked'];
                     $hideTravelRequest[] = $trAvailability['hideTravelRequest'];
+                    $isTravelExpenseLocked[] = $trAvailability['isTravelExpenseLocked'];
                     
                     $travelRequestStates[] = $states;
                 }
@@ -112,7 +117,8 @@ class TravelController extends Controller
             'allActionsLocked' => $allActionsLocked,
             'isStatusLocked' => $isStatusLocked,
             'currentStatusNames' => $currentStatusNames,
-            'hideTravelRequest' => $hideTravelRequest
+            'hideTravelRequest' => $hideTravelRequest,
+            'isTravelExpenseLocked' => $isTravelExpenseLocked
         );
     }
 
@@ -465,9 +471,11 @@ class TravelController extends Controller
      * @param string $currentStatusName
      * @return boolean $trAvailability
      */
-    protected function setTRAvailability($travelRequestGM, $currentUser, $currentStatusName)
+    protected function setTRAvailability($travelRequestGM, $currentUser, $currentStatusName, $travelExpenseStatus)
     {
         $trAvailability = array();
+        $trAvailability['isTravelExpenseLocked'] = false;
+        
         if ($travelRequestGM === $currentUser) {
             // travel request cannot be edited
             $trAvailability['isEditLocked'] = true;
@@ -475,6 +483,14 @@ class TravelController extends Controller
             $trAvailability['allActionsLocked'] = true;
             // travel expense cannot be added to travel request
             $trAvailability['isAddTravelExpenseLocked'] = true;
+                  
+            if (null !== $travelExpenseStatus) {
+                $travelExpenseStatusName = $travelExpenseStatus->getName();
+                // if the status of the travel expense created do not show the option to view it
+                if ('Created' === $travelExpenseStatusName) {
+                    $trAvailability['isTravelExpenseLocked'] = true;
+                }
+            }
             
             // if travel request has state created do not show it until it has been sent for approval
             if ('Created' === $currentStatusName) {
