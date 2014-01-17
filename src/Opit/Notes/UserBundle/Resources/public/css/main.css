@@ -131,9 +131,13 @@ a > i { text-decoration: none !important; float: right; margin: 0 5px 0 0; }
 
 .delete { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
 
-.button-disabled { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
+.button-disabled { background: #fafafa; color: #c8c8c8; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
 
-.button-disabled:hover { background: #fafafa; color: rgba(220, 220, 220, 0.8); box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
+.button-disabled:hover { background: #fafafa; color: #c8c8c8; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; -o-box-shadow: none; }
+
+.changeState { width: 120px; }
+
+.dropdown-disabled { background: #fafafa; color: #c8c8c8; border: solid 1px #ebebeb; }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"] { padding: 4px 0 4px 0; display: block; border: solid 1px #b4b4b4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; outline: 0; text-indent: 5px; }
 

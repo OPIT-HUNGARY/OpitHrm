@@ -48,17 +48,47 @@ class TravelController extends Controller
         $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
         $teIds = array();
         
+        // te = Travel Expense
+        $travelRequestStates = array();
+        $statusManager = $this->get('opit.manager.status_manager');
+        $isEditLocked = array();
+        $isAddTravelExpenseLocked = array();
+        $allActionsLocked = array();
+        $isStatusLocked = array();
+        $currentStatusNames = array();
+        $hideTravelRequest = array();
+        
+        //if user is not an admin
         if (!$securityContext->isGranted('ROLE_ADMIN')) {
             $allowedTRs = new ArrayCollection();
+            //loop through all travel requests
             foreach ($travelRequests as $travelRequest) {
+                //if user has the right to view travel request
                 if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
                     $allowedTRs->add($travelRequest);
-                    $travelExpense = ($travelExpenses->findOneBy(array('travelRequest_id' => $travelRequest)));
+                    $travelExpense = ($travelExpenses->findOneBy(array('travelRequest' => $travelRequest)));
                     if (null !== $travelExpense) {
                         $teIds[] = $travelExpense->getId();
                     } else {
                         $teIds[] = 'new';
                     }
+
+                    $states = $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                    $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+                    $currentStatusName = $currentStatus->getName();
+                    $currentStatusNames[] = $currentStatusName;
+                    
+                    $travelRequestGM = $travelRequest->getGeneralManager()->getId();
+                    $currentUser = $this->get('security.context')->getToken()->getUser()->getId();
+                    
+                    $trAvailability = $this->setTRAvailability($travelRequestGM, $currentUser, $currentStatusName);
+                    $isAddTravelExpenseLocked[] = $trAvailability['isAddTravelExpenseLocked'];
+                    $isEditLocked[] = $trAvailability['isEditLocked'];
+                    $allActionsLocked[] = $trAvailability['allActionsLocked'];
+                    $isStatusLocked[] = $trAvailability['isStatusLocked'];
+                    $hideTravelRequest[] = $trAvailability['hideTravelRequest'];
+                    
+                    $travelRequestStates[] = $states;
                 }
             }
         } else {
@@ -69,12 +99,21 @@ class TravelController extends Controller
                 } else {
                     $teIds[] = 'new';
                 }
+                
+                $travelRequestStates[] = $this->getTravelRequestNextStates($travelRequest, $statusManager);
             }
             
             $allowedTRs = $travelRequests;
         }
         
-        return array('travelRequests' => $allowedTRs, 'teIds' => $teIds);
+        return array(
+            'travelRequests' => $allowedTRs, 'teIds' => $teIds, 'travelRequestStates' => $travelRequestStates,
+            'isEditLocked' => $isEditLocked, 'isAddTravelExpenseLocked' => $isAddTravelExpenseLocked,
+            'allActionsLocked' => $allActionsLocked,
+            'isStatusLocked' => $isStatusLocked,
+            'currentStatusNames' => $currentStatusNames,
+            'hideTravelRequest' => $hideTravelRequest
+        );
     }
 
     /**
@@ -149,6 +188,14 @@ class TravelController extends Controller
         if (false === $isNewTravelRequest) {
             // the currently logged in user is always set as default
             $travelRequest->setUser($currentUser);
+        } else {
+            $statusManager = $this->get('opit.manager.status_manager');
+            $currentStatusName = $statusManager->getCurrentStatus($travelRequest)->getName();
+            
+            // if travel request has not got the state of created or revise redirect user to listing page
+            if ($currentStatusName !== 'Created' && $currentStatusName !== 'Revise') {
+                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+            }
         }
         
         // Track current persisted destination objects
@@ -200,6 +247,19 @@ class TravelController extends Controller
                 // Persist travel request object again if travel request id is set (insert actions)
                 // set travel request id is handled inside its entity using lifecycle callbacks
                 if ($travelRequest->getTravelRequestId()) {
+                    
+                    //get status manager
+                    $statusManager = $this->get('opit.manager.status_manager');
+                    //get current status of travel request
+                    $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+                    //if travel request current status is null
+                    if (null === $currentStatus) {
+                        //get the first(default) status and assign in to the newly created travel request
+                        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
+                        //add status to travel request
+                        $statusManager->addStatus($travelRequest, $status->getId());
+                    }
+
                     $entityManager->persist($travelRequest);
                     $entityManager->flush();
                     
@@ -296,6 +356,25 @@ class TravelController extends Controller
     }
     
     /**
+     * Method to change state of travel expense
+     *
+     * @Route("/secured/request/state/", name="OpitNotesTravelBundle_request_state")
+     * @Template()
+     */
+    public function changeTravelRequestStateAction(Request $request)
+    {
+        $statusId = $request->request->get('statusId');
+        $travelRequestId = $request->request->get('travelRequestId');
+        $entityManager = $this->getDoctrine()->getManager();
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
+        
+        $statusManager = $this->get('opit.manager.status_manager');
+        $statusManager->addStatus($travelRequest, $statusId);
+        
+        return new JsonResponse();
+    }
+    
+    /**
      * Returns a travel request object
      *
      * @param integer $travelRequestId
@@ -357,6 +436,90 @@ class TravelController extends Controller
                 }
             }
         }
+    }
+    
+    /**
+     * Method to get all selectable states for travel request
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @param type $statusManager
+     * @return array
+     */
+    protected function getTravelRequestNextStates(TravelRequest $travelRequest, $statusManager)
+    {
+        $trSelectableStates = array();
+        $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+        $currentStatusName = $currentStatus->getName();
+        $currentStatusId = $currentStatus->getId();
+        $trSelectableStates = $statusManager->getNextStates($currentStatus);
+        $trSelectableStates[$currentStatusId] = $currentStatusName;
+        
+        return $trSelectableStates;
+    }
+    
+    /**
+     * Method to set which functions will be available on the travel request listing page
+     * 
+     * @param integer $travelRequestGM
+     * @param integer $currentUser
+     * @param string $currentStatusName
+     * @return boolean $trAvailability
+     */
+    protected function setTRAvailability($travelRequestGM, $currentUser, $currentStatusName)
+    {
+        $trAvailability = array();
+        if ($travelRequestGM === $currentUser) {
+            // travel request cannot be edited
+            $trAvailability['isEditLocked'] = true;
+            // travel request cannot be edited or deleted
+            $trAvailability['allActionsLocked'] = true;
+            // travel expense cannot be added to travel request
+            $trAvailability['isAddTravelExpenseLocked'] = true;
+            
+            // if travel request has state created do not show it until it has been sent for approval
+            if ('Created' === $currentStatusName) {
+                $trAvailability['hideTravelRequest'] = true;
+            } else {
+                $trAvailability['hideTravelRequest'] = false;
+            }
+            // if travel request has status for approval enable the modification of its status
+            if ('For Approval' === $currentStatusName) {
+                $trAvailability['isStatusLocked'] = false;
+            } else {
+                $trAvailability['isStatusLocked'] = true;
+            }
+        } else {
+            // user is the owner of the travel request or an admin
+            $trAvailability['hideTravelRequest'] = false;
+            
+            // if travel request has been approved allow the option to add a travel expense to it
+            if ('Approved' === $currentStatusName) {
+                $trAvailability['isAddTravelExpenseLocked'] = false;
+            } else {
+                $trAvailability['isAddTravelExpenseLocked'] = true;
+            }
+            // if travel expense has status created or revise allow the modification of it
+            if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
+                $trAvailability['isEditLocked'] = false;
+            } else {
+                $trAvailability['isEditLocked'] = true;
+            }
+            // if travel request has been sent for approval lock all action(edit, delete)
+            if ('For Approval' !== $currentStatusName) {
+                $trAvailability['allActionsLocked'] = false;
+            } else {
+                $trAvailability['allActionsLocked'] = true;
+            }
+            // if travel request has any of the below statuses disable the option to change its status
+            if ('Approved' === $currentStatusName ||
+                'Rejected' === $currentStatusName || 'For Approval' === $currentStatusName) {
+                $trAvailability['isStatusLocked'] = true;
+            } else {
+                $trAvailability['isStatusLocked'] = false;
+            }
+        }
+        
+        return $trAvailability;
     }
     
     protected function grantUserAccess($user, $mask, $aclProvider, $acl)

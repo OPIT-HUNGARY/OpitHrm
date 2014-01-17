@@ -14,8 +14,11 @@
         <th>{{ orderIcon }}Accomodations</th>
         <th>Actions</th>
         <th>Travel claim</th>
+        <th>Travel request status</th>
     </tr>
     {% for i, travelRequest in travelRequests %}
+    {# check if travel request needs to be shown #}
+    {% if hideTravelRequest[i] == 0 %}
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
         <td class="clickable" data-tr-id='{{ travelRequest.id }}'>{{ travelRequest.travelRequestId }}</td>
@@ -30,7 +33,13 @@
             {{ travelRequest.accomodations|length }}
         </td>
         <td>
-            <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
+            {# if all actions are not locked #}
+            {% if allActionsLocked[i] == 0 %}
+                {# if edit action is not locked #}
+                {% if isEditLocked[i] == 0 %}
+                <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
+                {% endif %}
+            {% endif %}
             {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
             <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
             {% endif %}
@@ -38,23 +47,45 @@
         <td>
             {% if teIds is defined %}
                 {% if teIds[i] == 'new' %}
-                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
-                    <i class="fa fa-plus-square fa-1x"></i>
-                    <span>Add travel expense</span>
-                </a>
+                    {# if all actions are not locked #}
+                    {% if allActionsLocked[i] == 0 %}
+                        {# if add travel expense action is not locked #}
+                        {% if isAddTravelExpenseLocked[i] == 0 %}
+                        <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
+                            <i class="fa fa-plus-square fa-1x"></i>
+                            <span>Add travel expense</span>
+                        </a>
+                        {% endif %}
+                    {% endif %}
                 {% else %}
                 <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
                     <i class="fa fa-pencil-square-o"></i>
                     <span>Edit travel expense</span>
                 </a>
-            	<a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+                <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+                    <i class="fa fa-pencil-square-o"></i>
+                    <span>View travel expense</span>
+                </a>
                 {% endif %}
-                <i class="fa fa-pencil-square-o"></i>
-                <span>View travel expense</span>
-            </a>
+            {% endif %}
+        </td>
+        <td>
+            {# is statuses can be edited #}
+            {% if isStatusLocked[i] == 0 %}
+                {# loop through all statuses and display them in a dropdown #}
+                <select class="changeState">
+                {% for key, value in travelRequestStates[i] %}
+                    <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+                </select>
+            {% else %}
+                <select class="changeState dropdown-disabled" disabled="disabled">
+                    <option>{{ currentStatusNames[i] }}</option>
+                </select>
             {% endif %}
         </td>
     </tr>
+    {% endif %}
     {% endfor %}
 </table>
 </form>

@@ -69,14 +69,24 @@ a{
 
 .button-disabled{
     background: $snowColor;
-    color:$lightGrayColor;
+    color:$lightGrayHover;
     @include box-shadow-disabled();
 }
 
 .button-disabled:hover{
     background: $snowColor;
-    color:$lightGrayColor;
+    color:$lightGrayHover;
     @include box-shadow-disabled();
+}
+
+.changeState{
+    width:120px;
+}
+
+.dropdown-disabled{
+    background: $snowColor;
+    color:$lightGrayHover;
+    border:solid 1px $formLightColor;
 }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"]{

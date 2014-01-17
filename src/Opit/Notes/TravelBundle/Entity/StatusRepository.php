@@ -47,4 +47,14 @@ class StatusRepository extends EntityRepository
     {
 
     }
+    
+    public function findStatusCreate()
+    {
+        $firstStatus = $this->createQueryBuilder('s')
+            ->add('orderBy', 's.id ASC')
+            ->setMaxResults(1)
+            ->getQuery();
+        
+        return $firstStatus->getResult()[0];
+    }
 }

@@ -2,12 +2,31 @@
 (function() {
   var deleteSingleRequest;
 
-  $('.print-view').on('click', function() {
-    var url, win;
-    event.preventDefault();
-    url = $(this).attr('href');
-    win = window.open(url, '_blank');
-    return win.focus();
+  $(document).ready(function() {
+    $('.print-view').on('click', function() {
+      var url, win;
+      event.preventDefault();
+      url = $(this).attr('href');
+      win = window.open(url, '_blank');
+      return win.focus();
+    });
+    return $('.changeState').on('change', function() {
+      var statusId, travelExpenseId;
+      statusId = $(this).val();
+      travelExpenseId = $(this).closest('tr').find('.clickable').data('tr-id');
+      return $.ajax({
+        method: 'POST',
+        url: Routing.generate('OpitNotesTravelBundle_request_state'),
+        data: {
+          'statusId': statusId,
+          'travelRequestId': travelExpenseId
+        }
+      }).done(function(data) {
+        return location.reload();
+      }).fail(function(data) {
+        return console.warn('An error occured while setting new status for the request.');
+      });
+    });
   });
 
   deleteSingleRequest = function(type, self) {

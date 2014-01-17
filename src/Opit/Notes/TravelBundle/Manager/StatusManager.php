@@ -30,21 +30,30 @@ class StatusManager
     
     public function addStatus($resource, $requiredStatus)
     {
-        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->findOneByName($requiredStatus);
+        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($requiredStatus);
         $instanceS =
             new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($resource) . 's');
         $resourceStatus = $instanceS->newInstanceArgs(array($status, $resource));
-        
-        $this->entityManager->persist($resourceStatus);
-        $this->entityManager->flush();
+
+        //check if the state the resource will be set to is the parent of the current status of the resource
+        foreach ($this->getNextStates($status) as $key => $value) {
+            if ($key === $status->getId()) {
+                $this->entityManager->persist($resourceStatus);
+                $this->entityManager->flush();
+            }
+        }
     }
     
     public function getCurrentStatus($resource)
     {
         $id = $resource->getId();
         $className = Utils::getClassBasename($resource);
-        return $this->entityManager->getRepository('OpitNotesTravelBundle:States' . $className . 's')
-            ->getCurrentStatus($id)->getStatus();
+        $currentStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:States' . $className . 's')->getCurrentStatus($id);
+        if (null === $currentStatus) {
+            return $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find(1);
+        } else {
+            return $currentStatus->getStatus();
+        }
     }
     
     public function getNextStates(Status $currentState)

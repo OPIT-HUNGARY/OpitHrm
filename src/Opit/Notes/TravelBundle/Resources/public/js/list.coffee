@@ -1,8 +1,21 @@
-$('.print-view').on 'click', ->
-    event.preventDefault()
-    url =  $(@).attr 'href'
-    win=window.open url, '_blank'
-    win.focus()
+$(document).ready ->
+    $('.print-view').on 'click', ->
+        event.preventDefault()
+        url =  $(@).attr 'href'
+        win=window.open url, '_blank'
+        win.focus()
+
+    $('.changeState').on 'change', ->
+        statusId = $(@).val()
+        travelExpenseId = $(@).closest('tr').find('.clickable').data 'tr-id'
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesTravelBundle_request_state'
+            data: {'statusId': statusId, 'travelRequestId': travelExpenseId}
+        .done (data) ->
+            location.reload()
+        .fail (data) ->
+            console.warn 'An error occured while setting new status for the request.'
 
 # type = expense or request
 deleteSingleRequest = (type, self) ->
