@@ -19,7 +19,7 @@ class TEPerDiemRepository extends EntityRepository
         if (0 == count($result)) {
             $result = 0;
         } else {
-            $result = $result[count($result)-1]->getAmmount();
+            $result = $result[count($result)-1]->getAmount();
         }
         
         return $result;

@@ -328,6 +328,7 @@ input {
 
 .small-button{
     padding:3px 10px 3px 10px;
+    margin: 2px;
     background-color: $darkGrey;
     color:white !important;
     @include border-radius(5px);

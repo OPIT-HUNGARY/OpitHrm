@@ -7,6 +7,39 @@ createDeleteButton = ->
         
     return $deleteButton
 
+validateExpenseDate = (self) ->
+    isDateValid = true
+    date = self.val()
+    self.addClass 'display-inline-block'
+    departureDate = $('#travelExpense_departureDateTime_date').val()
+    arrivalDate = $('#travelExpense_arrivalDateTime_date').val()
+    if date > arrivalDate or date < departureDate
+        if self.parent().children('.custom-error').length < 1
+            $errorLabel = $('<label>')
+            $errorLabel.addClass 'custom-error'
+            $errorLabel.text 'Invalid expense date.'
+            self.parent().append $errorLabel
+    else
+        self.parent().children().remove('.custom-error')
+
+validateAllExpenseDates = ->
+    isDateValid = true
+    $formFieldsetChilds = $('.formFieldsetChild')
+    $formFieldsetChilds.each ->
+        expenseDateField = $(@).find('input[type=date]')
+        validateExpenseDate(expenseDateField)
+        if expenseDateField.parent().children('.custom-error').length > 0
+            isDateValid = false
+            return
+
+    return isDateValid
+
+expenseDateChange = (parent) ->
+    $dateOfExpenseSpent = parent.find('input[type=date]')
+    $dateOfExpenseSpent.on 'change', ->
+        validateExpenseDate($(@))
+        
+
 reCreateExpenses = (self) ->
     $selectedExpense = $('<span>').addClass 'selected-expense'
     $selectedExpense.html self.find('.te-expense-type').find(':selected').text()
@@ -15,6 +48,8 @@ reCreateExpenses = (self) ->
     $container.append self
     $container.append createDeleteButton()
     $container.prepend $selectedExpense
+    
+    expenseDateChange($container)
     
     return $container
 
@@ -36,6 +71,8 @@ addNewForm = (collectionHolder, parent) ->
     $formFieldsetChild.append newForm
     $formFieldsetChild.append createDeleteButton()
     $formFieldsetChild.prepend $selectedExpense
+    
+    expenseDateChange($($formFieldsetChild))
     
     collectionHolder.data 'index', index + 1
 
@@ -301,7 +338,7 @@ $(document).ready ->
             url: Routing.generate 'OpitNotesTravelBundle_expense_state'
             data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
         .done (data) ->
-            console.log data
+            window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
         .fail (data) ->
             console.warn 'Error occured while saving state for travel expense.'
         
@@ -386,29 +423,30 @@ $form.validate
  
 $('#travelExpense_add_travel_expense').on 'click', ->
     event.preventDefault()
-    if $form.valid() and calculateAdvancesPayback()
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_expense_show_details'
-            data: 'preview=1&' + $form.serialize()
-        .done (data) ->
-            $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
-            $preview.dialog
-                open: ->
-                    $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Details'
-                close: ->
-                    $preview.dialog "destroy"
-                width: 550
-                maxHeight: $(window).outerHeight()-100
-                modal: on
-                buttons:
-                    Cancel: ->
+    if not $(@).hasClass 'button-disabled'
+        if $form.valid() and calculateAdvancesPayback() and validateAllExpenseDates()
+            $.ajax
+                method: 'POST'
+                url: Routing.generate 'OpitNotesTravelBundle_expense_show_details'
+                data: 'preview=1&' + $form.serialize()
+            .done (data) ->
+                $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
+                $preview.dialog
+                    open: ->
+                        $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Details'
+                    close: ->
                         $preview.dialog "destroy"
-                        return
-                    Save: ->
-                        $form.submit()
-                        $preview.dialog "destroy"
-                        return  
-        .fail () ->
-            $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
-                title: 'Error'                        
+                    width: 550
+                    maxHeight: $(window).outerHeight()-100
+                    modal: on
+                    buttons:
+                        Cancel: ->
+                            $preview.dialog "destroy"
+                            return
+                        Save: ->
+                            $form.submit()
+                            $preview.dialog "destroy"
+                            return  
+            .fail () ->
+                $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
+                    title: 'Error'                        

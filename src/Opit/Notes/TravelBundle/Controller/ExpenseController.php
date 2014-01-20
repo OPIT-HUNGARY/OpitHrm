@@ -113,6 +113,10 @@ class ExpenseController extends Controller
             throw $this->createNotFoundException('No travel request was found with the given id!');
         }
         
+        if (false === $securityContext->isGranted('VIEW', $travelRequest)) {
+            throw $this->createNotFoundException('You are not permitted to view or edit the travel expense!');
+        }
+        
         $travelRequestId = $travelRequest->getTravelRequestId();
         $trArrivalDate = $travelRequest->getArrivalDate();
         $trDepartureDate = $travelRequest->getDepartureDate();
@@ -139,7 +143,7 @@ class ExpenseController extends Controller
         if (false === $isNewTravelExpense) {
             $travelExpense->setUser($currentUser);
         } else {
-            //if edit is locked because current status do not get all other available states
+            //if status is locked do not load all selectable states for expense
             if (false === $isStatusLocked) {
                 $travelExpenseStates = $statusManager->getNextStates($currentStatus);
             }

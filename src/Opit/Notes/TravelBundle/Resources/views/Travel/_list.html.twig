@@ -18,7 +18,7 @@
     </tr>
     {% for i, travelRequest in travelRequests %}
     {# check if travel request needs to be shown #}
-    {% if hideTravelRequest[i] == 0 %}
+    {#{% if hideTravelRequest[i] == 0 %}#}
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
         <td class="clickable" data-tr-id='{{ travelRequest.id }}'>{{ travelRequest.travelRequestId }}</td>
@@ -34,9 +34,9 @@
         </td>
         <td>
             {# if all actions are not locked #}
-            {% if allActionsLocked[i] == 0 %}
+            {% if isLocked[i]['allActionsLocked'] == 0 %}
                 {# if edit action is not locked #}
-                {% if isEditLocked[i] == 0 %}
+                {% if isLocked[i]['isEditLocked'] == 0 %}
                 <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
                 {% endif %}
             {% endif %}
@@ -48,9 +48,9 @@
             {% if teIds is defined %}
                 {% if teIds[i] == 'new' %}
                     {# if all actions are not locked #}
-                    {% if allActionsLocked[i] == 0 %}
+                    {% if isLocked[i]['allActionsLocked'] == 0 %}
                         {# if add travel expense action is not locked #}
-                        {% if isAddTravelExpenseLocked[i] == 0 %}
+                        {% if isLocked[i]['isAddTravelExpenseLocked'] == 0 %}
                         <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'tr': travelRequest.id}) }}" class="small-button">
                             <i class="fa fa-plus-square fa-1x"></i>
                             <span>Add travel expense</span>
@@ -58,7 +58,7 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
-                    {% if isTravelExpenseLocked[i] == 0 %}
+                    {% if isLocked[i]['isTravelExpenseLocked'] == 0 %}
                     <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
                         <i class="fa fa-pencil-square-o"></i>
                         <span>Edit travel expense</span>
@@ -73,7 +73,7 @@
         </td>
         <td>
             {# is statuses can be edited #}
-            {% if isStatusLocked[i] == 0 %}
+            {% if isLocked[i]['isStatusLocked'] == 0 %}
                 {# loop through all statuses and display them in a dropdown #}
                 <select class="changeState">
                 {% for key, value in travelRequestStates[i] %}
@@ -87,7 +87,7 @@
             {% endif %}
         </td>
     </tr>
-    {% endif %}
+    {#{% endif %}#}
     {% endfor %}
 </table>
 </form>

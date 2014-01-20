@@ -25,6 +25,8 @@ and open the template in the editor.
 
 .width-50 { width: 50px; }
 
+.display-inline-block { display: inline-block !important; }
+
 #travelExpense { display: none; }
 
 .time-picker { margin: 2px 0 0 5px; }

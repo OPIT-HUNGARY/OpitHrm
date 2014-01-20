@@ -40,7 +40,7 @@ class PerDiemFixtures extends AbstractFixture implements OrderedFixtureInterface
         foreach ($perDiems as $key => $value) {
             $perDiem = new TEPerDiem();
             $perDiem->setHours($value[0]);
-            $perDiem->setAmmount($value[1]);
+            $perDiem->setAmount($value[1]);
             $manager->persist($perDiem);
         }
 

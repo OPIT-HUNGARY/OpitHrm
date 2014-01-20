@@ -25,6 +25,8 @@ and open the template in the editor.
 
 .width-50 { width: 50px; }
 
+.display-inline-block { display: inline-block !important; }
+
 .fa-print { float: right; }
 
 h3 { margin: 0.4em 0 0.4em 0; }

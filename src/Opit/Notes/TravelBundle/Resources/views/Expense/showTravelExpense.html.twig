@@ -42,9 +42,10 @@
         Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
         {% endif %}
     </h1>
+    {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
     <div id="changeStateWrapper">
         {% if isStatusLocked == 0 %}
-        <select class="changeState {% if travelExpenseStates|length < 2 %}dropdown-disabled{% endif %}" {% if travelExpenseStates|length < 2 %}disabled="disabled"{% endif %}>
+        <select class="changeState {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}>
             {% for key, value in travelExpenseStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}

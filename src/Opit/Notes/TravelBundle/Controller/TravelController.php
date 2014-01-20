@@ -46,18 +46,13 @@ class TravelController extends Controller
         $entityManager->getFilters()->disable('softdeleteable');
         $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
         $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
-        $teIds = array();
         
         // te = Travel Expense
-        $travelRequestStates = array();
         $statusManager = $this->get('opit.manager.status_manager');
-        $isEditLocked = array();
-        $isAddTravelExpenseLocked = array();
-        $allActionsLocked = array();
-        $isStatusLocked = array();
+        $teIds = array();
+        $travelRequestStates = array();
         $currentStatusNames = array();
-        $hideTravelRequest = array();
-        $isTravelExpenseLocked = array();
+        $isLocked = array();
         
         //if user is not an admin
         if (!$securityContext->isGranted('ROLE_ADMIN')) {
@@ -66,7 +61,6 @@ class TravelController extends Controller
             foreach ($travelRequests as $travelRequest) {
                 //if user has the right to view travel request
                 if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
-                    $allowedTRs->add($travelRequest);
                     $travelExpense = ($travelExpenses->findOneBy(array('travelRequest' => $travelRequest)));
                     if (null !== $travelExpense) {
                         $teIds[] = $travelExpense->getId();
@@ -84,14 +78,20 @@ class TravelController extends Controller
                     $travelRequestGM = $travelRequest->getGeneralManager()->getId();
                     $currentUser = $this->get('security.context')->getToken()->getUser()->getId();
                     
-                    $trAvailability = 
-                        $this->setTRAvailability($travelRequestGM, $currentUser, $currentStatusName, $travelExpenseStatus);
-                    $isAddTravelExpenseLocked[] = $trAvailability['isAddTravelExpenseLocked'];
-                    $isEditLocked[] = $trAvailability['isEditLocked'];
-                    $allActionsLocked[] = $trAvailability['allActionsLocked'];
-                    $isStatusLocked[] = $trAvailability['isStatusLocked'];
-                    $hideTravelRequest[] = $trAvailability['hideTravelRequest'];
-                    $isTravelExpenseLocked[] = $trAvailability['isTravelExpenseLocked'];
+                    $trAvailability = $this->setTRAvailability(
+                        false,
+                        $travelRequestGM,
+                        $currentUser,
+                        $currentStatusName,
+                        $travelExpenseStatus
+                    );
+                    
+                    $isLocked[] = $trAvailability;
+                    
+                    // add travel request to allowed travel requests to show
+                    if (false === $trAvailability['doNotListTravelRequest']) {
+                        $allowedTRs->add($travelRequest);
+                    }
                     
                     $travelRequestStates[] = $states;
                 }
@@ -105,6 +105,9 @@ class TravelController extends Controller
                     $teIds[] = 'new';
                 }
                 
+                $trAvailability = $this->setTRAvailability(true);
+                $isLocked[] = $trAvailability;
+                
                 $travelRequestStates[] = $this->getTravelRequestNextStates($travelRequest, $statusManager);
             }
             
@@ -112,13 +115,11 @@ class TravelController extends Controller
         }
         
         return array(
-            'travelRequests' => $allowedTRs, 'teIds' => $teIds, 'travelRequestStates' => $travelRequestStates,
-            'isEditLocked' => $isEditLocked, 'isAddTravelExpenseLocked' => $isAddTravelExpenseLocked,
-            'allActionsLocked' => $allActionsLocked,
-            'isStatusLocked' => $isStatusLocked,
-            'currentStatusNames' => $currentStatusNames,
-            'hideTravelRequest' => $hideTravelRequest,
-            'isTravelExpenseLocked' => $isTravelExpenseLocked
+            'travelRequests' => $allowedTRs,
+            'teIds' => $teIds,
+            'travelRequestStates' => $travelRequestStates,
+            'isLocked' => $isLocked,
+            'currentStatusNames' => $currentStatusNames
         );
     }
 
@@ -246,7 +247,7 @@ class TravelController extends Controller
                 
                 // Persist deleted destinations/accomodations
                 $this->removeChildNodes($entityManager, $travelRequest, $children);
-
+                
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
                 
@@ -265,24 +266,27 @@ class TravelController extends Controller
                         //add status to travel request
                         $statusManager->addStatus($travelRequest, $status->getId());
                     }
-
+                    
                     $entityManager->persist($travelRequest);
                     $entityManager->flush();
                     
-                    $this->grantAccess($travelRequest, array(
+                    $this->grantAccess(
+                        $travelRequest,
                         array(
-                            'user' => $travelRequest->getGeneralManager(),
-                            'mask' => MaskBuilder::MASK_EDIT
-                        ),
-                        array(
-                            'user' => $travelRequest->getTeamManager(),
-                            'mask' => MaskBuilder::MASK_EDIT
-                        ),
-                        array(
-                            'user' => $securityContext->getToken()->getUser(),
-                            'mask' => MaskBuilder::MASK_OWNER
-                        ),
-                    ));
+                            array(
+                                'user' => $travelRequest->getGeneralManager(),
+                                'mask' => MaskBuilder::MASK_EDIT
+                            ),
+                            array(
+                                'user' => $travelRequest->getTeamManager(),
+                                'mask' => MaskBuilder::MASK_EDIT
+                            ),
+                            array(
+                                'user' => $securityContext->getToken()->getUser(),
+                                'mask' => MaskBuilder::MASK_OWNER
+                            ),
+                        )
+                    );
                 }
                 
                 return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
@@ -471,70 +475,81 @@ class TravelController extends Controller
      * @param string $currentStatusName
      * @return boolean $trAvailability
      */
-    protected function setTRAvailability($travelRequestGM, $currentUser, $currentStatusName, $travelExpenseStatus)
+    protected function setTRAvailability($isAdmin, $travelRequestGM = null, $currentUser = null, $currentStatusName = null, $travelExpenseStatus = null)
     {
         $trAvailability = array();
         $trAvailability['isTravelExpenseLocked'] = false;
-        
-        if ($travelRequestGM === $currentUser) {
-            // travel request cannot be edited
-            $trAvailability['isEditLocked'] = true;
-            // travel request cannot be edited or deleted
-            $trAvailability['allActionsLocked'] = true;
-            // travel expense cannot be added to travel request
-            $trAvailability['isAddTravelExpenseLocked'] = true;
-                  
+        if (true === $isAdmin) {
+            $trAvailability['isEditLocked'] = false;
+            $trAvailability['allActionsLocked'] = false;
+            $trAvailability['isAddTravelExpenseLocked'] = false;
+            $trAvailability['doNotListTravelRequest'] = false;
+            $trAvailability['isStatusLocked'] = false;
             if (null !== $travelExpenseStatus) {
                 $travelExpenseStatusName = $travelExpenseStatus->getName();
-                // if the status of the travel expense created do not show the option to view it
-                if ('Created' === $travelExpenseStatusName) {
                     $trAvailability['isTravelExpenseLocked'] = true;
-                }
-            }
-            
-            // if travel request has state created do not show it until it has been sent for approval
-            if ('Created' === $currentStatusName) {
-                $trAvailability['hideTravelRequest'] = true;
-            } else {
-                $trAvailability['hideTravelRequest'] = false;
-            }
-            // if travel request has status for approval enable the modification of its status
-            if ('For Approval' === $currentStatusName) {
-                $trAvailability['isStatusLocked'] = false;
-            } else {
-                $trAvailability['isStatusLocked'] = true;
             }
         } else {
-            // user is the owner of the travel request or an admin
-            $trAvailability['hideTravelRequest'] = false;
-            
-            // if travel request has been approved allow the option to add a travel expense to it
-            if ('Approved' === $currentStatusName) {
-                $trAvailability['isAddTravelExpenseLocked'] = false;
-            } else {
-                $trAvailability['isAddTravelExpenseLocked'] = true;
-            }
-            // if travel expense has status created or revise allow the modification of it
-            if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
-                $trAvailability['isEditLocked'] = false;
-            } else {
+            if ($travelRequestGM === $currentUser) {
+                // travel request cannot be edited
                 $trAvailability['isEditLocked'] = true;
-            }
-            // if travel request has been sent for approval lock all action(edit, delete)
-            if ('For Approval' !== $currentStatusName) {
-                $trAvailability['allActionsLocked'] = false;
-            } else {
+                // travel request cannot be edited or deleted
                 $trAvailability['allActionsLocked'] = true;
-            }
-            // if travel request has any of the below statuses disable the option to change its status
-            if ('Approved' === $currentStatusName ||
-                'Rejected' === $currentStatusName || 'For Approval' === $currentStatusName) {
-                $trAvailability['isStatusLocked'] = true;
+                // travel expense cannot be added to travel request
+                $trAvailability['isAddTravelExpenseLocked'] = true;
+
+                if (null !== $travelExpenseStatus) {
+                    $travelExpenseStatusName = $travelExpenseStatus->getName();
+                    // if the status of the travel expense created do not show the option to view it
+                    if ('Created' === $travelExpenseStatusName) {
+                        $trAvailability['isTravelExpenseLocked'] = true;
+                    }
+                }
+
+                // if travel request has state created do not show it until it has been sent for approval
+                if ('Created' === $currentStatusName) {
+                    $trAvailability['doNotListTravelRequest'] = true;
+                } else {
+                    $trAvailability['doNotListTravelRequest'] = false;
+                }
+                // if travel request has status for approval enable the modification of its status
+                if ('For Approval' === $currentStatusName) {
+                    $trAvailability['isStatusLocked'] = false;
+                } else {
+                    $trAvailability['isStatusLocked'] = true;
+                }
             } else {
-                $trAvailability['isStatusLocked'] = false;
+                // user is the owner of the travel request or an admin
+                $trAvailability['doNotListTravelRequest'] = false;
+
+                // if travel request has been approved allow the option to add a travel expense to it
+                if ('Approved' === $currentStatusName) {
+                    $trAvailability['isAddTravelExpenseLocked'] = false;
+                } else {
+                    $trAvailability['isAddTravelExpenseLocked'] = true;
+                }
+                // if travel expense has status created or revise allow the modification of it
+                if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
+                    $trAvailability['isEditLocked'] = false;
+                } else {
+                    $trAvailability['isEditLocked'] = true;
+                }
+                // if travel request has been sent for approval lock all action(edit, delete)
+                if ('For Approval' !== $currentStatusName) {
+                    $trAvailability['allActionsLocked'] = false;
+                } else {
+                    $trAvailability['allActionsLocked'] = true;
+                }
+                // if travel request has any of the below statuses disable the option to change its status
+                if ('Approved' === $currentStatusName ||
+                    'Rejected' === $currentStatusName ||
+                    'For Approval' === $currentStatusName) {
+                    $trAvailability['isStatusLocked'] = true;
+                } else {
+                    $trAvailability['isStatusLocked'] = false;
+                }
             }
         }
-        
         return $trAvailability;
     }
     
