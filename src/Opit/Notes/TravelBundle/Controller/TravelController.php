@@ -189,6 +189,8 @@ class TravelController extends Controller
         $isNewTravelRequest = "new" !== $travelRequestId;
         $securityContext = $this->get('security.context');
         $currentUser = $securityContext->getToken()->getUser();
+        $previousGM = null;
+        $previousTM = null;
         
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
         
@@ -197,6 +199,10 @@ class TravelController extends Controller
             $travelRequest->setUser($currentUser);
         } else {
             $statusManager = $this->get('opit.manager.status_manager');
+            $previousGM = $travelRequest->getGeneralManager()->getUsername();
+            if (null !== $travelRequest->getTeamManager()) {
+                $previousTM = $travelRequest->getTeamManager()->getUsername();
+            }
             $currentStatusName = $statusManager->getCurrentStatus($travelRequest)->getName();
             
             // if travel request has not got the state of created or revise redirect user to listing page
@@ -285,7 +291,9 @@ class TravelController extends Controller
                                 'user' => $securityContext->getToken()->getUser(),
                                 'mask' => MaskBuilder::MASK_OWNER
                             ),
-                        )
+                        ),
+                        $previousGM,
+                        $previousTM
                     );
                 }
                 
@@ -427,7 +435,7 @@ class TravelController extends Controller
         }
     }
     
-    protected function grantAccess(TravelRequest $object, $users)
+    protected function grantAccess(TravelRequest $object, $users, $previousGM, $previousTM)
     {
         $aclProvider = $this->container->get('security.acl.provider');
         // try to find acl, used when travel request was modified
@@ -437,6 +445,8 @@ class TravelController extends Controller
         } catch (AclNotFoundException $e) {
             $acl = $aclProvider->createAcl(ObjectIdentity::fromDomainObject($object));
         }
+        
+        $this->revokeUserAccess($acl, $aclProvider, $previousGM, $previousTM, $object);
         
         // loop through users and grant all of them the permission (mask) passed in the array
         if (is_array($users)) {
@@ -557,6 +567,18 @@ class TravelController extends Controller
     {
         $securityId = UserSecurityIdentity::fromAccount($user);
         $acl->insertObjectAce($securityId, $mask);
+        $aclProvider->updateAcl($acl);
+    }
+    
+    protected function revokeUserAccess($acl, $aclProvider, $previousGM, $previousTM)
+    {
+        $aces = $acl->getObjectAces();
+        foreach($aces as $i => $ace) {
+            if ($previousGM === $ace->getSecurityIdentity()->getUsername() ||
+                $previousTM === $ace->getSecurityIdentity()->getUsername()){
+                $acl->deleteObjectAce($i);
+            }
+        }
         $aclProvider->updateAcl($acl);
     }
     
