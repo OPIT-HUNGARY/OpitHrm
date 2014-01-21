@@ -22,6 +22,8 @@
           'travelRequestId': travelExpenseId
         }
       }).done(function(data) {
+        return console.log('done');
+      }).complete(function() {
         return location.reload();
       }).fail(function(data) {
         return console.warn('An error occured while setting new status for the request.');

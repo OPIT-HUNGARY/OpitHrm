@@ -13,6 +13,8 @@ $(document).ready ->
             url: Routing.generate 'OpitNotesTravelBundle_request_state'
             data: {'statusId': statusId, 'travelRequestId': travelExpenseId}
         .done (data) ->
+            console.log 'done'
+        .complete () ->
             location.reload()
         .fail (data) ->
             console.warn 'An error occured while setting new status for the request.'

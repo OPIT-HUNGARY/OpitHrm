@@ -1,0 +1,109 @@
+{% set travelExpense = templateVars['travelExpense'] %}
+{% set nextStates = templateVars['nextStates'] %}
+
+<div style="width:650px;">
+
+<h3>Available options</h3>
+<div style="margin-left:10px;font-size: 15px;">
+{% for nextState in nextStates %}
+<a href="#">{{ nextState }}</a>
+{% if loop.index != nextStates|length %}
+ | 
+{% endif %}
+{% endfor %}
+</div>
+
+<h2>Travel expense (<span style="color:rgb(150, 30, 30);">{{ attribute(travelExpense.travelRequest, 'travelRequestId') }}</span>) details</h2>
+
+<table style="margin:0 0 0 10px;" bordercolor="rgb(30, 30, 30)">
+    <tr>
+        <td width="140px" style="border-bottom: solid 1px;padding-top:4px;">Employee name</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ travelExpense.travelRequest.user.employeeName }}</td>
+    </tr>
+    
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Departure county</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ travelExpense.departureCountry }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Departure date time</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ attribute(travelExpense, 'departureDateTime')|date('Y-m-d H:i:s') }}</td>
+    </tr>
+    
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Arrival county</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ travelExpense.arrivalCountry }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Arrival date time</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ attribute(travelExpense, 'arrivalDateTime')|date('Y-m-d H:i:s') }}</td>
+    </tr>
+    
+    {% set advancesRecieved = travelExpense.advancesRecieved %}
+    {% set advancesPayback = travelExpense.advancesPayback %}
+    
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Advances recieved</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesRecieved }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Advances spent</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesRecieved - advancesPayback }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Advances payback</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesPayback }}</td>
+    </tr>
+</table>
+<h3>Advances paid by employee</h3>
+    {% for userPaidExpenses in travelExpense.userPaidExpenses %}
+    <table style="margin:0 0 10px 10px; display:inline-block;" bordercolor="rgb(30, 30, 30)">
+    <tr>
+        <td width="140px" style="border-bottom: solid 1px;padding-top:4px;">Destination</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ userPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Description</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ userPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Expense type</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ userPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Amount</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ userPaidExpenses.amount }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Date</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ userPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    </table>
+    {% endfor %}
+<h3>Advances paid by company</h3>
+    {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
+    <table style="margin:0 0 10px 10px; display:inline-block;" bordercolor="rgb(30, 30, 30)">
+    <tr>
+        <td width="140px" style="border-bottom: solid 1px;padding-top:4px;">Destination</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ companyPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Description</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ companyPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Expense type</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ companyPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Amount</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ companyPaidExpenses.amount }}</td>
+    </tr>
+    <tr>
+        <td style="border-bottom: solid 1px;padding-top:4px;">Date</td>
+        <td style="border-bottom: solid 1px;padding-top:4px;">{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    </table>
+    {% endfor %}
+
+</div>
