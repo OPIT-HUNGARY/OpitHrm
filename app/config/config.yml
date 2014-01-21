@@ -83,3 +83,5 @@ stof_doctrine_extensions:
     orm:
         default:
             softdeleteable: true
+            timestampable: true
+            blameable:     true

@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="opit.service.exchange_rates.class">Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService</parameter>
+        <parameter key="opit.command.exchange_rates.class">Opit\Notes\CurrencyRateBundle\Command\ExchangeRatesCommand</parameter>
+    </parameters>
+    <services>
+        <service id="opit.service.exchange_rates" class="%opit.service.exchange_rates.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.command.exchange_rates_command" class="%opit.command.exchange_rates.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+    </services>
+</container>
