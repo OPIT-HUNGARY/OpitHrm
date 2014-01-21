@@ -1,0 +1,5 @@
+imports:
+    - { resource: parameters.yml }
+
+opit_notes_travel:
+    mail_sender: %mail_sender%

@@ -1,0 +1,6 @@
+{% if templateVars.content is defined %}
+{{ templateVars.content }}
+{% endif %}
+{% if templateVars.user is defined %}
+{% include 'OpitNotesTravelBundle:Mail:footer.txt.twig' with {'user': templateVars.user} %}
+{% endif %}

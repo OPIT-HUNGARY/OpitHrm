@@ -8,6 +8,7 @@
     <parameters>
         <parameter key="opit.model.travel_expense.class">Opit\Notes\UserBundle\Model\TravelExpense</parameter>
         <parameter key="opit.manager.status_manager.class">Opit\Notes\TravelBundle\Manager\StatusManager</parameter>
+        <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
     </parameters>
     <services>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
@@ -15,6 +16,13 @@
         </service>
         <service id="opit.manager.status_manager" class="%opit.manager.status_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="opit.manager.email_manager" />
+        </service>
+        <service id="opit.manager.email_manager" class="%opit.manager.email_manager.class%">
+            <argument type="service" id="mailer" />
+            <argument type="service" id="templating" />
+            <argument type="service" id="security.context" />
+            <argument>%opit_notes_travel%</argument>
         </service>
     </services>
 </container>

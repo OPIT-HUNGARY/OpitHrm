@@ -52,9 +52,14 @@
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
         "symfony-assets-install": "symlink",
-        "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
-        },
+        "incenteev-parameters": [
+            {
+                "file": "app/config/parameters.yml"
+            },
+            {
+                "file": "src/Opit/Notes/TravelBundle/Resources/config/parameters.yml"
+            }
+        ],
         "branch-alias": {
             "dev-master": "2.3-dev"
         }
