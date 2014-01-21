@@ -575,7 +575,7 @@ class TravelController extends Controller
         $aces = $acl->getObjectAces();
         foreach($aces as $i => $ace) {
             if ($previousGM === $ace->getSecurityIdentity()->getUsername() ||
-                $previousTM === $ace->getSecurityIdentity()->getUsername()){
+                $previousTM === $ace->getSecurityIdentity()->getUsername()) {
                 $acl->deleteObjectAce($i);
             }
         }

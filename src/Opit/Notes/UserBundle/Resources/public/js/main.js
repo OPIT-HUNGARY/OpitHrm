@@ -84,6 +84,9 @@
 
   changeDeleteButton = function(disableInputCheck) {
     var $deleteButton;
+    if (disableInputCheck == null) {
+      disableInputCheck = false;
+    }
     $deleteButton = $('#delete');
     $deleteButton.attr('disabled', 'disabled');
     $deleteButton.addClass('button-disabled');

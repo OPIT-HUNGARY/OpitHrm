@@ -55,7 +55,7 @@ cloneSubmenu = ->
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
 
-changeDeleteButton = (disableInputCheck) ->
+changeDeleteButton = (disableInputCheck = false) ->
     $deleteButton = $('#delete')
     $deleteButton.attr 'disabled', 'disabled'
     $deleteButton.addClass 'button-disabled'

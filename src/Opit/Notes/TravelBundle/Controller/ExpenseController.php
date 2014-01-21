@@ -113,7 +113,8 @@ class ExpenseController extends Controller
             throw $this->createNotFoundException('No travel request was found with the given id!');
         }
         
-        if (false === $securityContext->isGranted('VIEW', $travelRequest)) {
+        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN') &&
+            false === $securityContext->isGranted('VIEW', $travelRequest)) {
             throw $this->createNotFoundException('You are not permitted to view or edit the travel expense!');
         }
         
@@ -466,7 +467,10 @@ class ExpenseController extends Controller
     protected function setTEAvailability($travelRequestGM, $currentUser, $currentStatusName)
     {
         $teAvailability = array();
-        if ($travelRequestGM === $currentUser) {
+        if (true === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $teAvailability['isEditLocked'] = false;
+            $teAvailability['isStatusLocked'] = false;
+        } elseif ($travelRequestGM === $currentUser) {
             $teAvailability['isEditLocked'] = true;
             if ('Created' === $currentStatusName && 'Revise' === $currentStatusName) {
                 $teAvailability['isStatusLocked'] = true;
