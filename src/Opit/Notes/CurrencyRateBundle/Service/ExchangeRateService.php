@@ -13,7 +13,7 @@ namespace Opit\Notes\CurrencyRateBundle\Service;
 use Opit\Notes\CurrencyRateBundle\Entity\Currency;
 use Opit\Notes\CurrencyRateBundle\Entity\Rate;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Doctrine\ORM\EntityNotFoundException;
 
 /**
  * This class is a service for the ChangeRateBundle to get the exchange rates.
@@ -50,7 +50,7 @@ class ExchangeRateService
      * Get rate of a currency by currency code
      * The time can be setted, if it null the method will search on the rate of today.
      * 
-     * @param type $code the currency code
+     * @param string $code the currency code
      * @param \DateTime $datetime the searched datetime
      * @return integer rate
      */
@@ -65,8 +65,9 @@ class ExchangeRateService
 
         //if rate is null throw an exception
         if (null === $rate) {
-            throw new Exception('Does not find rate for this currency: "' . $code . '"');
+            throw new EntityNotFoundException(sprintf('Rate entity not found for "%s, %s"', $code, $datetime));
         }
+        
         return $rate->getRate();
     }
     
@@ -117,7 +118,7 @@ class ExchangeRateService
             if (array_key_exists($code, $currencyRates)) {
                 $rate = new Rate();
                 //create rate for today
-                if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($code, new \DateTime('today'))) {                    
+                if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($code, new \DateTime('today'))) {
                     $rate->setCurrencyCode($currency);
                     $rate->setRate($currencyRates[$code]);
                     $this->em->persist($rate);

@@ -50,7 +50,13 @@ class TEPerDiem
      */
     private $amount;
 
-
+    /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
+     * @ORM\JoinColumn(name="currency_id", referencedColumnName="code")
+     * @var TravelCurrencyInterface
+     */
+    protected $currency;
+    
     /**
      * Get id
      *
@@ -105,5 +111,28 @@ class TEPerDiem
     public function getAmount()
     {
         return $this->amount;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Currency $currency
+     * @return TEPaidExpense
+     */
+    public function setCurrency(\Opit\Notes\CurrencyRateBundle\Entity\Currency $currency = null)
+    {
+        $this->currency = $currency;
+    
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Opit\Notes\CurrencyRateBundle\Entity\Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

@@ -6,6 +6,7 @@
 
 
     <parameters>
+        <parameter key="opit.service.exchange_rates.class">Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService</parameter>
         <parameter key="opit.model.travel_expense.class">Opit\Notes\UserBundle\Model\TravelExpense</parameter>
         <parameter key="opit.manager.status_manager.class">Opit\Notes\TravelBundle\Manager\StatusManager</parameter>
         <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
@@ -27,6 +28,9 @@
             <argument type="service" id="templating" />
             <argument type="service" id="security.context" />
             <argument>%opit_notes_travel%</argument>
+        </service>
+        <service id="opit.service.exchange_rates" class="%opit.service.exchange_rates.class%">
+                <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
     </services>
 </container>

@@ -66,8 +66,14 @@ abstract class TEPaidExpense
      * @ORM\Column(name="description", type="string", length=255)
      */
     protected $description;
-   
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
+     * @ORM\JoinColumn(name="currency_id", referencedColumnName="code")
+     * @var TravelCurrencyInterface
+     */
+    protected $currency;
+    
     /**
      * Get id
      *
@@ -214,5 +220,28 @@ abstract class TEPaidExpense
     public function getTravelExpense()
     {
         return $this->travelExpense;
+    }
+    
+    /**
+     * Set currency
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Currency $currency
+     * @return TEPaidExpense
+     */
+    public function setCurrency(\Opit\Notes\CurrencyRateBundle\Entity\Currency $currency = null)
+    {
+        $this->currency = $currency;
+    
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Opit\Notes\CurrencyRateBundle\Entity\Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

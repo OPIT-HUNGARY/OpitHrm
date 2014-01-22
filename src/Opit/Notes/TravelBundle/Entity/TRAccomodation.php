@@ -53,6 +53,14 @@ class TRAccomodation
      * @ORM\ManyToOne(targetEntity="TravelRequest", inversedBy="accomodations")
      */
     protected $travelRequest;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
+     * @ORM\JoinColumn(name="currency_id", referencedColumnName="code")
+     * @var TravelCurrencyInterface
+     */
+    protected $currency;
+    
     
     /**
      * Get id
@@ -177,5 +185,28 @@ class TRAccomodation
     public function getTravelRequest()
     {
         return $this->travelRequest;
+    }
+    
+    /**
+     * Set currency
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Currency $currency
+     * @return TEPaidExpense
+     */
+    public function setCurrency(\Opit\Notes\CurrencyRateBundle\Entity\Currency $currency = null)
+    {
+        $this->currency = $currency;
+    
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Opit\Notes\CurrencyRateBundle\Entity\Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

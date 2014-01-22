@@ -139,6 +139,13 @@ class TravelExpense
     protected $states;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
+     * @ORM\JoinColumn(name="currency_id", referencedColumnName="code")
+     * @var TravelCurrencyInterface
+     */
+    protected $currency;
+    
+    /**
      * Get id
      *
      * @return integer
@@ -579,5 +586,28 @@ class TravelExpense
     public function getStates()
     {
         return $this->states;
+    }
+    
+    /**
+     * Set currency
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Currency $currency
+     * @return TEPaidExpense
+     */
+    public function setCurrency(\Opit\Notes\CurrencyRateBundle\Entity\Currency $currency = null)
+    {
+        $this->currency = $currency;
+    
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \Opit\Notes\CurrencyRateBundle\Entity\Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

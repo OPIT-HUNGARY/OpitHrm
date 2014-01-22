@@ -62,6 +62,7 @@ doctrine:
         auto_mapping: true
         resolve_target_entities:
             Opit\Notes\TravelBundle\Model\TravelRequestUserInterface: Opit\Notes\UserBundle\Entity\User
+            Opit\Notes\TravelBundle\Model\TravelCurrencyInterface: Opit\Notes\CurrencyRateBundle\Entity\Currency
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
