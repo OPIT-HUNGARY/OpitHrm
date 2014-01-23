@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset={{ _charset }}"/>
+        <meta name="robots" content="noindex,nofollow" />
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('bundles/opitnotesuser/css/main.css') }}" />
+        <link rel="stylesheet" href="{{ asset('bundles/opitnotesuser/css/error.css') }}" />
+    </head>
+    <body>    
+        <div id="content">
+            <div class="header clear-fix">
+                <a href="{{ path('OpitNotesTravelBundle_travel_list') }}" id="siteLogo" class="clearfix">
+                    <span>NOTES</span>
+                    <span>New OPIT Travel Expense System</span>
+                    <div class="clear"></div>
+                </a>    
+            </div>
+            <div class="block-exception">
+                <h1>Oops! An Error Occurred</h1>
+                <h2>The server returned a "{{ status_code }} {{ status_text }}".</h2>
+
+                <div>
+                    Something is broken. Please e-mail us at notes@opit.hu and let us know
+                    what you were doing when this error occurred. We will fix it as soon
+                    as possible. Sorry for any inconvenience caused.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 23, 2014, 1:03:45 PM
+    Author     : OPIT\kaufmann
+*/
+@import '_defaults';
+
+#content{
+    width:500px;
+    margin:4em auto;
+    
+    .block-exception{
+        background-color:$formLightColor;
+        padding:10px;
+        @include border-radius(5px);
+    }
+
+    .header{
+        margin-bottom:2em;
+        
+        #siteLogo{
+            float:none;
+            margin:0;
+        }        
+    }    
+}
