@@ -55,7 +55,7 @@ class RateRepository extends EntityRepository
      * @param string $code the currency code
      * @param \DateTime $datetime the searched datetime
      */
-    private function setQueriyBuilderConditons(&$qb, $code, \DateTime &$datetime)
+    private function setQueriyBuilderConditons(&$qb, $code, \DateTime $datetime)
     {
         //create datetime intervallum
         $datetimeCopy = clone $datetime;

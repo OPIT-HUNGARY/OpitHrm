@@ -75,7 +75,7 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Cost</td>
-                <td>{{ dest.cost }}</td>
+                <td>{{ dest.cost ~ ' ' ~ dest.currency.code }}</td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Transportation type</td>
@@ -106,7 +106,7 @@
                 </tr>
                 <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                     <td class="bgGrey bold">Cost</td>
-                    <td>{{ accom.cost }}</td>
+                    <td>{{ accom.cost ~ ' ' ~ accom.currency.code }}</td>
                 </tr>
                 {% endfor %}            
             </table>

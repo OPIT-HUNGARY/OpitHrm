@@ -50,15 +50,15 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Advances recieved</td>
-                <td>{{ travelExpense.advancesRecieved }}</td>
+                <td>{{ travelExpense.advancesRecieved ~ ' ' ~ travelExpense.currency.code }}</td>
             </tr>
             <tr>
                 <td class="bgGrey bold">Advances spent</td>
-                <td>{{ travelExpense.toSettle }}</td>
+                <td>{{ travelExpense.toSettle ~ ' ' ~ travelExpense.currency.code }}</td>
             </tr>
             <tr>
                 <td class="bgGrey bold">Advances payback</td>
-                <td>{{ travelExpense.advancesPayback }}</td>
+                <td>{{ travelExpense.advancesPayback ~ ' ' ~ travelExpense.currency.code }}</td>
             </tr>
         </table>
         {% if travelExpense.userPaidExpenses is defined %}
@@ -81,7 +81,7 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Amount</td>
-                <td>{{ userPaidExpenses.amount }}</td>
+                <td>{{ userPaidExpenses.amount ~ ' ' ~ userPaidExpenses.currency.code }}</td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Date</td>
@@ -112,7 +112,7 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Amount</td>
-                <td>{{ companyPaidExpenses.amount }}</td>
+                <td>{{ companyPaidExpenses.amount ~ ' ' ~ companyPaidExpenses.currency.code }}</td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Date</td>

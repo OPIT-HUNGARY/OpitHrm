@@ -26,7 +26,7 @@ class Rate extends AbstractBase
      * @var string
      *
      * @ORM\JoinColumn(name="currency_code", referencedColumnName="code", nullable=true)
-     * @ORM\ManyToOne(targetEntity="Currency")
+     * @ORM\ManyToOne(targetEntity="Currency", inversedBy="rates")
      */
     private $currencyCode;
 

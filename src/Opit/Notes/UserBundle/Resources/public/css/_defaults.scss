@@ -125,6 +125,10 @@ $snowColor: rgb(250, 250, 250);
     width: 40%!important;
 }
 
+.width-55 {
+    width: 55%!important;
+}
+
 .width-96 {
     width: 96%!important;
 }
@@ -318,15 +322,18 @@ input {
     margin-left: 10px;
 }
 
-.darker-gray-color{
+.darker-gray-color {
     color: $darkerGrayColor;
 }
+.display-block {
+    display:block;
+}
 
-.display-none{
+.display-none {
     display:none;
 }
 
-.small-button{
+.small-button {
     padding:3px 10px 3px 10px;
     margin: 2px;
     background-color: $darkGrey;

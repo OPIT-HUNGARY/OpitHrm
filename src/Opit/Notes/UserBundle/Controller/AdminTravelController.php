@@ -225,9 +225,11 @@ class AdminTravelController extends Controller
             // Create a new per diem and save it.
             $perDiem = new TEPerDiem();
         }
+        $currency = $em->getRepository('OpitNotesCurrencyRateBundle:Currency')->findOneByCode($data['currency']);
         $perDiem->setHours($data['hours']);
         $perDiem->setAmount($data['amount']);
-
+        $perDiem->setCurrency($currency);
+        
         $validator = $this->get('validator');
         $errors = $validator->validate($perDiem);
         // If the validation failed

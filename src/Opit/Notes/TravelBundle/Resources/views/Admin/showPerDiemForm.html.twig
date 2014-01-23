@@ -5,6 +5,12 @@
     {{ form_row(form.id, {'id': 'perdiem'~index~'id', 'full_name': 'perdiem['~index~'][id]'}) }}
     {{ form_row(form.hours, {'id': 'perdiem'~index~'hours', 'full_name': 'perdiem['~index~'][hours]' }) }}
     {{ form_row(form.amount, { 'id': 'perdiem'~index~'amount', 'full_name': 'perdiem['~index~'][amount]'}) }}
+    {{ form_row(form.currency, {
+                                'id': 'perdiem'~index~'currency',
+                                'full_name': 'perdiem['~index~'][currency]',
+                                'value': form.currency.vars.value ? form.currency.vars.value : 'EUR'
+                               }
+                ) }}
     <div class='deleteFormFieldsetChild formFieldsetButton no-pointer'>
         <span class='deletePerDiem pointer'>
             <i class='fa fa-minus-square'></i>

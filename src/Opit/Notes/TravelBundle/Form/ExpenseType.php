@@ -36,12 +36,14 @@ class ExpenseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $userAttributes = array('placeholder' => 'Name', 'class' => 'te-claim');
+        $entityManager = $options['em'];
+        $currency = $options['data']->getCurrency();
         $user = $options['data']->getUser();
         $taxId = null;
         $bankName = null;
         $bankAccountNumber = null;
         $employeeName = null;
-        
+
         if (null !== $user) {
             $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getTaxIdentification();
             $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getBankname();
@@ -118,6 +120,17 @@ class ExpenseType extends AbstractType
         $builder->add('advancesRecieved', 'number', array(
             'label' => 'Advances recieved',
             'attr' => array('class' => 'te-claim')
+        ));
+        
+        $builder->add('currency', 'entity', array('attr' => array(
+                'class' => 'te-claim currency'
+            ),
+            'class' => 'OpitNotesCurrencyRateBundle:Currency',
+            'data' => (null !== $currency ? $currency :
+                            $entityManager->getReference('OpitNotesCurrencyRateBundle:Currency', 'EUR')
+            ),
+            'property' => 'code',
+            'multiple' => false
         ));
         
         $builder->add('companyPaidExpenses', 'collection', array(

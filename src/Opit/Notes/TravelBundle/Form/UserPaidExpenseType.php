@@ -37,13 +37,25 @@ class UserPaidExpenseType extends AbstractType
             'empty_value' => 'Choose...',
             'label'=>'Expense type',
             'attr' => array('class' => 'te-expense-type'),
-            'query_builder' => function(EntityRepository $repository) {
+            'query_builder' => function (EntityRepository $repository) {
                  return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
             }
         ));
         $builder->add('amount', 'integer', array(
             'label' => 'Amount',
-            'attr' => array('placeholder' => 'Amount', 'min' => '1', 'class' => 'amount')
+            'attr' => array(
+                'class' => 'width-55 float-left amount',
+                'placeholder' => 'Amount',
+                'min' => '1',
+                )
+        ));
+        $builder->add('currency', 'entity', array('attr' => array(
+                'class' => 'currency width-40 float-right'
+            ),
+            'label' => false,
+            'class' => 'OpitNotesCurrencyRateBundle:Currency',
+            'property' => 'code',
+            'multiple' => false
         ));
         $builder->add('destination', 'text', array(
             'label' => 'Destination',

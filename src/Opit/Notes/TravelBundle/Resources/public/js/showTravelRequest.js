@@ -221,6 +221,7 @@
     if (addListener) {
       numberOfNightsListener($newForm);
     }
+    $newForm.find('.currency option[value=EUR]').attr('selected', 'selected');
     $collectionHolder.data('index', index + 1);
     return $addButton.before($newForm);
   };

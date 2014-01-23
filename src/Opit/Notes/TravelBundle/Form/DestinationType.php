@@ -34,7 +34,7 @@ class DestinationType extends AbstractType
             'required' => 'true',
             'empty_value' => 'Choose...',
             'label'=>'Transportation type',
-            'query_builder' => function(EntityRepository $repository) {
+            'query_builder' => function (EntityRepository $repository) {
                  return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
             }
          ));
@@ -48,9 +48,18 @@ class DestinationType extends AbstractType
         
         $builder->add('cost', 'integer', array(
             'attr' => array(
+                'class' => 'width-55 float-left',
                 'placeholder' => 'Cost',
                 'min' => '1'
             )
+        ));
+        $builder->add('currency', 'entity', array('attr' => array(
+                'class' => 'currency width-40 float-right'
+            ),
+            'label' => false,
+            'class' => 'OpitNotesCurrencyRateBundle:Currency',
+            'property' => 'code',
+            'multiple' => false
         ));
     }
     

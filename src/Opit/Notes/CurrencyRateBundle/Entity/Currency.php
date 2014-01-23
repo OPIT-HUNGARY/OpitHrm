@@ -3,6 +3,9 @@
 namespace Opit\Notes\CurrencyRateBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Collections\ArrayCollection;
+use Opit\Notes\CurrencyRateBundle\Entity\Rate;
 
 /**
  * Currency
@@ -27,6 +30,10 @@ class Currency
      */
     private $description;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Rate", mappedBy="currencyCode", cascade={"persist", "remove"})
+     */
+    private $rates;
 
     /**
      * Set code
@@ -72,5 +79,68 @@ class Currency
     public function getDescription()
     {
         return $this->description;
+    }
+   
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->rates = new ArrayCollection();
+    }
+    
+    /**
+     * Add rates
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Rate $rates
+     * @return Currency
+     */
+    public function addRate(Rate $rates)
+    {
+        $this->rates[] = $rates;
+    
+        return $this;
+    }
+
+    /**
+     * Remove rates
+     *
+     * @param \Opit\Notes\CurrencyRateBundle\Entity\Rate $rates
+     */
+    public function removeRate(Rate $rates)
+    {
+        $this->rates->removeElement($rates);
+    }
+
+    /**
+     * Get rates
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRates()
+    {
+        return $this->rates;
+    }
+    
+    /**
+     * Get the today's rate
+     * 
+     * @param \DateTime $datetime
+     * @return Rate A rate object
+     */
+    public function getCurrentRate(\DateTime $datetime)
+    {
+        //create datetime interval
+        $datetimeCopy = clone $datetime;
+        $start = $datetime->setTime(0, 0, 0);
+        $end = $datetimeCopy->setTime(23, 59, 59);
+        
+        $criteria = new Criteria();
+        $criteria->where(Criteria::expr()->gte('created', $start));
+        $criteria->andWhere(Criteria::expr()->lte('created', $end));
+        
+        $result = $this->getRates()->matching($criteria);
+        
+        return $result->isEmpty() ? null : $result->first();
     }
 }

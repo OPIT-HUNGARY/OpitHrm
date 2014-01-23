@@ -7,17 +7,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
-use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Model\TravelExpenseExtension;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use TCPDF;
-
-use Opit\Notes\TravelBundle\Entity\Status;
-use Opit\Notes\TravelBundle\Entity\StatusWorkflow;
-use Opit\Notes\TravelBundle\Manager\StatusManager;
 
 /**
  * Description of ExpenseController
@@ -294,7 +288,7 @@ class ExpenseController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $perDiemAmounts = $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
         $values = array();
-        foreach ($perDiemAmounts as $key => $value) {
+        foreach ($perDiemAmounts as $value) {
             $values[$value->getHours()] = $value->getAmount();
         }
         return new JsonResponse($values);
@@ -334,7 +328,7 @@ class ExpenseController extends Controller
             $pdf->SetKeywords('travel, expense, notes');
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
             $pdf->SetMargins(PDF_MARGIN_LEFT, 15, PDF_MARGIN_RIGHT);
-            $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+            $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
             $pdf->SetFont('', '', 12);
             $pdf->setPrintHeader(false);
@@ -361,8 +355,7 @@ class ExpenseController extends Controller
         $travelExpenseId = $request->request->get('travelExpenseId');
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
-        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
-        
+         
         $statusManager = $this->get('opit.manager.status_manager');
         $statusManager->addStatus($travelExpense, $statusId);
         

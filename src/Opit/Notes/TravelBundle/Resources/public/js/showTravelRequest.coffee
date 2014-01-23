@@ -98,7 +98,7 @@ else
 
 travelRequestAccomodations0 = $('#travelRequest_accomodations_0')
 if $('#travelRequest_accomodations :input[type=text]').length > 2
-    $('#travelRequest_accomodations').children().each ->
+    $('#travelRequest_accomodations').children().each ->        
         numberOfNightsListener($(@))
         
         $(@).addClass 'formFieldsetChild'
@@ -185,6 +185,7 @@ addForm = ($collectionHolder, $addButton, addListener) ->
     if addListener
         numberOfNightsListener($newForm)
 
+    $newForm.find('.currency option[value=EUR]').attr('selected','selected')
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
 

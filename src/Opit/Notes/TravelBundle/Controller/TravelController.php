@@ -46,7 +46,7 @@ class TravelController extends Controller
         $entityManager->getFilters()->disable('softdeleteable');
         $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
         $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
-        
+      
         // te = Travel Expense
         $statusManager = $this->get('opit.manager.status_manager');
         $teIds = array();

@@ -82,6 +82,7 @@
     $formFieldsetChild.append(createDeleteButton());
     $formFieldsetChild.prepend($selectedExpense);
     expenseDateChange($($formFieldsetChild));
+    $formFieldsetChild.find('.currency option[value=EUR]').attr('selected', 'selected');
     collectionHolder.data('index', index + 1);
     return parent.find('.addFormFieldsetChild').before($formFieldsetChild);
   };

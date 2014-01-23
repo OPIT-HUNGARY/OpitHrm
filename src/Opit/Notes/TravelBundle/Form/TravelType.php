@@ -88,7 +88,7 @@ class TravelType extends AbstractType
             'by_reference' => false
         ));
         $builder->add('accomodations', 'collection', array(
-            'type' => new AccomodationType(),
+            'type' => new AccomodationType($entityManager),
             'allow_add' => true,
             'allow_delete' => true,
             'by_reference' => false

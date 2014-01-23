@@ -54,7 +54,7 @@ class ExchangeRateService
      * @param \DateTime $datetime the searched datetime
      * @return integer rate
      */
-    public function getRateOfCurrency($code, $datetime = null)
+    public function getRateOfCurrency($code, \DateTime $datetime = null)
     {
         // If datetime is null set to today
         if (null === $datetime) {
@@ -62,7 +62,7 @@ class ExchangeRateService
         }
         $rate = $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')
                                        ->findRateByCodeAndDate($code, $datetime);
-
+        
         //if rate is null throw an exception
         if (null === $rate) {
             throw new EntityNotFoundException(sprintf('Rate entity not found for "%s, %s"', $code, $datetime));
@@ -75,7 +75,7 @@ class ExchangeRateService
      * Get the current exchange rates from MNB
      * @return array $currencyRates the current exchange rates
      */
-    public function getCurrentExchangeRatesFromMNB()
+    public function getCurrentExchangeRatesFromMnb()
     {
         //Strore the current exchante rates
         $currencyRates = array();
@@ -109,7 +109,7 @@ class ExchangeRateService
     public function saveCurrentExchangeRates()
     {
         $currencies = $this->em->getRepository('OpitNotesCurrencyRateBundle:Currency')->findAll();
-        $currencyRates = $this->getCurrentExchangeRatesFromMNB();
+        $currencyRates = $this->getCurrentExchangeRatesFromMnb();
         
         foreach ($currencies as $currency) {
             //currency's code

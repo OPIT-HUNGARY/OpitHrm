@@ -38,7 +38,7 @@ expenseDateChange = (parent) ->
     $dateOfExpenseSpent = parent.find('input[type=date]')
     $dateOfExpenseSpent.on 'change', ->
         validateExpenseDate($(@))
-        
+
 
 reCreateExpenses = (self) ->
     $selectedExpense = $('<span>').addClass 'selected-expense'
@@ -73,7 +73,7 @@ addNewForm = (collectionHolder, parent) ->
     $formFieldsetChild.prepend $selectedExpense
     
     expenseDateChange($($formFieldsetChild))
-    
+    $formFieldsetChild.find('.currency option[value=EUR]').attr('selected','selected')
     collectionHolder.data 'index', index + 1
 
     parent.find('.addFormFieldsetChild').before $formFieldsetChild
