@@ -1,0 +1,47 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 23, 2014, 10:02:11 AM
+    Author     : OPIT\kaufmann
+*/
+@import '_defaults';
+
+#siteLogo{
+    float:none;
+}
+
+#main-wrapper{
+    width:500px;
+    margin:4em auto;
+}
+
+#travelStatus{
+    width:500px;
+    background-color: $defaultLightColor;
+    padding:10px;
+    @include border-radius(5px);
+    
+    h2{
+        width:100%;
+        margin-bottom: 1em;
+        text-align:center;
+    }
+    
+    h4{
+        text-align:center;
+        
+        a{
+            color:blue;
+        }
+        a:hover{
+            color: $orangeColor;
+        }
+    }
+    
+    form{
+        text-align:center;
+    }
+}

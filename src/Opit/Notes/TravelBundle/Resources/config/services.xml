@@ -17,6 +17,10 @@
         <service id="opit.manager.status_manager" class="%opit.manager.status_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.email_manager" />
+            <argument type="service" id="security.encoder_factory" />
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
         </service>
         <service id="opit.manager.email_manager" class="%opit.manager.email_manager.class%">
             <argument type="service" id="mailer" />

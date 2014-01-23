@@ -158,10 +158,11 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
 
 .required:after { content: '*'; color: #aa0000; }
 
+#siteLogo { float: left; margin: 0 0 20px 10px; text-decoration: none; color: black; }
+#siteLogo span:first-child { font-size: 3.6em; display: block; line-height: .8em; }
+#siteLogo span:last-of-type { font-size: 0.8em; color: #f28c38; margin: -10px 0 0 0; }
+
 header { margin-bottom: 100px; }
-header #siteLogo { float: left; margin: -10px 0 20px 10px; text-decoration: none; color: black; }
-header #siteLogo span:first-child { float: left; clear: both; font-size: 3.6em; }
-header #siteLogo span:last-child { float: left; clear: both; font-size: 0.8em; color: #f28c38; margin: -10px 0 0 0; }
 header #logoutButton { float: right; color: white; text-decoration: none; background-color: #f28c38; padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
 header #logoutButton > i { margin: 0; float: none; }
 header #loggedInUser { float: right; text-decoration: none; background-color: rgba(220, 220, 220, 0.8); padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }

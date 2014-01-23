@@ -167,28 +167,26 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
     color:$defaultRed;
 }
 
+#siteLogo{
+    float:left;
+    margin: 0 0 20px 10px;
+    text-decoration:none;
+    color:black;
+
+    span:first-child{
+        font-size:3.6em;
+        display:block;
+        line-height:.8em;
+    }
+    span:last-of-type{
+        font-size:0.8em;
+        color: $orangeColor;
+        margin:-10px 0 0 0;
+    }
+}
+
 header{
     margin-bottom:100px;
-    
-    #siteLogo{
-        float:left;
-        margin: -10px 0 20px 10px;
-        text-decoration:none;
-        color:black;
-        
-        span:first-child{
-            float:left;
-            clear:both;
-            font-size:3.6em;
-        }
-        span:last-child{
-            float:left;
-            clear:both;
-            font-size:0.8em;
-            color: $orangeColor;
-            margin:-10px 0 0 0;
-        }
-    }
     
     #logoutButton{
         float:right;

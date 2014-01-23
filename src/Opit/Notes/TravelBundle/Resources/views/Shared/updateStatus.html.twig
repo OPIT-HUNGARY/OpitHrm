@@ -1,0 +1,33 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '@OpitNotesUserBundle/Resources/public/css/main.css'
+        '@OpitNotesTravelBundle/Resources/public/css/updateStatus.css'
+    output='css/notes_login.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+<div class="align-center">
+    <a href="{{ path('OpitNotesTravelBundle_travel_list') }}" id="siteLogo" class="clearfix">
+        <span>NOTES</span>
+        <span>New OPIT Travel Expense System</span>
+        <div class="clear"></div>
+    </a>
+    <div class="clear"></div>
+</div>
+<div id="travelStatus">
+{% if 'post' == method %}
+<h2>Status of {{ travelTypeName }} successfully updated to "{{ status }}".</h2>
+<h4>
+    You can go to <a href="{{ path('OpitNotesTravelBundle_travel_list') }}">NOTES</a> project or simply close the tab.
+</h4>
+{% else %}
+<h2>Update status of {{ travelTypeName }} to "{{ status }}".</h2>
+<form method="post" action="{{ app.request.uri }}">
+    <input type="submit" class="button" value="Update" />
+</form>
+</div>
+{% endif %}
+{% endblock %}

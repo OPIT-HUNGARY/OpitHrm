@@ -9,11 +9,14 @@
 namespace Opit\Notes\TravelBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\TravelBundle\Manager\EmailManager;
+
+use Opit\Notes\TravelBundle\Entity\Token;
 
 /**
  * Description of TravelController
@@ -24,11 +27,19 @@ class StatusManager
 {
     protected $entityManager;
     protected $mail;
+    protected $factory;
+    protected $request;
     
-    public function __construct(EntityManager $entityManager, $mail)
+    public function __construct(EntityManager $entityManager, $mail, $factory)
     {
         $this->entityManager = $entityManager;
         $this->mail = $mail;
+        $this->factory = $factory;
+    }
+
+    public function setRequest(Request $request = null)
+    {
+        $this->request = $request;
     }
     
     public function addStatus($resource, $requiredStatus)
@@ -46,11 +57,24 @@ class StatusManager
                 $this->entityManager->persist($resourceStatus);
                 $this->entityManager->flush();
             } else {
-                $nextStates[] = $value;
+                $nextStates[$key] = $value;
             }
         }
         
         if ('For Approval' === $status->getName()) {
+            //set token for travel
+            $token = new Token();
+            // encode token with factory encoder
+            $encoder = $this->factory->getEncoder($token);
+            $travelToken =
+                str_replace('/', '', $encoder->encodePassword(serialize($resource->getId()) . date('Y-m-d H:i:s'), ''));
+            $token->setToken($travelToken);
+            $token->setTravelId($resource->getId());
+            $this->entityManager->persist($token);
+            $this->entityManager->flush();
+            
+            $stateChangeLinks = array();
+            
             //get template name by converting entity name first letter to lower
             $template = lcfirst($className);
             //split class name at uppercase letters
@@ -60,15 +84,26 @@ class StatusManager
                 // change $to to a real/valid email address e.g.(kaufmann@opit.hu)
                 $to = $resource->getGeneralManager()->getEmail();
                 $travelRequestId = $resource->getTravelRequestId();
+                $travelType = 'tr';
             } elseif ($resource instanceof TravelExpense) {
                 // change $to to a real/valid email address e.g.(kaufmann@opit.hu)
                 $to = $resource->getTravelRequest()->getGeneralManager()->getEmail();
                 $travelRequestId = $resource->getTravelRequest()->getTravelRequestId();
+                $travelType = 'te';
             }
+            
+            foreach ($nextStates as $key => $value) {
+                if ($key !== $requiredStatus) {
+                    $stateChangeLinks[] =
+                        $this->request->getScheme() . '://' . $this->request->getHttpHost() .
+                        $this->request->getBaseURL() . '/changestatus/' . $travelType . '/' . $key . '/' . $travelToken;
+                }
+            }
+            
             $this->mail->setSubject($subjectType . ' (' . $travelRequestId . ') sent for approval');
             $this->mail->setBaseTemplate(
                 'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
-                array($template => $resource, 'nextStates' => $nextStates)
+                array($template => $resource, 'nextStates' => $nextStates, 'stateChangeLinks' => $stateChangeLinks)
             );
             $this->mail->setRecipient($to);
             $this->mail->sendMail();

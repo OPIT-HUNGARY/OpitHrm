@@ -1,12 +1,12 @@
 {% set travelRequest = templateVars['travelRequest'] %}
 {% set nextStates = templateVars['nextStates'] %}
-
+{% set stateChangeLinks = templateVars['stateChangeLinks'] %}
 <div style="width:650px;">
 
-<h3>Available options</h3>
+<h3>Status update options</h3>
 <div style="margin-left:10px;font-size: 15px;">
 {% for nextState in nextStates %}
-<a href="#">{{ nextState }}</a>
+<a href="{{ stateChangeLinks[loop.index0] }}">{{ nextState }}</a>
 {% if loop.index != nextStates|length %}
  | 
 {% endif %}
@@ -29,7 +29,7 @@
     </tr>
     <tr>
         <td style="border-bottom: solid 1px;">Trip purpose</td>
-        <td style="border-bottom: solid 1px;">{{ travelRequesttripPurpose }}</td>
+        <td style="border-bottom: solid 1px;">{{ travelRequest.tripPurpose }}</td>
     </tr>
 </table>
 <h3>Destinations</h3>

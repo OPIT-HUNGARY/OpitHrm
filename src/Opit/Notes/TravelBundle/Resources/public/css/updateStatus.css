@@ -1,0 +1,39 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*  Created on : Jan 23, 2014, 10:02:11 AM Author     : OPIT\kaufmann
+*/
+/* Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\Notes
+*/
+.vertical-align-top { vertical-align: top; }
+
+.display-none { display: none !important; }
+
+.red-text { color: #aa0000; }
+
+.bold { font-weight: bold; }
+
+.deleteFormFieldsetChild { display: inline-block; }
+
+.height-20 { height: 20px; }
+
+.width-420 { width: 420px; }
+
+.width-80 { width: 80px; }
+
+.width-50 { width: 50px; }
+
+.display-inline-block { display: inline-block !important; }
+
+#siteLogo { float: none; }
+
+#main-wrapper { width: 500px; margin: 4em auto; }
+
+#travelStatus { width: 500px; background-color: #ebebeb; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+#travelStatus h2 { width: 100%; margin-bottom: 1em; text-align: center; }
+#travelStatus h4 { text-align: center; }
+#travelStatus h4 a { color: blue; }
+#travelStatus h4 a:hover { color: #f28c38; }
+#travelStatus form { text-align: center; }
