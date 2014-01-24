@@ -1,6 +1,6 @@
 {% stylesheets
     'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-    output='css/base.css' filter='?yui_css, cssrewrite'%}
+    output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
 <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />
@@ -260,8 +260,4 @@
 {% endif %}
 {% endif %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-{% javascripts
-    '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.js'
-    output='js/notes_tr_list.js' filter='?yui_js' %}
-    <script type="text/javascript" src="{{ asset_url }}" ></script>
-{% endjavascripts %}
+<script src="{{ asset('bundles/opitnotestravel/js/travelExpensePrintView.js') }}"></script>

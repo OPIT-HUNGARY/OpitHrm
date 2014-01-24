@@ -55,6 +55,6 @@ class StatusRepository extends EntityRepository
             ->setMaxResults(1)
             ->getQuery();
         
-        return $firstStatus->getResult()[0];
+        return current($firstStatus->getResult());
     }
 }
