@@ -25,6 +25,7 @@ class CurrencyFixtures extends AbstractFixture implements OrderedFixtureInterfac
         $codes = array(
             'CHF' => 'Swiss Franc',
             'EUR' => 'Euro',
+            'HUF' => 'Hungarian Forint',
             'GBP' => 'Pound Sterling',
             'USD' => 'US Dollar'
         );

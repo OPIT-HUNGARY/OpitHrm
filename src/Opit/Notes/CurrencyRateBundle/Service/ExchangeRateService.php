@@ -32,20 +32,70 @@ class ExchangeRateService
     protected $em;
 
     /**
+     * Default rate of the HUF
+     * @var float
+     */
+    private $hufRate;
+    
+    /**
      * Url of the MNB webservice
      * @var string 
      */
-    private static $MNBUrl = "http://www.mnb.hu/arfolyamok.asmx?wsdl";
+    private $mnbUrl;
 
     /**
      * Constructor
      * @param string $currency type of Currency
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, $hufRate, $mnbUrl)
     {
         $this->em = $entityManager;
+        $this->hufRate = (float) $hufRate;
+        $this->mnbUrl = $mnbUrl;
     }
 
+    /**
+     * Getter method for hufRate field
+     * 
+     * @return float
+     */
+    public function getHufRate()
+    {
+        return $this->hufRate;
+    }
+    
+    /**
+     * Convert the value from the origin currency code to the a destination currency code
+     * 
+     * @param string $originCode the origin currency code
+     * @param string $destinationCode the destination currency code
+     * @param float $value the converting value
+     * @param \DateTime $datetime the date of the rate
+     * @return float the converted value.
+     */
+    public function convertCurrency($originCode, $destinationCode, $value, \DateTime $datetime = null)
+    {
+        // If originCode is equal to be destinationCode then return with the value
+        if ($originCode === $destinationCode) {
+            return $value;
+        }
+        
+        // If destinationCode is HUF then the rate will be 1
+        if ('HUF' === strtoupper($destinationCode)) {
+            $destinationRate = $this->hufRate;
+        } else {
+            $destinationRate = $this->getRateOfCurrency($destinationCode, $datetime);
+        }
+        $result = (float) $value / $destinationRate;
+        
+        // If originCode is not HUF then convert to HUF currency
+        if ('HUF' !== strtoupper($originCode)) {
+            $originRate = $this->getRateOfCurrency($originCode, $datetime);
+            $result = (float) $result * $originRate;
+        }
+        
+        return $result;
+    }
     /**
      * Get rate of a currency by currency code
      * The time can be setted, if it null the method will search on the rate of today.
@@ -61,7 +111,7 @@ class ExchangeRateService
              $datetime = new \DateTime('today');
         }
         $rate = $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')
-                                       ->findRateByCodeAndDate($code, $datetime);
+                                       ->findRateByCodeAndDate(strtoupper($code), $datetime);
         
         //if rate is null throw an exception
         if (null === $rate) {
@@ -81,7 +131,7 @@ class ExchangeRateService
         $currencyRates = array();
 
         //Soap client to download informations from MNB
-        $client = new \SoapClient(self::$MNBUrl);
+        $client = new \SoapClient($this->mnbUrl);
         //Get the current exchange rates from the response
         $response = $client->__soapCall("GetCurrentExchangeRates", array());
 
