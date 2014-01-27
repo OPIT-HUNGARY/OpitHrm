@@ -161,6 +161,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     protected $tmTravelRequests;
     
     /**
+     * Notifications sent by user
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\Notification", mappedBy="reciever", cascade={"remove"})
+     */
+    protected $notifications;
+    
+    /**
      * User travel expenses
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelExpense", mappedBy="user", cascade={"remove"})
      */
@@ -200,7 +206,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function getStatus()
     {
         return $this->isActive;
-    }     
+    }
 
     /**
      * @inheritDoc
@@ -511,5 +517,5 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function getTaxIdentification()
     {
         return $this->taxIdentification;
-    }   
+    }
 }
