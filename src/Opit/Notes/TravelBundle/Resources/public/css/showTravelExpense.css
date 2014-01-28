@@ -27,6 +27,8 @@ and open the template in the editor.
 
 .display-inline-block { display: inline-block !important; }
 
+#changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
+
 #travelExpense { display: none; }
 
 .time-picker { margin: 2px 0 0 5px; }
@@ -46,6 +48,3 @@ label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; bo
 .custom-field { background-color: #d2d2d2; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; width: 110px; padding: 3px; }
 
 h1 { display: inline-block; margin-top: 0; }
-
-#changeStateWrapper { display: inline-block; position: relative; }
-#changeStateWrapper .changeState { position: absolute; margin-top: -23px; margin-left: 10px; }

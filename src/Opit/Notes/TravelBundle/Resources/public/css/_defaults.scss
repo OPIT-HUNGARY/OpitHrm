@@ -88,3 +88,10 @@ $defaultFontSize: 13px;
 .display-inline-block{
     display:inline-block !important;
 }
+
+#changeStateWrapper{
+    display:inline-block;
+    position:absolute;
+    right:20px;
+    margin-top:10px;
+}

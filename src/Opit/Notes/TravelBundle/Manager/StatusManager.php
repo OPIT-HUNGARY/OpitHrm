@@ -14,7 +14,6 @@ use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
-use Opit\Notes\TravelBundle\Manager\EmailManager;
 
 use Opit\Notes\TravelBundle\Entity\Token;
 
@@ -29,12 +28,14 @@ class StatusManager
     protected $mail;
     protected $factory;
     protected $request;
+    protected $container;
     
-    public function __construct(EntityManager $entityManager, $mail, $factory)
+    public function __construct(EntityManager $entityManager, $mail, $factory, $container)
     {
         $this->entityManager = $entityManager;
         $this->mail = $mail;
         $this->factory = $factory;
+        $this->container = $container;
     }
 
     public function setRequest(Request $request = null)
@@ -60,6 +61,8 @@ class StatusManager
                 $nextStates[$key] = $value;
             }
         }
+        
+        $toGeneralManager = false;
         
         if ('For Approval' === $status->getName()) {
             //set token for travel
@@ -107,8 +110,12 @@ class StatusManager
             );
             $this->mail->setRecipient($to);
             $this->mail->sendMail();
+            
+            $toGeneralManager = true;
         }
-        
+            // set a new notification when travel request or expense status changes
+            $notificationManager = $this->container->get('opit.manager.notification_manager');
+            $notificationManager->addNewNotification($resource, $toGeneralManager);
     }
     
     public function getCurrentStatus($resource)

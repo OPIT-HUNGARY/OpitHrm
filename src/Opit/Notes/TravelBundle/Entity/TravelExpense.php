@@ -20,6 +20,7 @@ class TravelExpense
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToMany(targetEntity="TENotification", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
     private $id;
 
@@ -610,4 +611,25 @@ class TravelExpense
     {
         return $this->currency;
     }
+    
+    /**
+     * 
+     * @param Entity $notifications
+     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
+     */
+    public function setNotifications($notifications)
+    {
+        $this->notifications = $notifications;
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @return Entitiy
+     */
+    public function getNotification()
+    {
+        return $this->notifications;
+    }    
 }

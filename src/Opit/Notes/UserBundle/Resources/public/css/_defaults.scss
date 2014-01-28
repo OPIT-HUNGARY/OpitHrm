@@ -347,3 +347,16 @@ input {
         display:inline-block;
     }
 }
+
+.active-text{
+    color:$orangeColor !important;
+}
+
+.notification-type-title{
+    width:100%;
+    background-color:$defaultDarkColor;
+    padding:3px 0 3px 0;
+    font-weight:bold;
+    color:white;
+    text-indent: 5px;
+}

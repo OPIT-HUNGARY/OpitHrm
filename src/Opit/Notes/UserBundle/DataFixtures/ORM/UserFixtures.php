@@ -63,7 +63,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, C
             $testUser->setEmail("mymail".$i."@mail.com");
             $testUser->setEmployeeName("empname".$i);
             $testUser->setIsActive(1);
-            $testUser->addGroup($this->getReference('admin-group'));
+            $testUser->addGroup($this->getReference('user-group'));
             $testUser->setBankAccountNumber("11112222-22223333-4444".$i.$i.$i.$i);
             $testUser->setBankName("Fictive Bank");
             $testUser->setTaxIdentification("843". $i . $i%2 . $i%4 ."45". $i%3 .$i%5);

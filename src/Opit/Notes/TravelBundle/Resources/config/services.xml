@@ -10,6 +10,7 @@
         <parameter key="opit.model.travel_expense.class">Opit\Notes\UserBundle\Model\TravelExpense</parameter>
         <parameter key="opit.manager.status_manager.class">Opit\Notes\TravelBundle\Manager\StatusManager</parameter>
         <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
+        <parameter key="opit.manager.notification_manager.class">Opit\Notes\TravelBundle\Manager\NotificationManager</parameter>
     </parameters>
     <services>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
@@ -19,6 +20,7 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.email_manager" />
             <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="service_container" />
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
@@ -31,6 +33,9 @@
         </service>
         <service id="opit.service.exchange_rates" class="%opit.service.exchange_rates.class%">
                 <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.manager.notification_manager" class="%opit.manager.notification_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
     </services>
 </container>

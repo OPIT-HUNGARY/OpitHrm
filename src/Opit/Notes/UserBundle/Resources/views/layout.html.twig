@@ -29,6 +29,11 @@
         <div id="loggedInUser" class="pointer">
             <span data-user-id="{{app.user.id}}">{{ app.user.username }} <i class="fa fa-user"></i></span>
         </div>
+        <div id="notifications">
+            <i class="fa fa-globe"></i>
+            <div class="round-border absolute display-none" id="unread-notifications-count"></div>
+            <div id="notifications-wrapper" class="display-none"></div>
+        </div>
         <div id="menuWrapper">
             {% include 'OpitNotesUserBundle:Shared:_menu.html.twig' %}
         </div>

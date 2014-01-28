@@ -5,11 +5,14 @@ namespace Opit\Notes\TravelBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
 use Symfony\Component\HttpFoundation\Request;
 use Opit\Notes\TravelBundle\Entity\Token;
 use Opit\Notes\TravelBundle\Entity\StatesTravelExpenses;
 use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Opit\Notes\TravelBundle\Entity\TRNotification;
+use Opit\Notes\TravelBundle\Entity\TENotification;
 
 class DefaultController extends Controller
 {
@@ -64,5 +67,87 @@ class DefaultController extends Controller
             'OpitNotesTravelBundle:Shared:updateStatus.html.twig',
             array('status' => strtolower($status->getName()), 'travelTypeName' => $travelTypeName, 'method' => $method)
         );
+    }
+    
+    /**
+     * Method to get number of unread notifications
+     *
+     * @Route("/secured/notifications/unread", name="OpitNotesTravelBundle_notifications_unread_count")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function getUnreadNotificationsCountAction()
+    {
+        $currentUser = $this->get('security.context')->getToken()->getUser();
+        $notificationManager = $this->get('opit.manager.notification_manager');
+        $unreadNotificationCount = count($notificationManager->getUnreadNotifications($currentUser));
+        return new JsonResponse($unreadNotificationCount);
+    }
+    
+    /**
+     * Method to get all notifications
+     *
+     * @Route("/secured/notifications/all", name="OpitNotesTravelBundle_notifications_all")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function getAllNotificationsAction()
+    {
+        $currentUser = $this->get('security.context')->getToken()->getUser();
+        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notifications = $notificationManager->getAllNotifications($currentUser);
+        $travelExpenses = array();
+        $travelRequests = array();
+        
+        foreach ($notifications as $notification) {
+            if ($notification instanceof TENotification) {
+                $travelExpenses[] = $notification;
+            } elseif ($notification instanceof TRNotification) {
+                $travelRequests[] = $notification;
+            }
+        }
+        
+        return $this->render(
+            'OpitNotesTravelBundle:Shared:notifications.html.twig',
+            array(
+                'travelRequests' => $travelRequests,
+                'travelExpenses' => $travelExpenses,
+                'notifications' => $notifications
+            )
+        );
+    }
+    
+    /**
+     * Method to change the read state of one notification
+     *
+     * @Route("/secured/notifications/state/change", name="OpitNotesTravelBundle_notifications_state_change")
+     * @Template()
+     * @Method({"POST"})
+     */
+    public function changeNotificationStateAction(Request $request)
+    {
+        $notificationId = $request->request->get('id');
+        $entityManager = $this->getDoctrine()->getManager();
+        $notification = $entityManager->getRepository('OpitNotesTravelBundle:Notification')->find($notificationId);
+        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notificationManager->setNotificationReadStatus($notification);
+        
+        return new JsonResponse();
+    }
+    
+    /**
+     * Method to delete a notification
+     *
+     * @Route("/secured/notification/delete/{id}", name="OpitNotesTravelBundle_notification_delete", requirements={ "id" = "\d+" }))
+     * @Template()
+     * @Method({"GET"})
+     */
+    public function deleteNotificationAction(Request $request)
+    {
+        $notificationId = $request->attributes->get('id');
+        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notificationManager->deleteNotification($notificationId);
+        
+        return new JsonResponse(array('deleted' => true));
     }
 }

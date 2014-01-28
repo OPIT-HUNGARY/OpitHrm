@@ -117,6 +117,10 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 .small-button i { float: left; margin: 3px 5px 0 0; }
 .small-button span { display: inline-block; }
 
+.active-text { color: #f28c38 !important; }
+
+.notification-type-title { width: 100%; background-color: #b4b4b4; padding: 3px 0 3px 0; font-weight: bold; color: white; text-indent: 5px; }
+
 #mainWrapper { width: 60%; min-width: 1024px; margin: 0 auto; }
 #mainWrapper #welcomeWrapper { width: 100%; min-width: 740px; height: 250px; background-color: rgba(220, 220, 220, 0.8); margin: 0 auto; box-shadow: 1px 1px 1px 1px #a0a0a0; }
 #mainWrapper #welcomeWrapper #welcomeText { padding: 15px 0 0 0; color: black; font-size: 8em; text-align: center; }

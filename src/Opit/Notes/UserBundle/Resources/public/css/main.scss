@@ -388,3 +388,100 @@ header{
         }
     }
 }
+
+.round-border{
+    @include border-radius(100%);
+}
+
+#notifications{
+    float:right;
+    text-decoration:none;
+    background-color:$lightGrayColor;
+    padding:4px 10px 4px 10px;
+    margin:-20px 10px 0 0;
+    @include border-bottom-left-radius(10px);
+    @include border-bottom-right-radius(10px);
+    
+    i{
+        font-size:18px;
+        color:$defaultDarkColor;
+    }
+}
+#notifications:hover{
+    cursor:pointer;
+}
+
+#unread-notifications-count{
+    background-color:$orangeColor;
+    width:18px;
+    height:18px;
+    color:white;
+    text-align:center;
+    line-height:1.8em;
+    font-size:11px;
+    margin-left: -18px;
+    margin-top:-4px
+}
+
+#unread-notifications-count:hover{
+    cursor:pointer;
+}
+
+#notifications-wrapper{
+    width:250px;
+    min-height:50px;
+    max-height:350px;
+    @include border-radius(12px);
+    border:solid 5px $orangeColor;
+    position:absolute;
+    background-color:white;
+    right:228px;
+    margin-top:-5px;
+    z-index:50;
+    overflow-y:auto;
+    
+    .notification{
+        width:100%;
+        color:black;
+        border-bottom: solid 1px black;
+        
+        .notification-header{
+            padding:3px 0 3px 3px;
+            .notification-header-datetime{
+                display:inline-block;
+            }
+            .notification-header-delete{
+                float:right;
+                margin:0 10px 0 0;
+                
+                i{
+                    font-size:1.1em;
+                    color:black;
+                }
+                
+                i:hover{
+                    cursor:pointer;
+                    color:$orangeColor;
+                }
+            }
+        }
+
+        .notification-message{
+            padding:3px 0 3px 3px;
+        }  
+    }
+    
+    .notification:first-child{
+        @include border-top-left-radius(7px);
+        @include border-top-right-radius(7px);
+    }
+    .notification:last-child{
+        @include border-bottom-left-radius(7px);
+        @include border-bottom-right-radius(7px);
+        border-bottom: none
+    } 
+
+    .unread{
+        background-color: $defaultLightColor;
+    }
+}

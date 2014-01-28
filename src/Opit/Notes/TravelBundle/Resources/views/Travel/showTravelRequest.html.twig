@@ -24,6 +24,19 @@
         Edit Travel Request ({{ travelRequest.travelRequestId }})
         {% endif %}
     </h1>
+    <div id="changeStateWrapper">
+        {% if isStatusLocked == '0' %}
+        <select class="changeState">
+            {% for key, value in travelRequestStates %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ travelRequestStates|first }}</option>
+        </select>
+        {% endif %}
+    </div>
 
     {% if form_errors(form)|length > 0 %}
     <div class="alert-message error-message">
@@ -31,11 +44,15 @@
         {{ form_errors(form) }}
     </div>
     {% endif %}
-
-    {{ form(form, {
-        'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
-        'method': 'POST',
-        'attr':{'id': 'travelRequestForm'}
-       })
-    }}
+    {% if isEditLocked == '1' %}
+        {% set disabled = 'disabled' %}
+    {% else %}
+        {% set disabled = '' %}
+    {% endif %}
+        {{ form(form, {
+            'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
+            'method': 'POST',
+            'attr':{'id': 'travelRequestForm', 'class': disabled}
+           })
+        }}    
 {% endblock %}

@@ -27,6 +27,8 @@ and open the template in the editor.
 
 .display-inline-block { display: inline-block !important; }
 
+#changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
+
 .fa-print { float: right; }
 
 h3 { margin: 0.4em 0 0.4em 0; }

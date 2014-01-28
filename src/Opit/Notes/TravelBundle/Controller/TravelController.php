@@ -187,29 +187,43 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
         $isNewTravelRequest = "new" !== $travelRequestId;
+        $isEditLocked = true;
+        $isStatusLocked = false;
         $securityContext = $this->get('security.context');
         $currentUser = $securityContext->getToken()->getUser();
         $previousGM = null;
         $previousTM = null;
         
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
+        $statusManager = $this->get('opit.manager.status_manager');
+        $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+        $currentStatusName = $currentStatus->getName();
         
         if (false === $isNewTravelRequest) {
             // the currently logged in user is always set as default
             $travelRequest->setUser($currentUser);
+            $isStatusLocked = true;
+            $isEditLocked = false;
         } else {
-            $statusManager = $this->get('opit.manager.status_manager');
             $previousGM = $travelRequest->getGeneralManager()->getUsername();
             if (null !== $travelRequest->getTeamManager()) {
                 $previousTM = $travelRequest->getTeamManager()->getUsername();
             }
-            $currentStatusName = $statusManager->getCurrentStatus($travelRequest)->getName();
             
             // if travel request has not got the state of created or revise redirect user to listing page
-            if ($currentStatusName !== 'Created' && $currentStatusName !== 'Revise') {
-                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+            if ($currentUser->getId() === $travelRequest->getUser()->getId()) {
+                if ($currentStatusName !== 'Created' && $currentStatusName !== 'Revise') {
+                    return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+                }
+                $isEditLocked = false;
+            } elseif ($currentUser->getId() === $travelRequest->getGeneralManager()->getId()) {
+                if ($currentStatusName !== 'For Approval') {
+                    return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+                }
             }
+            $travelRequestStates = $statusManager->getNextStates($currentStatus);
         }
+        $travelRequestStates[$currentStatus->getId()] = $currentStatusName;
         
         // Track current persisted destination objects
         $children = new ArrayCollection();
@@ -306,15 +320,24 @@ class TravelController extends Controller
             $securityContext = $securityContext;
             if (true === $securityContext->isGranted('ROLE_ADMIN') ||
                 true === $securityContext->isGranted('EDIT', $travelRequest)) {
-                return array('form' => $form->createView(), 'travelRequest' => $travelRequest);
+                return array(
+                    'form' => $form->createView(),
+                    'travelRequest' => $travelRequest,
+                    'travelRequestStates' => $travelRequestStates,
+                    'isEditLocked' => $isEditLocked,
+                    'isStatusLocked' => $isStatusLocked);
             } else {
                 throw new AccessDeniedException(
                     'Access denied for travel request ' . $travelRequest->getTravelRequestId()
                 );
             }
         }
-        
-        return array('form' => $form->createView(), 'travelRequest' => $travelRequest);
+        return array(
+            'form' => $form->createView(),
+            'travelRequest' => $travelRequest,
+            'travelRequestStates' => $travelRequestStates,
+            'isEditLocked' => $isEditLocked,
+            'isStatusLocked' => $isStatusLocked);
     }
     
     /**
@@ -485,8 +508,13 @@ class TravelController extends Controller
      * @param string $currentStatusName
      * @return boolean $trAvailability
      */
-    protected function setTRAvailability($isAdmin, $travelRequestGM = null, $currentUser = null, $currentStatusName = null, $travelExpenseStatus = null)
-    {
+    protected function setTRAvailability(
+        $isAdmin,
+        $travelRequestGM = null,
+        $currentUser = null,
+        $currentStatusName = null,
+        $travelExpenseStatus = null
+    ) {
         $trAvailability = array();
         $trAvailability['isTravelExpenseLocked'] = false;
         if (true === $isAdmin) {

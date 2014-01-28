@@ -117,6 +117,10 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 .small-button i { float: left; margin: 3px 5px 0 0; }
 .small-button span { display: inline-block; }
 
+.active-text { color: #f28c38 !important; }
+
+.notification-type-title { width: 100%; background-color: #b4b4b4; padding: 3px 0 3px 0; font-weight: bold; color: white; text-indent: 5px; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 a { text-decoration: underline; color: black; }
@@ -202,3 +206,26 @@ header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38
 .subMenuClone .subMenuItem { margin-top: 12px; }
 .subMenuClone .subMenuItem ul { margin-top: 4px; list-style-type: none; }
 .subMenuClone .subMenuItem ul li { padding: 15px 0 15px 10px; }
+
+.round-border { -webkit-border-radius: 100%; -moz-border-radius: 100%; -ms-border-radius: 100%; -o-border-radius: 100%; border-radius: 100%; }
+
+#notifications { float: right; text-decoration: none; background-color: rgba(220, 220, 220, 0.8); padding: 4px 10px 4px 10px; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
+#notifications i { font-size: 18px; color: #b4b4b4; }
+
+#notifications:hover { cursor: pointer; }
+
+#unread-notifications-count { background-color: #f28c38; width: 18px; height: 18px; color: white; text-align: center; line-height: 1.8em; font-size: 11px; margin-left: -18px; margin-top: -4px; }
+
+#unread-notifications-count:hover { cursor: pointer; }
+
+#notifications-wrapper { width: 250px; min-height: 50px; max-height: 350px; -webkit-border-radius: 12px; -moz-border-radius: 12px; -ms-border-radius: 12px; -o-border-radius: 12px; border-radius: 12px; border: solid 5px #f28c38; position: absolute; background-color: white; right: 228px; margin-top: -5px; z-index: 50; overflow-y: auto; }
+#notifications-wrapper .notification { width: 100%; color: black; border-bottom: solid 1px black; }
+#notifications-wrapper .notification .notification-header { padding: 3px 0 3px 3px; }
+#notifications-wrapper .notification .notification-header .notification-header-datetime { display: inline-block; }
+#notifications-wrapper .notification .notification-header .notification-header-delete { float: right; margin: 0 10px 0 0; }
+#notifications-wrapper .notification .notification-header .notification-header-delete i { font-size: 1.1em; color: black; }
+#notifications-wrapper .notification .notification-header .notification-header-delete i:hover { cursor: pointer; color: #f28c38; }
+#notifications-wrapper .notification .notification-message { padding: 3px 0 3px 3px; }
+#notifications-wrapper .notification:first-child { -webkit-border-top-left-radius: 7px; -moz-border-top-left-radius: 7px; -ms-border-top-left-radius: 7px; -o-border-top-left-radius: 7px; border-top-left-radius: 7px; -webkit-border-top-right-radius: 7px; -moz-border-top-right-radius: 7px; -ms-border-top-right-radius: 7px; -o-border-top-right-radius: 7px; border-top-right-radius: 7px; }
+#notifications-wrapper .notification:last-child { -webkit-border-bottom-left-radius: 7px; -moz-border-bottom-left-radius: 7px; -ms-border-bottom-left-radius: 7px; -o-border-bottom-left-radius: 7px; border-bottom-left-radius: 7px; -webkit-border-bottom-right-radius: 7px; -moz-border-bottom-right-radius: 7px; -ms-border-bottom-right-radius: 7px; -o-border-bottom-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom: none; }
+#notifications-wrapper .unread { background-color: #ebebeb; }

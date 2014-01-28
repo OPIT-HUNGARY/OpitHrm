@@ -23,6 +23,7 @@ class TravelRequest
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\OneToMany(targetEntity="TRNotification", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     private $id;
 
@@ -471,5 +472,26 @@ class TravelRequest
     public function getStates()
     {
         return $this->states;
+    }
+    
+    /**
+     * 
+     * @param Entity $notifications
+     * @return \Opit\Notes\TravelBundle\Entity\TravelRequest
+     */
+    public function setNotifications($notifications)
+    {
+        $this->notifications = $notifications;
+        
+        return $this;
+    }
+    
+    /**
+     * 
+     * @return Entitiy
+     */
+    public function getNotification()
+    {
+        return $this->notifications;
     }
 }

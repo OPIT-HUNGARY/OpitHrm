@@ -44,8 +44,36 @@
   };
 
   $(document).ready(function() {
-    return $('#travelRequest').css({
+    $('#travelRequest').css({
       display: 'block'
+    });
+    $('.disabled input').each(function() {
+      return $(this).attr('disabled', 'disabled');
+    });
+    $('.disabled select').each(function() {
+      return $(this).attr('disabled', 'disabled');
+    });
+    $('.disabled button').each(function() {
+      $(this).attr('disabled', 'disabled');
+      return $(this).addClass('button-disabled');
+    });
+    return $('.changeState').on('change', function() {
+      var parameters, statusId, travelRequestId;
+      statusId = $(this).val();
+      parameters = window.location.pathname.split('/');
+      travelRequestId = parameters[parameters.length - 1];
+      return $.ajax({
+        method: 'POST',
+        url: Routing.generate('OpitNotesTravelBundle_request_state'),
+        data: {
+          'statusId': statusId,
+          'travelRequestId': travelRequestId
+        }
+      }).done(function(data) {
+        return window.location.href = Routing.generate('OpitNotesTravelBundle_travel_list');
+      }).fail(function(data) {
+        return console.warn('Error occured while saving state for travel expense.');
+      });
     });
   });
 

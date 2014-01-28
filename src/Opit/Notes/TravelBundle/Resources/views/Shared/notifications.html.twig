@@ -1,0 +1,45 @@
+{% set index = 0 %}
+<div class="notification-type-title">Travel request</div>
+{% for travelRequest in travelRequests %}
+    <div class="notification {% if 2 == notifications[index].read %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ notifications[index].dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ notifications[index].id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message">
+            {% set msg = notifications[index].message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" data-id="{{ notifications[index].id }}" 
+               href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.travelRequest.id}) }}"> details</a>
+            {% endif %}
+        </div>
+    </div>
+    {% set index = index + 1 %}
+{% endfor %}
+<div class="notification-type-title">Travel expense</div>
+{% for travelExpense in travelExpenses %}
+    <div class="notification {% if 2 == notifications[index].read %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ notifications[index].dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ notifications[index].id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message">
+            {% set msg = notifications[index].message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" data-id="{{ notifications[index].id }}" 
+               href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.travelExpense.id}) }}?tr={{ travelExpense.travelExpense.travelRequest.id }}"> details</a>
+            {% endif %}
+        </div>
+    </div>
+    {% set index = index + 1 %}
+{% endfor %}

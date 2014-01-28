@@ -40,6 +40,27 @@ compareDays = () ->
 
 $(document).ready ->
     $('#travelRequest').css display: 'block'
+    
+    $('.disabled input').each ->
+        $(@).attr 'disabled', 'disabled'
+    $('.disabled select').each ->
+        $(@).attr 'disabled', 'disabled'
+    $('.disabled button').each ->
+        $(@).attr 'disabled', 'disabled'
+        $(@).addClass 'button-disabled'
+    
+    $('.changeState').on 'change', ->
+        statusId = $(@).val()
+        parameters = window.location.pathname.split('/')
+        travelRequestId = parameters[parameters.length - 1]
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesTravelBundle_request_state'
+            data: {'statusId': statusId, 'travelRequestId': travelRequestId}
+        .done (data) ->
+            window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
+        .fail (data) ->
+            console.warn 'Error occured while saving state for travel expense.'
 
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()
