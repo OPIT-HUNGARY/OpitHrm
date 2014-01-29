@@ -121,6 +121,10 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .notification-type-title { width: 100%; background-color: #b4b4b4; padding: 3px 0 3px 0; font-weight: bold; color: white; text-indent: 5px; }
 
+.visibility-hidden { visibility: hidden; }
+
+.tipsy { font-size: 0.85em; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 a { text-decoration: underline; color: black; }

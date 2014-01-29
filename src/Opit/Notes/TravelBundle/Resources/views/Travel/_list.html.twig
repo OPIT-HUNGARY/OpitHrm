@@ -10,11 +10,9 @@
         <th>{{ orderIcon }}Departure date</th>
         <th>{{ orderIcon }}Arrival date</th>
         <th>{{ orderIcon }}Opportunity name</th>
-        <th>{{ orderIcon }}Destinations</th>
-        <th>{{ orderIcon }}Accomodations</th>
-        <th>Actions</th>
         <th>Travel claim</th>
         <th>Travel request status</th>
+        <th>Actions</th>
     </tr>
     {% for i, travelRequest in travelRequests %}
     {# check if travel request needs to be shown #}
@@ -26,24 +24,6 @@
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.opportunityName }}</td>
-        <td>
-            {{ travelRequest.destinations|length }}
-        </td>
-        <td>
-            {{ travelRequest.accomodations|length }}
-        </td>
-        <td>
-            {# if all actions are not locked #}
-            {% if isLocked[i]['allActionsLocked'] == 0 %}
-                {# if edit action is not locked #}
-                {% if isLocked[i]['isEditLocked'] == 0 %}
-                <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
-                {% endif %}
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
-            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
-            {% endif %}
-        </td>
         <td>
             {% if teIds is defined %}
                 {% if teIds[i] == 'new' %}
@@ -64,8 +44,8 @@
                         <span>Edit travel expense</span>
                     </a>
                     <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
-                        <i class="fa fa-pencil-square-o"></i>
-                        <span>View travel expense</span>
+                        <i class="fa fa-print"></i>
+                        <span>Print view</span>
                     </a>
                     {% endif %}
                 {% endif %}
@@ -86,6 +66,24 @@
                 </select>
             {% endif %}
         </td>
+        <td>
+            {# if all actions are not locked #}
+            {% if isLocked[i]['allActionsLocked'] == 0 %}
+                {# if edit action is not locked #}
+                {% if isLocked[i]['isEditLocked'] == 0 %}
+                <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
+                {% else %}
+                <a href="#" class="visibility-hidden"><i class="fa fa-pencil-square-o"></i></a>
+                {% endif %}
+            {% else %}
+                <a href="#" class="visibility-hidden"><i class="fa fa-pencil-square-o"></i></a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
+            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
+            {% else %}
+            <a href="#" class="visibility-hidden"><i class="fa fa-trash-o"></i></a>
+            {% endif %}
+        </td>        
     </tr>
     {#{% endif %}#}
     {% endfor %}

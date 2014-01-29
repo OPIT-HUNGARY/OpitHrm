@@ -128,6 +128,10 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .notification-type-title { width: 100%; background-color: #b4b4b4; padding: 3px 0 3px 0; font-weight: bold; color: white; text-indent: 5px; }
 
+.visibility-hidden { visibility: hidden; }
+
+.tipsy { font-size: 0.85em; }
+
 #userlistWrapper > table { width: 100%; }
 
 #searchFormWrapper { background-color: #ebebeb; margin-bottom: 20px; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }

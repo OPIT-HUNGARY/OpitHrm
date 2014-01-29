@@ -57,6 +57,12 @@ table {
     a{
         float:left;
     }
+    
+    tr {
+        td:last-child{
+            font-size:1.3em;
+        }
+    }
 }
 
 #dialog-edititem{
