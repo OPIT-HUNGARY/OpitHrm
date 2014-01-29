@@ -11,9 +11,9 @@
 {% set companyPaidExpense = 0 %}
 {% set employeePaidExpense = 0 %}
 <br />
-<img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" />
+<img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" width="100px" height="23px" />
 <h3>Travel Expense Details - {{ trId }}</h3>
-<table class="bordered" border="1">
+<table class="bordered" >
     <tr>
         <td colspan="2" class="table-title">
             User info
@@ -38,8 +38,8 @@
         <td>{{ travelExpense.bankAccountNumber }}</td>
     </tr>
 </table>
-<table class="height-20"><tr><td></td></tr></table>
-<table border="1">
+<div class="height-20 visibility-hidden"></div>
+<table >
     <tr>
         <td colspan="2" class="table-title">
             Reason for travel
@@ -49,8 +49,8 @@
         <td colspan="2">TAO days.</td>
     </tr>
 </table>
-<table class="height-20"><tr><td></td></tr></table>
-<table class="bordered" border="1">
+<div class="height-20 visibility-hidden"></div>
+<table class="bordered" >
     <tr>
         <td colspan="4" class="table-title">
             Travel dates
@@ -75,8 +75,8 @@
         <td>{{ travelExpense.arrivalCountry }}</td>
     </tr>
 </table>
-<table class="height-20"><tr><td></td></tr></table>
-<table border="1">
+<div class="height-20 visibility-hidden"></div>
+<table >
     <tr>
         <td colspan="4" class="table-title">
             Summarization
@@ -113,8 +113,8 @@
         <td>{{ perDiem['totalPerDiem'] }}</td>
     </tr>
 </table>
-<table class="height-20"><tr><td></td></tr></table>
-<table class="bordered" border="1">
+<div class="height-20 visibility-hidden"></div>
+<table class="bordered" >
     <tr>
         <td colspan="3" class="table-title">
             Total amount of expenses
@@ -152,7 +152,7 @@
         <td>EUR</td>
     </tr>
 </table>
-<table class="height-20"><tr><td></td></tr></table>
+<div class="height-20 visibility-hidden"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -164,7 +164,7 @@
 {% if travelExpense.userPaidExpenses is defined %}
 {% if travelExpense.userPaidExpenses|length > 0 %}
 <div class="page-break-after"></div>
-<table class="bordered" border="1">
+<table class="bordered" >
     <tr>
         <td colspan="3" class="table-title">
             Employee paid expenses
@@ -172,35 +172,35 @@
     </tr>
     {% for userPaidExpenses in travelExpense.userPaidExpenses %}
     <tr>
+        <td class="bold width-265">Destination</td>
+        <td class="width-265">{{ userPaidExpenses.destination }}</td>
         <td class="incrementation" rowspan="5">{{ loop.index }}</td>
-        <td class="bold">Destination</td>
-        <td>{{ userPaidExpenses.destination }}</td>
     </tr>
     <tr>
-        <td class="bold">Description</td>
-        <td>{{ userPaidExpenses.description }}</td>
+        <td class="bold width-265">Description</td>
+        <td class="width-265">{{ userPaidExpenses.description }}</td>
     </tr>
     <tr>
-        <td class="bold">Expense type</td>
-        <td>{{ userPaidExpenses.expenseType.name }}</td>
+        <td class="bold width-265">Expense type</td>
+        <td class="width-265">{{ userPaidExpenses.expenseType.name }}</td>
     </tr>
     <tr>
-        <td class="bold">Amount</td>
-        <td>{{ userPaidExpenses.amount }}</td>
+        <td class="bold width-265">Amount</td>
+        <td class="width-265">{{ userPaidExpenses.amount }}</td>
     </tr>
     <tr>
-        <td class="bold">Date</td>
-        <td>{{ userPaidExpenses.date|date('Y-m-d') }}</td>
+        <td class="bold width-265">Date</td>
+        <td class="width-265">{{ userPaidExpenses.date|date('Y-m-d') }}</td>
     </tr>
     {% if loop.index != travelExpense.companyPaidExpenses|length %}
-    <tr>
-        <td colspan="3">&nbsp;</td>
+    <tr height="10px">
+        <td style="border:none;"></td>
     </tr>
     {% endif %}
     {% set employeePaidExpense = employeePaidExpense + userPaidExpenses.amount %}
     {% endfor %}
 </table>
-<table class="height-20"><tr><td></td></tr></table>
+<div class="height-20 visibility-hidden"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -214,7 +214,7 @@
 {% if travelExpense.companyPaidExpenses is defined %}
 {% if travelExpense.companyPaidExpenses|length > 0 %}
 <div class="page-break-after"></div>
-<table class="bordered" border="1">
+<table class="bordered" >
     <tr>
         <td colspan="3" class="table-title">
             Company paid expenses
@@ -222,34 +222,35 @@
     </tr>
     {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
     <tr>
+        <td class="bold width-265">Destination</td>
+        <td class="width-265">{{ companyPaidExpenses.destination }}</td>
         <td class="incrementation" rowspan="5">{{ loop.index }}</td>
-        <td class="bold">Destination</td>
-        <td>{{ companyPaidExpenses.destination }}</td>
     </tr>
     <tr>
-        <td class="bold">Description</td>
-        <td>{{ companyPaidExpenses.description }}</td>
+        <td class="bold width-265">Description</td>
+        <td class="width-265">{{ companyPaidExpenses.description }}</td>
     </tr>
     <tr>
-        <td class="bold">Expense type</td>
-        <td>{{ companyPaidExpenses.expenseType.name }}</td>
+        <td class="bold width-265">Expense type</td>
+        <td class="width-265">{{ companyPaidExpenses.expenseType.name }}</td>
     </tr>
     <tr>
-        <td class="bold">Amount</td>
-        <td>{{ companyPaidExpenses.amount }}</td>
+        <td class="bold width-265">Amount</td>
+        <td class="width-265">{{ companyPaidExpenses.amount }}</td>
     </tr>
     <tr>
-        <td class="bold">Date</td>
-        <td>{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
+        <td class="bold width-265">Date</td>
+        <td class="width-265">{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
     </tr>
     {% if loop.index != travelExpense.companyPaidExpenses|length %}
-    <tr>
-        <td colspan="3">&nbsp;</td>
+    <tr height="10px">
+        <td style="border:none;"></td>
     </tr>
-    {% endif %}
+    {% endif %}    
     {% set companyPaidExpense = companyPaidExpense + companyPaidExpenses.amount %}
     {% endfor %}
 </table>
+<div class="height-20 visibility-hidden"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}

@@ -19,7 +19,6 @@ h3{
 }
 
 .bordered{
-    
     td{
         padding:3.5px;
     }
@@ -46,15 +45,28 @@ h3{
     display:none;
 }
 
+.width-265{
+    width: 265px;
+}
+
 table{    
     width: 550px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-color: black;
     
     tr{
+        td{
+            border:solid 1px black;
+        }
+        
         .incrementation{
             width:20px;
             min-width:20px;
+            text-align: center;
         }
     }
+    
     .table-title{
         background-color:lightgrey;
         padding: 0 0 0 5px;    

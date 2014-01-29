@@ -29,6 +29,8 @@ and open the template in the editor.
 
 #changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
 
+.visibility-hidden { visibility: hidden; }
+
 #siteLogo { float: none; }
 
 #main-wrapper { width: 500px; margin: 4em auto; }

@@ -29,6 +29,8 @@ and open the template in the editor.
 
 #changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
 
+.visibility-hidden { visibility: hidden; }
+
 .fa-print { float: right; }
 
 h3 { margin: 0.4em 0 0.4em 0; }
@@ -43,8 +45,11 @@ h3 { margin: 0.4em 0 0.4em 0; }
 
 #opitLogo { width: 100px; height: 23px; display: none; }
 
-table { width: 550px; }
-table tr .incrementation { width: 20px; min-width: 20px; }
+.width-265 { width: 265px; }
+
+table { width: 550px; border-collapse: collapse; border-spacing: 0; border-color: black; }
+table tr td { border: solid 1px black; }
+table tr .incrementation { width: 20px; min-width: 20px; text-align: center; }
 table .table-title { background-color: lightgrey; padding: 0 0 0 5px; font-weight: bold; text-align: left; }
 
 .page-break-after { page-break-after: always; }

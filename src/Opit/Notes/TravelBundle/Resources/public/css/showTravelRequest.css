@@ -29,6 +29,8 @@ and open the template in the editor.
 
 #changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
 
+.visibility-hidden { visibility: hidden; }
+
 #travelRequest { display: none; }
 
 #travelRequest label, .travelForm label { display: block; }
