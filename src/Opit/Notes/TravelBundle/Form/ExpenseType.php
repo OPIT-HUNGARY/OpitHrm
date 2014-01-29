@@ -108,7 +108,7 @@ class ExpenseType extends AbstractType
         ));
         
         $builder->add('arrivalCountry', 'text', array(
-            'label' => 'Arrival country',
+            'label' => 'Target country',
             'attr' => array('placeholder' => 'Arrival country', 'class' => 'te-claim')
         ));
         $builder->add('arrivalDateTime', 'datetime', array(

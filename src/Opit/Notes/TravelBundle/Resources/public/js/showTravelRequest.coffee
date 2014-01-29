@@ -39,6 +39,10 @@ compareDays = () ->
         return true
 
 $(document).ready ->
+    $buttonParent = $('#travelRequest_add_travel_request').parent()
+    $(document).data('notes').funcs.createButton 'Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list'
+    $(document).data('notes').funcs.makeElementToggleAble 'h3', $('.formFieldset')
+
     $('#travelRequest').css display: 'block'
     
     $('.disabled input').each ->
@@ -77,9 +81,11 @@ $('#travelRequest').prepend generalData
 
 #add team manager and general manager to formFieldset
 requiredApprovals = $('<div>').addClass 'formFieldset marginLeft'
-requiredApprovals.append($('<h3>').html('Required approvals'))
-requiredApprovals.append($('#travelRequest_team_manager_ac').parent())
-requiredApprovals.append($('#travelRequest_general_manager_ac').parent())
+requiredApprovals.append $('<h3>').html('Required approvals')
+$div = $('<div>')
+$div.append $('#travelRequest_team_manager_ac').parent()
+$div.append $('#travelRequest_general_manager_ac').parent()
+requiredApprovals.append $div
 $('#travelRequest_general_manager').after requiredApprovals
 
 #add form fieldset class to travelRequest_destinations and travelRequest_accomodations for easier formatting

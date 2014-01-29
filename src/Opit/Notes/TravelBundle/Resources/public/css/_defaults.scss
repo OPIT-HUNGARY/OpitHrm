@@ -6,7 +6,8 @@
 $defaultDarkColor: rgba(180, 180, 180, 1);
 $darkGrey: rgba(100, 100, 100, 1);
 $defaultLightColor: rgba(235, 235, 235, 1);
-$orangeColor: #f28c38;
+$orangeColor: rgb(242, 140, 56);
+$lightOrangeColor: rgb(212, 110, 26);
 $darkerGrayColor: rgba(80, 80, 80, 1);
 $lightGrayColor: rgba(220, 220, 220, 0.8);
 $lightGrayHover: rgba(200, 200, 200, 1);
@@ -98,4 +99,23 @@ $defaultFontSize: 13px;
 
 .visibility-hidden{
     visibility:hidden;
+}
+
+.toggle-icon{
+    font-size: .5em;
+    padding: 4px;
+    color: white;
+    border: solid 1px white;
+    background-color: $orangeColor;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    margin:2px 4px 0 0;
+}
+
+.toggle-icon:hover{
+    cursor:pointer;
+    background-color:$lightOrangeColor;
 }

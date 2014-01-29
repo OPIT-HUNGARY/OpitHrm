@@ -69,6 +69,56 @@
           $('#list-reply-message').removeClass('success-message').addClass('error-message');
         }
         return returnVal;
+      },
+      createButton: function(text, classes, id, $parent, redirectAction) {
+        var $button;
+        if ($parent == null) {
+          $parent = '';
+        }
+        if (redirectAction == null) {
+          redirectAction = '';
+        }
+        $button = $('<div>');
+        $button.html(text);
+        $button.addClass(classes);
+        $button.attr('id', id);
+        if ('' !== redirectAction) {
+          $button.on('click', function() {
+            return window.location.href = Routing.generate(redirectAction);
+          });
+        }
+        if ('' !== parent) {
+          $parent.append($button);
+        }
+        return $button;
+      },
+      makeElementToggleAble: function(parent, $toggleItems, elementToToggle) {
+        if (elementToToggle == null) {
+          elementToToggle = '';
+        }
+        return $toggleItems.each(function() {
+          var $parent, $toggleIcon, self;
+          $parent = $(this).find(parent);
+          self = $(this);
+          $toggleIcon = $('<i>');
+          $toggleIcon.addClass('fa fa-chevron-down fa-chevron-up default-right toggle-icon');
+          $toggleIcon.on('click', function() {
+            var $elementToToggle;
+            if ('' !== elementToToggle) {
+              $elementToToggle = self.find(elementToToggle);
+              if (!$elementToToggle.is(':animated')) {
+                $toggleIcon.toggleClass('fa-chevron-down');
+                return $elementToToggle.slideToggle();
+              }
+            } else {
+              if (!$parent.next().is(':animated')) {
+                $toggleIcon.toggleClass('fa-chevron-down');
+                return $parent.next().slideToggle();
+              }
+            }
+          });
+          return $parent.append($toggleIcon);
+        });
       }
     }
   });

@@ -187,6 +187,10 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
             $perDiem.append $perDiemTable
 
 $(document).ready ->
+    $buttonParent = $('#travelExpense_add_travel_expense').parent()
+    $(document).data('notes').funcs.createButton 'Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list'
+    $(document).data('notes').funcs.makeElementToggleAble 'h3', $('.formFieldset'), '.elementContainer'
+
     arrivalDate = $('#travelExpense_arrivalDateTime_date')
     arrivalTime = $('#travelExpense_arrivalDateTime_time')
     departureDate = $('#travelExpense_departureDateTime_date')
@@ -201,8 +205,13 @@ $(document).ready ->
     arrivalDate.css display: 'inline-block'
     departureDate.css display: 'inline-block'
 
-    $('#travelExpense').children('.formFieldset:nth-child(3)').append $addCompanyTagLink
-    $('#travelExpense').children('.formFieldset:nth-child(2)').append $addUserTagLink
+    $secondFormFieldset = $('#travelExpense').children('.formFieldset:nth-child(2)')
+    $thirdFormFieldset = $('#travelExpense').children('.formFieldset:nth-child(3)')
+
+    $secondFormFieldset.append $('<div>').addClass 'elementContainer'
+    $thirdFormFieldset.append $('<div>').addClass 'elementContainer'
+    $secondFormFieldset.find('.elementContainer').append $addUserTagLink
+    $thirdFormFieldset.find('.elementContainer').append $addCompanyTagLink
     companyPaidExpensesIndex = 0;
     userPaidExpensesIndex = 0;
     

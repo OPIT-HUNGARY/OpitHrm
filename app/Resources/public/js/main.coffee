@@ -72,6 +72,39 @@ $.extend true, $(document).data('notes'),
                 $('#list-reply-message').removeClass('success-message').addClass('error-message')
 
             return returnVal
+            
+        createButton: (text, classes, id, $parent = '', redirectAction = '') ->
+            $button = $('<div>')
+            $button.html text
+            $button.addClass classes
+            $button.attr 'id', id
+               
+            if '' != redirectAction
+                $button.on 'click', ->
+                    window.location.href = Routing.generate redirectAction
+               
+            if '' != parent
+                $parent.append $button
+                
+            return $button
+            
+        makeElementToggleAble: (parent, $toggleItems, elementToToggle = '') ->
+            $toggleItems.each ->
+                $parent = $(@).find(parent)
+                self = $(@)
+                $toggleIcon = $('<i>')
+                $toggleIcon.addClass 'fa fa-chevron-down fa-chevron-up default-right toggle-icon'
+                $toggleIcon.on 'click', ->
+                    if '' != elementToToggle
+                        $elementToToggle = self.find elementToToggle
+                        if not $elementToToggle.is(':animated')
+                            $toggleIcon.toggleClass 'fa-chevron-down'
+                            $elementToToggle.slideToggle()
+                    else
+                        if not $parent.next().is(':animated')
+                            $toggleIcon.toggleClass 'fa-chevron-down'
+                            $parent.next().slideToggle()
+                $parent.append $toggleIcon
 
 ###
  * jQuery datepicker extension
