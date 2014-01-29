@@ -125,6 +125,8 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .tipsy { font-size: 0.85em; }
 
+.margin-bottom-10 { margin-bottom: 10px; }
+
 html, body { font-family: arial, helvetica, sans-serif; font-size: 13px; }
 
 a { text-decoration: underline; color: black; }

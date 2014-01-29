@@ -1,0 +1,35 @@
+<div id="dialog-details-travel">
+{% if travelRequestStates|length > 0 %}
+<h2>Status history for travel request and expense</h2>
+<div class="modalwindow margin-bottom-10">
+    <table class="bordered">
+    <caption class="dialog-table-title">Travel request history</caption>
+    {% for travelRequestState in travelRequestStates %}
+        <tr>
+            {#{{ dump(travelRequestState) }}#}
+            <td>{{ travelRequestState.status.name }}</td>
+            <td>{{ travelRequestState.created|date('Y-m-d H:i:s') }}</td>
+            <td>{{ travelRequestState.createdUser is empty ? '--' : travelRequestState.createdUser.employeeName }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+{% if travelExpenseStates|length > 0 %}
+    <div class="modalwindow">
+        <table class="bordered">
+        <caption class="dialog-table-title">Travel expense history</caption>
+        {% for travelExpenseState in travelExpenseStates %}
+            <tr>
+                <td>{{ travelExpenseState.status.name }}</td>
+                <td>{{ travelExpenseState.created|date('Y-m-d H:i:s') }}</td>
+                <td>{{ travelExpenseState.createdUser is empty ? '--' : travelExpenseState.createdUser.employeeName }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+    </div>
+{% endif %}
+{% else %}
+    <h2>There is no status history for this travel request</h2>
+{% endif %}
+</div>
+    

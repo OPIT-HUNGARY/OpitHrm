@@ -26,7 +26,7 @@ use Opit\Notes\TravelBundle\Entity\TravelExpense;
  * @ORM\Table(name="notes_states_travel_expense")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatesTravelExpensesRepository")
  */
-class StatesTravelExpenses
+class StatesTravelExpenses extends AbstractBase
 {
     /**
      * @ORM\Column(type="integer")

@@ -191,16 +191,6 @@ class Status
     }
 
     /**
-     * Get travelRequests
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function gettravelRequests()
-    {
-        return $this->travelRequests;
-    }
-
-    /**
      * Add children
      *
      * @param \Opit\Notes\TravelBundle\Entity\StatusWorkflow $children
@@ -255,5 +245,15 @@ class Status
     public function getTravelExpenses()
     {
         return $this->travelExpenses;
+    }
+
+    /**
+     * Get travelRequests
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTravelRequests()
+    {
+        return $this->travelRequests;
     }
 }

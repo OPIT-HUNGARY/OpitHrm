@@ -18,6 +18,28 @@ $(document).ready ->
             location.reload()
         .fail (data) ->
             console.warn 'An error occured while setting new status for the request.'
+            
+    $('.status-history').click ->
+        event.preventDefault()
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesTravelBundle_travel_states_history'
+            data: {'id': $(@).find('.fa-book').data 'id'}
+        .done (data) ->
+            console.log data
+            dialogWidth = 550
+            $('<div id="dialog-show-details-tr"></div>').html(data)
+              .dialog
+                open: ->
+                  $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
+                width: dialogWidth
+                maxHeight: $(window).outerHeight()-100
+                modal: on
+                buttons:
+                  Close: ->
+                     $('#dialog-show-details-tr').dialog 'destroy'
+                     return
+            return
 
 # type = expense or request
 deleteSingleRequest = (type, self) ->

@@ -67,6 +67,7 @@
             {% endif %}
         </td>
         <td>
+            <a href="#" class="status-history" title="Status history"><i class="fa fa-book" data-id="{{ travelRequest.id }}"></i></a>
             {# if all actions are not locked #}
             {% if isLocked[i]['allActionsLocked'] == 0 %}
                 {# if edit action is not locked #}

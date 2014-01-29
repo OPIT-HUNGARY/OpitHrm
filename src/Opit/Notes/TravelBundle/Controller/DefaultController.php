@@ -28,7 +28,7 @@ class DefaultController extends Controller
         $requestMethod = $request->getMethod();
         $entityManager = $this->getDoctrine()->getManager();
         //get status and Status entity
-        $status =$entityManager->getRepository('OpitNotesTravelBundle:Status')
+        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')
             ->find($request->attributes->get('status'));
         //get travel type (te=Travel expense, tr=Travel request)
         $travelType = $request->attributes->get('travelType');
@@ -66,6 +66,39 @@ class DefaultController extends Controller
         return $this->render(
             'OpitNotesTravelBundle:Shared:updateStatus.html.twig',
             array('status' => strtolower($status->getName()), 'travelTypeName' => $travelTypeName, 'method' => $method)
+        );
+    }
+    
+    /**
+     * Method to get the history for a travel request and travel expense if it exists
+     *
+     * @Route("/secured/travel/states/history", name="OpitNotesTravelBundle_travel_states_history")
+     * @Template()
+     */
+    public function getTravelStatusHistoryAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $travelRequestId = $request->request->get('id');
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+            ->find($travelRequestId);
+        $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')
+            ->findOneBy(array('travelRequest' => $travelRequest));
+        
+        $travelRequestStates = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+            ->findBy(array('travelRequest' => $travelRequestId));
+        
+        $travelExpenseStates = array();
+        if (null !== $travelExpense) {
+            $travelExpenseStates = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
+                ->findBy(array('travelExpense' => $travelExpense->getId()));
+        }
+        
+        return $this->render(
+            'OpitNotesTravelBundle:Shared:travelStatesHistory.html.twig',
+            array(
+                'travelRequestStates' => $travelRequestStates,
+                'travelExpenseStates' => $travelExpenseStates
+            )
         );
     }
     

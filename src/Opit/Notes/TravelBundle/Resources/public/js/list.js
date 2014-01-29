@@ -10,7 +10,7 @@
       win = window.open(url, '_blank');
       return win.focus();
     });
-    return $('.changeState').on('change', function() {
+    $('.changeState').on('change', function() {
       var statusId, travelExpenseId;
       statusId = $(this).val();
       travelExpenseId = $(this).closest('tr').find('.clickable').data('tr-id');
@@ -27,6 +27,33 @@
         return location.reload();
       }).fail(function(data) {
         return console.warn('An error occured while setting new status for the request.');
+      });
+    });
+    return $('.status-history').click(function() {
+      event.preventDefault();
+      return $.ajax({
+        method: 'POST',
+        url: Routing.generate('OpitNotesTravelBundle_travel_states_history'),
+        data: {
+          'id': $(this).find('.fa-book').data('id')
+        }
+      }).done(function(data) {
+        var dialogWidth;
+        console.log(data);
+        dialogWidth = 550;
+        $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
+          open: function() {
+            return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
+          },
+          width: dialogWidth,
+          maxHeight: $(window).outerHeight() - 100,
+          modal: true,
+          buttons: {
+            Close: function() {
+              $('#dialog-show-details-tr').dialog('destroy');
+            }
+          }
+        });
       });
     });
   });

@@ -125,6 +125,8 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .tipsy { font-size: 0.85em; }
 
+.margin-bottom-10 { margin-bottom: 10px; }
+
 #content { width: 500px; margin: 4em auto; }
 #content .block-exception { background-color: #ebebeb; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 #content .header { margin-bottom: 2em; }
