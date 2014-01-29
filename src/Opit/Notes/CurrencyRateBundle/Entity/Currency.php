@@ -9,9 +9,14 @@ use Opit\Notes\CurrencyRateBundle\Entity\Rate;
 
 /**
  * Currency
- *
+ * 
+ * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @package Opit
+ * @subpackage CurrencyRateBundle
+ * 
  * @ORM\Table(name="notes_currencies")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\CurrencyRateBundle\Entity\CurrencyRepository")
  */
 class Currency
 {

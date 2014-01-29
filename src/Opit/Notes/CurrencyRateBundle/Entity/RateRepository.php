@@ -3,7 +3,7 @@
 namespace Opit\Notes\CurrencyRateBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\ResultSetMapping;
+use Opit\Notes\CurrencyRateBundle\Entity\Rate;
 
 /**
  * This class is a repository for the Rate entity.
@@ -11,7 +11,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
  * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
- * @subpackage ChangeRateBundle
+ * @subpackage CurrencyRateBundle
  */
 class RateRepository extends EntityRepository
 {
@@ -30,6 +30,21 @@ class RateRepository extends EntityRepository
         $q = $qb->getQuery();
         
         return (bool) $q->getSingleScalarResult();
+    }
+    
+    /**
+     * Find the last rate.
+     * 
+     * @return Rate A rate instance.
+     */
+    public function findLastRate()
+    {
+        $qb = $this->createQueryBuilder('r')
+                   ->orderBy('r.created', 'DESC')
+                   ->setMaxResults(1);
+        $q = $qb->getQuery();
+        
+        return $q->getOneOrNullResult();
     }
     
     /**

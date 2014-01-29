@@ -13,7 +13,7 @@ use Opit\Notes\CurrencyRateBundle\Entity\Currency;
  * @author OPIT Consulting Kft. - PHP/NOTES Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
- * @subpackage TravelBundle
+ * @subpackage CurrencyRateBundle
  */
 class CurrencyFixtures extends AbstractFixture implements OrderedFixtureInterface
 {

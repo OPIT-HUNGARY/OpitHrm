@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
- * @subpackage ChangeRateBundle
+ * @subpackage CurrrencyRateBundle
  */
 class DefaultController extends Controller
 {
@@ -26,7 +26,8 @@ class DefaultController extends Controller
     public function getExchangeRatesAction()
     {
         $exch = $this->get('opit.service.exchange_rates');
-        $exch->saveCurrentExchangeRates();
+        $exch->getCurrentExchangeRates();
+        $exch->saveExchangeRates();
         return new \Symfony\Component\HttpFoundation\Response();
     }
 }

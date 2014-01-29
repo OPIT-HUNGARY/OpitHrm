@@ -8,6 +8,11 @@ use Opit\Notes\CurrencyRateBundle\Entity\AbstractBase;
 /**
  * Rate
  *
+ * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @package Opit
+ * @subpackage CurrencyRateBundle
+ * 
  * @ORM\Table(name="notes_rates")
  * @ORM\Entity(repositoryClass="Opit\Notes\CurrencyRateBundle\Entity\RateRepository")
  */
