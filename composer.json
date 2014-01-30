@@ -26,7 +26,8 @@
         "friendsofsymfony/jsrouting-bundle": "~1.1",
         "stof/doctrine-extensions-bundle": "~1.1",
         "jms/security-extra-bundle": "dev-master",
-        "tecnick.com/tcpdf": "6.0.053"
+        "tecnick.com/tcpdf": "6.0.053",
+        "phpunit/phpunit": "3.7.*"
     },
     "scripts": {
         "post-install-cmd": [
