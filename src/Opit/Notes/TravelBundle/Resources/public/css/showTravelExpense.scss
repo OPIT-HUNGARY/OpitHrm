@@ -41,13 +41,58 @@ and open the template in the editor.
     @include border-radius(5px);
 }
 
+.per-diem-details-wrapper{
+    background-color: $formDarkColor;
+    padding:9px;
+    float:right;
+    margin:0 4px 0 0;
+    @include border-radius(5px);
+    
+    .per-diem-amounts-slab{
+        width: 100%;
+        
+        tr{
+            td:first-child{
+                width:150px;
+            }
+            td:last-child{
+                background-color:$defaultLightColor;
+            }
+            td{
+                padding:3.5px 9px;
+            }
+        }
+        
+        tr:first-child{
+            font-weight:bold;
+            td{
+                background-color:$formDarkColor;
+            }
+        }
+    }
+
+    .perDiemTable{
+        margin: 10px 0 0 0;
+        width: 100%;
+        
+        tr{
+            td:first-child{
+                width:150px;
+            }
+            td:last-child{
+                background-color:$defaultLightColor;
+            }
+            td{
+                padding:3.5px 9px;
+            }
+        }
+    }
+}
+
 .short-description{
     margin:-60px 0 0 190px !important;
 }
 
-.perDiemTable{
-    margin:0 0 10px 10px;
-}
 
 .fa-question-circle:hover{
     cursor:pointer;

@@ -97,7 +97,7 @@ createTableRow = (text, value, rowTitle) ->
     
     return $row
     
-$perDiem = $('<div>')
+$perDiem = $('<div>').addClass 'display-inline-block vertical-align-top per-diem-details-wrapper'
     
 calculateAdvancesPayback = () ->
     advancesRecieved = parseInt $('#travelExpense_advancesRecieved').val()
@@ -139,17 +139,6 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
         $perDiemTable = $('<table>')
         $perDiemTable.addClass 'perDiemTable bordered'
         
-        $perDiemHeader = $('<tr>')
-        $perDiemDay = $('<th>')
-        $perDiemDay.text 'Day'
-        
-        $perDiemAmount = $('<th>')
-        $perDiemAmount.text 'Amount'
-        
-        $perDiemHeader.append $perDiemDay
-        $perDiemHeader.append $perDiemAmount
-        $perDiemTable.append $perDiemHeader
-        
         if data['totalTravelHoursOnSameDay'] > 0
             $perDiemTable.append createTableRow(
                 'Travel hours',
@@ -165,19 +154,19 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
             
         else
             $perDiemTable.append createTableRow(
-                'Departure',
+                'Departure day',
                 data['departurePerDiem'],
                 "Number of hours traveled on departure day #{ data['departureHours'] }."
             )
         
             $perDiemTable.append createTableRow(
-                "Full (#{ data['daysBetween'] })", 
+                "Full days (#{ data['daysBetween'] })",
                 data['daysBetweenPerDiem'], 
                 "Number of full days #{ data['daysBetween'] }."
             )        
         
             $perDiemTable.append createTableRow(
-                'Arrival',
+                'Arrival day',
                 data['arrivalPerDiem'],
                 "Number of hours traveled on arrival day #{ data['arrivalHours'] }."
             )
@@ -235,7 +224,7 @@ $(document).ready ->
     $('#travelExpense').css display: 'block'
     
     $perDiemAmountsTable = $('<table>')
-    $perDiemAmountsTable.addClass 'formFieldsetDescription display-none'
+    $perDiemAmountsTable.addClass 'per-diem-amounts-slab bordered'
     $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_expense_perdiemvalues'
@@ -255,16 +244,14 @@ $(document).ready ->
     $tr = $('<tr>')
     $td = $('<td>')
     $td.attr 'colspan', 2
-    $td.html 'Per diem is given to employee considering the following slab.'
+    $td.html 'Per diem is calculated considering the following slab.'
     $tr.append $td
     $perDiemAmountsTable.prepend $tr
     $perDiem.append $perDiemAmountsTable
-    
-    $perDiemTitle = $('<h3>')
-    $perDiemTitle.html 'Per diem <i class="fa fa-question-circle per-diem-question"></i>';
-    $perDiem.append $perDiemTitle
-    $perDiem.addClass 'formFieldset'
-    $perDiem.insertBefore($('#travelExpense_add_travel_expense').parent())
+
+    $('.generalFormFieldset').find('br').last().remove()
+    $perDiem.append $perDiemAmountsTable
+    $('.generalFormFieldset').append $perDiem
     
     $('.fa-question-circle').on 'mouseover', ->
         $description = $(@).parent().parent().find('.formFieldsetDescription')
@@ -363,6 +350,9 @@ $('#travelExpense').prepend $expensesPaidByOpit
 $('#travelExpense').prepend $expensesPaidByMe
 $('#travelExpense').prepend $generalFormFieldset
 $('#travelExpense').addClass 'travelForm'
+
+$generalFormFields = $('<div>').addClass 'display-inline-block'
+$generalFormFieldset.append $generalFormFields
         
 $expensesPaidByOpitDesc = $('<div>')
 $expensesPaidByOpitDesc.html 'Expenses paid by OPIT (already paid by OPIT).'
@@ -381,7 +371,7 @@ $('.formFieldset').on 'change', '.te-expense-type', ->
 # move all element with specified class into form fieldset
 $('.te-claim').each (index) ->
     $(@).parent().addClass 'inlineElements'
-    $generalFormFieldset.append $(@).parent()
+    $generalFormFields.append $(@).parent()
     
     # if element has class display-none add class to elements parent node
     if $(@).hasClass 'display-none'
@@ -389,7 +379,7 @@ $('.te-claim').each (index) ->
         $(@).parent().addClass 'display-none'
     # allow two properties in a row
     if index % 2
-        $generalFormFieldset.append $('<br>')
+        $generalFormFields.append $('<br>')
         
 # create add expenses button, and add on click listeners to them
 $addCompanyTagLink = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add company expense</div>')
