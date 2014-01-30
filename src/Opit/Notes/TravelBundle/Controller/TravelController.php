@@ -349,17 +349,22 @@ class TravelController extends Controller
         $userNames = array();
         $request = $this->getRequest();
         $term = $request->query->get('term');
-        $user = $request->query->get('user');
+        $role = strtoupper('role' . '_' . $request->query->get('role'));
         $users = $this->getDoctrine()->
                         getRepository('OpitNotesUserBundle:User')->
                         findUserByEmployeeNameUsingLike($term);
 
         foreach ($users as $user) {
-            $userNames[] = array(
-                'value'=>$user->getEmployeeName(),
-                'label'=>$user->getEmployeeName(),
-                'id'=>$user->getId()
-            );
+            $groups = $user->getGroups();
+            foreach ($groups as $group) {
+                if ('ALL' === $role || $group->getRole() === $role) {
+                    $userNames[] = array(
+                        'value'=>$user->getEmployeeName(),
+                        'label'=>$user->getEmployeeName(),
+                        'id'=>$user->getId()
+                    );
+                }
+            }
         }
         
         return new JsonResponse($userNames);

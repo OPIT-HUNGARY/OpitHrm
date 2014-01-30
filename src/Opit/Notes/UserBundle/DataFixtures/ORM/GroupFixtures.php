@@ -32,23 +32,34 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
         // init the encoder factory
-        $group1 = new Groups();
-        $group1->setName('Admin');
-        $group1->setRole('ROLE_ADMIN');
-        
-        $manager->persist($group1);
+        $adminRole = new Groups();
+        $adminRole->setName('Admin');
+        $adminRole->setRole('ROLE_ADMIN');
+        $manager->persist($adminRole);
 
         
-        $group2 = new Groups();
-        $group2->setName('User');
-        $group2->setRole('ROLE_USER');
+        $userRole = new Groups();
+        $userRole->setName('User');
+        $userRole->setRole('ROLE_USER');
+        $manager->persist($userRole);
         
-        $manager->persist($group2);
+        $generalManagerRole = new Groups();
+        $generalManagerRole->setName('General manager');
+        $generalManagerRole->setRole('ROLE_GENERAL_MANAGER');
+        $manager->persist($generalManagerRole);
+        
+        $teamManagerRole = new Groups();
+        $teamManagerRole->setName('Team manager');
+        $teamManagerRole->setRole('ROLE_TEAM_MANAGER');
+        $manager->persist($teamManagerRole);
+        
         
         $manager->flush();
      
-        $this->addReference('admin-group', $group1);
-        $this->addReference('user-group', $group2);
+        $this->addReference('admin-group', $adminRole);
+        $this->addReference('user-group', $userRole);
+        $this->addReference('general-manager-group', $generalManagerRole);
+        $this->addReference('team-manager-group', $teamManagerRole);
     }
     
     /**

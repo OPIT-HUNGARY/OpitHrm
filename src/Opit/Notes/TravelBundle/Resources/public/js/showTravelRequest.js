@@ -194,7 +194,7 @@
 
   $('#travelRequest_user_ac').autocomplete({
     source: Routing.generate('OpitNotesTravelBundle_travel_userSearch', {
-      user: 'all'
+      role: 'all'
     }),
     minLength: 2,
     response: function(event, ui) {},
@@ -205,7 +205,7 @@
 
   $('#travelRequest_team_manager_ac').autocomplete({
     source: Routing.generate('OpitNotesTravelBundle_travel_userSearch', {
-      user: 'team_manager'
+      role: 'team_manager'
     }),
     minLength: 2,
     select: function(event, ui) {
@@ -215,7 +215,7 @@
 
   $('#travelRequest_general_manager_ac').autocomplete({
     source: Routing.generate('OpitNotesTravelBundle_travel_userSearch', {
-      user: 'general_manager'
+      role: 'general_manager'
     }),
     minLength: 2,
     select: function(event, ui) {

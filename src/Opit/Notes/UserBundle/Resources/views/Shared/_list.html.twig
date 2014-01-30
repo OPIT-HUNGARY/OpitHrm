@@ -16,7 +16,8 @@
             <tr>
                 <td class="width-24-fix">
                     {% if attribute(value, 'Role') is defined %}
-                        {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER' %}
+                        {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER'
+                            or attribute(value, 'Role') == 'ROLE_TEAM_MANAGER' or attribute(value, 'Role') == 'ROLE_GENERAL_MANAGER' %}
                             <i class="fa fa-cog darker-gray-color" title="System role"></i>
                         {% else %}
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
@@ -78,6 +79,8 @@
                     {% if attribute(value, 'Role') is defined %}
                         {% if attribute(value, 'Role') != 'ROLE_ADMIN' and
                             attribute(value, 'Role') != 'ROLE_USER' and
+                            attribute(value, 'Role') != 'ROLE_TEAM_MANAGER' and
+                            attribute(value, 'Role') != 'ROLE_GENERAL_MANAGER' and
                             attribute(value, 'id') not in disabledRoles %}
                             {{ actionIcons }}
                         {% endif %}

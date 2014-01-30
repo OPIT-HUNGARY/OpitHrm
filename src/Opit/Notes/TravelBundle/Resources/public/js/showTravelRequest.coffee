@@ -158,7 +158,7 @@ $('#travelRequest_customer_related').change ->
 $form = $('#travelRequestForm')
 
 $('#travelRequest_user_ac').autocomplete
-    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'all'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'all'
     minLength: 2
     response: (event, ui) ->
         return  
@@ -167,14 +167,14 @@ $('#travelRequest_user_ac').autocomplete
         return
     
 $('#travelRequest_team_manager_ac').autocomplete
-    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'team_manager'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'team_manager'
     minLength: 2
     select: (event, ui) ->
         $('#travelRequest_team_manager').val ui.item.id
         return
     
 $('#travelRequest_general_manager_ac').autocomplete
-    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', user: 'general_manager'
+    source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'general_manager'
     minLength: 2
     select: (event, ui) ->
         $('#travelRequest_general_manager').val ui.item.id
