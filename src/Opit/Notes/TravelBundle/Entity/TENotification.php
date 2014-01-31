@@ -45,7 +45,7 @@ class TENotification extends Notification
     
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense")
-     * @ORM\JoinColumn(name="te_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="te_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $travelExpense;
 

@@ -388,10 +388,15 @@ class TravelController extends Controller
         foreach ($ids as $id) {
             $entityManager = $this->getDoctrine()->getManager();
             $travelRequest = $this->getTravelRequest($id);
-            
-            // Ensure that no travel requests without permission get deleted
+            // check if user has sufficient role to delete travel request
             if ($securityContext->isGranted('ROLE_ADMIN') ||
                 true === $securityContext->isGranted('DELETE', $travelRequest)) {
+                
+                $travelExpense = $travelRequest->getTravelExpense();
+                
+                if (null !== $travelExpense) {
+                    $entityManager->remove($travelExpense);
+                }
                 $entityManager->remove($travelRequest);
             }
         }
