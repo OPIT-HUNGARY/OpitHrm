@@ -33,6 +33,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @UniqueEntity(fields={"username"}, message="The username is already used.")
  * @UniqueEntity(fields={"email"}, message="The email is already used.")
  * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.")
+ * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.")
  */
 class User implements UserInterface, \Serializable, TravelRequestUserInterface
 {
@@ -125,13 +126,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var integer
      *
      * @ORM\Column(name="tax_identification", type="bigint", unique=true, nullable=true)
-     * @Assert\NotBlank(message="The Tax number should not be blank.")
-     * @Assert\Type(type="integer", message="The Tax  number {{ value }} should be only numbers.")
+     * @Assert\NotBlank(message="The tax number should not be blank.")
+     * @Assert\Type(type="integer", message="The tax  number {{ value }} should only contain numbers.")
      * @Assert\Range(
      *      min = "1000000000",
      *      max = "9999999999",
-     *      minMessage = "The Tax number should not be at least 10 characters length",
-     *      maxMessage = "The Tax number number should not be longer than 10 characters length"
+     *      minMessage = "The tax number should be at least 10 characters long.",
+     *      maxMessage = "The tax number number should not be longer than 10 characters."
      * )
      */
     protected $taxIdentification;

@@ -47,15 +47,12 @@
                       if (postActions || postActions === void 0) {
                         return $('#dialog-edititem').dialog('destroy');
                       }
-                    }).fail(function(data) {
-                      var postActions;
-                      if (successCallback != null) {
-                        return postActions = successCallback(response, "update", "User modified successfully");
-                      }
                     });
                   } else {
                     $('#dialog-edititem').dialog('destroy');
                   }
+                }).fail(function(data) {
+                  return successCallback($.parseJSON(data.responseText), "update", "Error");
                 });
               },
               Close: function() {

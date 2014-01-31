@@ -35,12 +35,12 @@ $("#add").click ->
       return
     return
 
-$("#list-table").on "click", ".list-username", ->
+$("#userlistWrapper").on "click", ".list-username", ->
     id = $(@).attr "data-user-id"
     $(document).data('OpitNotesUserBundle').funcs.userEdit id, $(document).data('notes').funcs.showAlert
     return
 
-$("#list-table").on "click", ".list-change-password", ->
+$("#userlistWrapper").on "click", ".list-change-password", ->
   id = $(@).attr "data-user-id"
   $.ajax
     method: 'GET'
@@ -75,7 +75,7 @@ $('#delete').click ->
     deleteUser()
 
 # Delete icon in the table row
-$('#list-table').on "click", ".delete-single-user", ->
+$('#userlistWrapper').on "click", ".delete-single-user", ->
     $checkbox = $(@).closest('tr').find(':checkbox')
     $checkbox.prop 'checked', true
     deleteUser()
@@ -87,7 +87,7 @@ deleteUser = () ->
     url = Routing.generate 'OpitNotesUserBundle_user_delete'
     $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
         
-$('#list-table').on "click", "th i", ->
+$('#userlistWrapper').on "click", "th i", ->
     $('.list-delete-user').checkAll()
     
 $('#list').on "click", "#list-reply-message", ->

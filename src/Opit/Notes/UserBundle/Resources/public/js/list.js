@@ -52,13 +52,13 @@
     });
   });
 
-  $("#list-table").on("click", ".list-username", function() {
+  $("#userlistWrapper").on("click", ".list-username", function() {
     var id;
     id = $(this).attr("data-user-id");
     $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('notes').funcs.showAlert);
   });
 
-  $("#list-table").on("click", ".list-change-password", function() {
+  $("#userlistWrapper").on("click", ".list-change-password", function() {
     var id;
     id = $(this).attr("data-user-id");
     return $.ajax({
@@ -103,7 +103,7 @@
     return deleteUser();
   });
 
-  $('#list-table').on("click", ".delete-single-user", function() {
+  $('#userlistWrapper').on("click", ".delete-single-user", function() {
     var $checkbox;
     $checkbox = $(this).closest('tr').find(':checkbox');
     $checkbox.prop('checked', true);
@@ -118,7 +118,7 @@
     return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
   };
 
-  $('#list-table').on("click", "th i", function() {
+  $('#userlistWrapper').on("click", "th i", function() {
     return $('.list-delete-user').checkAll();
   });
 

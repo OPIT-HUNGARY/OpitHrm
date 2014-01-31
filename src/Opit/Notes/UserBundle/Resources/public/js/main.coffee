@@ -32,11 +32,11 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                               $('#user-list').html data
                               postActions = successCallback response, "update","User modified successfully" if successCallback?
                               $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
-                            .fail (data) ->
-                              postActions = successCallback response, "update","User modified successfully" if successCallback?
                           else
                             $('#dialog-edititem').dialog 'destroy'
                           return
+                      .fail (data) ->
+                        successCallback $.parseJSON(data.responseText), "update","Error"
                     Close: ->
                        $('#dialog-edititem').dialog "destroy"
                        return
