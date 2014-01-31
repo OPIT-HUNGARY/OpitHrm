@@ -64,12 +64,12 @@ class NotificationManager
         $message = '';
         if ($resource instanceof TravelRequest) {
             $notification = new TRNotification();
-            $reciever = $resource->getGeneralManager();
+            $receiver = $resource->getGeneralManager();
             $message .= 'travel request (' . $resource->getTravelRequestId() . ') ';
         } elseif ($resource instanceof TravelExpense) {
             var_dump('add');
             $notification = new TENotification();
-            $reciever = $resource->getTravelRequest()->getGeneralManager();
+            $receiver = $resource->getTravelRequest()->getGeneralManager();
             $message .= 'travel expense ';
         }
         call_user_func(array($notification, 'set'.Utils::getClassBasename($resource)), $resource);
@@ -83,11 +83,11 @@ class NotificationManager
         }
         
         if (false === $toGeneralManager) {
-            $reciever = $resource->getUser();
+            $receiver = $resource->getUser();
         }
 
         $notification->setMessage($message);
-        $notification->setReciever($reciever);
+        $notification->setReceiver($receiver);
         $notification->setDateTime(new \DateTime('now'));
         $notification = $this->setNotificationStatus($notification);
         $this->entityManager->persist($notification);

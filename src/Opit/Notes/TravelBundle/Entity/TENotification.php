@@ -41,7 +41,7 @@ class TENotification extends Notification
    /**
     * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User",inversedBy="notifications")
     */
-    protected $reciever;
+    protected $receiver;
     
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense")
@@ -60,26 +60,26 @@ class TENotification extends Notification
     }
 
     /**
-     * Set reciever
+     * Set receiver
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $reciever
+     * @param \Opit\Notes\UserBundle\Entity\User $receiver
      * @return TENotification
      */
-    public function setReciever(User $reciever = null)
+    public function setReceiver(User $receiver = null)
     {
-        $this->reciever = $reciever;
+        $this->receiver = $receiver;
     
         return $this;
     }
 
     /**
-     * Get reciever
+     * Get receiver
      *
      * @return \Opit\Notes\UserBundle\Entity\User 
      */
-    public function getReciever()
+    public function getReceiver()
     {
-        return $this->reciever;
+        return $this->receiver;
     }
 
     /**

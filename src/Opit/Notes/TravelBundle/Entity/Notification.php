@@ -54,7 +54,7 @@ abstract class Notification
     * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User",inversedBy="notifications")
     * @ORM\JoinColumn(referencedColumnName="id")
     */
-    protected $reciever;
+    protected $receiver;
     
     /**
      * 
@@ -112,9 +112,9 @@ abstract class Notification
      * @param \Opit\Notes\UserBundle\Entity\User $generalManager
      * @return \Opit\Notes\TravelBundle\Entity\Notification
      */
-    public function setReciever(User $reciever)
+    public function setReceiver(User $receiver)
     {
-        $this->reciever = $reciever;
+        $this->receiver = $receiver;
         
         return $this;
     }
@@ -123,9 +123,9 @@ abstract class Notification
      * 
      * @return User
      */
-    public function getReciever()
+    public function getReceiver()
     {
-        return $this->reciever;
+        return $this->receiver;
     }
 
     /**

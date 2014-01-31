@@ -20,8 +20,8 @@ class NotificationRepository extends EntityRepository
     {
         $lastTenNotifications = $this->createQueryBuilder('n')
             ->add('orderBy', 'n.id DESC')
-            ->where('n.reciever = :nreciever')
-            ->setParameter(':nreciever', $userId)
+            ->where('n.receiver = :nreceiver')
+            ->setParameter(':nreceiver', $userId)
             ->setMaxResults(10)
             ->getQuery();
 
