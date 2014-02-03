@@ -3,7 +3,7 @@
   var deleteSingleRequest;
 
   $(document).ready(function() {
-    $('.print-view').on('click', function() {
+    $('.print-view').on('click', function(event) {
       var url, win;
       event.preventDefault();
       url = $(this).attr('href');
@@ -29,7 +29,7 @@
         return console.warn('An error occured while setting new status for the request.');
       });
     });
-    return $('.status-history').click(function() {
+    return $('.status-history').click(function(event) {
       event.preventDefault();
       return $.ajax({
         method: 'POST',
@@ -127,7 +127,7 @@
     return $('.deleteMultipleTravelExpense').checkAll();
   });
 
-  $('.deleteSingeTravelRequest').click(function() {
+  $('.deleteSingeTravelRequest').click(function(event) {
     event.preventDefault();
     return deleteSingleRequest('request', $(this));
   });

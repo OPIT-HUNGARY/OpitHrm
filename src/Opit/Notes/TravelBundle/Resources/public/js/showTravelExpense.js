@@ -70,7 +70,6 @@
 
   addNewForm = function(collectionHolder, parent) {
     var $formFieldsetChild, $selectedExpense, index, newForm, prototype;
-    event.preventDefault();
     prototype = collectionHolder.data('prototype');
     index = collectionHolder.data('index');
     prototype = prototype.replace('<label class="required">__name__label__</label>', '');
@@ -84,6 +83,9 @@
     expenseDateChange($($formFieldsetChild));
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected', 'selected');
     collectionHolder.data('index', index + 1);
+    if (!Modernizr.inputtypes.date) {
+      $formFieldsetChild.find('input[type=date]').datepicker();
+    }
     return parent.find('.addFormFieldsetChild').before($formFieldsetChild);
   };
 
@@ -179,8 +181,20 @@
     arrivalTime = $('#travelExpense_arrivalDateTime_time');
     departureDate = $('#travelExpense_departureDateTime_date');
     departureTime = $('#travelExpense_departureDateTime_time');
-    arrivalDate.attr('readonly', 'readonly');
-    departureDate.attr('readonly', 'readonly');
+    if (!Modernizr.inputtypes.date) {
+      arrivalDate.datepicker("destroy");
+      departureDate.datepicker("destroy");
+      $('input[type=date]').each(function() {
+        var dateVal;
+        dateVal = $(this).val();
+        return $(this).val($(this).val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1"));
+      });
+    } else {
+      arrivalDate.attr('readonly', 'readonly');
+      departureDate.attr('readonly', 'readonly');
+    }
+    $('#altDatetravelExpense_arrivalDateTime_date').remove();
+    $('#altDatetravelExpense_departureDateTime_date').remove();
     arrivalTime.addClass('inlineElements time-picker');
     departureTime.addClass('inlineElements time-picker');
     arrivalDate.css({
@@ -417,6 +431,10 @@
     var arrival, arrivalDate, arrivalTimeHour, arrivalTimeMinute, departure, departureDate, departureTimeHour, departureTimeMinute;
     departureDate = $('#travelExpense_departureDateTime_date').val();
     arrivalDate = $('#travelExpense_arrivalDateTime_date').val();
+    if (departureDate.indexOf('-')) {
+      arrivalDate = arrivalDate.replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1");
+      departureDate = departureDate.replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1");
+    }
     departureTimeHour = $('#travelExpense_departureDateTime_time_hour').val();
     arrivalTimeHour = $('#travelExpense_arrivalDateTime_time_hour').val();
     departureTimeMinute = $('#travelExpense_departureDateTime_time_minute').val();
@@ -444,7 +462,7 @@
     }
   });
 
-  $('#travelExpense_add_travel_expense').on('click', function() {
+  $('#travelExpense_add_travel_expense').on('click', function(event) {
     event.preventDefault();
     if (!$(this).hasClass('button-disabled')) {
       if ($form.valid() && calculateAdvancesPayback() && validateAllExpenseDates()) {
@@ -470,6 +488,13 @@
                 $preview.dialog("destroy");
               },
               Save: function() {
+                if (!Modernizr.inputtypes.date) {
+                  $('input[type=date]').each(function() {
+                    var dateVal;
+                    dateVal = $(this).val();
+                    return $(this).val(dateVal.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2"));
+                  });
+                }
                 $form.submit();
                 $preview.dialog("destroy");
               }

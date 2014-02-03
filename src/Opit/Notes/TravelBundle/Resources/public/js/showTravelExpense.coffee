@@ -54,8 +54,6 @@ reCreateExpenses = (self) ->
     return $container
 
 addNewForm = (collectionHolder, parent) ->
-    event.preventDefault()
-    
     # get form data from collection holder
     prototype = collectionHolder.data 'prototype'
     
@@ -75,6 +73,10 @@ addNewForm = (collectionHolder, parent) ->
     expenseDateChange($($formFieldsetChild))
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected','selected')
     collectionHolder.data 'index', index + 1
+    
+    # for browsers that do not support input type date
+    if not Modernizr.inputtypes.date
+        $formFieldsetChild.find('input[type=date]').datepicker();
 
     parent.find('.addFormFieldsetChild').before $formFieldsetChild
     
@@ -129,7 +131,6 @@ calculateAdvancesPayback = () ->
 calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
     departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
     arrival = new Date "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
-    
     $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_expense_perdiem'
@@ -185,8 +186,20 @@ $(document).ready ->
     departureDate = $('#travelExpense_departureDateTime_date')
     departureTime = $('#travelExpense_departureDateTime_time')
     
-    arrivalDate.attr 'readonly', 'readonly'
-    departureDate.attr 'readonly', 'readonly'
+    # for browsers that do not support input type date
+    if not Modernizr.inputtypes.date
+        arrivalDate.datepicker( "destroy" );
+        departureDate.datepicker( "destroy" );
+        # change date format so that symfony will accept it
+        $('input[type=date]').each ->
+            dateVal = $(@).val()
+            $(@).val $(@).val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
+    else
+        arrivalDate.attr 'readonly', 'readonly'
+        departureDate.attr 'readonly', 'readonly'
+    
+    $('#altDatetravelExpense_arrivalDateTime_date').remove()
+    $('#altDatetravelExpense_departureDateTime_date').remove()
     
     arrivalTime.addClass 'inlineElements time-picker'
     departureTime.addClass 'inlineElements time-picker'
@@ -397,19 +410,24 @@ $.validator.addMethod 'compare', (value, element) ->
     departureDate = $('#travelExpense_departureDateTime_date').val()
     arrivalDate = $('#travelExpense_arrivalDateTime_date').val()
     
+#    # if date contains dash change date format for validation
+    if departureDate.indexOf('-')
+        arrivalDate = arrivalDate.replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
+        departureDate = departureDate.replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
+
     departureTimeHour = $('#travelExpense_departureDateTime_time_hour').val()
     arrivalTimeHour = $('#travelExpense_arrivalDateTime_time_hour').val()
-    
+
     departureTimeMinute = $('#travelExpense_departureDateTime_time_minute').val()
     arrivalTimeMinute = $('#travelExpense_arrivalDateTime_time_minute').val()
-    
+
     departure = departureDate+' '+departureTimeHour+':'+departureTimeMinute
     arrival = arrivalDate+' '+arrivalTimeHour+':'+arrivalTimeMinute
-    
+
     departure = new Date(departure)
     arrival = new Date(arrival)
     $('#travelExpense_arrivalDateTime_time_minute').css border: 'solid 1px rgb(170, 170, 170)'
-    
+
     return departure < arrival
 , 'Arrival date should not be smaller than departure date.'
     
@@ -420,7 +438,7 @@ $form.validate
         'travelExpense[taxIdentification]': {maxlength: 11},
         'travelExpense[toSettle]': {digits: true}
  
-$('#travelExpense_add_travel_expense').on 'click', ->
+$('#travelExpense_add_travel_expense').on 'click', (event) ->
     event.preventDefault()
     if not $(@).hasClass 'button-disabled'
         if $form.valid() and calculateAdvancesPayback() and validateAllExpenseDates()
@@ -443,6 +461,13 @@ $('#travelExpense_add_travel_expense').on 'click', ->
                             $preview.dialog "destroy"
                             return
                         Save: ->
+                            # for browsers that do not support input type date
+                            if not Modernizr.inputtypes.date
+                                # change date format so that symfony will accept it
+                                $('input[type=date]').each ->
+                                    dateVal = $(@).val()
+                                    # replace \ with -
+                                    $(@).val dateVal.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2")
                             $form.submit()
                             $preview.dialog "destroy"
                             return  

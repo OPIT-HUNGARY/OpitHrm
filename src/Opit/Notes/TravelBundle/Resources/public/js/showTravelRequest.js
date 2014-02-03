@@ -308,7 +308,7 @@
     }
   });
 
-  $('#travelRequest_add_travel_request').click(function() {
+  $('#travelRequest_add_travel_request').click(function(event) {
     event.preventDefault();
     if ($form.valid() && compareDays()) {
       $.ajax({

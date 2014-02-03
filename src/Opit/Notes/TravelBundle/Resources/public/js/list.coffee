@@ -1,5 +1,5 @@
 $(document).ready ->
-    $('.print-view').on 'click', ->
+    $('.print-view').on 'click', (event) ->
         event.preventDefault()
         url =  $(@).attr 'href'
         win=window.open url, '_blank'
@@ -19,7 +19,7 @@ $(document).ready ->
         .fail (data) ->
             console.warn 'An error occured while setting new status for the request.'
             
-    $('.status-history').click ->
+    $('.status-history').click (event) ->
         event.preventDefault()
         $.ajax
             method: 'POST'
@@ -99,7 +99,7 @@ $('#list-table th i').click ->
     $('.deleteMultipleTravelRequest').checkAll()
     $('.deleteMultipleTravelExpense').checkAll()
 
-$('.deleteSingeTravelRequest').click ->
+$('.deleteSingeTravelRequest').click (event) ->
     event.preventDefault()
     deleteSingleRequest('request', $(@))
     

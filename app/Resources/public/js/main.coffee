@@ -131,7 +131,6 @@ $.fn.datepicker = (options) ->
     
     if options.showOn isnt 'button'
         $self.attr
-            type: 'text'
             readonly: 'readonly'
         .addClass 'icon-prefix-indent'
         defaultOptions.indicatorIcon.addClass 'fa fa-calendar absolute input-prefix-position pointer'

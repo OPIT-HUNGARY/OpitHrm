@@ -254,7 +254,7 @@ $form.validate
         "travelRequest[user_ac]": "checkId"
         "travelRequest[general_manager_ac]": "checkId"
 
-$( '#travelRequest_add_travel_request' ).click ->
+$( '#travelRequest_add_travel_request' ).click (event) ->
     event.preventDefault()
     
 #    validate form on client side
