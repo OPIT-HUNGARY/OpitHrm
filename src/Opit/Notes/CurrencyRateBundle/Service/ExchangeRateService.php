@@ -216,42 +216,13 @@ class ExchangeRateService
             sprintf('[|%s] Starting the fetch exchange rates from MNB.', Utils::getClassBasename($this))
         );
         
-        // if the paramter is missing in the argument list.
-        if (!isset($options)) {
-            $this->logger->error(
-                sprintf('[|%s] Parameter is missing in the argument list.', Utils::getClassBasename($this))
-            );
-            throw new MissingMandatoryParametersException(
-                'The parameter is missing in the argument list!'
-            );
-        }
-        // if the startDate is not setted or it is empty then throw exception
-        if (!isset($options['startDate']) || empty($options['startDate'])) {
-            $this->logger->error(
-                sprintf('[|%s] Start date is missing in the argument list.', Utils::getClassBasename($this))
-            );
-            throw new MissingMandatoryParametersException(
-                'The "startDate" parameter is missing in the argument list!'
-            );
-        } elseif ($options['startDate'] > date('Y-m-d')) {
-            // If the start date is future then return with empty array
-            $this->logger->error(
-                sprintf('[|%s] Start date is a future date in the argument list.', Utils::getClassBasename($this))
-            );
-            return array();
-        }
-        // if the endDate is not setted or it is empty then set today
-        if (!isset($options['endDate']) || empty($options['endDate'])) {
-             $options['endDate'] = date('Y-m-d');
-        }
-        // if the currencyNames is not set in the options array or it is empty, it is gotten the currencies from the DB
-        if (!isset($options['currencyNames']) || empty($options['currencyNames'])) {
-            $options['currencyNames'] = implode(
-                ',',
-                $this->em->getRepository('OpitNotesCurrencyRateBundle:Currency')->getAllCurrencyCodes()
-            );
-        }
+        // validate the options data
+        $options = $this->validateOptions($options);
         
+        // if $options is false return.
+        if (false === $options) {
+            return false;
+        }
         //Strore the current exchante rates
         $currencyRates = array();
         //Soap client to download informations from MNB
@@ -259,10 +230,18 @@ class ExchangeRateService
         //Get the current exchange rates from the response
         $response = $client->__soapCall("GetExchangeRates", array('parameters' => $options));
 
-        if (empty($response) || '<MNBExchangeRates />' === $response) {
+        if (empty($response)) {
             $this->logger->error(
                 sprintf(
-                    '[|%s] Soap client could not fetch rates from MNB (empty response).',
+                    '[|%s] Soap client could not fetch rates from MNB.',
+                    Utils::getClassBasename($this)
+                )
+            );
+            return false;
+        } elseif ('<MNBExchangeRates />' === $response) {
+            $this->logger->alert(
+                sprintf(
+                    '[|%s] Empty response have been gotten..',
                     Utils::getClassBasename($this)
                 )
             );
@@ -310,10 +289,31 @@ class ExchangeRateService
        
         //if rate is null throw an exception
         if (null === $rate) {
-            throw new EntityNotFoundException('Rate entity not found (empty database).');
             $this->logger->error(
                 sprintf('[|%s] Rate entity not found. (Empty database)', Utils::getClassBasename($this))
             );
+            throw new EntityNotFoundException('Rate entity not found (empty database).');
+        }
+        
+        return $rate->getCreated()->setTime(0, 0, 0);
+    }
+    
+    /**
+     * Get the first local rate's date
+     * 
+     * @throws \Doctrine\ORM\EntityNotFoundException for not found the last rate.
+     * @return \DateTime the last local rate's date
+     */
+    public function getFirstLocalRateDate()
+    {
+        $rate =  $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->findFirstRate();
+       
+        //if rate is null throw an exception
+        if (null === $rate) {
+            $this->logger->error(
+                sprintf('[|%s] Rate entity not found. (Empty database)', Utils::getClassBasename($this))
+            );
+            throw new EntityNotFoundException('Rate entity not found (empty database).');
         }
         
         return $rate->getCreated()->setTime(0, 0, 0);
@@ -325,7 +325,7 @@ class ExchangeRateService
      * 
      * @return array|bool the currency rates arrary, or false if the respons was empty from the remote.
      */
-    public function getMissingExchangeRates()
+    public function getMissingExchangeRates($options)
     {
         // Initialize the start and end datetimes
         $startDate = $this->getLastLocalRateDate();
@@ -345,11 +345,26 @@ class ExchangeRateService
     }
     
     /**
+     * Get the diffed rates
+     * From the last rate date of localdatabase + 1 Till Today - 1
+     * 
+     * @return array|bool the currency rates arrary, or false if the respons was empty from the remote.
+     */
+    public function getDiffExchangeRates($options)
+    {
+        if (!isset($options['startDate']) || empty($options['startDate'])) {
+            $startDate = $this->getFirstLocalRateDate();
+            $options['startDate'] = $startDate->format('Y-m-d');
+        }
+        return $this->getExchangeRates($options);
+    }
+    
+    /**
      *  Save exchange rates.
      * 
      * @return false if saving didn't happen because of the rates are empty
      */
-    public function saveExchangeRates(array $currencyRates = array())
+    public function saveExchangeRates($force = false, array $currencyRates = array())
     {
         $this->logger->info(sprintf('[|%s] Rates sync is started.', Utils::getClassBasename($this)));
         
@@ -375,19 +390,25 @@ class ExchangeRateService
                         if ($days > 1) {
                             for ($i=1; $i < $days; $i++) {
                                 $lastDateObj->add(new \DateInterval('P1D'))->setTime(0, 0, 0);
-                                $rate = $this->createOrUpdateRate($currencyCode, $value, clone $lastDateObj);
-                                $this->em->persist($rate);
+                                $rate = $this->createOrUpdateRate($currencyCode, $value, clone $lastDateObj, $force);
+                                if (null !== $rate) {
+                                    $this->em->persist($rate);
+                                }
                             }
                         }
 
                         // Persist the current rate
-                        $rate = $this->createOrUpdateRate($currencyCode, $value, $dateObj);
-                        $this->em->persist($rate);
+                        $rate = $this->createOrUpdateRate($currencyCode, $value, $dateObj, $force);
+                        if (null !== $rate) {
+                            $this->em->persist($rate);
+                        }
 
                         // If the date is today then save rates for tomorrow.
                         if (date('Y-m-d') === $date) {
-                            $rateForTomorrow = $this->saveExchangeRatesForTomorrow($rate, $currencyCode, $value);
-                            $this->em->persist($rateForTomorrow);
+                            if (null !== $rate) {
+                                $rateForTomorrow = $this->saveExchangeRatesForTomorrow($rate, $currencyCode, $value);
+                                $this->em->persist($rateForTomorrow);
+                            }
                         }
 
                         $lastDateObj = clone $dateObj;
@@ -401,7 +422,7 @@ class ExchangeRateService
 
             } catch (Exception $exc) {
 
-                $this->logger->alert(
+                $this->logger->error(
                     sprintf(
                         '[|%s] Rates synced FAILED! Error message: '. $exc->getTraceAsString(),
                         Utils::getClassBasename($this)
@@ -424,13 +445,14 @@ class ExchangeRateService
     /**
      * Create or Update a rate object.
      * 
-     * @param string $currencyCode currency code
+     * @param string $currencyCode currency code.
      * @param float $value the value of the rate.
-     * @param \DateTime $dateObj date of the rates
+     * @param \DateTime $dateObj date of the rates.
+     * @param boolean force for a force save to the database.
      * 
-     * @return \Opit\Notes\CurrencyRateBundle\Entity\Rate $rate object.
+     * @return \Opit\Notes\CurrencyRateBundle\Entity\Rate|null $rate object or null.
      */
-    private function createOrUpdateRate($currencyCode, $value, \DateTime $dateObj)
+    private function createOrUpdateRate($currencyCode, $value, \DateTime $dateObj, $force)
     {
         if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($currencyCode, $dateObj)) {
             $rate = new Rate();
@@ -440,10 +462,15 @@ class ExchangeRateService
         } else {
             $rate = $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')
                                ->findRateByCodeAndDate($currencyCode, $dateObj);
+            
+            //If this is not a force update or the rate's value wasn't changed skipt the update.
+            if (!$force && $rate->getRate() === $value) {
+                return null;
+            }
         }
         $rate->setRate($value);
         $rate->setCreated($dateObj);
-        $rate->setUpdated($dateObj);
+        $rate->setUpdated(new \DateTime('now'));
         
         return $rate;
     }
@@ -472,5 +499,75 @@ class ExchangeRateService
         $rateForTomorrow->setUpdated(new \DateTime('tomorrow'));
         
         return $rateForTomorrow;
+    }
+    
+    /**
+     * Validate the option fields.
+     * 
+     * @param mixed $options the option fields which will be validated.
+     * @throws MissingMandatoryParametersException
+     * 
+     * @return mixed|boolean with the $options array or false if there was invalid arguments.
+     */
+    private function validateOptions($options)
+    {
+        // if the paramter is missing in the argument list.
+        if (!isset($options)) {
+            $this->logger->error(
+                sprintf('[|%s] Parameter is missing in the argument list.', Utils::getClassBasename($this))
+            );
+            throw new MissingMandatoryParametersException(
+                'The parameter is missing in the argument list!'
+            );
+        }
+        
+        // if the startDate is not setted or it is empty then throw exception
+        if (!isset($options['startDate']) || empty($options['startDate'])) {
+            $this->logger->error(
+                sprintf('[|%s] Start date is missing in the argument list.', Utils::getClassBasename($this))
+            );
+            throw new MissingMandatoryParametersException(
+                'The "startDate" parameter is missing in the argument list!'
+            );
+        } elseif ($options['startDate'] > date('Y-m-d')) {
+            // If the start date is future then return with empty array
+            $this->logger->alert(
+                sprintf('[|%s] Start date is a future date in the argument list.', Utils::getClassBasename($this))
+            );
+            return false;
+            
+        } elseif (!Utils::validateDate($options['startDate'], 'Y-m-d')) {
+            $this->logger->alert(
+                sprintf('[|%s] The start option is in invalid date format.', Utils::getClassBasename($this))
+            );
+            return false;
+        }
+        
+        // if the endDate is not setted or it is empty then set today
+        if (!isset($options['endDate']) || empty($options['endDate'])) {
+             $options['endDate'] = date('Y-m-d');
+             
+        } elseif (!Utils::validateDate($options['endDate'], 'Y-m-d')) {
+            $this->logger->alert(
+                sprintf('[|%s] The end option is in invalid date format.', Utils::getClassBasename($this))
+            );
+            return false ;
+        }
+        // if the currencyNames is not set in the options array or it is empty, it is gotten the currencies from the DB
+        if (!isset($options['currencyNames']) || empty($options['currencyNames'])) {
+            $options['currencyNames'] = implode(
+                ',',
+                $this->em->getRepository('OpitNotesCurrencyRateBundle:Currency')->getAllCurrencyCodes()
+            );
+        } elseif (!Utils::validateCurrencyCodesString($options['currencyNames'])) {
+            $this->logger->alert(
+                sprintf('[|%s] The currency option is in invalid format.', Utils::getClassBasename($this))
+            );
+            return false;
+        } else {
+            $options['currencyNames'] = strtoupper($options['currencyNames']);
+        }
+        
+        return $options;
     }
 }

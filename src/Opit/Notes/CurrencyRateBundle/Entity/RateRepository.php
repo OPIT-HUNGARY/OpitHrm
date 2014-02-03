@@ -48,6 +48,21 @@ class RateRepository extends EntityRepository
     }
     
     /**
+     * Find the first rate.
+     * 
+     * @return Rate A rate instance.
+     */
+    public function findFirstRate()
+    {
+        $qb = $this->createQueryBuilder('r')
+                   ->orderBy('r.created', 'ASC')
+                   ->setMaxResults(1);
+        $q = $qb->getQuery();
+        
+        return $q->getOneOrNullResult();
+    }
+    
+    /**
      * Find rate entity by currency code and datetime
      * 
      * @param string $code currency code

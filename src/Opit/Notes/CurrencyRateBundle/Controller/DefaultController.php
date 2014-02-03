@@ -26,8 +26,12 @@ class DefaultController extends Controller
     public function getExchangeRatesAction()
     {
         $exch = $this->get('opit.service.exchange_rates');
-        $exch->getCurrentExchangeRates();
-        $exch->saveExchangeRates();
+        $exch->getExchangeRates(array(
+            //'startDate' => '2014-01-20',
+            'endDate' => '2014-01-25',
+            'currencyNames' => 'EUR,USD'
+        ));
+        $exch->saveExchangeRates(true);
         return new \Symfony\Component\HttpFoundation\Response();
     }
 }

@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="opit.service.exchange_rates.class">Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService</parameter>
-        <parameter key="opit.command.exchange_rates.class">Opit\Notes\CurrencyRateBundle\Command\ExchangeRatesCommand</parameter>        
+        <parameter key="opit.command.abstract_exchange_rate.class">Opit\Notes\CurrencyRateBundle\Command\AbstractExchangeRateCommand</parameter>        
         <parameter key="opit.service.exchange_rates.mnb_url">http://www.mnb.hu/arfolyamok.asmx?wsdl</parameter>
         <parameter key="opit.service.exchange_rates.huf_value">1.0</parameter>
     </parameters>
@@ -17,7 +17,7 @@
             <argument>%opit.service.exchange_rates.huf_value%</argument>
             <argument>%opit.service.exchange_rates.mnb_url%</argument>
         </service>
-        <service id="opit.command.exchange_rates_command" class="%opit.command.exchange_rates.class%">
+        <service id="opit.command.abstract_exchange_rate_command" class="%opit.command.abstract_exchange_rate.class%">
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>

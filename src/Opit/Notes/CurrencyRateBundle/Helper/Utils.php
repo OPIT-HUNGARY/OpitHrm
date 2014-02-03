@@ -42,4 +42,24 @@ class Utils
         $default = \DateTime::createFromFormat($format, $date);
         return $default && $default->format($format) == $date;
     }
+    
+    /**
+     * Validate the currency string.
+     * Check the currencies' lenght, only alphabetic or not, and separated by comma or not.
+     * 
+     * @param string $currencyString this contains the currencies.
+     * @return boolean return true if the passed currency string is valid
+     */
+    public static function validateCurrencyCodesString($currencyString)
+    {
+        $currencies = explode(',', $currencyString);
+        
+        foreach ($currencies as $currency) {
+            // If currency's length is not equel to 3 or it is not alphebitc return with false.
+            if (3 != strlen($currency) || !ctype_alpha($currency)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
