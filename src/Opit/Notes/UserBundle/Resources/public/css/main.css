@@ -193,19 +193,19 @@ header #menuWrapper nav:first-child .active { background-color: #f28c38; color: 
 header #menuWrapper nav:first-child .active:hover { background-color: #f28c38; }
 header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38; display: block; z-index: 1; }
 
-.subMenuItem { float: left; position: relative; margin: 0 0 0 10px; }
+.subMenuItem { float: left; margin: 0 0 0 10px; }
 .subMenuItem a { background-color: #505050; font-weight: normal; color: white; text-decoration: none; padding: 5px 15px 5px 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 .subMenuItem a i { margin: 0 0 0 5px; display: inline; }
-.subMenuItem ul { background-color: #929292; top: inherit; left: inherit; margin: 0; padding: 0; margin: -9px 0 0 0; display: none; min-width: 100px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
-.subMenuItem ul li { padding: 0 10px 0 10px; }
-.subMenuItem ul li a { background-color: #929292; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; width: 100%; height: 100%; }
-.subMenuItem ul li:first-child { -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
-.subMenuItem ul li:last-child { -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; }
+.subMenuItem ul { background-color: #929292; padding: 0; margin: -6px 0 0 0; display: none; position: absolute; min-width: 100px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
+.subMenuItem ul li a { background-color: #929292; display: inline-block; width: 100%; padding: 0 6px 0 6px; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+.subMenuItem ul li:first-child a { -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
+.subMenuItem ul li:last-child { -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+.subMenuItem ul li:last-child a { -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; }
 .subMenuItem ul li:hover { background-color: #505050; }
 .subMenuItem ul li:hover a { background-color: #505050; }
 
 .subMenuItem:hover a { background-color: #929292; }
-.subMenuItem:hover a.dropdown { -webkit-border-bottom-left-radius: 0; -moz-border-bottom-left-radius: 0; -ms-border-bottom-left-radius: 0; -o-border-bottom-left-radius: 0; border-bottom-left-radius: 0; -webkit-border-bottom-right-radius: 0; -moz-border-bottom-right-radius: 0; -ms-border-bottom-right-radius: 0; -o-border-bottom-right-radius: 0; border-bottom-right-radius: 0; }
+.subMenuItem:hover a.dropdown { -webkit-border-bottom-left-radius: 0; -moz-border-bottom-left-radius: 0; -ms-border-bottom-left-radius: 0; -o-border-bottom-left-radius: 0; border-bottom-left-radius: 0; -webkit-border-bottom-right-radius: 0; -moz-border-bottom-right-radius: 0; -ms-border-bottom-right-radius: 0; -o-border-bottom-right-radius: 0; border-bottom-right-radius: 0; padding-bottom: 12px; }
 .subMenuItem:hover ul { display: block; }
 
 .subMenuClone { -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; position: fixed; width: 100%; height: 42px; left: 0; top: 0; display: none; background-color: #f28c38; z-index: 5; }
