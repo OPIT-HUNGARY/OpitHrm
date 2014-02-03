@@ -101,7 +101,7 @@
           $parent = $(this).find(parent);
           self = $(this);
           $toggleIcon = $('<i>');
-          $toggleIcon.addClass('fa fa-chevron-down fa-chevron-up default-right toggle-icon');
+          $toggleIcon.addClass('fa fa-chevron-up default-right toggle-icon');
           $toggleIcon.on('click', function() {
             var $elementToToggle;
             if ('' !== elementToToggle) {

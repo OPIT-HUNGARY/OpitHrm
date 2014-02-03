@@ -93,7 +93,7 @@ $.extend true, $(document).data('notes'),
                 $parent = $(@).find(parent)
                 self = $(@)
                 $toggleIcon = $('<i>')
-                $toggleIcon.addClass 'fa fa-chevron-down fa-chevron-up default-right toggle-icon'
+                $toggleIcon.addClass 'fa fa-chevron-up default-right toggle-icon'
                 $toggleIcon.on 'click', ->
                     if '' != elementToToggle
                         $elementToToggle = self.find elementToToggle
