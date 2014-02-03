@@ -83,14 +83,15 @@ class StatusManager
             //split class name at uppercase letters
             $subjectType = preg_split('/(?=[A-Z])/', $className);
             $subjectType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
+            $generalManager = null;
             if ($resource instanceof TravelRequest) {
-                // change $to to a real/valid email address e.g.(kaufmann@opit.hu)
-                $to = $resource->getGeneralManager()->getEmail();
+                $generalManager = $resource->getGeneralManager();
+                $to = $generalManager->getEmail();
                 $travelRequestId = $resource->getTravelRequestId();
                 $travelType = 'tr';
             } elseif ($resource instanceof TravelExpense) {
-                // change $to to a real/valid email address e.g.(kaufmann@opit.hu)
-                $to = $resource->getTravelRequest()->getGeneralManager()->getEmail();
+                $generalManager = $resource->getTravelRequest()->getGeneralManager();
+                $to = $generalManager->getEmail();
                 $travelRequestId = $resource->getTravelRequest()->getTravelRequestId();
                 $travelType = 'te';
             }
@@ -99,7 +100,7 @@ class StatusManager
                 if ($key !== $requiredStatus) {
                     $stateChangeLinks[] =
                         $this->request->getScheme() . '://' . $this->request->getHttpHost() .
-                        $this->request->getBaseURL() . '/changestatus/' . $travelType . '/' . $key . '/' . $travelToken;
+                        $this->request->getBaseURL() . '/changestatus/' . $generalManager->getId() . '/' . $travelType . '/' . $key . '/' . $travelToken;
                 }
             }
             

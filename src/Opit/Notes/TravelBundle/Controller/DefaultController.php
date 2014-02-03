@@ -19,7 +19,7 @@ class DefaultController extends Controller
     /**
      * Method to change the status of the travel request or travel expense
      *
-     * @Route("/changestatus/{travelType}/{status}/{token}", name="OpitNotesTravelBundle_change_status", requirements={ "status" = "\d+" })
+     * @Route("/changestatus/{gmId}/{travelType}/{status}/{token}", name="OpitNotesTravelBundle_change_status", requirements={ "status" = "\d+", "gmId" = "\d+" })
      * @Template()
      */
     public function changeStatusAction(Request $request)
@@ -27,6 +27,8 @@ class DefaultController extends Controller
         $method = 'get';
         $requestMethod = $request->getMethod();
         $entityManager = $this->getDoctrine()->getManager();
+        $generalManager = $entityManager->getRepository('OpitNotesUserBundle:User')
+            ->find($request->attributes->get('gmId'));
         //get status and Status entity
         $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')
             ->find($request->attributes->get('status'));
@@ -56,6 +58,8 @@ class DefaultController extends Controller
                 $travelStatus = new StatesTravelRequests();
                 $travelStatus->setTravelRequest($travel);
             }
+            $travelStatus->setCreatedUser($generalManager);
+            $travelStatus->setUpdatedUser($generalManager);
             
             $travelStatus->setStatus($status);
             $entityManager->persist($travelStatus);
