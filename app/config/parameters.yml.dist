@@ -14,3 +14,6 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    monolog_mail_from: notes@opit.hu
+    monolog_mail_to:   ~

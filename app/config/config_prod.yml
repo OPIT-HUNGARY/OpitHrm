@@ -16,8 +16,20 @@ monolog:
         main:
             type:         fingers_crossed
             action_level: error
-            handler:      nested
-        nested:
+            handler:      grouped
+        grouped:
+            type:    group
+            members: [streamed, buffered]
+        streamed:
             type:  stream
-            path:  %kernel.logs_dir%/%kernel.environment%.log
-            level: debug
+            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: warning
+        buffered:
+            type:    buffer
+            handler: swift
+        swift:
+            type:       swift_mailer
+            from_email: %monolog_mail_from%
+            to_email:   %monolog_mail_to%
+            subject:    '[Notes] Application alert'
+            level:      error
