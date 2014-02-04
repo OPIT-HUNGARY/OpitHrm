@@ -86,16 +86,16 @@ a{
 .dropdown-disabled{
     background: $snowColor;
     color:$lightGrayHover;
-    border:solid 1px $formLightColor;
+    border:solid 1px $defaultLightColor;
 }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"]{
     padding:4px 0 4px 0;
     display:block;   
     border:solid 1px $defaultDarkColor;
-    @include border-radius(5px);
     outline:0;
     text-indent: 5px;    
+    @include border-radius(5px);
 }
 
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus{
@@ -103,29 +103,28 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
 }
 
 .formFieldset{
-    background-color: $formLightColor;
-    @include border-radius(5px);
+    background-color: $defaultLightColor;
     padding:0 0 5px 0;
     margin:20px 0 20px 0;
+    @include border-radius(5px);
 
     .formFieldsetChild{
         background-color: $formDarkColor;
         padding:10px;
-        @include border-radius(5px);
         margin-left:1em;
-
         display:inline-block;
         vertical-align: top;            
+        @include border-radius(5px);
     }
 
     h3{
         -webkit-margin-before:0;
-        @include border-top-left-radius(5px);
-        @include border-top-right-radius(5px);
         padding:2px 0 2px 0;
         padding-left:1em;
         background-color:$orangeColor;
         color:white;
+        @include border-top-left-radius(5px);
+        @include border-top-right-radius(5px);
     }
 
     .formFieldsetButton{
@@ -251,7 +250,6 @@ header{
         }
 
          nav:first-child .mainMenu .subMenu{
-            @include border-radius(0);
             position:absolute;
             width:100%;
             height:42px;
@@ -259,6 +257,7 @@ header{
             margin:-3px 0 0 0;
             background-color:$lightGrayHover;
             display:none;
+            @include border-radius(0);
         }
 
          nav:first-child .mainMenu:hover{
@@ -323,7 +322,6 @@ header{
                 display:inline-block;
                 width:100%;
                 padding:0 6px 0 6px;
-                
                 @include border-radius(0);
             }
         }
@@ -358,9 +356,9 @@ header{
         background-color:$darkGrey;
     }
     a.dropdown{
+        padding-bottom:12px;
         @include border-bottom-left-radius(0);
         @include border-bottom-right-radius(0);
-        padding-bottom:12px;
     }
     
     ul{
@@ -369,7 +367,6 @@ header{
 }
 
 .subMenuClone{
-    @include border-radius(0);
     position:fixed;
     width:100%;
     height:42px;
@@ -378,6 +375,7 @@ header{
     display:none;
     background-color:$orangeColor;
     z-index:5;
+    @include border-radius(0);
     
     .subMenuItem{
         margin-top:12px;
@@ -436,7 +434,6 @@ header{
     width:250px;
     min-height:50px;
     max-height:350px;
-    @include border-radius(12px);
     border:solid 5px $orangeColor;
     position:absolute;
     background-color:white;
@@ -444,6 +441,7 @@ header{
     margin-top:-5px;
     z-index:50;
     overflow-y:auto;
+    @include border-radius(12px);
     
     .notification{
         width:100%;
@@ -481,9 +479,9 @@ header{
         @include border-top-right-radius(7px);
     }
     .notification:last-child{
+        border-bottom: none;
         @include border-bottom-left-radius(7px);
         @include border-bottom-right-radius(7px);
-        border-bottom: none
     } 
 
     .unread{

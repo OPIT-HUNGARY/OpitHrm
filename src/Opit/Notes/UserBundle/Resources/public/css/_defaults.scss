@@ -8,33 +8,38 @@ and open the template in the editor.
     Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
 */
 
-$defaultDarkColor: rgba(180, 180, 180, 1);
+$snowColor: rgb(250, 250, 250);
+$darkSnowColor: rgb(244, 244, 244);
 $defaultLightColor: rgba(235, 235, 235, 1);
+$darkerSnowColor: rgba(230, 230, 230, 1);
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$bgGrey: rgb(219, 219, 219);
+$formDarkColor: rgba(210, 210, 210, 1);
+$lightGrayHover: rgba(200, 200, 200, 1);
+$defaultDarkColor: rgba(180, 180, 180, 1);
+$boxShadowColor: rgba(160, 160, 160, 1);
+$darkGrey: rgb(146, 146, 146);
+$greyColor: rgba(140, 140, 140, 1);
 $darkGrey: rgba(100, 100, 100, 1);
 $darkerGrayColor: rgba(80, 80, 80, 1);
-$lightGrayColor: rgba(220, 220, 220, 0.8);
-$lightGrayHover: rgba(200, 200, 200, 1);
-$formLightColor: rgba(235, 235, 235, 1);
-$formDarkColor: rgba(210, 210, 210, 1);
 
 $defaultRed: rgb(170, 0, 0);
+$dangerRed: rgb(169, 68, 66);
+$alertRed: rgb(242, 222, 222);
+
 $defaultGreen: rgb(0, 100, 0);
-$orangeColor: #f28c38;
+$successGreen: rgb(60, 118, 61);
+$alertGreen: rgb(223, 240, 216);
+
+$orangeColor: rgb(242, 140, 56);
+
+$buttonDeleteLightColor: rgba(220, 10, 10, 1);
+$buttonDeleteDarkColor: rgba(140, 10, 10, 1);
+$buttonAddLightColor: rgba(10, 200, 10, 1);
+$buttonAddDarkColor: rgba(10, 140, 10, 1);
 
 $defaultFontSize: 13px;
-
-$defaultLightColor: rgba(235, 235, 235, 1);
-
-$bgGrey: #dbdbdb;
-$darkGrey: #929292;
 $defaultFontSize: .9em;
-
-$dangerRed: #a94442;
-$alertRed: #f2dede;
-$successGreen: #3c763d;
-$alertGreen: #dff0d8;
-
-$snowColor: rgb(250, 250, 250);
 
 @mixin border-radius($radius) {
     -webkit-border-radius: $radius;
@@ -78,6 +83,12 @@ $snowColor: rgb(250, 250, 250);
     background: -webkit-linear-gradient($color1, $color2, $color3);
     background: -o-linear-gradient($color1, $color2, $color3);
     background: -moz-linear-gradient($color1, $color2, $color3);
+}
+@mixin gradient-with-percent($color1, $color2, $color3, $percent){
+    background-image: -webkit-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -moz-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -ms-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -o-linear-gradient($color1, $color2 $percent, $color3);    
 }
 @mixin box-shadow($left, $top, $scatter, $size, $color){
     box-shadow: $left $top $scatter $size $color;
@@ -244,10 +255,10 @@ label.error, label.custom-label-error{
     background-color:$lightGrayHover;
     padding:2px;
     border:solid 2px $defaultRed;
-    @include border-radius(5px);
     margin-top:5px;
     display:block;
     z-index:4;
+    @include border-radius(5px);
 }
 
 label.custom-label-error{

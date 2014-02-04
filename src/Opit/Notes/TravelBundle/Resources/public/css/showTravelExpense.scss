@@ -23,12 +23,12 @@ and open the template in the editor.
     background-color:$darkerGrayColor;
     color:white;
     display:block;
-    @include border-radius(5px);
     top:-10px;
     left:-10px;
     padding:1px;
     text-align:center;
     margin-bottom:4px;
+    @include border-radius(5px);
 }
 
 .formFieldsetDescription{
@@ -37,7 +37,6 @@ and open the template in the editor.
     padding:5px;
     background-color: #000;
     color: #FFF;
-    
     @include border-radius(5px);
 }
 
@@ -103,18 +102,18 @@ label.custom-error{
     background-color:$lightGrayHover;
     padding:2px;
     border:solid 2px $defaultRed;
-    @include border-radius(5px);
     display:inline-block;
     z-index:4;
     margin-left:1em !important;
     margin-bottom:10px !important;
+    @include border-radius(5px);
 }
 
 .custom-field{
     background-color:$formDarkColor;
-    @include border-radius(5px);
     width:110px;
     padding:3px;
+    @include border-radius(5px);
 }
 
 h1{

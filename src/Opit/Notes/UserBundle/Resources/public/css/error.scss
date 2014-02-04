@@ -14,7 +14,7 @@ and open the template in the editor.
     margin:4em auto;
     
     .block-exception{
-        background-color:$formLightColor;
+        background-color:$defaultLightColor;
         padding:10px;
         @include border-radius(5px);
     }

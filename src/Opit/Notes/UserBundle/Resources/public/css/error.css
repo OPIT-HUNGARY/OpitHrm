@@ -56,7 +56,7 @@ and open the template in the editor.
 
 .height-60 { height: 60px; }
 
-.default-border, table.bordered tr, table.bordered td, table.bordered th { border: 1px solid #929292; }
+.default-border, table.bordered tr, table.bordered td, table.bordered th { border: 1px solid #646464; }
 
 .overflow-hidden { overflow: hidden; }
 
@@ -68,13 +68,13 @@ and open the template in the editor.
 
 .no-text-decoration { text-decoration: none !important; }
 
-.modalwindow { border: 1px solid #929292; background-color: #ebebeb; font-size: 0.9em; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
+.modalwindow { border: 1px solid #646464; background-color: #ebebeb; font-size: 0.9em; padding: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-bottom-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -ms-border-bottom-right-radius: 5px; -o-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -ms-border-bottom-left-radius: 5px; -o-border-bottom-left-radius: 5px; border-bottom-left-radius: 5px; }
 
 .modal-description { background-color: #f28c38; color: white; margin-bottom: 5px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 input.error, select.error { border: solid 2px #aa0000; display: block; }
 
-label.error, label.custom-label-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-top: 5px; display: block; z-index: 4; }
+label.error, label.custom-label-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; margin-top: 5px; display: block; z-index: 4; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 label.custom-label-error { display: inline-block; }
 
@@ -113,7 +113,7 @@ input.icon-prefix-indent { text-indent: 18px; background-color: white; }
 
 .display-none { display: none; }
 
-.small-button { padding: 3px 10px 3px 10px; margin: 2px; background-color: #929292; color: white !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.small-button { padding: 3px 10px 3px 10px; margin: 2px; background-color: #646464; color: white !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 .small-button i { float: left; margin: 3px 5px 0 0; }
 .small-button span { display: inline-block; }
 

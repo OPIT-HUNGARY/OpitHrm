@@ -10,22 +10,9 @@ and open the template in the editor.
 
 @import '_defaults';
 
-$buttonDeleteLightColor: rgba(220, 10, 10, 1);
-$buttonDeleteDarkColor: rgba(140, 10, 10, 1);
-$buttonAddLightColor: rgba(10, 200, 10, 1);
-$buttonAddDarkColor: rgba(10, 140, 10, 1);
-$linkHoverColor: #CCC;
-
-$orangeColor: #f28c38;
-$defaultLightColor: rgba(235, 235, 235, 1);
-
-$bgGrey: #dbdbdb;
-$darkGrey: #929292;
-$defaultFontSize: .9em;
-
 table {
     th { 
-        background-color: #f28c38;
+        background-color: $orangeColor;
         padding: 10px 10px 10px 10px;
         text-align: left;
         color: white; 
@@ -47,7 +34,7 @@ table {
 #list-table{
     width:100%;
     tr:nth-child(even){
-        background-color: rgba(220, 220, 220, 0.8);
+        background-color: $lightGrayColor;
     }
     th{
         i:hover{
@@ -124,16 +111,13 @@ table {
 select {
     -webkit-user-select: none;
     -moz-user-select: none;
-    background-image: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -ms-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -o-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
     background-repeat: no-repeat;
     border: 1px solid #aaa;
     color: #333;
     font-size: inherit;
-    @extend .no-margin;
     padding: 3px;
+    @include gradient-with-percent($snowColor, $darkSnowColor, $darkerSnowColor, 40%);
+    @extend .no-margin;
 }
 
 .item-input-box-header {
@@ -142,30 +126,27 @@ select {
     color: white;
     font-weight: bold;
     font-size: $defaultFontSize;
-    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
-    @include border-top-right-radius(5px);
-    @include border-top-left-radius(5px);
     -webkit-user-select: none;
     max-width: 92%;
     min-width: 92%;
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
+    @include border-top-right-radius(5px);
+    @include border-top-left-radius(5px);
 }
 
 .item-input-box {
-    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
     max-width: 92%;
     min-width: 92%;
     margin-bottom: 10px;
     overflow: auto;
-    background-image: -webkit-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -moz-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -ms-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
-    background-image: -o-linear-gradient(#fafafa, #f4f4f4 40%, #e5e5e5);
     background-repeat: no-repeat;
     border: 1px solid #aaa;
     color: #333;
     font-size: inherit;
+    padding: 3px;
     @extend .no-margin;
-    padding: 3px;    
+    @include gradient-with-percent($snowColor, $darkSnowColor, $darkerSnowColor, 40%);
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
     @include border-bottom-right-radius(5px);
     @include border-bottom-left-radius(5px);
     

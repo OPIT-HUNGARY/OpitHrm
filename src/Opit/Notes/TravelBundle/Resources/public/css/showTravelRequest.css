@@ -43,7 +43,7 @@ and open the template in the editor.
 #travelRequest .marginLeft .inlineElements, .travelForm .marginLeft .inlineElements { margin-left: 1em; margin-right: 0; }
 #travelRequest .generalFormFieldset, .travelForm .generalFormFieldset { padding: 10px; }
 #travelRequest input.error, #travelRequest select.error, .travelForm input.error, .travelForm select.error { border: solid 2px #aa0000; display: inline-block; }
-#travelRequest label.error, #travelRequest label.custom-error, .travelForm label.error, .travelForm label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin-top: 5px; display: inline-block; z-index: 4; margin: 0 0 0 4px; }
+#travelRequest label.error, #travelRequest label.custom-error, .travelForm label.error, .travelForm label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; margin-top: 5px; display: inline-block; z-index: 4; margin: 0 0 0 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 #travelRequest label.custom-error, .travelForm label.custom-error { display: inline-block; margin-bottom: 10px; margin-left: 1em; }
 #travelRequest label.valid, .travelForm label.valid { display: none !important; }
 

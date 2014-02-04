@@ -39,7 +39,7 @@ and open the template in the editor.
 
 .time-picker { margin: 2px 0 0 5px; }
 
-.selected-expense { margin: 0; background-color: #505050; color: white; display: block; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; top: -10px; left: -10px; padding: 1px; text-align: center; margin-bottom: 4px; }
+.selected-expense { margin: 0; background-color: #505050; color: white; display: block; top: -10px; left: -10px; padding: 1px; text-align: center; margin-bottom: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 .formFieldsetDescription { position: absolute; margin: -70px 0 0 100px; padding: 5px; background-color: #000; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
@@ -59,8 +59,8 @@ and open the template in the editor.
 
 .fa-question-circle:hover { cursor: pointer; }
 
-label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; display: inline-block; z-index: 4; margin-left: 1em !important; margin-bottom: 10px !important; }
+label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; display: inline-block; z-index: 4; margin-left: 1em !important; margin-bottom: 10px !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
-.custom-field { background-color: #d2d2d2; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; width: 110px; padding: 3px; }
+.custom-field { background-color: #d2d2d2; width: 110px; padding: 3px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 h1 { display: inline-block; margin-top: 0; }
