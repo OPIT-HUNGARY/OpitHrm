@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\TravelBundle\Entity\TRNotification;
 use Opit\Notes\TravelBundle\Entity\TENotification;
+use Opit\Notes\TravelBundle\Entity\NotificationStatus;
 
 class DefaultController extends Controller
 {
@@ -60,7 +61,6 @@ class DefaultController extends Controller
             }
             $travelStatus->setCreatedUser($generalManager);
             $travelStatus->setUpdatedUser($generalManager);
-            
             $travelStatus->setStatus($status);
             $entityManager->persist($travelStatus);
             $entityManager->remove($token);
@@ -148,8 +148,7 @@ class DefaultController extends Controller
             'OpitNotesTravelBundle:Shared:notifications.html.twig',
             array(
                 'travelRequests' => $travelRequests,
-                'travelExpenses' => $travelExpenses,
-                'notifications' => $notifications
+                'travelExpenses' => $travelExpenses
             )
         );
     }
@@ -167,7 +166,9 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $notification = $entityManager->getRepository('OpitNotesTravelBundle:Notification')->find($notificationId);
         $notificationManager = $this->get('opit.manager.notification_manager');
-        $notificationManager->setNotificationReadStatus($notification);
+        $notification = $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
+        $entityManager->persist($notification);
+        $entityManager->flush();
         
         return new JsonResponse();
     }

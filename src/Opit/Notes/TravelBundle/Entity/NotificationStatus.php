@@ -21,7 +21,6 @@ class NotificationStatus
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -32,6 +31,18 @@ class NotificationStatus
      */
     protected $notificationStatusName;
 
+    /**
+     * 
+     * @param integer $id
+     * @return \Opit\Notes\TravelBundle\Entity\NotificationStatus
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
     /**
      *
      * @return integer

@@ -30,15 +30,28 @@ class NotificationManager
         $this->entityManager = $entityManager;
     }
     
+    /**
+     * Method to get all unread notifications that a user received
+     *
+     * @param \Opit\Notes\UserBundle\Entity\User $currentUser
+     * @return Notification
+     */
     public function getUnreadNotifications(User $currentUser)
     {
-        $unreadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')->find(NotificationStatus::UNREAD);
+        $unreadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
+            ->find(NotificationStatus::UNREAD);
         $unreadNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
             ->findBy(array('receiver' => $currentUser, 'read' => $unreadStatus));
         
         return $unreadNotifications;
     }
     
+    /**
+     * Method to get all notifications and set the status of unread notifications to unseen
+     * 
+     * @param \Opit\Notes\UserBundle\Entity\User $currentUser
+     * @return Notification
+     */
     public function getAllNotifications(User $currentUser)
     {
         $unreadNotifications = $this->getUnreadNotifications($currentUser);
@@ -56,6 +69,12 @@ class NotificationManager
         return $allNotifications;
     }
     
+    /**
+     * Method to add a notification
+     * 
+     * @param TravelRequest/TravelExpense $resource
+     * @param integer $toGeneralManager
+     */
     public function addNewNotification($resource, $toGeneralManager)
     {
         $notification = null;
@@ -67,7 +86,6 @@ class NotificationManager
             $receiver = $resource->getGeneralManager();
             $message .= 'travel request (' . $resource->getTravelRequestId() . ') ';
         } elseif ($resource instanceof TravelExpense) {
-            var_dump('add');
             $notification = new TENotification();
             $receiver = $resource->getTravelRequest()->getGeneralManager();
             $message .= 'travel expense ';
@@ -79,7 +97,7 @@ class NotificationManager
             $message = ucfirst($message);
         } else {
             $message = 'Status of '  . $message;
-            $message .=  ' changed to ' . $resourceStatus . '.';
+            $message .=  'changed to ' . $resourceStatus . '.';
         }
         
         if (false === $toGeneralManager) {
@@ -94,6 +112,11 @@ class NotificationManager
         $this->entityManager->flush();
     }
     
+    /**
+     * Method to delete a notification
+     * 
+     * @param integer $notificationId
+     */
     public function deleteNotification($notificationId)
     {
         $this->entityManager->getFilters()->enable('softdeleteable');
@@ -103,9 +126,16 @@ class NotificationManager
         $this->entityManager->flush();
     }
     
-    public function setNotificationStatus($notification, $status_id = NotificationStatus::UNREAD)
+    /**
+     * Method to set the status of a notification
+     * 
+     * @param TENotification/TRNotification $notification
+     * @param integer $status_id
+     * @return TENotification/TRNotification
+     */
+    public function setNotificationStatus($notification, $statusId = NotificationStatus::UNREAD)
     {
-        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')->find($status_id);
+        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')->find($statusId);
         $notification->setRead($status);
 
         return $notification;

@@ -4,6 +4,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\TravelBundle\Entity\NotificationStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -131,10 +132,10 @@ abstract class Notification
     /**
      * Set read
      *
-     * @param \Opit\Notes\UserBundle\Entity\NotificationStatus $read
+     * @param \Opit\Notes\TravelBundle\Entity\NotificationStatus $read
      * @return Notification
      */
-    public function setRead(\Opit\Notes\UserBundle\Entity\NotificationStatus $read = null)
+    public function setRead(NotificationStatus $read = null)
     {
         $this->read = $read;
     
@@ -144,7 +145,7 @@ abstract class Notification
     /**
      * Get read
      *
-     * @return \Opit\Notes\UserBundle\Entity\NotificationStatus 
+     * @return \Opit\Notes\TravelBundle\Entity\NotificationStatus
      */
     public function getRead()
     {
