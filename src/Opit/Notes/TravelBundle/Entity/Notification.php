@@ -45,7 +45,8 @@ abstract class Notification
      * 
      * @var integer
      *
-     * @ORM\Column(name="notification_read", type="integer")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\TravelBundle\Entity\NotificationStatus")
+     * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $read;
     
@@ -83,27 +84,6 @@ abstract class Notification
     public function getMessage()
     {
         return $this->message;
-    }
-    
-    /**
-     * 
-     * @param string $read
-     * @return \Opit\Notes\TravelBundle\Entity\Notification
-     */
-    public function setRead($read)
-    {
-        $this->read = $read;
-        
-        return $this;
-    }
-    
-    /**
-     * 
-     * @return string
-     */
-    public function getRead()
-    {
-        return $this->read;
     }
     
     /**
@@ -146,5 +126,28 @@ abstract class Notification
     public function getReciever()
     {
         return $this->reciever;
+    }
+
+    /**
+     * Set read
+     *
+     * @param \Opit\Notes\UserBundle\Entity\NotificationStatus $read
+     * @return Notification
+     */
+    public function setRead(\Opit\Notes\UserBundle\Entity\NotificationStatus $read = null)
+    {
+        $this->read = $read;
+    
+        return $this;
+    }
+
+    /**
+     * Get read
+     *
+     * @return \Opit\Notes\UserBundle\Entity\NotificationStatus 
+     */
+    public function getRead()
+    {
+        return $this->read;
     }
 }

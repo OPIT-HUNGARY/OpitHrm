@@ -44,11 +44,13 @@ class NotificationStatusFixtures extends AbstractFixture implements OrderedFixtu
      */
     public function load(ObjectManager $manager)
     {
-        $notificationStates = array('unread', 'seen', 'read');
+        $reflectionNS = new \ReflectionClass('Opit\Notes\TravelBundle\Entity\NotificationStatus');
+        $notificationStates = $reflectionNS->getConstants();
         
-        for ($i = 0; $i < count($notificationStates); $i++) {
+        foreach ($notificationStates as $name => $id) {
             $notificationStatus = new NotificationStatus();
-            $notificationStatus->setNotificationStatusName($notificationStates[$i]);
+            $notificationStatus->setId($id);
+            $notificationStatus->setNotificationStatusName(strtolower($name));
             $manager->persist($notificationStatus);
         }
         

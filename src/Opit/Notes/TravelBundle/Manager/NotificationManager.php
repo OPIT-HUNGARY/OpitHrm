@@ -8,11 +8,13 @@
 
 namespace Opit\Notes\TravelBundle\Manager;
 
+use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\UserBundle\Entity\User;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TENotification;
 use Opit\Notes\TravelBundle\Entity\TRNotification;
+use Opit\Notes\TravelBundle\Entity\NotificationStatus;
 
 /**
  * Description of NotificationManager
@@ -30,27 +32,19 @@ class NotificationManager
     
     public function getUnreadNotifications(User $currentUser)
     {
-        $firstReadStatus = current(
-            $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
-            ->findAll()
-        );
+        $unreadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')->find(NotificationStatus::UNREAD);
         $unreadNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
-            ->findBy(array('reciever' => $currentUser, 'read' => $firstReadStatus->getId()));
+            ->findBy(array('receiver' => $currentUser, 'read' => $unreadStatus));
         
         return $unreadNotifications;
     }
     
     public function getAllNotifications(User $currentUser)
     {
-        $firstReadStatus = current(
-            $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
-            ->findAll()
-        );
-        $unreadNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
-            ->findBy(array('read' => $firstReadStatus->getId(), 'reciever' => $currentUser->getId()));
-        
+        $unreadNotifications = $this->getUnreadNotifications($currentUser);
+
         foreach ($unreadNotifications as $notification) {
-            $notification = $this->changeNotificationReadStatus($notification);
+            $this->setNotificationStatus($notification, NotificationStatus::UNSEEN);
             $this->entityManager->persist($notification);
         }
         
@@ -64,22 +58,22 @@ class NotificationManager
     
     public function addNewNotification($resource, $toGeneralManager)
     {
-        //$notification = new Notification();
+        $notification = null;
         // get last status name from resource
         $resourceStatus = strtolower($resource->getStates()->last()->getStatus()->getName());
         $message = '';
         if ($resource instanceof TravelRequest) {
             $notification = new TRNotification();
-            $notification->setTravelRequest($resource);
             $reciever = $resource->getGeneralManager();
             $message .= 'travel request (' . $resource->getTravelRequestId() . ') ';
         } elseif ($resource instanceof TravelExpense) {
             var_dump('add');
             $notification = new TENotification();
-            $notification->setTravelExpense($resource);
             $reciever = $resource->getTravelRequest()->getGeneralManager();
             $message .= 'travel expense ';
         }
+        call_user_func(array($notification, 'set'.Utils::getClassBasename($resource)), $resource);
+
         if (strpos('approved', $resourceStatus) !== false || strpos('rejected', $resourceStatus) !== false) {
             $message .=  ' has been ' . $resourceStatus . '.';
             $message = ucfirst($message);
@@ -91,11 +85,11 @@ class NotificationManager
         if (false === $toGeneralManager) {
             $reciever = $resource->getUser();
         }
-        var_dump('add2');
+
         $notification->setMessage($message);
         $notification->setReciever($reciever);
         $notification->setDateTime(new \DateTime('now'));
-        $notification = $this->changeNotificationReadStatus($notification);
+        $notification = $this->setNotificationStatus($notification);
         $this->entityManager->persist($notification);
         $this->entityManager->flush();
     }
@@ -109,26 +103,11 @@ class NotificationManager
         $this->entityManager->flush();
     }
     
-    public function setNotificationReadStatus($notification)
+    public function setNotificationStatus($notification, $status_id = NotificationStatus::UNREAD)
     {
-        $notification = $this->changeNotificationReadStatus($notification);
-        $this->entityManager->persist($notification);
-        $this->entityManager->flush();
-    }
-    
-    public function changeNotificationReadStatus($notification)
-    {
-        $lastReadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
-            ->getLastStatus();
-        $readStatus = $notification->getRead();
-        if ($lastReadStatus->getId() === $readStatus) {
-            return $notification;
-        } else {
-            $readStatus = $readStatus + 1;
-            $nextReadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
-                ->find($readStatus);
+        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')->find($status_id);
+        $notification->setRead($status);
 
-            return $notification->setRead($nextReadStatus->getId());
-        }
+        return $notification;
     }
 }
