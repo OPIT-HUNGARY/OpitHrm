@@ -74,9 +74,9 @@ class TravelRequestService
         } else {
             if ($travelRequestGM === $currentUser) {
                 // travel request cannot be edited
-                $isEditLocked = true;
+                $isEditLocked = false;
                 // travel request cannot be edited or deleted
-                $allActionsLocked = true;
+                $allActionsLocked = false;
                 // travel expense cannot be added to travel request
                 $isAddTravelExpenseLocked = true;
 
@@ -95,6 +95,7 @@ class TravelRequestService
                 // if travel request has status for approval enable the modification of its status
                 if (2 !== $currentStatusId) {
                     $isStatusLocked = true;
+                    $isEditLocked = true;
                 }
             } else {
                 // if travel request has been approved allow the option to add a travel expense to it
