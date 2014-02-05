@@ -27,4 +27,16 @@ class StatesTravelRequestsRepository extends EntityRepository
 
         return $travelRequestState->getOneOrNullResult();
     }
+    
+    public function getStatusBeforeLast($trId)
+    {
+        $travelRequestState = $this->createQueryBuilder('tr')
+            ->where('tr.travelRequest = :trId')
+            ->setParameter(':trId', $trId)
+            ->add('orderBy', 'tr.id DESC')
+            ->setMaxResults(2)
+            ->getQuery();
+        
+        return $travelRequestState->getResult()[1];
+    }
 }

@@ -6,16 +6,33 @@ $(document).ready ->
         win.focus()
 
     $('.changeState').on 'change', ->
+        $(@).addClass 'dropdown-disabled'
         statusId = $(@).val()
         travelExpenseId = $(@).closest('tr').find('.clickable').data 'tr-id'
+        firstStatusId = $(@).find('option:first-child').val()
+        reloadPage = true
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitNotesTravelBundle_request_state'
-            data: {'statusId': statusId, 'travelRequestId': travelExpenseId}
+            data: {'statusId': statusId, 'travelRequestId': travelExpenseId, 'firstStatusId': firstStatusId}
         .done (data) ->
-            console.log 'done'
+            if data is 'error'
+                reloadPage = false
+                dialogWidth = 550
+                $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
+                  .dialog
+                    open: ->
+                      $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
+                    width: dialogWidth
+                    maxHeight: $(window).outerHeight()-100
+                    modal: on
+                    buttons:
+                      Reload: ->
+                         location.reload()
+                         return
         .complete () ->
-            location.reload()
+            if reloadPage is true
+                location.reload()
         .fail (data) ->
             console.warn 'An error occured while setting new status for the request.'
             

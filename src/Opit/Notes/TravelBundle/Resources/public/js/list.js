@@ -11,20 +11,43 @@
       return win.focus();
     });
     $('.changeState').on('change', function() {
-      var statusId, travelExpenseId;
+      var firstStatusId, reloadPage, statusId, travelExpenseId;
+      $(this).addClass('dropdown-disabled');
       statusId = $(this).val();
       travelExpenseId = $(this).closest('tr').find('.clickable').data('tr-id');
+      firstStatusId = $(this).find('option:first-child').val();
+      reloadPage = true;
       return $.ajax({
         method: 'POST',
         url: Routing.generate('OpitNotesTravelBundle_request_state'),
         data: {
           'statusId': statusId,
-          'travelRequestId': travelExpenseId
+          'travelRequestId': travelExpenseId,
+          'firstStatusId': firstStatusId
         }
       }).done(function(data) {
-        return console.log('done');
+        var dialogWidth;
+        if (data === 'error') {
+          reloadPage = false;
+          dialogWidth = 550;
+          return $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
+            open: function() {
+              return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed');
+            },
+            width: dialogWidth,
+            maxHeight: $(window).outerHeight() - 100,
+            modal: true,
+            buttons: {
+              Reload: function() {
+                location.reload();
+              }
+            }
+          });
+        }
       }).complete(function() {
-        return location.reload();
+        if (reloadPage === true) {
+          return location.reload();
+        }
       }).fail(function(data) {
         return console.warn('An error occured while setting new status for the request.');
       });

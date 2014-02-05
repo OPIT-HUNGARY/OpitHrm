@@ -64,7 +64,7 @@ class StatusManager
         
         $toGeneralManager = false;
         
-        if ('For Approval' === $status->getName()) {
+        if (2 === $status->getId()) {
             //set token for travel
             $token = new Token();
             // encode token with factory encoder
@@ -99,10 +99,11 @@ class StatusManager
             foreach ($nextStates as $key => $value) {
                 if ($key !== $requiredStatus) {
                     $stateChangeLinks[] =
-                        $this->request->getScheme() . 
+                        $this->request->getScheme() .
                         '://' . $this->request->getHttpHost() .
-                        $this->request->getBaseURL() . 
-                        '/changestatus/' . $generalManager->getId() . '/' . $travelType . '/' . $key . '/' . $travelToken;
+                        $this->request->getBaseURL() .
+                        '/changestatus/' . $generalManager->getId() . '/' . 
+                        $travelType . '/' . $key . '/' . $travelToken;
                 }
             }
             
@@ -121,6 +122,11 @@ class StatusManager
             $notificationManager->addNewNotification($resource, $toGeneralManager);
     }
     
+    /**
+     * 
+     * @param mixed (TravelRequest/TravelExpense) $resource
+     * @return Status
+     */
     public function getCurrentStatus($resource)
     {
         if (null === $resource) {
@@ -139,6 +145,11 @@ class StatusManager
         }
     }
     
+    /**
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\Status $currentState
+     * @return array
+     */
     public function getNextStates(Status $currentState)
     {
         $statesToDisplay = array();
@@ -155,5 +166,23 @@ class StatusManager
         }
         
         return $statesToDisplay;
+    }
+    
+    /**
+     * Method to check status before the last is not equal to the first selectable option in dropdown
+     * 
+     * @param integer $travelRequestId
+     * @param integer $firstStatusId
+     * @return boolean
+     */
+    public function isNewStatusValid($travelRequestId, $firstStatusId)
+    {
+        $getStatusBeforeLast = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusBeforeLast($travelRequestId);
+        if ($firstStatusId != $getStatusBeforeLast->getStatus()->getId()) {
+            return true;
+        }
+        
+        return false;
     }
 }

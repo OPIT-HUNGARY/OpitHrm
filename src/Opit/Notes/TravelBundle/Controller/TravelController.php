@@ -294,14 +294,18 @@ class TravelController extends Controller
     public function changeTravelRequestStateAction(Request $request)
     {
         $statusId = $request->request->get('statusId');
+        $firstStatusId = $request->request->get('firstStatusId');
         $travelRequestId = $request->request->get('travelRequestId');
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
-        
-        $statusManager = $this->get('opit.manager.status_manager');
-        $statusManager->addStatus($travelRequest, $statusId);
-        
-        return new JsonResponse();
+
+        if ($this->get('opit.manager.status_manager')->isNewStatusValid($travelRequest, $firstStatusId)) {
+            $statusManager = $this->get('opit.manager.status_manager');
+            $statusManager->addStatus($travelRequest, $statusId);
+            return new JsonResponse();
+        } else {
+            return new JsonResponse('error');
+        }
     }
     
     /**
@@ -365,16 +369,30 @@ class TravelController extends Controller
         }
     }
     
-    protected function handleForm($form, $request, $isNewTravelRequest, $generalManager, $teamManager, $userId, $travelRequest, $children)
-    {
+    protected function handleForm(
+        $form,
+        $request,
+        $isNewTravelRequest,
+        $generalManager,
+        $teamManager,
+        $userId,
+        $travelRequest,
+        $children
+    ) {
         $oldUser = $travelRequest->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->get('security.context');
         $travelRequestModel = $this->get('opit.model.travel_request');
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $isModificationAllowedForUser = 
-                $travelRequestModel->isModificationAllowedForUser($isNewTravelRequest,$travelRequest,$userId,$oldUser,$form);
+            $isModificationAllowedForUser =
+                $travelRequestModel->isModificationAllowedForUser(
+                    $isNewTravelRequest,
+                    $travelRequest,
+                    $userId,
+                    $oldUser,
+                    $form
+                );
             if (true !== $isModificationAllowedForUser) {
                 $form = $isModificationAllowedForUser['form'];
                 $travelRequest = $isModificationAllowedForUser['travelRequest'];
