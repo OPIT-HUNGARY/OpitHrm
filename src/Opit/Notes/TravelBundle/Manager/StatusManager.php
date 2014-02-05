@@ -99,8 +99,10 @@ class StatusManager
             foreach ($nextStates as $key => $value) {
                 if ($key !== $requiredStatus) {
                     $stateChangeLinks[] =
-                        $this->request->getScheme() . '://' . $this->request->getHttpHost() .
-                        $this->request->getBaseURL() . '/changestatus/' . $generalManager->getId() . '/' . $travelType . '/' . $key . '/' . $travelToken;
+                        $this->request->getScheme() . 
+                        '://' . $this->request->getHttpHost() .
+                        $this->request->getBaseURL() . 
+                        '/changestatus/' . $generalManager->getId() . '/' . $travelType . '/' . $key . '/' . $travelToken;
                 }
             }
             

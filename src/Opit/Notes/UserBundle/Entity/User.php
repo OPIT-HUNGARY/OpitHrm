@@ -163,7 +163,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     
     /**
      * Notifications sent by user
-     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\Notification", mappedBy="reciever", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
      */
     protected $notifications;
     

@@ -631,5 +631,5 @@ class TravelExpense
     public function getNotification()
     {
         return $this->notifications;
-    }    
+    }
 }

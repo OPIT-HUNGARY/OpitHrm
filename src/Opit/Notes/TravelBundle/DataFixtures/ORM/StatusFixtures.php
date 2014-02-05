@@ -43,44 +43,50 @@ class StatusFixtures extends AbstractFixture implements OrderedFixtureInterface,
 
     public function load(ObjectManager $manager)
     {
-        $status1 = new Status();
-        $status1->setName('Created');
+        $created = new Status();
+        $created->setId(1);
+        $created->setName('Created');
 
-        $manager->persist($status1);
+        $manager->persist($created);
 
-        $status2 = new Status();
-        $status2->setName('For Approval');
+        $forApproval = new Status();
+        $forApproval->setId(2);
+        $forApproval->setName('For Approval');
 
-        $manager->persist($status2);
+        $manager->persist($forApproval);
 
-        $status3 = new Status();
-        $status3->setName('Revise');
+        $revise = new Status();
+        $revise->setId(3);
+        $revise->setName('Revise');
 
-        $manager->persist($status3);
+        $manager->persist($revise);
 
-        $status4 = new Status();
-        $status4->setName('Approved');
+        $approved = new Status();
+        $approved->setId(4);
+        $approved->setName('Approved');
 
-        $manager->persist($status4);
+        $manager->persist($approved);
 
-        $status5 = new Status();
-        $status5->setName('Rejected');
+        $rejected = new Status();
+        $rejected->setId(5);
+        $rejected->setName('Rejected');
 
-        $manager->persist($status5);
+        $manager->persist($rejected);
 
-        $status6 = new Status();
-        $status6->setName('Paid');
+        $paid = new Status();
+        $paid->setId(6);
+        $paid->setName('Paid');
 
-        $manager->persist($status6);
+        $manager->persist($paid);
 
         $manager->flush();
 
-        $this->addReference('status1', $status1);// Created
-        $this->addReference('status2', $status2);// For approval
-        $this->addReference('status3', $status3);// Revise
-        $this->addReference('status4', $status4);// Approved
-        $this->addReference('status5', $status5);// Rejected
-        $this->addReference('status6', $status6);// Paid
+        $this->addReference('created', $created);// Created
+        $this->addReference('forApproval', $forApproval);// For approval
+        $this->addReference('revise', $revise);// Revise
+        $this->addReference('approved', $approved);// Approved
+        $this->addReference('rejected', $rejected);// Rejected
+        $this->addReference('paid', $paid);// Paid
 
     }
 

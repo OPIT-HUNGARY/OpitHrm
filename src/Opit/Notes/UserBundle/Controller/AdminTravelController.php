@@ -89,15 +89,15 @@ class AdminTravelController extends Controller
         $entityManager = $this->getDoctrine()->getEntityManager();
         $expenseTypeId = $this->getRequest()->request->get('id');
         
-        if (is_array($expenseTypeId)) {
-            foreach ($expenseTypeId as $id) {
-                $expenseType = $entityManager->getRepository('OpitNotesTravelBundle:TEExpenseType')->find($id);
-                $entityManager->remove($expenseType);
-            }
-        } else {
-            $expenseType = $entityManager->getRepository('OpitNotesTravelBundle:TEExpenseType')->find($expenseTypeId);
+        if (!is_array($expenseTypeId)) {
+            $expenseTypeId = array($expenseTypeId);
+        }
+        
+        foreach ($expenseTypeId as $id) {
+            $expenseType = $entityManager->getRepository('OpitNotesTravelBundle:TEExpenseType')->find($id);
             $entityManager->remove($expenseType);
         }
+        
         $entityManager->flush();
         
         $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();

@@ -30,7 +30,6 @@ class Status
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -67,6 +66,13 @@ class Status
         $this->travelExpenses = new ArrayCollection();
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+        
+        return $this;
+    }
+    
     /**
      * Get id
      *

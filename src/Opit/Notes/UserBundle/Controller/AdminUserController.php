@@ -38,7 +38,7 @@ class AdminUserController extends Controller
         $disabledJobTitles = $this->getAssignedJobTitlesToUsers();
 
         return $this->render(
-            $showList ? 'OpitNotesUserBundle:Admin:_listJobTitle.html.twig' : 'OpitNotesUserBundle:Admin:listJobTitle.html.twig',
+            'OpitNotesUserBundle:Admin:' . ($showList ? '_' : '') . 'listJobTitle.html.twig',
             array('jobTitles' => $jobTitles, 'disabledJobTitles' => $disabledJobTitles)
         );
     }
@@ -203,29 +203,6 @@ class AdminUserController extends Controller
         }
         return $disabledJobTitles;
     }
-
-    public function getAllGroups()
-    {
-        $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
-        $disabledRoles = array();
-        $numberOfRelations = array();
-
-        foreach ($group as $g) {
-            $users = $g->getUsers();
-            if (0 !== count($users)) {
-                $disabledRoles[] = $g->getId();
-            }
-            $numberOfRelations[$g->getId()] = count($g->getUsers());
-        }
-        
-        return array(
-            'propertyNames' => array('id', 'name', 'role'),
-            'propertyValues' => $group,
-            'hideReset' => true,
-            'disabledRoles' => $disabledRoles,
-            'numberOfRelations' => $numberOfRelations
-        );
-    }
     
     /**
      * @Route("/secured/admin/groups/list", name="OpitNotesUserBundle_admin_groups_list")
@@ -291,33 +268,56 @@ class AdminUserController extends Controller
     {
         $entityManager = $this->getDoctrine()->getEntityManager();
         $groupId = $this->getRequest()->request->get('id');
-        $userRelated = array();
+        $userRelatedGroup = array();
         
-        if (is_array($groupId)) {
-            foreach ($groupId as $id) {
-                $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($id);
-                if (0 === count($group->getUsers())) {
-                    $entityManager->remove($group);
-                } else {
-                    $userRelated[] = $group->getName();
-                }
-            }
-        } else {
-            $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($groupId);
+        if (!is_array($groupId)) {
+            $groupId = array($groupId);
+        }
+        foreach ($groupId as $id) {
+            $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($id);
             if (0 === count($group->getUsers())) {
                 $entityManager->remove($group);
             } else {
-                $userRelated[] = $group->getName();
+                $userRelatedGroup[] = $group->getName();
             }
-        }
+        }        
+        
         $entityManager->flush();
         
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
         
-        if (count($userRelated) > 0) {
-            return new JsonResponse(array('userRelated' => $userRelated));
+        if (count($userRelatedGroup) > 0) {
+            return new JsonResponse(array('userRelated' => $userRelatedGroup));
         }
         
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
     }
+    
+    /**
+     * Get all groups(roles) and return an array of results
+     * 
+     * @return array
+     */
+    protected function getAllGroups()
+    {
+        $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
+        $disabledRoles = array();
+        $numberOfRelations = array();
+
+        foreach ($group as $g) {
+            $users = $g->getUsers();
+            if (0 !== count($users)) {
+                $disabledRoles[] = $g->getId();
+            }
+            $numberOfRelations[$g->getId()] = count($g->getUsers());
+        }
+        
+        return array(
+            'propertyNames' => array('id', 'name', 'role'),
+            'propertyValues' => $group,
+            'hideReset' => true,
+            'disabledRoles' => $disabledRoles,
+            'numberOfRelations' => $numberOfRelations
+        );
+    }    
 }

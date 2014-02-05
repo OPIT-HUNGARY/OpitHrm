@@ -48,43 +48,43 @@ class StatusWorkflowFixtures extends AbstractFixture implements OrderedFixtureIn
     public function load(ObjectManager $manager)
     {
         $statusWorkflow1 = new StatusWorkflow();
-        $statusWorkflow1->setStatus($this->getReference('status1'));//Created
+        $statusWorkflow1->setStatus($this->getReference('created'));//Created
 
         $manager->persist($statusWorkflow1);
 
         $statusWorkflow2 = new StatusWorkflow();
-        $statusWorkflow2->setParent($this->getReference('status1'));
-        $statusWorkflow2->setStatus($this->getReference('status2'));//Created -> For Approval
+        $statusWorkflow2->setParent($this->getReference('created'));
+        $statusWorkflow2->setStatus($this->getReference('forApproval'));//Created -> For Approval
 
         $manager->persist($statusWorkflow2);
 
         $statusWorkflow3 = new StatusWorkflow();
-        $statusWorkflow3->setParent($this->getReference('status2'));
-        $statusWorkflow3->setStatus($this->getReference('status3'));//For Approval -> Revise
+        $statusWorkflow3->setParent($this->getReference('forApproval'));
+        $statusWorkflow3->setStatus($this->getReference('revise'));//For Approval -> Revise
 
         $manager->persist($statusWorkflow3);
 
         $statusWorkflow4 = new StatusWorkflow();
-        $statusWorkflow4->setParent($this->getReference('status2'));
-        $statusWorkflow4->setStatus($this->getReference('status4'));//For Approval -> Approved
+        $statusWorkflow4->setParent($this->getReference('forApproval'));
+        $statusWorkflow4->setStatus($this->getReference('approved'));//For Approval -> Approved
 
         $manager->persist($statusWorkflow4);
 
         $statusWorkflow5 = new StatusWorkflow();
-        $statusWorkflow5->setParent($this->getReference('status3'));
-        $statusWorkflow5->setStatus($this->getReference('status2'));//Revise -> For Approval
+        $statusWorkflow5->setParent($this->getReference('revise'));
+        $statusWorkflow5->setStatus($this->getReference('forApproval'));//Revise -> For Approval
 
         $manager->persist($statusWorkflow5);
 
         $statusWorkflow6 = new StatusWorkflow();
-        $statusWorkflow6->setParent($this->getReference('status2'));
-        $statusWorkflow6->setStatus($this->getReference('status5'));//For Approval -> Rejected
+        $statusWorkflow6->setParent($this->getReference('forApproval'));
+        $statusWorkflow6->setStatus($this->getReference('rejected'));//For Approval -> Rejected
 
         $manager->persist($statusWorkflow6);
 
         $statusWorkflow7 = new StatusWorkflow();
-        $statusWorkflow7->setParent($this->getReference('status4'));
-        $statusWorkflow7->setStatus($this->getReference('status6'));//Approved -> Paid
+        $statusWorkflow7->setParent($this->getReference('approved'));
+        $statusWorkflow7->setStatus($this->getReference('paid'));//Approved -> Paid
 
         $manager->persist($statusWorkflow7);
 

@@ -88,7 +88,6 @@ class UserController extends Controller
 
             $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
 
-            $users = array();
             for ($i = 0; $i < count($result); $i++) {
                 $user = $result[$i];
                 $id = $user->getId();

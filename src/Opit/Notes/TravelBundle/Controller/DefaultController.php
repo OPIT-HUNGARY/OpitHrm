@@ -87,7 +87,6 @@ class DefaultController extends Controller
             ->find($travelRequestId);
         $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')
             ->findOneBy(array('travelRequest' => $travelRequest));
-        
         $travelRequestStates = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
             ->findBy(array('travelRequest' => $travelRequestId));
         

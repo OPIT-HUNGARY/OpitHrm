@@ -16,16 +16,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TRDestination;
-
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
-use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Form\FormError;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Description of TravelController
@@ -40,15 +36,16 @@ class TravelController extends Controller
      */
     public function listAction()
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->get('security.context');
         // Disable softdeleteable filter for user entity to allow persistence
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
         $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
         $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
       
         // te = Travel Expense
         $statusManager = $this->get('opit.manager.status_manager');
+        $travelRequestModel = $this->get('opit.model.travel_request');
         $teIds = array();
         $travelRequestStates = array();
         $currentStatusNames = array();
@@ -61,54 +58,33 @@ class TravelController extends Controller
             foreach ($travelRequests as $travelRequest) {
                 //if user has the right to view travel request
                 if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
-                    $travelExpense = ($travelExpenses->findOneBy(array('travelRequest' => $travelRequest)));
-                    if (null !== $travelExpense) {
-                        $teIds[] = $travelExpense->getId();
-                    } else {
-                        $teIds[] = 'new';
-                    }
-
-                    $states = $this->getTravelRequestNextStates($travelRequest, $statusManager);
                     $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-                    $currentStatusName = $currentStatus->getName();
-                    $currentStatusNames[] = $currentStatusName;
                     
-                    $travelExpenseStatus = $statusManager->getCurrentStatus($travelExpense);
-                    
-                    $travelRequestGM = $travelRequest->getGeneralManager()->getId();
-                    $currentUser = $this->get('security.context')->getToken()->getUser()->getId();
-                    
-                    $trAvailability = $this->setTRAvailability(
+                    $teIds[] = $travelRequestModel->getTravelExpenseId($travelExpenses, $travelRequest);
+                    $currentStatusNames[] = $currentStatus->getName();
+                    $travelRequestStates[] =
+                        $travelRequestModel->getTravelRequestNextStates($travelRequest, $statusManager);
+                    $travelRequestAccessRights = $travelRequestModel->setTravelRequestAccessRights(
                         false,
-                        $travelRequestGM,
-                        $currentUser,
-                        $currentStatusName,
-                        $travelExpenseStatus
+                        $travelRequest->getGeneralManager()->getId(),
+                        $this->getUser()->getId(),
+                        $currentStatus->getId(),
+                        $statusManager->getCurrentStatus($travelRequest)
                     );
-                    
-                    $isLocked[] = $trAvailability;
+                    $isLocked[] = $travelRequestAccessRights;
                     
                     // add travel request to allowed travel requests to show
-                    if (false === $trAvailability['doNotListTravelRequest']) {
+                    if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
                         $allowedTRs->add($travelRequest);
                     }
-                    
-                    $travelRequestStates[] = $states;
                 }
             }
         } else {
             foreach ($travelRequests as $travelRequest) {
-                $travelExpense = ($travelExpenses->findOneBy(array('travelRequest' => $travelRequest)));
-                if (null !== $travelExpense) {
-                    $teIds[] = $travelExpense->getId();
-                } else {
-                    $teIds[] = 'new';
-                }
-                
-                $trAvailability = $this->setTRAvailability(true);
-                $isLocked[] = $trAvailability;
-                
-                $travelRequestStates[] = $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                $teIds[] = $travelRequestModel->getTravelExpenseId($travelExpenses, $travelRequest);
+                $isLocked[] = $travelRequestModel->setTravelRequestAccessRights(true);
+                $travelRequestStates[] =
+                    $travelRequestModel->getTravelRequestNextStates($travelRequest, $statusManager);
             }
             
             $allowedTRs = $travelRequests;
@@ -184,160 +160,63 @@ class TravelController extends Controller
      */
     public function showTravelRequestAction(Request $request)
     {
+        $user = $this->getUser();
+        $generalManager = null;
+        $teamManager = null;
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
         $isNewTravelRequest = "new" !== $travelRequestId;
-        $isEditLocked = true;
-        $isStatusLocked = false;
-        $securityContext = $this->get('security.context');
-        $currentUser = $securityContext->getToken()->getUser();
-        $previousGM = null;
-        $previousTM = null;
-        
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
         $statusManager = $this->get('opit.manager.status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-        $currentStatusName = $currentStatus->getName();
+        $currentStatusId = $currentStatus->getId();
+        $editRights = $this->get('opit.model.travel_request')
+            ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
         
-        if (false === $isNewTravelRequest) {
-            // the currently logged in user is always set as default
-            $travelRequest->setUser($currentUser);
-            $isStatusLocked = true;
-            $isEditLocked = false;
-        } else {
-            $previousGM = $travelRequest->getGeneralManager()->getUsername();
-            if (null !== $travelRequest->getTeamManager()) {
-                $previousTM = $travelRequest->getTeamManager()->getUsername();
-            }
-            
-            // if travel request has not got the state of created or revise redirect user to listing page
-            if ($currentUser->getId() === $travelRequest->getUser()->getId()) {
-                if ($currentStatusName !== 'Created' && $currentStatusName !== 'Revise') {
-                    return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
-                }
-                $isEditLocked = false;
-            } elseif ($currentUser->getId() === $travelRequest->getGeneralManager()->getId()) {
-                if ($currentStatusName !== 'For Approval') {
-                    return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
-                }
-            }
+        if (false === $editRights) {
+            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+        }
+        
+        if (false !== $isNewTravelRequest) {
             $travelRequestStates = $statusManager->getNextStates($currentStatus);
-        }
-        $travelRequestStates[$currentStatus->getId()] = $currentStatusName;
-        
-        // Track current persisted destination objects
-        $children = new ArrayCollection();
-        
-        foreach ($travelRequest->getDestinations() as $destination) {
-            $children->add($destination);
+            $generalManager = $travelRequest->getGeneralManager()->getUsername();
+            if (null !== $travelRequest->getTeamManager()) {
+                $teamManager = $travelRequest->getTeamManager()->getUsername();
+            }
+        } else {
+            $travelRequest->setUser($user);
         }
         
-        foreach ($travelRequest->getAccomodations() as $accomodation) {
-            $children->add($accomodation);
-        }
+        $travelRequestStates[$currentStatusId] = $currentStatus->getName();
+        $children = $this->get('opit.model.travel_request')->addChildNodes($travelRequest);
         
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
+
+        $form = $this->handleForm(
+            $this->setTravelRequestForm($travelRequest, $entityManager, $isNewTravelRequest),
+            $request,
+            $isNewTravelRequest,
+            $generalManager,
+            $teamManager,
+            $user->getId(),
+            $travelRequest,
+            $children
+        );
         
-        $form = $this->setTravelRequestForm($travelRequest, $entityManager, $isNewTravelRequest);
-        
-        $oldUser = $travelRequest->getUser();
-        
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            
-            // checks if new travel request is being created by a user or by an admin
-            if ('new' !== $isNewTravelRequest && !$securityContext->isGranted('ROLE_ADMIN')) {
-                // if user is owner of travel request
-                if (true === $securityContext->isGranted('OWNER', $travelRequest)) {
-                    // if travel request user does not exist or travel request user id does not match current user id
-                    if (null === $travelRequest->getUser() ||
-                        $travelRequest->getUser()->getId() !== $currentUser->getId()) {
-                        // reset travel request user
-                        $travelRequest->setUser($oldUser);
-                        // recreate travel request form
-                        $form = $this->setTravelRequestForm($travelRequest, $entityManager);
-                        // add error to form so it will not validate
-                        $form->addError(new FormError('Invalid employee name.'));
-                    }
-                }
-            }
-            
-            if ($form->isValid()) {
-                
-                // Persist deleted destinations/accomodations
-                $this->removeChildNodes($entityManager, $travelRequest, $children);
-                
-                $entityManager->persist($travelRequest);
-                $entityManager->flush();
-                
-                // Persist travel request object again if travel request id is set (insert actions)
-                // set travel request id is handled inside its entity using lifecycle callbacks
-                if ($travelRequest->getTravelRequestId()) {
-                    
-                    //get status manager
-                    $statusManager = $this->get('opit.manager.status_manager');
-                    //get current status of travel request
-                    $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-                    //if travel request current status is null
-                    if (null === $currentStatus) {
-                        //get the first(default) status and assign in to the newly created travel request
-                        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
-                        //add status to travel request
-                        $statusManager->addStatus($travelRequest, $status->getId());
-                    }
-                    
-                    $entityManager->persist($travelRequest);
-                    $entityManager->flush();
-                    
-                    $this->grantAccess(
-                        $travelRequest,
-                        array(
-                            array(
-                                'user' => $travelRequest->getGeneralManager(),
-                                'mask' => MaskBuilder::MASK_EDIT
-                            ),
-                            array(
-                                'user' => $travelRequest->getTeamManager(),
-                                'mask' => MaskBuilder::MASK_EDIT
-                            ),
-                            array(
-                                'user' => $securityContext->getToken()->getUser(),
-                                'mask' => MaskBuilder::MASK_OWNER
-                            ),
-                        ),
-                        $previousGM,
-                        $previousTM
-                    );
-                }
-                
-                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
-            }
+        if (true === $form) {
+            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
         }
+
+        $this->isAccessGranted($isNewTravelRequest, $travelRequest);
         
-        // only allow edit of travel request if user has editor or admin rights
-        if ($isNewTravelRequest) {
-            $securityContext = $securityContext;
-            if (true === $securityContext->isGranted('ROLE_ADMIN') ||
-                true === $securityContext->isGranted('EDIT', $travelRequest)) {
-                return array(
-                    'form' => $form->createView(),
-                    'travelRequest' => $travelRequest,
-                    'travelRequestStates' => $travelRequestStates,
-                    'isEditLocked' => $isEditLocked,
-                    'isStatusLocked' => $isStatusLocked);
-            } else {
-                throw new AccessDeniedException(
-                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
-                );
-            }
-        }
         return array(
             'form' => $form->createView(),
             'travelRequest' => $travelRequest,
             'travelRequestStates' => $travelRequestStates,
-            'isEditLocked' => $isEditLocked,
-            'isStatusLocked' => $isStatusLocked);
+            'isEditLocked' => $editRights['isEditLocked'],
+            'isStatusLocked' => $editRights['isStatusLocked']
+        );
     }
     
     /**
@@ -426,11 +305,28 @@ class TravelController extends Controller
     }
     
     /**
-     * Returns a travel request object
-     *
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @param EntityManager $entityManager
+     * @param boolean $isNewTravelRequest
+     * @return type
+     */
+    protected function setTravelRequestForm(TravelRequest $travelRequest, EntityManager $entityManager, $isNewTravelRequest)
+    {
+        $form = $this->createForm(
+            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelRequest),
+            $travelRequest,
+            array('em' => $entityManager)
+        );
+        
+        return $form;
+    }
+    
+    /**
+     * 
      * @param integer $travelRequestId
-     * @return mixed  TravelRequest object or null
-     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @return \Opit\Notes\TravelBundle\Entity\TravelRequest
+     * @throws CreateNotFoundException
      */
     protected function getTravelRequest($travelRequestId = null)
     {
@@ -451,183 +347,78 @@ class TravelController extends Controller
     }
     
     /**
-     * Removes related travel request instances.
-     *
-     * @param object $entityManager
-     * @param object $travelRequest
-     * @param ArrayCollection $children
-     */
-    protected function removeChildNodes(&$entityManager, $travelRequest, $children)
-    {
-        foreach ($children as $child) {
-            $getter = ($child instanceof TRDestination) ? 'getDestinations' : 'getAccomodations';
-            if (false === $travelRequest->$getter()->contains($child)) {
-                $child->setTravelRequest(null);
-                $entityManager->remove($child);
-            }
-        }
-    }
-    
-    protected function grantAccess(TravelRequest $object, $users, $previousGM, $previousTM)
-    {
-        $aclProvider = $this->container->get('security.acl.provider');
-        // try to find acl, used when travel request was modified
-        try {
-            $acl = $aclProvider->findAcl(ObjectIdentity::fromDomainObject($object));
-        // create new acl user when new travel request was created
-        } catch (AclNotFoundException $e) {
-            $acl = $aclProvider->createAcl(ObjectIdentity::fromDomainObject($object));
-        }
-        
-        $this->revokeUserAccess($acl, $aclProvider, $previousGM, $previousTM, $object);
-        
-        // loop through users and grant all of them the permission (mask) passed in the array
-        if (is_array($users)) {
-            foreach ($users as $user) {
-                if (null !== $user['user']) {
-                    $this->grantUserAccess($user['user'], $user['mask'], $aclProvider, $acl);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Method to get all selectable states for travel request
      * 
+     * @param boolean $isNewTravelRequest
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param type $statusManager
-     * @return array
+     * @throws AccessDeniedException
      */
-    protected function getTravelRequestNextStates(TravelRequest $travelRequest, $statusManager)
+    protected function isAccessGranted($isNewTravelRequest, TravelRequest $travelRequest)
     {
-        $trSelectableStates = array();
-        $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-        $currentStatusName = $currentStatus->getName();
-        $currentStatusId = $currentStatus->getId();
-        $trSelectableStates = $statusManager->getNextStates($currentStatus);
-        $trSelectableStates[$currentStatusId] = $currentStatusName;
-        
-        return $trSelectableStates;
-    }
-    
-    /**
-     * Method to set which functions will be available on the travel request listing page
-     * 
-     * @param integer $travelRequestGM
-     * @param integer $currentUser
-     * @param string $currentStatusName
-     * @return boolean $trAvailability
-     */
-    protected function setTRAvailability(
-        $isAdmin,
-        $travelRequestGM = null,
-        $currentUser = null,
-        $currentStatusName = null,
-        $travelExpenseStatus = null
-    ) {
-        $trAvailability = array();
-        $trAvailability['isTravelExpenseLocked'] = false;
-        if (true === $isAdmin) {
-            $trAvailability['isEditLocked'] = false;
-            $trAvailability['allActionsLocked'] = false;
-            $trAvailability['isAddTravelExpenseLocked'] = false;
-            $trAvailability['doNotListTravelRequest'] = false;
-            $trAvailability['isStatusLocked'] = false;
-            if (null !== $travelExpenseStatus) {
-                $travelExpenseStatusName = $travelExpenseStatus->getName();
-                    $trAvailability['isTravelExpenseLocked'] = true;
-            }
-        } else {
-            if ($travelRequestGM === $currentUser) {
-                // travel request cannot be edited
-                $trAvailability['isEditLocked'] = true;
-                // travel request cannot be edited or deleted
-                $trAvailability['allActionsLocked'] = true;
-                // travel expense cannot be added to travel request
-                $trAvailability['isAddTravelExpenseLocked'] = true;
-
-                if (null !== $travelExpenseStatus) {
-                    $travelExpenseStatusName = $travelExpenseStatus->getName();
-                    // if the status of the travel expense created do not show the option to view it
-                    if ('Created' === $travelExpenseStatusName) {
-                        $trAvailability['isTravelExpenseLocked'] = true;
-                    }
-                }
-
-                // if travel request has state created do not show it until it has been sent for approval
-                if ('Created' === $currentStatusName) {
-                    $trAvailability['doNotListTravelRequest'] = true;
-                } else {
-                    $trAvailability['doNotListTravelRequest'] = false;
-                }
-                // if travel request has status for approval enable the modification of its status
-                if ('For Approval' === $currentStatusName) {
-                    $trAvailability['isStatusLocked'] = false;
-                } else {
-                    $trAvailability['isStatusLocked'] = true;
-                }
-            } else {
-                // user is the owner of the travel request or an admin
-                $trAvailability['doNotListTravelRequest'] = false;
-
-                // if travel request has been approved allow the option to add a travel expense to it
-                if ('Approved' === $currentStatusName) {
-                    $trAvailability['isAddTravelExpenseLocked'] = false;
-                } else {
-                    $trAvailability['isAddTravelExpenseLocked'] = true;
-                }
-                // if travel expense has status created or revise allow the modification of it
-                if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
-                    $trAvailability['isEditLocked'] = false;
-                } else {
-                    $trAvailability['isEditLocked'] = true;
-                }
-                // if travel request has been sent for approval lock all action(edit, delete)
-                if ('For Approval' !== $currentStatusName) {
-                    $trAvailability['allActionsLocked'] = false;
-                } else {
-                    $trAvailability['allActionsLocked'] = true;
-                }
-                // if travel request has any of the below statuses disable the option to change its status
-                if ('Approved' === $currentStatusName ||
-                    'Rejected' === $currentStatusName ||
-                    'For Approval' === $currentStatusName) {
-                    $trAvailability['isStatusLocked'] = true;
-                } else {
-                    $trAvailability['isStatusLocked'] = false;
-                }
+        $securityContext = $this->get('security.context');
+        if ($isNewTravelRequest) {
+            if (true !== $securityContext->isGranted('ROLE_ADMIN') &&
+                true !== $securityContext->isGranted('EDIT', $travelRequest)) {
+                throw new AccessDeniedException(
+                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+                );
             }
         }
-        return $trAvailability;
     }
     
-    protected function grantUserAccess($user, $mask, $aclProvider, $acl)
+    protected function handleForm($form, $request, $isNewTravelRequest, $generalManager, $teamManager, $userId, $travelRequest, $children)
     {
-        $securityId = UserSecurityIdentity::fromAccount($user);
-        $acl->insertObjectAce($securityId, $mask);
-        $aclProvider->updateAcl($acl);
-    }
-    
-    protected function revokeUserAccess($acl, $aclProvider, $previousGM, $previousTM)
-    {
-        $aces = $acl->getObjectAces();
-        foreach($aces as $i => $ace) {
-            if ($previousGM === $ace->getSecurityIdentity()->getUsername() ||
-                $previousTM === $ace->getSecurityIdentity()->getUsername()) {
-                $acl->deleteObjectAce($i);
+        $oldUser = $travelRequest->getUser();
+        $entityManager = $this->getDoctrine()->getManager();
+        $securityContext = $this->get('security.context');
+        $travelRequestModel = $this->get('opit.model.travel_request');
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            $isModificationAllowedForUser = 
+                $travelRequestModel->isModificationAllowedForUser($isNewTravelRequest,$travelRequest,$userId,$oldUser,$form);
+            if (true !== $isModificationAllowedForUser) {
+                $form = $isModificationAllowedForUser['form'];
+                $travelRequest = $isModificationAllowedForUser['travelRequest'];
+            }
+
+            if ($form->isValid()) {
+
+                // Persist deleted destinations/accomodations
+                $travelRequestModel->removeChildNodes($entityManager, $travelRequest, $children);
+                $entityManager->persist($travelRequest);
+                $entityManager->flush();
+
+                // Persist travel request object again if travel request id is set (insert actions)
+                // set travel request id is handled inside its entity using lifecycle callbacks
+                if ($travelRequest->getTravelRequestId()) {
+                    $travelRequestModel->addStatus($travelRequest, $entityManager);
+
+                    $entityManager->persist($travelRequest);
+                    $entityManager->flush();
+
+                    $travelRequestModel->handleAccessRights(
+                        $travelRequest,
+                        array(
+                            array(
+                                'user' => $travelRequest->getGeneralManager(),
+                                'mask' => MaskBuilder::MASK_EDIT
+                            ),
+                            array(
+                                'user' => $travelRequest->getTeamManager(),
+                                'mask' => MaskBuilder::MASK_EDIT
+                            ),
+                            array(
+                                'user' => $securityContext->getToken()->getUser(),
+                                'mask' => MaskBuilder::MASK_OWNER
+                            ),
+                        ),
+                        $generalManager,
+                        $teamManager
+                    );
+                }
+                return true;
             }
         }
-        $aclProvider->updateAcl($acl);
-    }
-    
-    protected function setTravelRequestForm(TravelRequest $travelRequest, $entityManager, $isNewTravelRequest)
-    {
-        $form = $this->createForm(
-            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelRequest),
-            $travelRequest,
-            array('em' => $entityManager)
-        );
-        
+                
         return $form;
     }
 }

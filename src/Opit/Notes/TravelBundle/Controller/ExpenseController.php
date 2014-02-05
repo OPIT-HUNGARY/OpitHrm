@@ -7,11 +7,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
-use Opit\Notes\TravelBundle\Model\TravelExpenseExtension;
 use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use TCPDF;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Description of ExpenseController
@@ -91,31 +90,11 @@ class ExpenseController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpenseId = $request->attributes->get('id');
-        $trId = $request->query->get('tr');
+        $travelRequestId = $request->query->get('tr');
         $isNewTravelExpense = "new" !== $travelExpenseId;
-        $securityContext = $this->get('security.context');
-        $currentUser = $securityContext->getToken()->getUser();
-        
-        if (null === $trId) {
-            throw $this->createNotFoundException('No travel request was found with the given id!');
-        }
-        
-        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
+        $currentUser = $this->getUser();
 
-        if (null === $travelRequest) {
-            //show error message if no travel request was found with the given id
-            throw $this->createNotFoundException('No travel request was found with the given id!');
-        }
-        
-        if (false === $this->get('security.context')->isGranted('ROLE_ADMIN') &&
-            false === $securityContext->isGranted('VIEW', $travelRequest)) {
-            throw $this->createNotFoundException('You are not permitted to view or edit the travel expense!');
-        }
-        
-        $travelRequestId = $travelRequest->getTravelRequestId();
-        $trArrivalDate = $travelRequest->getArrivalDate();
-        $trDepartureDate = $travelRequest->getDepartureDate();
-        
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
         
         // Get rates
@@ -124,8 +103,6 @@ class ExpenseController extends Controller
         
         // te = Travel Expense
         $travelExpenseStates = array();
-        $isEditLocked = array();
-        $isStatusLocked = array();
         $statusManager = $this->get('opit.manager.status_manager');
         
         // get travel expense current status
@@ -134,10 +111,13 @@ class ExpenseController extends Controller
         $currentStatusId = $currentStatus->getId();
         
         // set availabilty(edit, change status) for travel expense
-        $teAvailability =
-            $this->setTEAvailability($travelRequest->getGeneralManager()->getId(), $currentUser->getId(), $currentStatusName);
-        $isEditLocked = $teAvailability['isEditLocked'];
-        $isStatusLocked = $teAvailability['isStatusLocked'];
+        $editRights = $this->get('opit.model.travel_expense')->setEditRights(
+            $travelRequest->getGeneralManager()->getId(),
+            $currentUser->getId(),
+            $currentStatus->getId()
+        );
+        $isEditLocked = $editRights['isEditLocked'];
+        $isStatusLocked = $editRights['isStatusLocked'];
         
         if (false === $isNewTravelExpense) {
             $travelExpense->setUser($currentUser);
@@ -146,51 +126,27 @@ class ExpenseController extends Controller
             if (false === $isStatusLocked) {
                 $travelExpenseStates = $statusManager->getNextStates($currentStatus);
             }
-            
-            $trArrivalDate = $travelExpense->getArrivalDateTime();
-            $trDepartureDate = $travelExpense->getDepartureDateTime();
         }
         
         // set current status for travel expense
         $travelExpenseStates[$currentStatusId] = $currentStatusName;
         
-        $children = new ArrayCollection();
-        
-        foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
-            $children->add($companyPaidExpenses);
-        }
-        
-        foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $children->add($userPaidExpenses);
-        }
+        $children = $this->get('opit.model.travel_expense')->addChildNodes($travelExpense);
         
         $entityManager->getFilters()->disable('softdeleteable');
         
-        $travelExpense->setArrivalDateTime($trArrivalDate);
-        $travelExpense->setDepartureDateTime($trDepartureDate);
-
-        $form = $this->createForm(
-            new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
-            $travelExpense,
-            array('em' => $entityManager)
+        $travelExpense->setArrivalDateTime(
+            $isNewTravelExpense ? $travelExpense->getArrivalDateTime() : $travelRequest->getArrivalDate()
         );
+        $travelExpense->setDepartureDateTime(
+            $isNewTravelExpense ? $travelExpense->getDepartureDateTime() : $travelRequest->getDepartureDate()
+        );
+
+        $form =
+            $this->handleForm($isNewTravelExpense, $travelRequest, $travelExpense, $entityManager, $children, $request);
         
-        if ($request->isMethod('POST')) {
-            $form->handleRequest($request);
-            
-            if ($form->isValid()) {
-                
-                $travelExpense = TravelExpenseExtension::calculateAdvances($travelExpense);
-                
-                $this->removeChildNodes($entityManager, $travelExpense, $children);
-                
-                $travelExpense->setTravelRequest($travelRequest);
-                
-                $entityManager->persist($travelExpense);
-                $entityManager->flush();
-                
-                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
-            }
+        if (true === $form) {
+            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
         }
         
         return array(
@@ -224,9 +180,7 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense();
         }
         
-        $travelExpense = TravelExpenseExtension::calculateAdvances($travelExpense);
-        
-        return array('travelExpense' => $travelExpense);
+        return array('travelExpense' => $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense));
     }
     
     /**
@@ -271,7 +225,7 @@ class ExpenseController extends Controller
     {
         $departureDateTime = new \DateTime($request->request->get('departure'));
         $arrivalDateTime = new \DateTime($request->request->get('arrival'));
-        $detailsOfPerDiem = TravelExpenseExtension::calculatePerDiem(
+        $detailsOfPerDiem = $this->get('opit.model.travel_expense')->calculatePerDiem(
             $this->getDoctrine()->getManager(),
             $arrivalDateTime,
             $departureDateTime
@@ -323,28 +277,18 @@ class ExpenseController extends Controller
     {
         $travelExpenseId = $request->attributes->get('id');
         if ('new' !== $travelExpenseId) {
-            $page = $this->getTravelExpensePage($travelExpenseId);
-
-            $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-            $pdf->SetCreator(PDF_CREATOR);
-            $pdf->SetAuthor('NOTES');
-            $pdf->SetTitle('Travel Expense');
-            $pdf->SetSubject('Travel Expense details');
-            $pdf->SetKeywords('travel, expense, notes');
-            $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-            $pdf->SetMargins(PDF_MARGIN_LEFT, 15, PDF_MARGIN_RIGHT);
-            $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-            $pdf->SetFont('', '', 12);
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-            $pdf->AddPage();
-            $pdf->writeHTML($page, true, true, false, '');
-            $pdf->lastPage();
-
-            $filename = 'test.pdf';
-
-            $pdf->Output($filename, 'D');
+            $pdfContent = $this->getTravelExpensePage($travelExpenseId);
+            $pdf = $this->get('opit.manager.pdf_manager');
+            $pdf->exportToPdf(
+                $pdfContent,
+                'test.pdf',
+                'NOTES',
+                'Travel Expense',
+                'Travel Expense details',
+                array('travel', 'expense', 'notes'),
+                12,
+                array()
+            );
         }
     }
     
@@ -371,7 +315,7 @@ class ExpenseController extends Controller
      * Returns viewTravelExpense page rendered
      * 
      * @param integer $travelExpenseId
-     * @return mixed TravelExpense or null
+     * @return mixed \Opit\Notes\TravelBundle\Entity\TravelRequest or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     protected function getTravelExpensePage($travelExpenseId)
@@ -384,56 +328,45 @@ class ExpenseController extends Controller
         $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
         $employee = $travelRequest->getUser()->getEmployeeName();
         $dateTimeNow = date("Y-m-d H:i");
-        $expensesPaidbyCompany = 0;
-        $expensesPaidByEmployee = 0;
 
         $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
         $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
-        $perDiem = TravelExpenseExtension::calculatePerDiem(
+        $perDiem =  $this->get('opit.model.travel_expense')->calculatePerDiem(
             $this->getDoctrine()->getManager(),
             $arrivalDateTime,
             $departureDateTime
         );
-
-        foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
-            $expensesPaidbyCompany += $exchManager->convertCurrency(
+        
+        $travelExpenseExpenses = $this->get('opit.model.travel_expense')->sumExpenses($travelExpense);
                 $companyPaidExpenses->getCurrency()->getCode(),
                 $currencyConfig['default_currency'],
                 $companyPaidExpenses->getAmount()
             );
-        }
-
-        foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $expensesPaidByEmployee += $exchManager->convertCurrency(
                 $userPaidExpenses->getCurrency()->getCode(),
                 $currencyConfig['default_currency'],
                 $userPaidExpenses->getAmount()
             );
-        }
 
-
-        $page = $this->render(
+        return $this->render(
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
                 'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
                 'employee' => $employee, 'datetime' => $dateTimeNow,
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
-                'expensesPaidByCompany' => $expensesPaidbyCompany,
-                'expensesPaidByEmployee' => $expensesPaidByEmployee,
+                'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],
+                'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses']
                 'currencyFormat' => $currencyConfig['currency_format'],
                 'midRate' => $this->getMidRate($travelExpenseId)
             )
         );
-
-        return $page;
     }
     
     /**
      * Return travel expense entity
      * 
      * @param integer $travelExpenseId
-     * @return mixed TravelExpense or null
+     * @return mixed \Opit\Notes\TravelBundle\Entity\TravelExpense or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     protected function getTravelExpense($travelExpenseId = null)
@@ -454,51 +387,60 @@ class ExpenseController extends Controller
         return $travelExpense;
     }
     
-    protected function removeChildNodes(&$entityManager, $travelExpense, $children)
+    /**
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @throws CreateNotFoundException
+     */
+    protected function isAccessGranted($travelRequest)
     {
-        foreach ($children as $child) {
-            $getter =
-                (strstr(get_class($child), 'TEUserPaidExpense')) ? 'getUserPaidExpenses' : 'getCompanyPaidExpenses';
-            
-            if (false === $travelExpense->$getter()->contains($child)) {
-                $child->setTravelExpense(null);
-                $entityManager->remove($child);
-            }
+        $securityContext = $this->get('security.context');
+        if (false === $securityContext->isGranted('ROLE_ADMIN') &&
+            false === $securityContext->isGranted('VIEW', $travelRequest)) {
+            throw $this->createNotFoundException('You are not permitted to view or edit the travel expense!');
+        }
+        
+        if (null === $travelRequest) {
+            throw $this->createNotFoundException('No travel request was found with the given id!');
         }
     }
-    
+
     /**
-     * Method to to enable or disable travel expense
+     * Method to create and/or save travelExpense
      * 
-     * @param integer $travelRequestGM
-     * @param integer $currentUser
-     * @param string $currentStatusName
-     * @return boolean $trAvailability
+     * @param boolean $isNewTravelExpense
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
+     * @param EntityManager $entityManager
+     * @param ArrayCollection $children
+     * @param Request $request
+     * @return form
      */
-    protected function setTEAvailability($travelRequestGM, $currentUser, $currentStatusName)
+    protected function handleForm($isNewTravelExpense, $travelRequest, $travelExpense, EntityManager $entityManager, $children, $request)
     {
-        $teAvailability = array();
-        if (true === $this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            $teAvailability['isEditLocked'] = false;
-            $teAvailability['isStatusLocked'] = false;
-        } elseif ($travelRequestGM === $currentUser) {
-            $teAvailability['isEditLocked'] = true;
-            if ('Created' === $currentStatusName && 'Revise' === $currentStatusName) {
-                $teAvailability['isStatusLocked'] = true;
-            } else {
-                $teAvailability['isStatusLocked'] = false;
-            }
-        } else {
-            if ('Created' === $currentStatusName || 'Revise' === $currentStatusName) {
-                $teAvailability['isEditLocked'] = false;
-                $teAvailability['isStatusLocked'] = false;
-            } else {
-                $teAvailability['isEditLocked'] = true;
-                $teAvailability['isStatusLocked'] = true;
+        $form = $this->createForm(
+            new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
+            $travelExpense,
+            array('em' => $entityManager)
+        );
+        
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            
+            if ($form->isValid()) {
+                
+                $travelExpense = $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense);
+                
+                $this->get('opit.model.travel_expense')->removeChildNodes($entityManager, $travelExpense, $children);
+                $travelExpense->setTravelRequest($travelRequest);
+                $entityManager->persist($travelExpense);
+                $entityManager->flush();
+                
+                return true;
             }
         }
         
-        return $teAvailability;
+        return $form;
     }
     
     /**
