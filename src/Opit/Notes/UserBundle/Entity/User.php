@@ -114,10 +114,10 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=30)
-     * @Assert\NotBlank(message="The Bank name should not be blank.")
+     * @Assert\NotBlank(message="The bank name should not be blank.")
      * @Assert\Length(
      *      max = "34",
-     *      maxMessage = "The Bank name should not be longer than {{ limit }} characters length"
+     *      maxMessage = "The bank name should not be longer than {{ limit }} characters in length."
      * )
      */
     protected $bankName;

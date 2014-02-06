@@ -64,9 +64,11 @@ $("#userlistWrapper").on "click", ".list-change-password", ->
                 url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
                 data: $('#changePassword_frm').serialize()
               .done (data)->
-                  response = data
-                  $(document).data('notes').funcs.showAlert response, "update","Password reset successfully"
+                  $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
                   $('#dialog-edititem').dialog "destroy"
+              .fail (data) ->
+                  data = $.parseJSON data.responseText
+                  $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
             Close: ->
                $('#dialog-edititem').dialog "destroy"
                return

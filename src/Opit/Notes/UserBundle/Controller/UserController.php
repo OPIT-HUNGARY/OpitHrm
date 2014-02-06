@@ -267,6 +267,7 @@ class UserController extends Controller
         $result = array('response' => 'error');
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
+        $statusCode = 200;
 
         $user = $this->getUserObject($request->attributes->get('id'));
 
@@ -274,16 +275,17 @@ class UserController extends Controller
 
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
                 $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
                 $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
                 $user->setPassword($newPassword);
-
+                
                 // Save the user.
                 $em->persist($user);
                 $em->flush();
                 $result['response'] = 'success';
+            } else {
+                $statusCode = 500;
             }
             $validator = $this->get('validator');
             $errors = $validator->validate($user);
@@ -299,7 +301,8 @@ class UserController extends Controller
             }
             $result['errorMessage'] = $errorMessages;
         }
-        return new JsonResponse(array($result));
+        
+        return new JsonResponse(array($result), $statusCode);
     }
 
     /**
@@ -322,6 +325,8 @@ class UserController extends Controller
             throw $this->createNotFoundException('User object with id "'.$id.'" not found.');
         }
 
+        $user->setTaxIdentification((integer) $user->getTaxIdentification());
+        
         return $user;
     }
 }

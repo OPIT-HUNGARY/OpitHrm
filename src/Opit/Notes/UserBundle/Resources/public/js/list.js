@@ -89,10 +89,11 @@
               }),
               data: $('#changePassword_frm').serialize()
             }).done(function(data) {
-              var response;
-              response = data;
-              $(document).data('notes').funcs.showAlert(response, "update", "Password reset successfully");
+              $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
               return $('#dialog-edititem').dialog("destroy");
+            }).fail(function(data) {
+              data = $.parseJSON(data.responseText);
+              return $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
             });
           },
           Close: function() {
