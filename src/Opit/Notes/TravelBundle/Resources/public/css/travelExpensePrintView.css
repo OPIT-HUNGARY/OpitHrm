@@ -83,6 +83,15 @@ h3 {
   display: none;
   margin: 0 20px 0 0; }
 
+.position-fixed {
+  position: fixed; }
+
+.fix-right-10 {
+  right: 10px; }
+
+.fix-right-50 {
+  right: 50px; }
+
 .icons:hover {
   cursor: pointer; }
 

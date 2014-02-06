@@ -1,14 +1,16 @@
-{% stylesheets
-    'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-    '@OpitNotesTravelBundle/Resources/public/css/travelExpensePrintView.css'
-    output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
-    <link rel="stylesheet" href="{{ asset_url }}" />
-{% endstylesheets %}
+{% block stylesheets %}
+    {% stylesheets
+        'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+        output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
+        <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+    {% endstylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />    
+{% endblock %}
 
 <a href="{{ path('OpitNotesTravelBundle_expense_export', {'id': app.request.get('id')}) }}">
-    <img src="{{ asset('images/pdf-download-icon.png') }}" class="icons" />
+    <img src="{{ asset('images/pdf-download-icon.png') }}" class="icons position-fixed fix-right-10" />
 </a>
-<i class="fa fa-print fa-2x icons"></i>
+<i class="fa fa-print fa-2x icons position-fixed fix-right-50"></i>
 <br />
 <img src="{{ asset('images/opitLogo.png') }}" id="opitLogo" width="100px" height="23px" />
 <h3>Travel Expense Details - {{ trId }}</h3>
