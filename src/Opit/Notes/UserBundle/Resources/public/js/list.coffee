@@ -28,7 +28,10 @@ $("#add").click ->
                     $(document).data('notes').funcs.showAlert response, "create", "User created successfully"
                     $('#dialog-edititem').dialog "destroy"
               .fail (data) ->
-                $(document).data('notes').funcs.showAlert data.responseText, "create","Error"
+                response = data.responseText
+                if typeof response is 'string'
+                    response = $.parseJSON response
+                $(document).data('notes').funcs.showAlert response, "create","Error"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return

@@ -40,7 +40,12 @@
                 return $('#dialog-edititem').dialog("destroy");
               });
             }).fail(function(data) {
-              return $(document).data('notes').funcs.showAlert(data.responseText, "create", "Error");
+              var response;
+              response = data.responseText;
+              if (typeof response === 'string') {
+                response = $.parseJSON(response);
+              }
+              return $(document).data('notes').funcs.showAlert(response, "create", "Error");
             });
           },
           Close: function() {
