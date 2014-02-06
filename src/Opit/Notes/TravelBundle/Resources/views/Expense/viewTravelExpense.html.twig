@@ -1,19 +1,20 @@
 {% stylesheets
     'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+    '@OpitNotesTravelBundle/Resources/public/css/travelExpensePrintView.css'
     output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
     <link rel="stylesheet" href="{{ asset_url }}" />
 {% endstylesheets %}
-<link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />
+
 <a href="{{ path('OpitNotesTravelBundle_expense_export', {'id': app.request.get('id')}) }}">
-    <img src="{{ asset('/images/pdf-download-icon.png') }}" class="icons" />
+    <img src="{{ asset('images/pdf-download-icon.png') }}" class="icons" />
 </a>
 <i class="fa fa-print fa-2x icons"></i>
-{% set companyPaidExpense = 0 %}
-{% set employeePaidExpense = 0 %}
 <br />
-<img src="{{ asset('/images/opitLogo.png') }}" id="opitLogo" width="100px" height="23px" />
+<img src="{{ asset('images/opitLogo.png') }}" id="opitLogo" width="100px" height="23px" />
 <h3>Travel Expense Details - {{ trId }}</h3>
-<table class="bordered" >
+
+{# User info #}
+<table class="bordered">
     <tr>
         <td colspan="2" class="table-title">
             User info
@@ -39,17 +40,21 @@
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
-<table >
+
+{# Reason for travel #}
+<table>
     <tr>
         <td colspan="2" class="table-title">
             Reason for travel
         </td>
     </tr>
     <tr>
-        <td colspan="2">TAO days.</td>
+        <td colspan="2">{{ travelExpense.travelRequest.tripPurpose }}</td>
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
+
+{# Travel dates #}
 <table class="bordered" >
     <tr>
         <td colspan="4" class="table-title">
@@ -76,7 +81,9 @@
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
-<table >
+
+{# Summarization #}
+<table>
     <tr>
         <td colspan="4" class="table-title">
             Summarization
@@ -84,37 +91,39 @@
     </tr>
     <tr class="bold">
         <td></td>
-        <td>Total</td>
-        <td>Currency</td>
-        <td>Total</td>
+        <td class="align-right">Total</td>
+        <td class="align-right">Currency</td>
+        <td class="align-right">Total</td>
     </tr>
     <tr>
         <td class="bold">Advance recieved</td>
-        <td>{{ travelExpense.advancesRecieved }}</td>
-        <td>EUR</td>
-        <td>{{ travelExpense.advancesRecieved }}</td>
+        <td class="align-right">{{ travelExpense.advancesRecieved|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        <td class="align-right">{{ travelExpense.currency.code }}</td>
+        <td class="align-right">{{ travelExpense.advancesRecieved|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Advances spent</td>
-        <td>{{ travelExpense.toSettle }}</td>
-        <td>EUR</td>
-        <td>{{ travelExpense.toSettle }}</td>
+        <td class="align-right">{{ travelExpense.toSettle|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        <td class="align-right">{{ travelExpense.currency.code }}</td>
+        <td class="align-right">{{ travelExpense.toSettle|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Advance payback</td>
-        <td>{{ travelExpense.advancesPayback }}</td>
-        <td>EUR</td>
-        <td>{{ travelExpense.advancesPayback }}</td>
+        <td class="align-right">{{ travelExpense.advancesPayback|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        <td class="align-right">{{ travelExpense.currency.code }}</td>
+        <td class="align-right">{{ travelExpense.advancesPayback|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Per Diem in EUR</td>
-        <td>{{ perDiem['totalPerDiem'] }}</td>
-        <td>EUR</td>
-        <td>{{ perDiem['totalPerDiem'] }}</td>
+        <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        <td class="align-right">EUR</td>
+        <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
-<table class="bordered" >
+
+{# Total amount of expenses #}
+<table class="bordered">
     <tr>
         <td colspan="3" class="table-title">
             Total amount of expenses
@@ -122,33 +131,37 @@
     </tr>
     <tr>
         <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
-        <td class="width-80">{{ expensesPaidByCompany }}</td>
+        <td class="width-80 align-right">{{ convertCurrency('EUR','HUF', expensesPaidByCompany, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td class="width-50">HUF</td>
     </tr>
     <tr>
         <td class="bold"></td>
-        <td>{{ expensesPaidByCompany }}</td>
+        <td class="align-right">{{ expensesPaidByCompany|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td>EUR</td>
     </tr>
     <tr>
         <td class="bold">Expenses paid by employee (payable to your own bank account)</td>
-        <td>{{ expensesPaidByEmployee }}</td>
+        <td class="align-right">{{ convertCurrency('EUR','HUF',expensesPaidByEmployee, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td>HUF</td>
     </tr>
     <tr>
         <td class="bold"></td>
-        <td>{{ expensesPaidByEmployee }}</td>
+        <td class="align-right">{{ expensesPaidByEmployee|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td>EUR</td>
     </tr>
     {% set totalExpenses = (expensesPaidByEmployee+expensesPaidByCompany+perDiem['totalPerDiem']) %}
     <tr class="bold">
         <td>Total expenses in HUF (OPIT + Employee + Per diem)</td>
-        <td>{{ totalExpenses }}</td>
+        <td class="align-right">
+            {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
+        </td>
         <td>HUF</td>
     </tr>
     <tr class="bold">
         <td>Total expenses in EUR (OPIT + Employee + Per diem)</td>
-        <td>{{ totalExpenses }}</td>
+        <td class="align-right">
+            {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
+        </td>
         <td>EUR</td>
     </tr>
 </table>
@@ -164,7 +177,9 @@
 {% if travelExpense.userPaidExpenses is defined %}
 {% if travelExpense.userPaidExpenses|length > 0 %}
 <div class="page-break-after"></div>
-<table class="bordered" >
+
+{# Employee paid expenses #}
+<table class="bordered">
     <tr>
         <td colspan="3" class="table-title">
             Employee paid expenses
@@ -186,7 +201,9 @@
     </tr>
     <tr>
         <td class="bold width-265">Amount</td>
-        <td class="width-265">{{ userPaidExpenses.amount }}</td>
+        <td class="width-265">
+            {{ userPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} {{ userPaidExpenses.currency.code }}
+        </td>
     </tr>
     <tr>
         <td class="bold width-265">Date</td>
@@ -197,7 +214,6 @@
         <td style="border:none;"></td>
     </tr>
     {% endif %}
-    {% set employeePaidExpense = employeePaidExpense + userPaidExpenses.amount %}
     {% endfor %}
 </table>
 <div class="height-20 visibility-hidden"></div>
@@ -214,7 +230,9 @@
 {% if travelExpense.companyPaidExpenses is defined %}
 {% if travelExpense.companyPaidExpenses|length > 0 %}
 <div class="page-break-after"></div>
-<table class="bordered" >
+
+{# Company paid expenses #}
+<table class="bordered">
     <tr>
         <td colspan="3" class="table-title">
             Company paid expenses
@@ -236,7 +254,7 @@
     </tr>
     <tr>
         <td class="bold width-265">Amount</td>
-        <td class="width-265">{{ companyPaidExpenses.amount }}</td>
+        <td class="width-265">{{ companyPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} {{ companyPaidExpenses.currency.code }}</td>
     </tr>
     <tr>
         <td class="bold width-265">Date</td>
@@ -247,7 +265,6 @@
         <td style="border:none;"></td>
     </tr>
     {% endif %}    
-    {% set companyPaidExpense = companyPaidExpense + companyPaidExpenses.amount %}
     {% endfor %}
 </table>
 <div class="height-20 visibility-hidden"></div>
@@ -260,5 +277,6 @@
 </div>
 {% endif %}
 {% endif %}
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="{{ asset('bundles/opitnotestravel/js/travelExpensePrintView.js') }}"></script>

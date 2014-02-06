@@ -100,20 +100,28 @@ createTableRow = (text, value, rowTitle) ->
     return $row
     
 $perDiem = $('<div>').addClass 'display-inline-block vertical-align-top per-diem-details-wrapper'
-    
+
+convertCurrency = (originCode, destinationCode, value) ->
+    if originCode is destinationCode
+        return value
+    else
+        return curConverter.convertCurrency(originCode, destinationCode, value).toFixed(2)
+
 calculateAdvancesPayback = () ->
     advancesRecieved = parseInt $('#travelExpense_advancesRecieved').val()
+    destinationCode = $('#travelExpense_currency').val()
     payback = advancesRecieved
     $('.amount').each ->
         paidInAdvance = $(@).closest('.formFieldsetChild').find('.paid-in-advance').val()
+        originCode = $(@).closest('.formFieldsetChild').find('.currency').val()
         if paidInAdvance is '0'
             amount = parseInt $(@).val()
             if not isNaN(amount)
-                payback -= amount
+                payback -= convertCurrency originCode, destinationCode, amount
                 
     if payback <= advancesRecieved and payback >= 0
-        $('#travelExpense_advancesSpent').html(advancesRecieved - payback)
-        $('#travelExpense_advancesPayback').html payback
+        $('#travelExpense_advancesSpent').html((advancesRecieved - payback).toFixed(2))
+        $('#travelExpense_advancesPayback').html payback.toFixed(2)
         $('.custom-error').each ->
             $(@).parent().children().remove('br')
             $(@).remove()
@@ -175,6 +183,9 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
             $perDiemTable.append createTableRow('Total', data['totalPerDiem'])
             
             $perDiem.append $perDiemTable
+
+convertCurrency = (originCode, destinationCode, value) ->
+    curConverter.convertCurrency originCode, destinationCode, value
 
 $(document).ready ->
     $buttonParent = $('#travelExpense_add_travel_expense').parent()
@@ -333,9 +344,7 @@ $(document).ready ->
     
     $('#travelExpense_advancesRecieved').on 'change', ->
         calculateAdvancesPayback()
-    $('.formFieldset').on 'change', '.amount', ->
-        calculateAdvancesPayback()
-    $('.formFieldset').on 'change', '.paid-in-advance', ->
+    $('.formFieldset').on 'change', '.amount, .currency, .paid-in-advance', ->
         calculateAdvancesPayback()
         
     $('.changeState').on 'change', ->
@@ -350,7 +359,7 @@ $(document).ready ->
             window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
         .fail (data) ->
             console.warn 'Error occured while saving state for travel expense.'
-        
+
 
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'

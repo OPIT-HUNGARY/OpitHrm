@@ -12,7 +12,7 @@ namespace Opit\Notes\CurrencyRateBundle\Service;
 
 use Opit\Notes\CurrencyRateBundle\Entity\Rate;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\Common\CommonException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Bridge\Monolog\Logger;
 use Opit\Notes\CurrencyRateBundle\Helper\Utils;
@@ -51,6 +51,10 @@ class ExchangeRateService
      */
     private $mnbUrl;
 
+    /**
+     * Currency rates
+     * @var mixin 
+     */
     private $currencyRates;
     
     /**
@@ -108,6 +112,16 @@ class ExchangeRateService
         return $result;
     }
     
+    public function getRatesByDate(\DateTime $date = null)
+    {
+        // If datetime is null set to today
+        if (null === $date) {
+            $date = new \DateTime('today');
+        }
+        
+        return $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->getRatesArray($date);
+    }
+    
    /**
     * Get rate of a currency by currency code
     * The time can be setted, if it null the method will search on the rate of today.
@@ -127,7 +141,7 @@ class ExchangeRateService
         
         //if rate is null throw an exception
         if (null === $rate) {
-            throw new EntityNotFoundException(sprintf('Rate entity not found for "%s, %s"', $code, $datetime));
+            throw new CommonException(sprintf('Rate entity not found for "%s, %s"', $code, $datetime->format('Y-m-d')));
         }
         
         return $rate->getRate();

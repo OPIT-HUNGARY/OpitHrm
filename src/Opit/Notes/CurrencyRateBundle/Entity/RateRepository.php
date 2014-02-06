@@ -99,4 +99,16 @@ class RateRepository extends EntityRepository
             ->setParameter('start', $start)
             ->setParameter('end', $end);
     }
+    
+    public function getRatesArray(\DateTime $date)
+    {
+        $rarrRates = array();
+        $rates = $this->findByCreated($date);
+        
+        foreach ($rates as $rate) {
+            $rarrRates[$rate->getCurrencyCode()->getCode()] = $rate->getRate();
+        }
+        
+        return $rarrRates;
+    }
 }

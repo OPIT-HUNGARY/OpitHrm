@@ -197,6 +197,10 @@ $snowColor: rgb(250, 250, 250);
     text-align: center;
 }
 
+.align-right{
+    text-align: right;
+}
+
 table.bordered{
     tr, td, th{
         @extend .default-border;

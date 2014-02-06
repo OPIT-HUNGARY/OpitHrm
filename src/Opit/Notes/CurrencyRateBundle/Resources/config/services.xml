@@ -9,6 +9,7 @@
         <parameter key="opit.command.abstract_exchange_rate.class">Opit\Notes\CurrencyRateBundle\Command\AbstractExchangeRateCommand</parameter>        
         <parameter key="opit.service.exchange_rates.mnb_url">http://www.mnb.hu/arfolyamok.asmx?wsdl</parameter>
         <parameter key="opit.service.exchange_rates.huf_value">1.0</parameter>
+        <parameter key="opit.twig.opit_currency_extension.class">Opit\Notes\CurrencyRateBundle\Twig\OpitExtension</parameter>
     </parameters>
     <services>
         <service id="opit.service.exchange_rates" class="%opit.service.exchange_rates.class%">
@@ -21,6 +22,10 @@
             <call method="setContainer">
                 <argument type="service" id="service_container" />
             </call>
+        </service>
+        <service id="opit.twig.opit_currency_extension.class" class="%opit.twig.opit_currency_extension.class%">
+            <argument type="service" id="opit.service.exchange_rates" />
+            <tag name="twig.extension" />
         </service>
     </services>
 </container>

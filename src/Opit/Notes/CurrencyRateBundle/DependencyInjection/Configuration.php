@@ -20,10 +20,20 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opit_notes_currency_rate');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->scalarNode('default_currency')->cannotBeEmpty()->defaultValue('EUR')->end()
+                ->arrayNode('currency_format')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('decimals')->cannotBeEmpty()->defaultValue(2)->end()
+                        ->scalarNode('dec_point')->cannotBeEmpty()->defaultValue(',')->end()
+                        ->scalarNode('thousands_sep')->cannotBeEmpty()->defaultValue('.')->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }
+    
 }

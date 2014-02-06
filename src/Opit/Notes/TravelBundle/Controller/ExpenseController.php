@@ -118,6 +118,10 @@ class ExpenseController extends Controller
         
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
         
+        // Get rates
+        $exchService = $this->container->get('opit.service.exchange_rates');
+        $rates = $exchService->getRatesByDate($this->getMidRate($travelExpense->getId()));
+        
         // te = Travel Expense
         $travelExpenseStates = array();
         $isEditLocked = array();
@@ -155,7 +159,7 @@ class ExpenseController extends Controller
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
             $children->add($companyPaidExpenses);
         }
-            
+        
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
             $children->add($userPaidExpenses);
         }
@@ -195,7 +199,8 @@ class ExpenseController extends Controller
             'trId' => $travelRequestId,
             'travelExpenseStates' => $travelExpenseStates,
             'isEditLocked' => $isEditLocked,
-            'isStatusLocked' => $isStatusLocked
+            'isStatusLocked' => $isStatusLocked,
+            'rates' => json_encode($rates)
         );
     }
     
@@ -371,6 +376,9 @@ class ExpenseController extends Controller
      */
     protected function getTravelExpensePage($travelExpenseId)
     {
+        $currencyConfig = $this->container->getParameter('exchange_rate');
+        $exchManager = $this->container->get('opit.service.exchange_rates');
+        
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
         $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
@@ -388,11 +396,19 @@ class ExpenseController extends Controller
         );
 
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
-            $expensesPaidbyCompany += $companyPaidExpenses->getAmount();
+            $expensesPaidbyCompany += $exchManager->convertCurrency(
+                $companyPaidExpenses->getCurrency()->getCode(),
+                $currencyConfig['default_currency'],
+                $companyPaidExpenses->getAmount()
+            );
         }
 
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $expensesPaidByEmployee += $userPaidExpenses->getAmount();
+            $expensesPaidByEmployee += $exchManager->convertCurrency(
+                $userPaidExpenses->getCurrency()->getCode(),
+                $currencyConfig['default_currency'],
+                $userPaidExpenses->getAmount()
+            );
         }
 
 
@@ -404,7 +420,9 @@ class ExpenseController extends Controller
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
                 'expensesPaidByCompany' => $expensesPaidbyCompany,
-                'expensesPaidByEmployee' => $expensesPaidByEmployee
+                'expensesPaidByEmployee' => $expensesPaidByEmployee,
+                'currencyFormat' => $currencyConfig['currency_format'],
+                'midRate' => $this->getMidRate($travelExpenseId)
             )
         );
 
@@ -481,5 +499,27 @@ class ExpenseController extends Controller
         }
         
         return $teAvailability;
+    }
+    
+    /**
+     * Get the middle rate.
+     * 
+     * @todo handle empty rates
+     * @param type $travelExpenseId
+     * @return type
+     */
+    protected function getMidRate($travelExpenseId)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $lastTEStatus = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
+                                 ->getCurrentStatus($travelExpenseId);
+        // Set the midrate of last month
+        $midRate = $lastTEStatus ? $lastTEStatus->getCreated() : new \DateTime('today');
+        $midRate->setDate($midRate->format('Y'), $midRate->format('m'), 15);
+        $midRate->modify('-1 month');
+        
+        // TODO: handle empty rates.
+        
+        return $midRate;
     }
 }

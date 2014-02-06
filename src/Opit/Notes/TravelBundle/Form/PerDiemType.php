@@ -29,6 +29,7 @@ class PerDiemType extends AbstractType
             ),
             'label' => 'Currency',
             'class' => 'OpitNotesCurrencyRateBundle:Currency',
+            'disabled' => true,
             'property' => 'code',
             'multiple' => false
         ));

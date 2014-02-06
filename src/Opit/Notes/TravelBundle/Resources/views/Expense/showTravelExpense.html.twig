@@ -27,7 +27,9 @@
         {% endif %}
     </script>
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
+    <script type="text/javascript" src="{{ asset('bundles/opitnotescurrencyrate/js/CurrencyConverter.js') }}"></script>
 {% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelExpense.css') }}" />
@@ -74,4 +76,18 @@
         'attr':{'id': 'travelExpenseForm'}
        })
     }}
+{% endblock %}
+    
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        var rates = {{ rates|raw }};
+        try {
+            var curConverter = new CurrencyConverter({{ rates|raw }});
+        } catch (err) {
+            var errorMessage = 'Error. Currency Converter could not be initalized.';
+            alert(errorMessage);
+            throw new Error(errorMessage);
+        }
+    </script>
 {% endblock %}

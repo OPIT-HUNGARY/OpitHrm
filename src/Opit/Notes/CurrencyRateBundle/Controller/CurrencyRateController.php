@@ -5,6 +5,7 @@ namespace Opit\Notes\CurrencyRateBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * This controller class is for the ChangeRateBundle.
@@ -14,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
  * @package Opit
  * @subpackage CurrrencyRateBundle
  */
-class DefaultController extends Controller
+class CurrencyRateController extends Controller
 {
 
     /**
@@ -33,5 +34,24 @@ class DefaultController extends Controller
         ));
         $exch->saveExchangeRates(true);
         return new \Symfony\Component\HttpFoundation\Response();
+    }
+    
+    /**
+     * To get covnerted rate of currency
+     *
+     * @Route("/secured/currencyrates/convert", name="OpitNotesCurrencyRateBundle_currencyrate_convert")
+     * @Template()
+     */
+    public function getConvertedRateOfCurrencyAction()
+    {
+        $request = $this->getRequest();
+        $originCode = $request->request->get('originCode');
+        $destinationCode = $request->request->get('destinationCode');
+        $value = $request->request->get('value');
+
+        $exch = $this->get('opit.service.exchange_rates');
+        $convertedValue = $exch->convertCurrency($originCode, $destinationCode, $value);
+        
+        return new JsonResponse(array($destinationCode => $convertedValue));
     }
 }
