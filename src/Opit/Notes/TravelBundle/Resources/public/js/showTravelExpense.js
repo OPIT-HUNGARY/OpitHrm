@@ -13,25 +13,6 @@
     return $deleteButton;
   };
 
-  validateExpenseDate = function(self) {
-    var $errorLabel, arrivalDate, date, departureDate, isDateValid;
-    isDateValid = true;
-    date = self.val();
-    self.addClass('display-inline-block');
-    departureDate = $('#travelExpense_departureDateTime_date').val();
-    arrivalDate = $('#travelExpense_arrivalDateTime_date').val();
-    if (date > arrivalDate || date < departureDate) {
-      if (self.parent().children('.custom-error').length < 1) {
-        $errorLabel = $('<label>');
-        $errorLabel.addClass('custom-error');
-        $errorLabel.text('Invalid expense date.');
-        return self.parent().append($errorLabel);
-      }
-    } else {
-      return self.parent().children().remove('.custom-error');
-    }
-  };
-
   validateAllExpenseDates = function() {
     var $formFieldsetChilds, isDateValid;
     isDateValid = true;
@@ -47,12 +28,34 @@
     return isDateValid;
   };
 
+  validateExpenseDate = function(self) {
+    var $errorLabel, arrivalDate, date, departureDate, isDateValid;
+    isDateValid = true;
+    date = self.val();
+    console.log(self.attr('id'));
+    self.addClass('display-inline-block');
+    departureDate = $('#travelExpense_departureDateTime_date').val();
+    arrivalDate = $('#travelExpense_arrivalDateTime_date').val();
+    if (date > arrivalDate || date < departureDate) {
+      if (self.parent().children('.custom-error').length < 1) {
+        $errorLabel = $('<label>');
+        $errorLabel.addClass('custom-error');
+        $errorLabel.text('Invalid expense date.');
+        return self.parent().append($errorLabel);
+      }
+    } else {
+      return self.parent().children().remove('.custom-error');
+    }
+  };
+
   expenseDateChange = function(parent) {
     var $dateOfExpenseSpent;
     $dateOfExpenseSpent = parent.find('input[type=date]');
-    return $dateOfExpenseSpent.on('change', function() {
-      return validateExpenseDate($(this));
-    });
+    if ($dateOfExpenseSpent.attr('id').indexOf('userPaidExpenses') > -1) {
+      return $dateOfExpenseSpent.on('change', function() {
+        return validateExpenseDate($(this));
+      });
+    }
   };
 
   reCreateExpenses = function(self) {

@@ -7,21 +7,6 @@ createDeleteButton = ->
         
     return $deleteButton
 
-validateExpenseDate = (self) ->
-    isDateValid = true
-    date = self.val()
-    self.addClass 'display-inline-block'
-    departureDate = $('#travelExpense_departureDateTime_date').val()
-    arrivalDate = $('#travelExpense_arrivalDateTime_date').val()
-    if date > arrivalDate or date < departureDate
-        if self.parent().children('.custom-error').length < 1
-            $errorLabel = $('<label>')
-            $errorLabel.addClass 'custom-error'
-            $errorLabel.text 'Invalid expense date.'
-            self.parent().append $errorLabel
-    else
-        self.parent().children().remove('.custom-error')
-
 validateAllExpenseDates = ->
     isDateValid = true
     $formFieldsetChilds = $('.formFieldsetChild')
@@ -34,10 +19,27 @@ validateAllExpenseDates = ->
 
     return isDateValid
 
+validateExpenseDate = (self) ->
+    isDateValid = true
+    date = self.val()
+    console.log self.attr 'id'
+    self.addClass 'display-inline-block'
+    departureDate = $('#travelExpense_departureDateTime_date').val()
+    arrivalDate = $('#travelExpense_arrivalDateTime_date').val()
+    if date > arrivalDate or date < departureDate
+        if self.parent().children('.custom-error').length < 1
+            $errorLabel = $('<label>')
+            $errorLabel.addClass 'custom-error'
+            $errorLabel.text 'Invalid expense date.'
+            self.parent().append $errorLabel
+    else
+        self.parent().children().remove('.custom-error')
+
 expenseDateChange = (parent) ->
     $dateOfExpenseSpent = parent.find('input[type=date]')
-    $dateOfExpenseSpent.on 'change', ->
-        validateExpenseDate($(@))
+    if $dateOfExpenseSpent.attr('id').indexOf('userPaidExpenses') > -1
+        $dateOfExpenseSpent.on 'change', ->
+            validateExpenseDate($(@))
 
 
 reCreateExpenses = (self) ->
