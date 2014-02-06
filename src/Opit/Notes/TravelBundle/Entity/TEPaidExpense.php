@@ -56,11 +56,6 @@ abstract class TEPaidExpense
     protected $expenseType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TravelExpense", inversedBy="paidExpenses")
-     */
-    protected $travelExpense;
-  
-    /**
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
@@ -199,29 +194,6 @@ abstract class TEPaidExpense
         return $this->expenseType;
     }
 
-    /**
-     * Set travelExpense
-     *
-     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return TEPaidExpense
-     */
-    public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense = null)
-    {
-        $this->travelExpense = $travelExpense;
-    
-        return $this;
-    }
-
-    /**
-     * Get travelExpense
-     *
-     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense 
-     */
-    public function getTravelExpense()
-    {
-        return $this->travelExpense;
-    }
-    
     /**
      * Set currency
      *

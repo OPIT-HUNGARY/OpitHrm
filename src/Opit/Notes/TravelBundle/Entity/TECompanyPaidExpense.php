@@ -44,7 +44,7 @@ class TECompanyPaidExpense extends TEPaidExpense
     protected $expenseType;
 
     /**
-     * @var \Opit\Notes\TravelBundle\Entity\TravelExpense
+     * @ORM\ManyToOne(targetEntity="TravelExpense", inversedBy="companyPaidExpenses")
      */
     protected $travelExpense;
 

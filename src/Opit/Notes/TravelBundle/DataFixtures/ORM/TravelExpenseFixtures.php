@@ -64,6 +64,8 @@ class TravelExpenseFixtures extends AbstractFixture implements OrderedFixtureInt
         $manager->persist($travelExpense2);
         
         $manager->flush();
+
+        $this->setReference('travelExpense1', $travelExpense1);
     }
     
     /**

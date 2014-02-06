@@ -36,7 +36,8 @@ class CompanyPaidExpensesFixtures extends AbstractFixture implements OrderedFixt
             ->setAmount(2)
             ->setDestination("Frankfurt")
             ->setDescription("To go accross the city")
-            ->setExpenseType($this->getReference('other-expense-type'));
+            ->setExpenseType($this->getReference('other-expense-type'))
+            ->setTravelExpense($this->getReference('travelExpense1'));
         $manager->persist($userPaidExpense1);
 
         $userPaidExpense2 = new TECompanyPaidExpense();
@@ -44,7 +45,8 @@ class CompanyPaidExpensesFixtures extends AbstractFixture implements OrderedFixt
             ->setAmount(6)
             ->setDestination("Amsterdam")
             ->setDescription("Get our location")
-            ->setExpenseType($this->getReference('other-expense-type'));
+            ->setExpenseType($this->getReference('other-expense-type'))
+            ->setTravelExpense($this->getReference('travelExpense1'));
         $manager->persist($userPaidExpense2);
         
         $manager->flush();
