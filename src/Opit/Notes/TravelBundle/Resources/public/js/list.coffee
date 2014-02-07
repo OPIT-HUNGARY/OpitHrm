@@ -1,20 +1,10 @@
 $(document).ready ->
-    $('.print-view').on 'click', (event) ->
-        event.preventDefault()
-        url =  $(@).attr 'href'
-        win=window.open url, '_blank'
-        win.focus()
-
-    $('.changeState').on 'change', ->
-        $(@).addClass 'dropdown-disabled'
-        statusId = $(@).val()
-        travelExpenseId = $(@).closest('tr').find('.clickable').data 'tr-id'
-        firstStatusId = $(@).find('option:first-child').val()
+    changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
         reloadPage = true
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitNotesTravelBundle_request_state'
-            data: {'statusId': statusId, 'travelRequestId': travelExpenseId, 'firstStatusId': firstStatusId}
+            data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
         .done (data) ->
             if data is 'error'
                 reloadPage = false
@@ -35,6 +25,20 @@ $(document).ready ->
                 location.reload()
         .fail (data) ->
             console.warn 'An error occured while setting new status for the request.'
+            
+    $('.print-view').on 'click', (event) ->
+        event.preventDefault()
+        url =  $(@).attr 'href'
+        win=window.open url, '_blank'
+        win.focus()
+
+    $('.changeState').on 'change', ->
+        $(@).addClass 'dropdown-disabled'
+        statusId = $(@).val()
+        travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
+        firstStatusId = $(@).find('option:first-child').val()
+        changeTravelStatus statusId, travelRequestId, firstStatusId
+
             
     $('.status-history').click (event) ->
         event.preventDefault()
@@ -91,11 +95,12 @@ deleteSingleRequest = (type, self) ->
     return
 
 $('#list-table').on 'click', '.clickable', ->
-  id = $(@).attr 'data-tr-id'
+  travelRequestId = $(@).attr 'data-tr-id'
+  firstStatusId = $(@).parent().find('option:first-child').val()
   $.ajax
     method: 'POST'
     url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
-    data: 'id': id
+    data: 'id': travelRequestId
   .done (data) ->
     dialogWidth = 550
     $('<div id="dialog-show-details-tr"></div>').html(data)
@@ -105,10 +110,19 @@ $('#list-table').on 'click', '.clickable', ->
         width: dialogWidth
         maxHeight: $(window).outerHeight()-100
         modal: on
-        buttons:
-          Close: ->
-             $('#dialog-show-details-tr').dialog 'destroy'
-             return
+        if firstStatusId is '1' or firstStatusId is '3'
+            buttons:
+              'Send for approval': ->
+                 changeTravelStatus 2, travelRequestId, firstStatusId
+                 $('#dialog-show-details-tr').dialog 'destroy'
+              Close: ->
+                 $('#dialog-show-details-tr').dialog 'destroy'
+                 return
+        else
+            buttons:
+              Close: ->
+                 $('#dialog-show-details-tr').dialog 'destroy'
+                 return
     return
   return
 

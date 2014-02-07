@@ -275,11 +275,17 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
                 maxHeight: $(window).outerHeight()-100
                 modal: on
                 buttons:
-                    Cancel: ->
-                        $preview.dialog "destroy"
-                        return
                     Save: ->
                         $form.submit()
+                        $preview.dialog "destroy"
+                        return
+                    'Save and send for approval': ->
+                        formAction = $form.attr('action') + '/fa'
+                        $form.attr 'action', formAction
+                        $form.submit()
+                        $preview.dialog "destroy"
+                        return
+                    Cancel: ->
                         $preview.dialog "destroy"
                         return
         .fail () ->

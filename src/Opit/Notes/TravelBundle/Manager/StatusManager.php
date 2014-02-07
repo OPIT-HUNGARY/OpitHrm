@@ -177,12 +177,18 @@ class StatusManager
      */
     public function isNewStatusValid($travelRequestId, $firstStatusId)
     {
-        $getStatusBeforeLast = $this->entityManager
-            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusBeforeLast($travelRequestId);
-        if ($firstStatusId != $getStatusBeforeLast->getStatus()->getId()) {
+        $getStatusCountForTravelRequest = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusCountForTravelRequest($travelRequestId);
+        if ($getStatusCountForTravelRequest > 2) {
+            $getStatusBeforeLast = $this->entityManager
+                ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusBeforeLast($travelRequestId);
+            if ($firstStatusId != $getStatusBeforeLast->getStatus()->getId()) {
+                return true;
+            }
+
+            return false;
+        } else {
             return true;
         }
-        
-        return false;
     }
 }

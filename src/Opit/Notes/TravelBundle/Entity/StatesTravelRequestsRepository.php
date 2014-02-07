@@ -39,4 +39,14 @@ class StatesTravelRequestsRepository extends EntityRepository
         
         return $travelRequestState->getResult()[1];
     }
+    
+    public function getStatusCountForTravelRequest($trId)
+    {
+        $travelRequestState = $this->createQueryBuilder('tr')
+            ->where('tr.travelRequest = :trId')
+            ->setParameter(':trId', $trId)
+            ->getQuery();
+        
+        return count($travelRequestState->getResult());        
+    }
 }

@@ -329,11 +329,18 @@
           maxHeight: $(window).outerHeight() - 100,
           modal: true,
           buttons: {
-            Cancel: function() {
-              $preview.dialog("destroy");
-            },
             Save: function() {
               $form.submit();
+              $preview.dialog("destroy");
+            },
+            'Save and send for approval': function() {
+              var formAction;
+              formAction = $form.attr('action') + '/fa';
+              $form.attr('action', formAction);
+              $form.submit();
+              $preview.dialog("destroy");
+            },
+            Cancel: function() {
               $preview.dialog("destroy");
             }
           }

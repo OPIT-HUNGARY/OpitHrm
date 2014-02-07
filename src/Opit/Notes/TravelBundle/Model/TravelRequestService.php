@@ -19,6 +19,7 @@ use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Manager\StatusManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Description of TravelRequestService
@@ -358,6 +359,28 @@ class TravelRequestService
             return $travelExpense->getId();
         } else {
             return 'new';
+        }
+    }
+    
+    /**
+     * 
+     * @param TravelRequest $travelRequest
+     * @param integer $firstStatusId
+     * @param integer $statusId
+     * @param StatusManager $statusManager
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function changeStatus(TravelRequest $travelRequest, $firstStatusId, $statusId, $statusManager)
+    {
+        if('2' === $statusId) {
+            $statusManager->addStatus($travelRequest, $statusId);
+            return new JsonResponse();
+        }
+        else if ($statusManager->isNewStatusValid($travelRequest, $firstStatusId)) {
+            $statusManager->addStatus($travelRequest, $statusId);
+            return new JsonResponse();
+        } else {
+            return new JsonResponse('error');
         }
     }
 }

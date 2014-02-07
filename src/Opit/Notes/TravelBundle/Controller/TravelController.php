@@ -17,10 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\Common\Collections\ArrayCollection;
-use Opit\Notes\TravelBundle\Entity\TRDestination;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
-use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -155,7 +153,7 @@ class TravelController extends Controller
     /**
      * Method to show and edit travel request
      *
-     * @Route("/secured/travel/show/{id}", name="OpitNotesTravelBundle_travel_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Route("/secured/travel/show/{id}/{fa}", name="OpitNotesTravelBundle_travel_show", defaults={"id" = "new", "fa" = "new"}, requirements={ "id" = "new|\d+", "fa" = "new|fa" })
      * @Template()
      */
     public function showTravelRequestAction(Request $request)
@@ -165,6 +163,7 @@ class TravelController extends Controller
         $teamManager = null;
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->attributes->get('id');
+        $forApproval = $request->attributes->get('fa');
         $isNewTravelRequest = "new" !== $travelRequestId;
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
         $statusManager = $this->get('opit.manager.status_manager');
@@ -201,7 +200,8 @@ class TravelController extends Controller
             $teamManager,
             $user->getId(),
             $travelRequest,
-            $children
+            $children,
+            $forApproval
         );
         
         if (true === $form) {
@@ -299,13 +299,8 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
 
-        if ($this->get('opit.manager.status_manager')->isNewStatusValid($travelRequest, $firstStatusId)) {
-            $statusManager = $this->get('opit.manager.status_manager');
-            $statusManager->addStatus($travelRequest, $statusId);
-            return new JsonResponse();
-        } else {
-            return new JsonResponse('error');
-        }
+        return $this->get('opit.model.travel_request')
+            ->changeStatus($travelRequest, $firstStatusId, $statusId, $this->get('opit.manager.status_manager'));
     }
     
     /**
@@ -377,7 +372,8 @@ class TravelController extends Controller
         $teamManager,
         $userId,
         $travelRequest,
-        $children
+        $children,
+        $forApproval = null
     ) {
         $oldUser = $travelRequest->getUser();
         $entityManager = $this->getDoctrine()->getManager();
@@ -399,7 +395,6 @@ class TravelController extends Controller
             }
 
             if ($form->isValid()) {
-
                 // Persist deleted destinations/accomodations
                 $travelRequestModel->removeChildNodes($entityManager, $travelRequest, $children);
                 $entityManager->persist($travelRequest);
@@ -409,7 +404,17 @@ class TravelController extends Controller
                 // set travel request id is handled inside its entity using lifecycle callbacks
                 if ($travelRequest->getTravelRequestId()) {
                     $travelRequestModel->addStatus($travelRequest, $entityManager);
-
+                    if ('fa' === $forApproval) {
+                        $travelRequestId = $travelRequest->getId();
+                        $this->get('opit.model.travel_request')->changeStatus(
+                            $travelRequest,
+                            $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+                                ->getCurrentStatus($travelRequestId)->getStatus()->getId(),
+                            2,
+                            $this->get('opit.manager.status_manager')
+                        );
+                    }
+                    
                     $entityManager->persist($travelRequest);
                     $entityManager->flush();
 

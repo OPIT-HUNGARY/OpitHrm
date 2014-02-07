@@ -3,26 +3,16 @@
   var deleteSingleRequest;
 
   $(document).ready(function() {
-    $('.print-view').on('click', function(event) {
-      var url, win;
-      event.preventDefault();
-      url = $(this).attr('href');
-      win = window.open(url, '_blank');
-      return win.focus();
-    });
-    $('.changeState').on('change', function() {
-      var firstStatusId, reloadPage, statusId, travelExpenseId;
-      $(this).addClass('dropdown-disabled');
-      statusId = $(this).val();
-      travelExpenseId = $(this).closest('tr').find('.clickable').data('tr-id');
-      firstStatusId = $(this).find('option:first-child').val();
+    var changeTravelStatus;
+    changeTravelStatus = function(statusId, travelRequestId, firstStatusId) {
+      var reloadPage;
       reloadPage = true;
       return $.ajax({
         method: 'POST',
         url: Routing.generate('OpitNotesTravelBundle_request_state'),
         data: {
           'statusId': statusId,
-          'travelRequestId': travelExpenseId,
+          'travelRequestId': travelRequestId,
           'firstStatusId': firstStatusId
         }
       }).done(function(data) {
@@ -51,6 +41,21 @@
       }).fail(function(data) {
         return console.warn('An error occured while setting new status for the request.');
       });
+    };
+    $('.print-view').on('click', function(event) {
+      var url, win;
+      event.preventDefault();
+      url = $(this).attr('href');
+      win = window.open(url, '_blank');
+      return win.focus();
+    });
+    $('.changeState').on('change', function() {
+      var firstStatusId, statusId, travelRequestId;
+      $(this).addClass('dropdown-disabled');
+      statusId = $(this).val();
+      travelRequestId = $(this).closest('tr').find('.clickable').data('tr-id');
+      firstStatusId = $(this).find('option:first-child').val();
+      return changeTravelStatus(statusId, travelRequestId, firstStatusId);
     });
     return $('.status-history').click(function(event) {
       event.preventDefault();
@@ -118,13 +123,14 @@
   };
 
   $('#list-table').on('click', '.clickable', function() {
-    var id;
-    id = $(this).attr('data-tr-id');
+    var firstStatusId, travelRequestId;
+    travelRequestId = $(this).attr('data-tr-id');
+    firstStatusId = $(this).parent().find('option:first-child').val();
     $.ajax({
       method: 'POST',
       url: Routing.generate('OpitNotesTravelBundle_travel_show_details'),
       data: {
-        'id': id
+        'id': travelRequestId
       }
     }).done(function(data) {
       var dialogWidth;
@@ -135,7 +141,18 @@
         },
         width: dialogWidth,
         maxHeight: $(window).outerHeight() - 100,
-        modal: true,
+        modal: true
+      }, firstStatusId === '1' || firstStatusId === '3' ? {
+        buttons: {
+          'Send for approval': function() {
+            changeTravelStatus(2, travelRequestId, firstStatusId);
+            return $('#dialog-show-details-tr').dialog('destroy');
+          },
+          Close: function() {
+            $('#dialog-show-details-tr').dialog('destroy');
+          }
+        }
+      } : {
         buttons: {
           Close: function() {
             $('#dialog-show-details-tr').dialog('destroy');
