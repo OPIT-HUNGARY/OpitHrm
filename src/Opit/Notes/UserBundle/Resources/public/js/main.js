@@ -157,8 +157,6 @@
         $notificationsGlobe.removeClass('active-text');
       }
       return setTimeout(getUnreadNotifications, 10000);
-    }).fail(function(data) {
-      return console.log(data);
     });
   };
 

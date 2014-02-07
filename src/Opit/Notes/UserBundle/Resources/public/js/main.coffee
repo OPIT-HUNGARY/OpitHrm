@@ -129,8 +129,6 @@ getUnreadNotifications = () ->
             
         # check for new notifications every 10 seconds
         setTimeout getUnreadNotifications, 10000
-    .fail (data) ->
-        console.log data
 
 # Place any jQuery/helper plugins in here.
 

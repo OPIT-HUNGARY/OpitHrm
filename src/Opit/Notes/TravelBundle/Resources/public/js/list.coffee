@@ -47,7 +47,6 @@ $(document).ready ->
             url: Routing.generate 'OpitNotesTravelBundle_travel_states_history'
             data: {'id': $(@).find('.fa-book').data 'id'}
         .done (data) ->
-            console.log data
             dialogWidth = 550
             $('<div id="dialog-show-details-tr"></div>').html(data)
               .dialog

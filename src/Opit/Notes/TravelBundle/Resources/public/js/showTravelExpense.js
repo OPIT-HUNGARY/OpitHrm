@@ -32,7 +32,6 @@
     var $errorLabel, arrivalDate, date, departureDate, isDateValid;
     isDateValid = true;
     date = self.val();
-    console.log(self.attr('id'));
     self.addClass('display-inline-block');
     departureDate = $('#travelExpense_departureDateTime_date').val();
     arrivalDate = $('#travelExpense_arrivalDateTime_date').val();

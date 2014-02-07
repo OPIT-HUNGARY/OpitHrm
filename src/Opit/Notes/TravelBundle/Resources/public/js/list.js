@@ -67,7 +67,6 @@
         }
       }).done(function(data) {
         var dialogWidth;
-        console.log(data);
         dialogWidth = 550;
         $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
           open: function() {
