@@ -173,7 +173,9 @@ class TravelController extends Controller
             ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
         
         if (false === $editRights) {
-            return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+                throw new AccessDeniedException(
+                    'Access denied for travel request.'
+                );
         }
         
         if (false !== $isNewTravelRequest) {
