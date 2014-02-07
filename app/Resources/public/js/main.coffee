@@ -152,6 +152,19 @@ $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)
     $("##{id[1]} *[title]").tipsy() if id?[1]?
     
+$(document).ajaxError () ->
+    if window.location.href.indexOf('login') < 0
+        $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html 'Your session has timed out please login again.'
+        $sessionTimeout.dialog
+            open: ->
+                $('.ui-dialog-title').append '<i class="fa fa-exclamation-circle"></i> Session timeout'
+            width: 550
+            maxHeight: $(window).outerHeight()-100
+            modal: on
+            buttons:
+                Login: ->
+                    window.location.href = Routing.generate 'OpitNotesUserBundle_security_login'
+    
 $(document).ready ->
     $('[title]').each ->
         $(@).tipsy()

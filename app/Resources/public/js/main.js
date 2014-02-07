@@ -182,6 +182,26 @@
     }
   });
 
+  $(document).ajaxError(function() {
+    var $sessionTimeout;
+    if (window.location.href.indexOf('login') < 0) {
+      $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html('Your session has timed out please login again.');
+      return $sessionTimeout.dialog({
+        open: function() {
+          return $('.ui-dialog-title').append('<i class="fa fa-exclamation-circle"></i> Session timeout');
+        },
+        width: 550,
+        maxHeight: $(window).outerHeight() - 100,
+        modal: true,
+        buttons: {
+          Login: function() {
+            return window.location.href = Routing.generate('OpitNotesUserBundle_security_login');
+          }
+        }
+      });
+    }
+  });
+
   $(document).ready(function() {
     return $('[title]').each(function() {
       return $(this).tipsy();
