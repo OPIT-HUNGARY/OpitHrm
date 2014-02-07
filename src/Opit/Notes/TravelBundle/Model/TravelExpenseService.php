@@ -172,7 +172,7 @@ class TravelExpenseService
         $isStatusLocked = false;
         if ($travelRequestGM === $currentUser) {
             $isEditLocked = true;
-            if (1 === $currentStatusId && 3 === $currentStatusId) {
+            if (1 === $currentStatusId || 3 === $currentStatusId) {
                 $isStatusLocked = true;
             }
         } else {

@@ -152,7 +152,7 @@ class ExpenseController extends Controller
         return array(
             'form' => $form->createView(),
             'travelExpense' => $travelExpense,
-            'trId' => $travelRequestId,
+            'trId' => $travelRequest->getTravelRequestId(),
             'travelExpenseStates' => $travelExpenseStates,
             'isEditLocked' => $isEditLocked,
             'isStatusLocked' => $isStatusLocked,
