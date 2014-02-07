@@ -210,8 +210,6 @@
       arrivalDate.attr('readonly', 'readonly');
       departureDate.attr('readonly', 'readonly');
     }
-    $('#altDatetravelExpense_arrivalDateTime_date').remove();
-    $('#altDatetravelExpense_departureDateTime_date').remove();
     arrivalTime.addClass('inlineElements time-picker');
     departureTime.addClass('inlineElements time-picker');
     arrivalDate.css({
@@ -480,6 +478,11 @@
     event.preventDefault();
     if (!$(this).hasClass('button-disabled')) {
       if ($form.valid() && calculateAdvancesPayback() && validateAllExpenseDates()) {
+        if (!Modernizr.inputtypes.date) {
+          $('input[type=date]').each(function() {
+            return $(this).parent().find('input[type=hidden]').val($(this).val().replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2"));
+          });
+        }
         return $.ajax({
           method: 'POST',
           url: Routing.generate('OpitNotesTravelBundle_expense_show_details'),
@@ -502,13 +505,6 @@
                 $preview.dialog("destroy");
               },
               Save: function() {
-                if (!Modernizr.inputtypes.date) {
-                  $('input[type=date]').each(function() {
-                    var dateVal;
-                    dateVal = $(this).val();
-                    return $(this).val(dateVal.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2"));
-                  });
-                }
                 $form.submit();
                 $preview.dialog("destroy");
               }

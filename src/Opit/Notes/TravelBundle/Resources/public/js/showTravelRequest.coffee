@@ -65,6 +65,13 @@ $(document).ready ->
             window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
         .fail (data) ->
             console.warn 'Error occured while saving state for travel expense.'
+            
+    $arrivalDate = $('#travelRequest_arrival_date')
+    $departureDate = $('#travelRequest_departure_date')
+    $('#altDatetravelRequest_arrival_date').val $arrivalDate.val()
+    $('#altDatetravelRequest_departure_date').val $departureDate.val()
+    $arrivalDate.val $arrivalDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
+    $departureDate.val $departureDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
 
 $('label.required').each ->
     if $(@).text() is '0' then $(@).remove()

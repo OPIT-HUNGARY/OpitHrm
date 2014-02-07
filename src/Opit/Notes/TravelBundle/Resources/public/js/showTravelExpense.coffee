@@ -211,9 +211,6 @@ $(document).ready ->
         arrivalDate.attr 'readonly', 'readonly'
         departureDate.attr 'readonly', 'readonly'
     
-    $('#altDatetravelExpense_arrivalDateTime_date').remove()
-    $('#altDatetravelExpense_departureDateTime_date').remove()
-    
     arrivalTime.addClass 'inlineElements time-picker'
     departureTime.addClass 'inlineElements time-picker'
     
@@ -453,6 +450,10 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
     event.preventDefault()
     if not $(@).hasClass 'button-disabled'
         if $form.valid() and calculateAdvancesPayback() and validateAllExpenseDates()
+            # for browsers that do not support input type date
+            if not Modernizr.inputtypes.date
+                $('input[type=date]').each ->
+                    $(@).parent().find('input[type=hidden]').val $(@).val().replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2")
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_expense_show_details'
@@ -472,13 +473,6 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                             $preview.dialog "destroy"
                             return
                         Save: ->
-                            # for browsers that do not support input type date
-                            if not Modernizr.inputtypes.date
-                                # change date format so that symfony will accept it
-                                $('input[type=date]').each ->
-                                    dateVal = $(@).val()
-                                    # replace \ with -
-                                    $(@).val dateVal.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2")
                             $form.submit()
                             $preview.dialog "destroy"
                             return  

@@ -44,7 +44,7 @@
   };
 
   $(document).ready(function() {
-    var $buttonParent;
+    var $arrivalDate, $buttonParent, $departureDate;
     $buttonParent = $('#travelRequest_add_travel_request').parent();
     $(document).data('notes').funcs.createButton('Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list');
     $(document).data('notes').funcs.makeElementToggleAble('h3', $('.formFieldset'));
@@ -61,7 +61,7 @@
       $(this).attr('disabled', 'disabled');
       return $(this).addClass('button-disabled');
     });
-    return $('.changeState').on('change', function() {
+    $('.changeState').on('change', function() {
       var parameters, statusId, travelRequestId;
       statusId = $(this).val();
       parameters = window.location.pathname.split('/');
@@ -79,6 +79,12 @@
         return console.warn('Error occured while saving state for travel expense.');
       });
     });
+    $arrivalDate = $('#travelRequest_arrival_date');
+    $departureDate = $('#travelRequest_departure_date');
+    $('#altDatetravelRequest_arrival_date').val($arrivalDate.val());
+    $('#altDatetravelRequest_departure_date').val($departureDate.val());
+    $arrivalDate.val($arrivalDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1"));
+    return $departureDate.val($departureDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1"));
   });
 
   $('label.required').each(function() {
