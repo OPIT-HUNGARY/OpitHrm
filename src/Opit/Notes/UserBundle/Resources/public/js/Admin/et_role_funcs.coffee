@@ -94,7 +94,7 @@ $('.width-24-fix .fa-trash-o').on 'click', ->
 # Ordering the table columns
 inverse = false
 
-$('.fa-sort').on 'click', ->
+$('form').on 'click', '.fa-sort', ->
     header = $(@).parent()
     index = header.index()
     header

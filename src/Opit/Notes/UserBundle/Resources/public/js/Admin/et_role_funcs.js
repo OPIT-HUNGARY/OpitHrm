@@ -135,7 +135,7 @@
 
   inverse = false;
 
-  $('.fa-sort').on('click', function() {
+  $('form').on('click', '.fa-sort', function() {
     var header, index;
     header = $(this).parent();
     index = header.index();
