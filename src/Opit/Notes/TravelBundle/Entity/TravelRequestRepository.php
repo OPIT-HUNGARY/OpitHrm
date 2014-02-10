@@ -23,7 +23,6 @@ class TravelRequestRepository extends EntityRepository
      */
     public function getTravelRequestsBySearchParams($parameters)
     {
-        $qb = $this->createQueryBuilder('tr');
         /**
          * Params which will be pass to the setParameter function.
          * @var array
@@ -68,6 +67,32 @@ class TravelRequestRepository extends EntityRepository
         }
 
         $qb->setParameters($params);
+        $q = $qb->getQuery();
+        return $q->getResult();
+    }
+    
+    /**
+     * Find all travel request with ordering by fields.
+     * 
+     * @param string $field
+     * @param string $order
+     * @return null|TravelRequest
+     */
+    public function findAllOrderByField($field, $order)
+    {
+        if (!isset($field) || !isset($order) ||empty($field) || empty($order)) {
+            return null;
+        }
+        
+        $qb = $this->createQueryBuilder('tr');
+        
+        if ("user"===$field) {
+            $qb->leftJoin('tr.user', 'u', 'WITH');
+            $qb->orderBy('u.employeeName', $order);
+        } else {
+             $qb->orderBy('tr.'.$field, $order);
+        }
+       
         $q = $qb->getQuery();
         return $q->getResult();
     }

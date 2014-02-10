@@ -1,3 +1,5 @@
+order = 'desc'
+
 changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
     reloadPage = true
     $.ajax
@@ -93,6 +95,20 @@ deleteSingleRequest = (type, self) ->
             return
     return
 
+# Ordering.
+$('#list-table').on 'click', '.fa-sort', ->
+    field = $(@).attr('data-field')
+    if order is 'desc'
+        order = 'asc'
+    else
+        order = 'desc'
+    $.ajax
+       method: 'POST'
+       url: Routing.generate 'OpitNotesTravelBundle_travel_list'
+       data: 'field': field, 'order': order, 'showList': 1
+     .done (data) ->
+        $('#list-table').html(data)
+
 $('#list-table').on 'click', '.clickable', ->
   travelRequestId = $(@).attr 'data-tr-id'
   firstStatusId = $(@).parent().find('option:first-child').val()
@@ -128,7 +144,7 @@ $('#list-table').on 'click', '.clickable', ->
 $('.icon-disabled').on 'click', (event)->
     event.preventDefault()
 
-$('#list-table th i').click ->
+$('#list-table').on 'click', '.fa-trash-o', ->
     $('.deleteMultipleTravelRequest').checkAll()
     $('.deleteMultipleTravelExpense').checkAll()
 

@@ -4,8 +4,12 @@
         <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
         {% for propertyName in propertyNames %}
         <th>
-            <i class="fa fa-sort default-right"></i>
-            {{ propertyName|underscore|humanize }}
+            {% if propertyName == 'roles' %}
+                {{ propertyName|underscore|humanize }}
+            {% else %}
+                <i class="fa fa-sort default-right" data-field="{{ propertyName }}"></i>
+                {{ propertyName|underscore|humanize }}
+            {% endif %}
         </th>
         {% endfor %}
         {% if numberOfRelations is defined %}

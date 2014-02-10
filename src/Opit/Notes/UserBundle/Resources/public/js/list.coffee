@@ -92,8 +92,24 @@ deleteUser = () ->
     url = Routing.generate 'OpitNotesUserBundle_user_delete'
     $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
         
-$('#userlistWrapper').on "click", "th i", ->
+$('#userlistWrapper').on "click", ".fa-trash-o", ->
     $('.list-delete-user').checkAll()
     
 $('#list').on "click", "#list-reply-message", ->
     $(@).hide()
+
+order = 'desc'
+
+# Ordering.
+$('#user-list').on 'click', '.fa-sort', ->
+    field = $(@).attr('data-field')
+    if order is 'desc'
+        order = 'asc'
+    else
+        order = 'desc'
+    $.ajax
+       method: 'POST'
+       url: Routing.generate 'OpitNotesUserBundle_user_list'
+       data: 'field': field, 'order': order, 'demand':'ordering' , 'showList': 1
+     .done (data) ->
+        $('#user-list').html(data)

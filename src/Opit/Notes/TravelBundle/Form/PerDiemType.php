@@ -25,7 +25,7 @@ class PerDiemType extends AbstractType
             'attr' => array('placeholder' => 'Amount', 'class' => 'te-claim amount width-80-fix', 'min'=>1)
         ));
         $builder->add('currency', 'entity', array('attr' => array(
-                'class' => 'te-claim currency width-80-fix display-block'
+                'class' => 'te-claim currency width-80-fix display-block button-disabled'
             ),
             'label' => 'Currency',
             'class' => 'OpitNotesCurrencyRateBundle:Currency',

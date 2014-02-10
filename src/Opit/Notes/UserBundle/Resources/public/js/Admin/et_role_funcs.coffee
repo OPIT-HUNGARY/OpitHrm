@@ -90,3 +90,24 @@ $('#delete').on 'click', ->
     
 $('.width-24-fix .fa-trash-o').on 'click', ->
     $('.list-delete-user:enabled').checkAll()
+
+# Ordering the table columns
+inverse = false
+
+$('.fa-sort').on 'click', ->
+    header = $(@).parent()
+    index = header.index()
+    header
+        .closest('table')
+        .find('td')
+        .filter () ->
+            return $(@).index() == index
+        .sort(
+            (a,b) ->
+                a = $(a).text()
+                b = $(b).text()
+                return if (if isNaN(a) or isNaN(b) then a > b else +a > +b) then (if inverse then -1 else 1) else (if inverse then 1 else -1)
+            () ->
+                return @.parentNode
+        )
+    inverse = not inverse

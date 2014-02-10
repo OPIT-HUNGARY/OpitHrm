@@ -34,11 +34,21 @@ class TravelController extends Controller
      */
     public function listAction()
     {
+        $request = $this->getRequest();
+        $showList = (boolean) $request->request->get('showList');
         $securityContext = $this->get('security.context');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
-        $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
+        
+        if ($request->isXmlHttpRequest()) {
+            $order = $request->request->get('order');
+            $field = $request->request->get('field');
+            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+                ->findAllOrderByField($field, $order);
+        } else {
+            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
+        }
         $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
       
         // te = Travel Expense
@@ -88,12 +98,15 @@ class TravelController extends Controller
             $allowedTRs = $travelRequests;
         }
         
-        return array(
-            'travelRequests' => $allowedTRs,
-            'teIds' => $teIds,
-            'travelRequestStates' => $travelRequestStates,
-            'isLocked' => $isLocked,
-            'currentStatusNames' => $currentStatusNames
+        return $this->render(
+            $showList ? 'OpitNotesTravelBundle:Travel:_list.html.twig' : 'OpitNotesTravelBundle:Travel:list.html.twig',
+            array(
+                'travelRequests' => $allowedTRs,
+                'teIds' => $teIds,
+                'travelRequestStates' => $travelRequestStates,
+                'isLocked' => $isLocked,
+                'currentStatusNames' => $currentStatusNames
+            )
         );
     }
 

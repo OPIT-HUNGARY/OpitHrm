@@ -77,16 +77,37 @@ $('#delete').click ->
 
 # Delete icon in the table row
 $('#list-table').on "click", ".delete-single-jobtitle", ->
-  $checkbox = $(@).closest('tr').find(':checkbox')
-  $checkbox.prop 'checked', true
-  deleteJobTitle()
+    $checkbox = $(@).closest('tr').find(':checkbox')
+    $checkbox.prop 'checked', true
+    deleteJobTitle()
 
 # Call the deleteAction from the app main.js
 deleteJobTitle = () ->  
-  title = 'Job title delete'
-  message = 'job title(s)'
-  url = Routing.generate 'OpitNotesUserBundle_admin_delete_jobtitle'  
-  $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-jobtitle')
+    title = 'Job title delete'
+    message = 'job title(s)'
+    url = Routing.generate 'OpitNotesUserBundle_admin_delete_jobtitle'
+    $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-jobtitle')
 
-$('#list-table').on "click", "th i", ->
-  $('.list-delete-jobtitle').checkAll()
+$('#list-table').on "click", "th fa-trash-o", ->
+      $('.list-delete-jobtitle').checkAll()
+
+# Ordering the table columns
+inverse = false
+
+$('.fa-sort').on 'click', ->
+    header = $(@).parent()
+    index = header.index()
+    header
+        .closest('table')
+        .find('td')
+        .filter () ->
+            return $(@).index() == index
+        .sort(
+            (a,b) ->
+                a = $(a).text()
+                b = $(b).text()
+                return if (if isNaN(a) or isNaN(b) then a > b else +a > +b) then (if inverse then -1 else 1) else (if inverse then 1 else -1)
+            () ->
+                return @.parentNode
+        )
+    inverse = not inverse

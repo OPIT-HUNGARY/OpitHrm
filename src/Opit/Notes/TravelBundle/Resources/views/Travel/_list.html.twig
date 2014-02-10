@@ -2,14 +2,11 @@
 <table id="list-table">
     <tr>
         <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
-        {% set orderIcon %}
-            <i class="fa fa-sort default-right"></i>
-        {% endset %}
-        <th>{{ orderIcon }}ID</th>
-        <th>{{ orderIcon }}Employee Name</th>
-        <th>{{ orderIcon }}Departure date</th>
-        <th>{{ orderIcon }}Arrival date</th>
-        <th>{{ orderIcon }}Opportunity name</th>
+        <th><i class="fa fa-sort default-right" data-field="id"></i>ID</th>
+        <th><i class="fa fa-sort default-right" data-field="user"></i>Employee Name</th>
+        <th><i class="fa fa-sort default-right" data-field="departureDate"></i>Departure date</th>
+        <th><i class="fa fa-sort default-right" data-field="arrivalDate"></i>Arrival date</th>
+        <th><i class="fa fa-sort default-right" data-field="opportunityName"></i>Opportunity name</th>
         <th>Travel claim</th>
         <th>Travel request status</th>
         <th>Actions</th>

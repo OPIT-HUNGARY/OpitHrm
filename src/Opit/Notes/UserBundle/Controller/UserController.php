@@ -30,12 +30,21 @@ class UserController extends Controller
             $filters->disable('softdeleteable');
         }*/
         
-        $users = $entityManager->getRepository('OpitNotesUserBundle:User')->findAll();
-        $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
+        $demand = $request->request->get('demand');
 
+        if ($request->isXmlHttpRequest() && isset($demand) && 'ordering'===$demand) {
+            $order = $request->request->get('order');
+            $field = $request->request->get('field');
+            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                ->findBy(array(), array($field => $order));
+        } else {
+            $users = $entityManager->getRepository('OpitNotesUserBundle:User')->findAll();
+        }
+        $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
+ 
         foreach ($users as $user) {
             //fetch roles for the user
             $localUserRoles = $groups->findUserGroupsArray($user->getId());
@@ -195,7 +204,7 @@ class UserController extends Controller
             }
 
             if (count($errors) > 0) {
-               foreach ($errors as $e) {
+                foreach ($errors as $e) {
                     $errorMessages[] = $e->getMessage();
                 }
                 $statusCode = 500;
@@ -251,7 +260,10 @@ class UserController extends Controller
 
         $form = $this->createForm(new ChangePasswordType(), $user);
 
-        return $this->render('OpitNotesUserBundle:User:_changePasswordForm.html.twig', array('form' => $form->createView()));
+        return $this->render(
+            'OpitNotesUserBundle:User:_changePasswordForm.html.twig',
+            array('form' => $form->createView())
+        );
     }
 
     /**
@@ -295,7 +307,7 @@ class UserController extends Controller
                 $errorMessages[] = 'The passwords do not match.';
             }
             if (count($errors) > 0) {
-               foreach ($errors as $e) {
+                foreach ($errors as $e) {
                     $errorMessages[] = $e->getMessage();
                 }
             }
