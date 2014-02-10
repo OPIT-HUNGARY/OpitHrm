@@ -77,7 +77,11 @@ addNewForm = (collectionHolder, parent) ->
     
     # for browsers that do not support input type date
     if not Modernizr.inputtypes.date
-        $formFieldsetChild.find('input[type=date]').datepicker();
+        $datePicker = $formFieldsetChild.find 'input[type=date]'
+        id = $datePicker.attr 'id'
+        name = $datePicker.attr 'name'
+        $datePicker.after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
+        $datePicker.datepicker {altField:'#altDate'+id, altFormat: 'yy-mm-dd'}
 
     parent.find('.addFormFieldsetChild').before $formFieldsetChild
     

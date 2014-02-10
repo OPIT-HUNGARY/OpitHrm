@@ -117,9 +117,9 @@ class StatusManager
             
             $toGeneralManager = true;
         }
-            // set a new notification when travel request or expense status changes
-            $notificationManager = $this->container->get('opit.manager.notification_manager');
-            $notificationManager->addNewNotification($resource, $toGeneralManager);
+        // set a new notification when travel request or expense status changes
+        $notificationManager = $this->container->get('opit.manager.notification_manager');
+        $notificationManager->addNewNotification($resource, $toGeneralManager, $status);
     }
     
     /**

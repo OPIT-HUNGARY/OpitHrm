@@ -71,6 +71,8 @@ and open the template in the editor.
 
 .align-center { text-align: center; }
 
+.align-right { text-align: right; }
+
 .bgGrey { background-color: #d2d2d2; }
 
 .no-text-decoration { text-decoration: none !important; }

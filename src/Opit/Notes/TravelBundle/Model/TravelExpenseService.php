@@ -141,16 +141,25 @@ class TravelExpenseService
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return array
      */
-    public function sumExpenses(TravelExpense $travelExpense)
+    public function sumExpenses(TravelExpense $travelExpense, $currencyConfig)
     {
-        $companyPaidExpenseAmount = 0;
-        $employeePaidExpenseAmount = 0;
+        $expensesPaidbyCompany = 0;
+        $expensesPaidByEmployee = 0;
+        $exchManager = $this->container->get('opit.service.exchange_rates');
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
-            $companyPaidExpenseAmount += $companyPaidExpenses->getAmount();
+            $expensesPaidbyCompany += $exchManager->convertCurrency(
+                $companyPaidExpenses->getCurrency()->getCode(),
+                $currencyConfig['default_currency'],
+                $companyPaidExpenses->getAmount()
+            );
         }
 
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $employeePaidExpenseAmount += $userPaidExpenses->getAmount();
+            $expensesPaidByEmployee += $exchManager->convertCurrency(
+                $userPaidExpenses->getCurrency()->getCode(),
+                $currencyConfig['default_currency'],
+                $userPaidExpenses->getAmount()
+            );
         }
         
         return array(

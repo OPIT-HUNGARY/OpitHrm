@@ -44,7 +44,7 @@ class TENotification extends Notification
     protected $receiver;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="te_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $travelExpense;

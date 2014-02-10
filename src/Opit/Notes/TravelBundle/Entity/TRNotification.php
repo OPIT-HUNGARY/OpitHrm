@@ -44,7 +44,7 @@ class TRNotification extends Notification
     protected $receiver;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelRequest")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelRequest", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="tr_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $travelRequest;

@@ -75,18 +75,20 @@ class NotificationManager
      * @param TravelRequest/TravelExpense $resource
      * @param integer $toGeneralManager
      */
-    public function addNewNotification($resource, $toGeneralManager)
+    public function addNewNotification($resource, $toGeneralManager, $status)
     {
         $notification = null;
         // get last status name from resource
-        $resourceStatus = strtolower($resource->getStates()->last()->getStatus()->getName());
+        $resourceStatus = strtolower($status->getName());
         $message = '';
         if ($resource instanceof TravelRequest) {
             $notification = new TRNotification();
+            $notification->setTravelRequest($resource);
             $receiver = $resource->getGeneralManager();
             $message .= 'travel request (' . $resource->getTravelRequestId() . ') ';
         } elseif ($resource instanceof TravelExpense) {
             $notification = new TENotification();
+            $notification->setTravelExpense($resource);
             $receiver = $resource->getTravelRequest()->getGeneralManager();
             $message .= 'travel expense ';
         }
@@ -103,7 +105,7 @@ class NotificationManager
         if (false === $toGeneralManager) {
             $receiver = $resource->getUser();
         }
-
+        
         $notification->setMessage($message);
         $notification->setReceiver($receiver);
         $notification->setDateTime(new \DateTime('now'));

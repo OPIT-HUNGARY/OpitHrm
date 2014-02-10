@@ -71,7 +71,7 @@
   };
 
   addNewForm = function(collectionHolder, parent) {
-    var $formFieldsetChild, $selectedExpense, index, newForm, prototype;
+    var $datePicker, $formFieldsetChild, $selectedExpense, id, index, name, newForm, prototype;
     prototype = collectionHolder.data('prototype');
     index = collectionHolder.data('index');
     prototype = prototype.replace('<label class="required">__name__label__</label>', '');
@@ -86,7 +86,14 @@
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected', 'selected');
     collectionHolder.data('index', index + 1);
     if (!Modernizr.inputtypes.date) {
-      $formFieldsetChild.find('input[type=date]').datepicker();
+      $datePicker = $formFieldsetChild.find('input[type=date]');
+      id = $datePicker.attr('id');
+      name = $datePicker.attr('name');
+      $datePicker.after('<input type="hidden" name="' + name + '" id="altDate' + id + '" />');
+      $datePicker.datepicker({
+        altField: '#altDate' + id,
+        altFormat: 'yy-mm-dd'
+      });
     }
     return parent.find('.addFormFieldsetChild').before($formFieldsetChild);
   };

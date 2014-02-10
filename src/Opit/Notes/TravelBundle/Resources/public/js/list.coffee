@@ -1,30 +1,30 @@
+changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
+    reloadPage = true
+    $.ajax
+        method: 'POST'
+        url: Routing.generate 'OpitNotesTravelBundle_request_state'
+        data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
+    .done (data) ->
+        if data is 'error'
+            reloadPage = false
+            dialogWidth = 550
+            $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
+              .dialog
+                open: ->
+                  $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
+                width: dialogWidth
+                maxHeight: $(window).outerHeight()-100
+                modal: on
+                buttons:
+                  Reload: ->
+                     location.reload()
+                     return
+    .complete () ->
+        if reloadPage is true
+            location.reload()
+    .fail (data) ->
+        console.warn 'An error occured while setting new status for the request.'
 $(document).ready ->
-    changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
-        reloadPage = true
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_request_state'
-            data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
-        .done (data) ->
-            if data is 'error'
-                reloadPage = false
-                dialogWidth = 550
-                $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
-                  .dialog
-                    open: ->
-                      $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
-                    width: dialogWidth
-                    maxHeight: $(window).outerHeight()-100
-                    modal: on
-                    buttons:
-                      Reload: ->
-                         location.reload()
-                         return
-        .complete () ->
-            if reloadPage is true
-                location.reload()
-        .fail (data) ->
-            console.warn 'An error occured while setting new status for the request.'
             
     $('.print-view').on 'click', (event) ->
         event.preventDefault()
@@ -37,7 +37,7 @@ $(document).ready ->
         statusId = $(@).val()
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
         firstStatusId = $(@).find('option:first-child').val()
-        changeTravelStatus statusId, travelRequestId, firstStatusId
+        changeTravelStatus(statusId, travelRequestId, firstStatusId)
 
             
     $('.status-history').click (event) ->
@@ -112,7 +112,7 @@ $('#list-table').on 'click', '.clickable', ->
         if firstStatusId is '1' or firstStatusId is '3'
             buttons:
               'Send for approval': ->
-                 changeTravelStatus 2, travelRequestId, firstStatusId
+                 changeTravelStatus(2, travelRequestId, firstStatusId)
                  $('#dialog-show-details-tr').dialog 'destroy'
               Close: ->
                  $('#dialog-show-details-tr').dialog 'destroy'

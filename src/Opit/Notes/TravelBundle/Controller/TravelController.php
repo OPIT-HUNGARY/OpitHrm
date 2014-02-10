@@ -380,11 +380,11 @@ class TravelController extends Controller
         $oldUser = $travelRequest->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->get('security.context');
-        $travelRequestModel = $this->get('opit.model.travel_request');
+        $travelRequestService = $this->get('opit.model.travel_request');
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             $isModificationAllowedForUser =
-                $travelRequestModel->isModificationAllowedForUser(
+                $travelRequestService->isModificationAllowedForUser(
                     $isNewTravelRequest,
                     $travelRequest,
                     $userId,
@@ -398,29 +398,30 @@ class TravelController extends Controller
 
             if ($form->isValid()) {
                 // Persist deleted destinations/accomodations
-                $travelRequestModel->removeChildNodes($entityManager, $travelRequest, $children);
+                $travelRequestService->removeChildNodes($entityManager, $travelRequest, $children);
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
 
                 // Persist travel request object again if travel request id is set (insert actions)
                 // set travel request id is handled inside its entity using lifecycle callbacks
                 if ($travelRequest->getTravelRequestId()) {
-                    $travelRequestModel->addStatus($travelRequest, $entityManager);
+                    $travelRequestService->addStatus($travelRequest, $entityManager);
+                    $travelRequestId = $travelRequest->getId();
+                    $currentStatus = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+                            ->getCurrentStatus($travelRequestId);
                     if ('fa' === $forApproval) {
-                        $travelRequestId = $travelRequest->getId();
-                        $this->get('opit.model.travel_request')->changeStatus(
-                            $travelRequest,
-                            $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-                                ->getCurrentStatus($travelRequestId)->getStatus()->getId(),
-                            2,
-                            $this->get('opit.manager.status_manager')
-                        );
+                        $nextStatusId = 2;
+                    } else {
+                        $nextStatusId = 1;
                     }
-                    
-                    $entityManager->persist($travelRequest);
-                    $entityManager->flush();
+                    $this->get('opit.model.travel_request')->changeStatus(
+                        $travelRequest,
+                        $currentStatus ? $currentStatus->getStatus()->getId() : null,
+                        $nextStatusId,
+                        $this->get('opit.manager.status_manager')
+                    );
 
-                    $travelRequestModel->handleAccessRights(
+                    $travelRequestService->handleAccessRights(
                         $travelRequest,
                         array(
                             array(

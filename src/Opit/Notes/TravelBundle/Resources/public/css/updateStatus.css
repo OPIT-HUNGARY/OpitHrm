@@ -9,6 +9,8 @@ and open the template in the editor.
 */
 .vertical-align-top { vertical-align: top; }
 
+.align-right { text-align: right; }
+
 .display-none { display: none !important; }
 
 .red-text { color: #aa0000; }

@@ -5,6 +5,8 @@ namespace Opit\Notes\TravelBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Opit\Notes\TravelBundle\Entity\TravelExpense;
+use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
 
 /**
  * travel_request
@@ -403,7 +405,7 @@ class TravelRequest
                 $this->trIdPattern
             );
         }
-    
+        
         return $this;
     }
 
@@ -423,7 +425,7 @@ class TravelRequest
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return TravelRequest
      */
-    public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense = null)
+    public function setTravelExpense(TravelExpense $travelExpense = null)
     {
         $this->travelExpense = $travelExpense;
     
@@ -446,7 +448,7 @@ class TravelRequest
      * @param \Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states
      * @return TravelRequest
      */
-    public function addState(\Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states)
+    public function addState(StatesTravelRequests $states)
     {
         $states->setTravelRequest($this); // synchronously updating inverse side
         $this->states[] = $states;
@@ -459,7 +461,7 @@ class TravelRequest
      *
      * @param \Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states
      */
-    public function removeState(\Opit\Notes\TravelBundle\Entity\StatesTravelRequests $states)
+    public function removeState(StatesTravelRequests $states)
     {
         $this->states->removeElement($states);
     }

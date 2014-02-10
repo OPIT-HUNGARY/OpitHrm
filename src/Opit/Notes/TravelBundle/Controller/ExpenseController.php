@@ -321,7 +321,6 @@ class ExpenseController extends Controller
     protected function getTravelExpensePage($travelExpenseId)
     {
         $currencyConfig = $this->container->getParameter('exchange_rate');
-        $exchManager = $this->container->get('opit.service.exchange_rates');
         
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
@@ -337,15 +336,7 @@ class ExpenseController extends Controller
             $departureDateTime
         );
         
-        $travelExpenseExpenses = $this->get('opit.model.travel_expense')->sumExpenses($travelExpense);
-                $companyPaidExpenses->getCurrency()->getCode(),
-                $currencyConfig['default_currency'],
-                $companyPaidExpenses->getAmount()
-            );
-                $userPaidExpenses->getCurrency()->getCode(),
-                $currencyConfig['default_currency'],
-                $userPaidExpenses->getAmount()
-            );
+        $travelExpenseExpenses = $this->get('opit.model.travel_expense')->sumExpenses($travelExpense, $currencyConfig);
 
         return $this->render(
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
@@ -355,7 +346,7 @@ class ExpenseController extends Controller
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
                 'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],
-                'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses']
+                'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses'],
                 'currencyFormat' => $currencyConfig['currency_format'],
                 'midRate' => $this->getMidRate($travelExpenseId)
             )
