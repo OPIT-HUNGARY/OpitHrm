@@ -161,6 +161,10 @@
     });
   });
 
+  $('.icon-disabled').on('click', function(event) {
+    return event.preventDefault();
+  });
+
   $('#list-table th i').click(function() {
     $('.deleteMultipleTravelRequest').checkAll();
     return $('.deleteMultipleTravelExpense').checkAll();

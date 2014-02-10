@@ -380,6 +380,10 @@ input {
     visibility:hidden;
 }
 
+.icon-disabled{
+    color:$lightGrayHover !important;
+}
+
 .tipsy{
     font-size:0.85em;
 }

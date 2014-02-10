@@ -69,20 +69,36 @@
         <td>
             <a href="#" class="status-history" title="Status history"><i class="fa fa-book" data-id="{{ travelRequest.id }}"></i></a>
             {# if all actions are not locked #}
-            {% if isLocked[i]['allActionsLocked'] == 0 %}
-                {# if edit action is not locked #}
-                {% if isLocked[i]['isEditLocked'] == 0 %}
-                <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request"><i class="fa fa-pencil-square-o"></i></a>
+             {% if isLocked[i]['allActionsLocked'] == 0 %}
+                 {# if edit action is not locked #}
+                 {% if isLocked[i]['isEditLocked'] == 0 %}
+                    {% if is_granted("ROLE_GENERAL_MANAGER") %}
+                    <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="View travel request">
+                        <i class="fa fa-list-alt"></i>
+                    </a>
+                    {% else %}
+                    <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                    {% endif %}
+                 {% else %}
+                    {% if is_granted("ROLE_GENERAL_MANAGER") %}
+                    <a href="#" class="icon-disabled"><i class="fa fa-list-alt"></i></a>
+                    {% else %}
+                    <a href="#" class="icon-disabled"><i class="fa fa-pencil-square-o"></i></a>
+                    {% endif %}
+                 {% endif %}
+             {% else %}
+                {% if is_granted("ROLE_GENERAL_MANAGER") %}
+                <a href="#" class="icon-disabled"><i class="fa fa-list-alt"></i></a>
                 {% else %}
-                <a href="#" class="visibility-hidden"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="icon-disabled"><i class="fa fa-pencil-square-o"></i></a>
                 {% endif %}
-            {% else %}
-                <a href="#" class="visibility-hidden"><i class="fa fa-pencil-square-o"></i></a>
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
-            <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
-            {% else %}
-            <a href="#" class="visibility-hidden"><i class="fa fa-trash-o"></i></a>
+             {% endif %}
+             {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
+             <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request"><i class="fa fa-trash-o"></i></a>
+             {% else %}
+             <a href="#" class="icon-disabled"><i class="fa fa-trash-o"></i></a>
             {% endif %}
         </td>        
     </tr>

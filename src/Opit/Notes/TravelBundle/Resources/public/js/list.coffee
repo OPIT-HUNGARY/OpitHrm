@@ -125,6 +125,9 @@ $('#list-table').on 'click', '.clickable', ->
     return
   return
 
+$('.icon-disabled').on 'click', (event)->
+    event.preventDefault()
+
 $('#list-table th i').click ->
     $('.deleteMultipleTravelRequest').checkAll()
     $('.deleteMultipleTravelExpense').checkAll()
