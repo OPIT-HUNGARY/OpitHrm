@@ -21,10 +21,11 @@ class TravelExpenseService
     protected $securityContext;
     protected $entityManager;
     
-    public function __construct($securityContext, EntityManager $entityManager)
+    public function __construct($securityContext, EntityManager $entityManager, $container)
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
+        $this->container = $container;
     }
     
     /**
@@ -163,7 +164,7 @@ class TravelExpenseService
         }
         
         return array(
-            'companyPaidExpenses' => $companyPaidExpenseAmount, 'employeePaidExpenses' => $employeePaidExpenseAmount
+            'companyPaidExpenses' => $expensesPaidbyCompany, 'employeePaidExpenses' => $expensesPaidByEmployee
         );
     }
     
