@@ -26,6 +26,8 @@
                         {% else %}
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
                         {% endif %}
+                    {% elseif  attribute(value, 'username') is defined %}
+                        <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" {% if key == app.user.id %}disabled="disabled"{% endif %}>
                     {% else %}
                         <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" >
                     {% endif %}
@@ -87,6 +89,15 @@
                             attribute(value, 'Role') != 'ROLE_GENERAL_MANAGER' and
                             attribute(value, 'id') not in disabledRoles %}
                             {{ actionIcons }}
+                        {% endif %}
+                    {% elseif  attribute(value, 'username') is defined %}
+                        <span class="list-username clickable no-text-decoration edit-group" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </span>
+                        {% if key != app.user.id %}
+                            <span class="delete-single-user clickable no-text-decoration remove-group" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
+                                <i class="fa fa-trash-o"></i>
+                             </span>
                         {% endif %}
                     {% else %}
                         {{ actionIcons }}

@@ -88,7 +88,7 @@ $('#delete').on 'click', ->
     
     deleteGroup(ids, names)
     
-$('.width-24-fix .fa-trash-o').on 'click', ->
+$('th .fa-trash-o').on 'click', ->
     $('.list-delete-user:enabled').checkAll()
 
 # Ordering the table columns

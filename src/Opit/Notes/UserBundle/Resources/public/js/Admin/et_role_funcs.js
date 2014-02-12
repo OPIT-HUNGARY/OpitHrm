@@ -129,7 +129,7 @@
     return deleteGroup(ids, names);
   });
 
-  $('.width-24-fix .fa-trash-o').on('click', function() {
+  $('th .fa-trash-o').on('click', function() {
     return $('.list-delete-user:enabled').checkAll();
   });
 

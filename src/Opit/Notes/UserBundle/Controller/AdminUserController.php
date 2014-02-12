@@ -225,7 +225,7 @@ class AdminUserController extends Controller
      */
     public function groupsShowAction()
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $groupId = $request->attributes->get('id');
         
@@ -266,7 +266,7 @@ class AdminUserController extends Controller
      */
     public function deleteGroupAction()
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $groupId = $this->getRequest()->request->get('id');
         $userRelatedGroup = array();
         

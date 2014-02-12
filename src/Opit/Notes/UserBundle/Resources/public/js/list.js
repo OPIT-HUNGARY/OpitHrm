@@ -111,7 +111,7 @@
 
   $('#userlistWrapper').on("click", ".delete-single-user", function() {
     var $checkbox;
-    $checkbox = $(this).closest('tr').find(':checkbox');
+    $checkbox = $(this).closest('tr').find(':checkbox').not('disabled');
     $checkbox.prop('checked', true);
     return deleteUser();
   });
@@ -124,8 +124,10 @@
     return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
   };
 
-  $('#userlistWrapper').on("click", ".fa-trash-o", function() {
-    return $('.list-delete-user').checkAll();
+  $('#userlistWrapper').on("click", "th .fa-trash-o", function() {
+    return $('.list-delete-user').filter(function() {
+      return !this.disabled;
+    }).checkAll();
   });
 
   $('#list').on("click", "#list-reply-message", function() {

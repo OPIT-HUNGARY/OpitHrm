@@ -125,8 +125,10 @@
     return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-jobtitle');
   };
 
-  $('#list-table').on("click", "th fa-trash-o", function() {
-    return $('.list-delete-jobtitle').checkAll();
+  $('#list-table').on("click", "th .fa-trash-o", function() {
+    return $('.list-delete-jobtitle').filter(function() {
+      return !this.disabled;
+    }).checkAll();
   });
 
   inverse = false;

@@ -51,7 +51,7 @@ class AdminTravelController extends Controller
      */
     public function expenseTypeShowAction()
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $expenseTypeId = $request->attributes->get('id');
         
@@ -86,7 +86,7 @@ class AdminTravelController extends Controller
      */
     public function deleteExpenseTypeAction()
     {
-        $entityManager = $this->getDoctrine()->getEntityManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $expenseTypeId = $this->getRequest()->request->get('id');
         
         if (!is_array($expenseTypeId)) {

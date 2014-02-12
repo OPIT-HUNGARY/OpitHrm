@@ -81,7 +81,7 @@ $('#delete').click ->
 
 # Delete icon in the table row
 $('#userlistWrapper').on "click", ".delete-single-user", ->
-    $checkbox = $(@).closest('tr').find(':checkbox')
+    $checkbox = $(@).closest('tr').find(':checkbox').not('disabled')
     $checkbox.prop 'checked', true
     deleteUser()
 
@@ -92,8 +92,8 @@ deleteUser = () ->
     url = Routing.generate 'OpitNotesUserBundle_user_delete'
     $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
         
-$('#userlistWrapper').on "click", ".fa-trash-o", ->
-    $('.list-delete-user').checkAll()
+$('#userlistWrapper').on "click", "th .fa-trash-o", ->
+    $('.list-delete-user').filter(() -> return not @.disabled).checkAll()
     
 $('#list').on "click", "#list-reply-message", ->
     $(@).hide()

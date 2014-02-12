@@ -142,7 +142,7 @@ class UserController extends Controller
 
         $form = $this->createForm(
             new UserShowType(
-                $this->getDoctrine()->getEntityManager(),
+                $this->getDoctrine()->getManager(),
                 $this->container->getParameter('notes.user.status')
             ),
             $user
@@ -158,7 +158,7 @@ class UserController extends Controller
      */
     public function addUserAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $id = $request->attributes->get('id');
         $errorMessages = array();
@@ -173,7 +173,7 @@ class UserController extends Controller
 
         $form = $this->createForm(
             new UserShowType(
-                $this->getDoctrine()->getEntityManager(),
+                $this->getDoctrine()->getManager(),
                 $this->container->getParameter('notes.user.status')
             ),
             $user
@@ -227,14 +227,22 @@ class UserController extends Controller
         $ids = (array) $request->request->get('delete-user');
         $result = array('response' => 'error');
 
+        // Get the logged in user.
+        $securityContext = $this->container->get('security.context');
+        $token = $securityContext->getToken();
+        $loggedInUserId = $token->getUser()->getId();
+
         if (!is_array($ids)) {
             $ids = array($ids);
         }
 
         try {
             foreach ($ids as $id) {
-                $user = $this->getUserObject($id);
-                $em->remove($user);
+                // If the logged in user is not equal to deleting user then remove it.
+                if ($loggedInUserId !== (int) $id) {
+                    $user = $this->getUserObject($id);
+                    $em->remove($user);
+                }
             }
             $em->flush();
             $result['response'] = 'success';
@@ -336,9 +344,7 @@ class UserController extends Controller
         if (!$user = $em->getRepository('OpitNotesUserBundle:User')->find($id)) {
             throw $this->createNotFoundException('User object with id "'.$id.'" not found.');
         }
-
-        $user->setTaxIdentification((integer) $user->getTaxIdentification());
-        
+       
         return $user;
     }
 }

@@ -96,7 +96,7 @@ deleteSingleRequest = (type, self) ->
     return
 
 # Ordering.
-$('#list-table').on 'click', '.fa-sort', ->
+$('#list-table').on 'click', 'th .fa-sort', ->
     field = $(@).attr('data-field')
     if order is 'desc'
         order = 'asc'
