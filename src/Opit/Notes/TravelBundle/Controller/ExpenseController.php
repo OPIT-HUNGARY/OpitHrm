@@ -97,7 +97,7 @@ class ExpenseController extends Controller
         $exchService = $this->container->get('opit.service.exchange_rates');
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
-        $approvedCosts = $travelExpenseService->getApprovedCosts($travelRequest, $exchService);
+        $approvedCosts = $travelExpenseService->getTRCosts($travelRequest, $exchService);
         
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());

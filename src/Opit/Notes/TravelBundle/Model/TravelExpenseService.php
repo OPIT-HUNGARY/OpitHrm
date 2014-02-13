@@ -246,7 +246,7 @@ class TravelExpenseService
      * @param type $exchService
      * @return type
      */
-    function getApprovedCosts(TravelRequest $travelRequest, $exchService)
+    function getTRCosts(TravelRequest $travelRequest, $exchService)
     {
         $approvedCostsEUR = 0;
         $approvedCostsHUF = 0;

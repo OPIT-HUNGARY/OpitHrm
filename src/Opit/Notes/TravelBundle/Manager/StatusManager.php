@@ -107,10 +107,18 @@ class StatusManager
                 }
             }
             
+            $estimatedCosts = $this->container->get('opit.model.travel_expense')
+                ->getTRCosts($resource, $this->container->get('opit.service.exchange_rates'));
             $this->mail->setSubject($subjectType . ' (' . $travelRequestId . ') sent for approval');
             $this->mail->setBaseTemplate(
                 'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
-                array($template => $resource, 'nextStates' => $nextStates, 'stateChangeLinks' => $stateChangeLinks)
+                array(
+                    $template => $resource,
+                    'nextStates' => $nextStates,
+                    'stateChangeLinks' => $stateChangeLinks,
+                    'estimatedCostsEUR' => ceil($estimatedCosts['EUR']),
+                    'estimatedCostsHUF' => ceil($estimatedCosts['HUF'])
+                )
             );
             $this->mail->setRecipient($to);
             $this->mail->sendMail();
