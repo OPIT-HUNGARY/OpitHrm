@@ -341,6 +341,7 @@ class ExpenseController extends Controller
         );
 
         $travelExpenseExpenses = $travelExpenseService->sumExpenses($travelExpense);
+        $sumOfCostsByCurrencies = $travelExpenseService->getCostsByCurrencies($travelExpense);
         $midRate = $travelExpenseService->getMidRate();
         
         return $this->render(
@@ -354,6 +355,8 @@ class ExpenseController extends Controller
                 'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses'],
                 'currencyFormat' => $currencyConfig['currency_format'],
                 'midRate' => $midRate,
+                'companyPaidExpenses' => $sumOfCostsByCurrencies['companyPaidExpenses'],
+                'employeePaidExpenses' => $sumOfCostsByCurrencies['employeePaidExpenses'],
                 'rates' => $this->container->get('opit.service.exchange_rates')
                                ->getRatesByDate($midRate)
             )

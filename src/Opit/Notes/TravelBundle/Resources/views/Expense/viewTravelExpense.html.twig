@@ -126,26 +126,52 @@
             Total amount of expenses
         </td>
     </tr>
-    <tr>
-        <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
-        <td class="width-80 align-right">{{ convertCurrency('EUR','HUF', expensesPaidByCompany, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class="width-50">HUF</td>
-    </tr>
-    <tr>
-        <td class="bold"></td>
-        <td class="align-right">{{ expensesPaidByCompany|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td>EUR</td>
-    </tr>
-    <tr>
-        <td class="bold">Expenses paid by employee (payable to your own bank account)</td>
-        <td class="align-right">{{ convertCurrency('EUR','HUF',expensesPaidByEmployee, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td>HUF</td>
-    </tr>
-    <tr>
-        <td class="bold"></td>
-        <td class="align-right">{{ expensesPaidByEmployee|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td>EUR</td>
-    </tr>
+    {% set companyPaidExpensesHasTitle = 0 %}
+    {% set employeePaidExpensesHasTitle = 0 %}
+    {% for currency, cost in companyPaidExpenses %}
+        {% if '0' != cost %}
+            <tr>
+            {% if '0' == companyPaidExpensesHasTitle %}
+            <td class="bold width-420">Expenses paid by employee (payable to your own bank account)</td>
+            {% set companyPaidExpensesHasTitle = 1 %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            <td class="width-80 align-right">{{ cost }}</td>
+            <td class="width-50">{{ currency }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    {% if '0' == companyPaidExpensesHasTitle %}
+        <tr>
+            <td class="bold width-420">Expenses paid by employee (payable to your own bank account)</td>
+            <td class="width-80 align-right">0</td>
+            <td class="width-50"></td>
+        </tr>
+    {% endif %}
+    
+    {% for currency, cost in employeePaidExpenses %}
+        {% if '0' != cost %}
+            <tr>
+            {% if '0' == employeePaidExpensesHasTitle %}
+            <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
+            {% set employeePaidExpensesHasTitle = 1 %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            <td class="width-80 align-right">{{ cost }}</td>
+            <td class="width-50">{{ currency }}</td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    {% if '0' == employeePaidExpenses %}
+        <tr>
+            <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
+            <td class="width-80 align-right">0</td>
+            <td class="width-50"></td>
+        </tr>
+    {% endif %}
+   
     {% set totalExpenses = (expensesPaidByEmployee+expensesPaidByCompany+perDiem['totalPerDiem']) %}
     <tr class="bold">
         <td>Total expenses in HUF (OPIT + Employee + Per diem)</td>

@@ -246,7 +246,7 @@ class TravelExpenseService
      * @param type $exchService
      * @return type
      */
-    function getTRCosts(TravelRequest $travelRequest, $exchService)
+    public function getTRCosts(TravelRequest $travelRequest, $exchService)
     {
         $approvedCostsEUR = 0;
         $approvedCostsHUF = 0;
@@ -285,7 +285,7 @@ class TravelExpenseService
                 $destinationCost,
                 $midRate
             );
-        }    
+        }
         
         return array('HUF' => $approvedCostsHUF, 'EUR' => $approvedCostsEUR);
     }
@@ -312,5 +312,38 @@ class TravelExpenseService
         // TODO: handle empty rates.
         
         return $midRate;
+    }
+    
+    /**
+     * Get company and user paid expenses and put them in an array depending on the
+     * currency they have
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
+     * @return array
+     */
+    public function getCostsByCurrencies(TravelExpense $travelExpense)
+    {
+        $currencies = $this->entityManager->getRepository('OpitNotesCurrencyRateBundle:Currency')->findAll();
+        $sumOfCompanyPaidExpensesByCurrencies = array();
+        $sumOfEmployeePaidExpensesByCurrencies = array();
+        foreach ($currencies as $currency) {
+            $sumOfCompanyPaidExpensesByCurrencies[$currency->getCode()] = 0;
+            $sumOfEmployeePaidExpensesByCurrencies[$currency->getCode()] = 0;
+        }
+        foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
+            $companyPaidExpenseAmount = $companyPaidExpenses->getAmount();
+            $companyPaidExpenseCurrency = $companyPaidExpenses->getCurrency()->getCode();
+            $sumOfCompanyPaidExpensesByCurrencies[$companyPaidExpenseCurrency] += $companyPaidExpenseAmount;
+        }
+        foreach ($travelExpense->getUserPaidExpenses() as $employeePaidExpense) {
+            $employeePaidExpenseAmount = $employeePaidExpense->getAmount();
+            $employeePaidExpenseCurrency = $employeePaidExpense->getCurrency()->getCode();
+            $sumOfEmployeePaidExpensesByCurrencies[$employeePaidExpenseCurrency] += $employeePaidExpenseAmount;
+        }
+        
+        return array(
+            'employeePaidExpenses' => $sumOfEmployeePaidExpensesByCurrencies,
+            'companyPaidExpenses' => $sumOfCompanyPaidExpensesByCurrencies
+        );
     }
 }
