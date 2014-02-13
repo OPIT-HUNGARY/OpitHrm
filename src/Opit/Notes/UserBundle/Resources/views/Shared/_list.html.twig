@@ -21,7 +21,9 @@
                 <td class="width-24-fix">
                     {% if attribute(value, 'Role') is defined %}
                         {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER'
-                            or attribute(value, 'Role') == 'ROLE_TEAM_MANAGER' or attribute(value, 'Role') == 'ROLE_GENERAL_MANAGER' %}
+                            or attribute(value, 'Role') == 'ROLE_TEAM_MANAGER' or attribute(value, 'Role') == 'ROLE_GENERAL_MANAGER'
+                            or attribute(value, 'Role') == 'ROLE_STAKEHOLDER' or attribute(value, 'Role') == 'ROLE_PAYROLL'
+                            or attribute(value, 'Role') == 'ROLE_FINANCE' %}
                             <i class="fa fa-cog darker-gray-color" title="System role"></i>
                         {% else %}
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
@@ -87,6 +89,9 @@
                             attribute(value, 'Role') != 'ROLE_USER' and
                             attribute(value, 'Role') != 'ROLE_TEAM_MANAGER' and
                             attribute(value, 'Role') != 'ROLE_GENERAL_MANAGER' and
+                            attribute(value, 'Role') != 'ROLE_STAKEHOLDER' and
+                            attribute(value, 'Role') != 'ROLE_PAYROLL' and
+                            attribute(value, 'Role') != 'ROLE_FINANCE' and
                             attribute(value, 'id') not in disabledRoles %}
                             {{ actionIcons }}
                         {% endif %}
@@ -107,6 +112,7 @@
         {% endfor %}
     {% endif %}
 </table>
+{% if numberOfPages is defined %}
 {% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
     {
         'numberOfPages': numberOfPages,
@@ -115,4 +121,5 @@
         'url': path('OpitNotesUserBundle_user_list')
     }
 %}
+{% endif %}
 </form>

@@ -53,6 +53,20 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
         $teamManagerRole->setRole('ROLE_TEAM_MANAGER');
         $manager->persist($teamManagerRole);
         
+        $stakeholderRole = new Groups();
+        $stakeholderRole->setName('Stakeholder');
+        $stakeholderRole->setRole('ROLE_STAKEHOLDER');
+        $manager->persist($stakeholderRole);
+        
+        $payrollRole = new Groups();
+        $payrollRole->setName('Payroll');
+        $payrollRole->setRole('ROLE_PAYROLL');
+        $manager->persist($payrollRole);
+        
+        $financeRole = new Groups();
+        $financeRole->setName('Finance');
+        $financeRole->setRole('ROLE_FINANCE');
+        $manager->persist($financeRole);
         
         $manager->flush();
      
@@ -60,6 +74,9 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
         $this->addReference('user-group', $userRole);
         $this->addReference('general-manager-group', $generalManagerRole);
         $this->addReference('team-manager-group', $teamManagerRole);
+        $this->addReference('stakeholder-group', $stakeholderRole);
+        $this->addReference('payroll-group', $payrollRole);
+        $this->addReference('finance-group', $financeRole);
     }
     
     /**

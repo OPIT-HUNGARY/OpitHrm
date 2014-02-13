@@ -24,7 +24,6 @@ class TravelRequestRepository extends EntityRepository
      */
     public function getTravelRequestsBySearchParams($parameters, $pagnationParameters)
     {
-//        $firstResult, $maxResults, $currentUser, $isAdmin, $isGeneralManager, $entityManager
         $qb = $this->createQueryBuilder('tr');
         /**
          * Params which will be pass to the setParameter function.
@@ -102,12 +101,13 @@ class TravelRequestRepository extends EntityRepository
                 ->getQuery();
         } elseif ($pagnationParameters['isGeneralManager']) {
             $status = $pagnationParameters['entityManager']->getRepository('OpitNotesTravelBundle:Status')->find(1);
-            $travelRequests = $this->createQueryBuilder('tr')
-                ->leftJoin('tr.states', 's', 'WITH')
-                ->where($travelRequests->expr()->notIn('s', ':status'))
-                ->setParameter(':status', $status)
-                ->setFirstResult($pagnationParameters['firstResult'])
-                ->setMaxResults($pagnationParameters['maxResults']);
+            $travelRequests = $this->createQueryBuilder('tr')->leftJoin('tr.states', 's', 'WITH');
+            if (null !== $travelRequests) {
+                $travelRequests->where($travelRequests->expr()->notIn('s', ':status'));
+                $travelRequests->setParameter(':status', $status);
+            }
+            $travelRequests->setFirstResult($pagnationParameters['firstResult']);
+            $travelRequests->setMaxResults($pagnationParameters['maxResults']);
         } else {
             $travelRequests = $this->createQueryBuilder('tr')
                 ->where('tr.user = :user')

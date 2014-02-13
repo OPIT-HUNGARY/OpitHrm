@@ -94,7 +94,6 @@ class TravelController extends Controller
         $travelRequestStates = $listingRights['travelRequestStates'];
         $currentStatusNames = $listingRights['currentStatusNames'];
         $isLocked = $listingRights['isLocked'];
-        
         $numberOfPages = ceil(count($travelRequests) / $pagerMaxResults);
         
         $trArray = array();
@@ -123,7 +122,6 @@ class TravelController extends Controller
                 'currentStatusNames' => $currentStatusNames
             )
         );
-        
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $this->container->getParameter('travel_bundle_max_pages_to_show');
         $templateVars['offset'] = $offset + 1;
@@ -149,7 +147,6 @@ class TravelController extends Controller
         $request = $this->getRequest();
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestPreview = $request->request->get('preview');
-        
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
         
@@ -211,7 +208,6 @@ class TravelController extends Controller
         
         $travelRequestStates[$currentStatusId] = $currentStatus->getName();
         $children = $this->get('opit.model.travel_request')->addChildNodes($travelRequest);
-        
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
 
