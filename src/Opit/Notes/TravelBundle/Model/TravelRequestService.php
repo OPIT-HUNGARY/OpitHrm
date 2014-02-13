@@ -20,6 +20,7 @@ use Opit\Notes\TravelBundle\Manager\StatusManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
 
 /**
  * Description of TravelRequestService
@@ -130,6 +131,61 @@ class TravelRequestService
             'doNotListTravelRequest' => $doNotListTravelRequest,
             'isStatusLocked' => $isStatusLocked,
             'isTravelExpenseLocked' => $isTravelExpenseLocked
+        );
+    }
+    
+    public function setTravelRequestListingRights($travelRequests, $isAdmin, $user)
+    {
+        $travelExpenses = $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
+        $statusManager = $this->statusManager;
+        $currentStatusNames = array();
+        $teIds = array();
+        $travelRequestStates = array();
+        $isLocked = array();
+        
+        if (!$isAdmin) {
+            $allowedTRs = new ArrayCollection();
+            //loop through all travel requests
+            foreach ($travelRequests as $travelRequest) {
+                //if user has the right to view travel request
+                if (true === $this->securityContext->isGranted('VIEW', $travelRequest)) {
+                    $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+                    $travelRequestAccessRights = $this->setTravelRequestAccessRights(
+                        false,
+                        $travelRequest->getGeneralManager()->getId(),
+                        $user->getId(),
+                        $currentStatus->getId(),
+                        $statusManager->getCurrentStatus($travelRequest)
+                    );
+                    
+                    // add travel request to allowed travel requests to show
+                    if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
+                        $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                        $currentStatusNames[] = $currentStatus->getName();
+                        $allowedTRs[] = $travelRequest;
+                        $isLocked[] = $travelRequestAccessRights;
+                        $travelRequestStates[] =
+                            $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                    }
+                }
+            }
+        } else {
+            foreach ($travelRequests as $travelRequest) {
+                $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                $isLocked[] = $this->setTravelRequestAccessRights(true);
+                $travelRequestStates[] =
+                    $this->getTravelRequestNextStates($travelRequest, $statusManager);
+            }
+            
+            $allowedTRs = $travelRequests;
+        }
+        
+        return array(
+            'allowedTRs' => $allowedTRs,
+            'teIds' => $teIds,
+            'travelRequestStates' => $travelRequestStates,
+            'currentStatusNames' => $currentStatusNames,
+            'isLocked' => $isLocked
         );
     }
     
@@ -372,11 +428,7 @@ class TravelRequestService
      */
     public function changeStatus(TravelRequest $travelRequest, $firstStatusId, $statusId, $statusManager)
     {
-        if('2' === $statusId) {
-            $statusManager->addStatus($travelRequest, $statusId);
-            return new JsonResponse();
-        }
-        else if ($statusManager->isNewStatusValid($travelRequest, $firstStatusId)) {
+        if ($statusManager->isNewStatusValid($travelRequest, $firstStatusId)) {
             $statusManager->addStatus($travelRequest, $statusId);
             return new JsonResponse();
         } else {

@@ -3,6 +3,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Opit\Notes\UserBundle\Entity\User;
 
 /**
@@ -21,8 +22,10 @@ class TravelRequestRepository extends EntityRepository
      * @todo create search opportunity on TeamManager name
      * @todo create search opportunity on GeneralManager name
      */
-    public function getTravelRequestsBySearchParams($parameters)
+    public function getTravelRequestsBySearchParams($parameters, $pagnationParameters)
     {
+//        $firstResult, $maxResults, $currentUser, $isAdmin, $isGeneralManager, $entityManager
+        $qb = $this->createQueryBuilder('tr');
         /**
          * Params which will be pass to the setParameter function.
          * @var array
@@ -66,11 +69,56 @@ class TravelRequestRepository extends EntityRepository
             $qb->andWhere($qb->expr()->lte('tr.arrivalDate', ':arrivalDateTo'));
         }
 
-        $qb->setParameters($params);
-        $q = $qb->getQuery();
-        return $q->getResult();
+        if ($pagnationParameters['isAdmin']) {
+            $qb->setParameters($params);
+            $qb->setFirstResult($pagnationParameters['firstResult']);
+            $qb->setMaxResults($pagnationParameters['maxResults']);
+        } elseif ($pagnationParameters['isGeneralManager']) {
+            $status = $pagnationParameters['entityManager']->getRepository('OpitNotesTravelBundle:Status')->find(1);
+            $travelRequests = $this->createQueryBuilder('tr')
+                ->leftJoin('tr.states', 's', 'WITH')
+                ->where($travelRequests->expr()->notIn('s', ':status'))
+                ->setParameter(':status', $status)
+                ->setFirstResult($pagnationParameters['firstResult'])
+                ->setMaxResults($pagnationParameters['maxResults']);
+        } else {
+            $params['user'] = $pagnationParameters['currentUser'];
+            $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
+            $qb->setParameters($params);
+            $qb->setFirstResult($pagnationParameters['firstResult']);
+            $qb->setMaxResults($pagnationParameters['maxResults']);
+        }
+        
+        return new Paginator($qb->getQuery(), $fetchJoinCollection = true);
     }
     
+    public function getPaginaton($pagnationParameters)
+    {
+        $travelRequests = array();
+        if ($pagnationParameters['isAdmin']) {
+            $travelRequests = $this->createQueryBuilder('tr')
+                ->setFirstResult($pagnationParameters['firstResult'])
+                ->setMaxResults($pagnationParameters['maxResults'])
+                ->getQuery();
+        } elseif ($pagnationParameters['isGeneralManager']) {
+            $status = $pagnationParameters['entityManager']->getRepository('OpitNotesTravelBundle:Status')->find(1);
+            $travelRequests = $this->createQueryBuilder('tr')
+                ->leftJoin('tr.states', 's', 'WITH')
+                ->where($travelRequests->expr()->notIn('s', ':status'))
+                ->setParameter(':status', $status)
+                ->setFirstResult($pagnationParameters['firstResult'])
+                ->setMaxResults($pagnationParameters['maxResults']);
+        } else {
+            $travelRequests = $this->createQueryBuilder('tr')
+                ->where('tr.user = :user')
+                ->setParameter(':user', $pagnationParameters['currentUser'])
+                ->setFirstResult($pagnationParameters['firstResult'])
+                ->setMaxResults($pagnationParameters['maxResults'])
+                ->getQuery();
+        }
+        
+        return new Paginator($travelRequests, $fetchJoinCollection = true);
+    }
     /**
      * Find all travel request with ordering by fields.
      * 
@@ -95,5 +143,5 @@ class TravelRequestRepository extends EntityRepository
        
         $q = $qb->getQuery();
         return $q->getResult();
-    }
+	}    
 }

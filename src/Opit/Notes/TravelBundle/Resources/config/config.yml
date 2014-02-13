@@ -1,5 +1,9 @@
 imports:
     - { resource: parameters.yml }
 
+parameters:
+    travel_bundle_pager_max_results: 3
+    travel_bundle_max_pages_to_show: 3
+
 opit_notes_travel:
     mail_sender: %mail_sender%

@@ -26,6 +26,7 @@ changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
             location.reload()
     .fail (data) ->
         console.warn 'An error occured while setting new status for the request.'
+        
 $(document).ready ->
             
     $('.print-view').on 'click', (event) ->
@@ -62,6 +63,23 @@ $(document).ready ->
                      $('#dialog-show-details-tr').dialog 'destroy'
                      return
             return
+            
+    $('#searchButton').click (event) ->
+      $form = $('#searchFormWrapper').find 'form'
+      url = $form.attr 'action'
+      event.preventDefault()
+      return if not $form.formIsEmpty()
+
+      $.ajax
+          method: 'POST'
+          url: url
+          data: $form.serialize()
+      .done (response) ->
+        $('#list-table').parent().html response
+        $(document).data('notes').funcs.initTravelRequestListListeners()
+        $(document).data('notes').funcs.initPager()
+        return
+      return
 
 # type = expense or request
 deleteSingleRequest = (type, self) ->
@@ -94,7 +112,6 @@ deleteSingleRequest = (type, self) ->
             $(@).dialog 'destroy'
             return
     return
-
 # Ordering.
 $('#list-table').on 'click', 'th .fa-sort', ->
     field = $(@).attr('data-field')
@@ -108,96 +125,3 @@ $('#list-table').on 'click', 'th .fa-sort', ->
        data: 'field': field, 'order': order, 'showList': 1
      .done (data) ->
         $('#list-table').html(data)
-
-$('#list-table').on 'click', '.clickable', ->
-  travelRequestId = $(@).attr 'data-tr-id'
-  firstStatusId = $(@).parent().find('option:first-child').val()
-  $.ajax
-    method: 'POST'
-    url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
-    data: 'id': travelRequestId
-  .done (data) ->
-    dialogWidth = 550
-    $('<div id="dialog-show-details-tr"></div>').html(data)
-      .dialog
-        open: ->
-          $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Details')
-        width: dialogWidth
-        maxHeight: $(window).outerHeight()-100
-        modal: on
-        if firstStatusId is '1' or firstStatusId is '3'
-            buttons:
-              'Send for approval': ->
-                 changeTravelStatus(2, travelRequestId, firstStatusId)
-                 $('#dialog-show-details-tr').dialog 'destroy'
-              Close: ->
-                 $('#dialog-show-details-tr').dialog 'destroy'
-                 return
-        else
-            buttons:
-              Close: ->
-                 $('#dialog-show-details-tr').dialog 'destroy'
-                 return
-    return
-  return
-
-$('.icon-disabled').on 'click', (event)->
-    event.preventDefault()
-
-$('#list-table').on 'click', '.fa-trash-o', ->
-    $('.deleteMultipleTravelRequest').checkAll()
-    $('.deleteMultipleTravelExpense').checkAll()
-
-$('.deleteSingeTravelRequest').click (event) ->
-    event.preventDefault()
-    deleteSingleRequest('request', $(@))
-    
-$('.deleteSingeTravelExpense').click ->
-    event.preventDefault()
-    deleteSingleRequest('expense', $(@))
-    
-        
-$('#delete').click ->
-    warningMessage = 'Are you sure you want to delete the selected travel requests?'
-    checkBoxClass = '.deleteMultipleTravelRequest'
-    url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
-    title = 'Travel request removal'
-    errorText = 'The travel request could not be deleted due to an error.'
-    if $(@).hasClass 'expense'
-        warningMessage = 'Are you sure you want to delete the selected travel expenses?'
-        checkBoxClass = '.deleteMultipleTravelExpense'
-        url = Routing.generate 'OpitNotesTravelBundle_expense_delete'
-        title = 'Travel expense removal'
-        errorText = 'The travel expense could not be deleted due to an error.'
-        
-    travelRequests = []
-    selectedTravelRequestRow = []
-    $(checkBoxClass).each ->
-        if $(@).is ':checked'
-            travelRequests.push $(@).val()
-            selectedTravelRequestRow.push $(@).parent().parent()
-            
-    $('<div></div>').html(warningMessage).dialog
-        title: title
-        buttons:
-            Yes: ->
-                $.ajax
-                  method: 'POST'
-                  url: url
-                  data: 'id': travelRequests
-                .done (data) ->
-                    $(selectedTravelRequestRow).each ->
-                        $(@).remove()
-                    return
-                .fail () ->
-                    $('<div></div>').html(errorText).dialog
-                        title: 'Error'                    
-                $(@).dialog 'close'
-                return
-            No: ->
-                $(@).dialog 'close'
-                return
-        close: ->
-            $(@).dialog 'destroy'
-            return
-    return

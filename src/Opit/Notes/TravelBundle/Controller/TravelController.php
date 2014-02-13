@@ -32,7 +32,7 @@ class TravelController extends Controller
      * @Route("/secured/travel/list", name="OpitNotesTravelBundle_travel_list")
      * @Template()
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
@@ -49,53 +49,69 @@ class TravelController extends Controller
         } else {
             $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
         }
-        $travelExpenses = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
-      
-        // te = Travel Expense
-        $statusManager = $this->get('opit.manager.status_manager');
-        $travelRequestModel = $this->get('opit.model.travel_request');
-        $teIds = array();
-        $travelRequestStates = array();
-        $currentStatusNames = array();
-        $isLocked = array();
         
-        //if user is not an admin
-        if (!$securityContext->isGranted('ROLE_ADMIN')) {
-            $allowedTRs = new ArrayCollection();
-            //loop through all travel requests
-            foreach ($travelRequests as $travelRequest) {
-                //if user has the right to view travel request
-                if (true === $securityContext->isGranted('VIEW', $travelRequest)) {
-                    $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-                    
-                    $teIds[] = $travelRequestModel->getTravelExpenseId($travelExpenses, $travelRequest);
-                    $currentStatusNames[] = $currentStatus->getName();
-                    $travelRequestStates[] =
-                        $travelRequestModel->getTravelRequestNextStates($travelRequest, $statusManager);
-                    $travelRequestAccessRights = $travelRequestModel->setTravelRequestAccessRights(
-                        false,
-                        $travelRequest->getGeneralManager()->getId(),
-                        $this->getUser()->getId(),
-                        $currentStatus->getId(),
-                        $statusManager->getCurrentStatus($travelRequest)
-                    );
-                    $isLocked[] = $travelRequestAccessRights;
-                    
-                    // add travel request to allowed travel requests to show
-                    if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
-                        $allowedTRs->add($travelRequest);
-                    }
-                }
-            }
+        $travelRequestRepository = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest');
+        $securityContext = $this->get('security.context');
+        $user = $this->getUser();
+        $isAdmin = $securityContext->isGranted('ROLE_ADMIN');
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $isSearch = $request->request->get('search');
+        $offset = $request->request->get('offset');
+        $pagerMaxResults = $this->container->getParameter('travel_bundle_pager_max_results');
+        $pagnationParameters = array(
+            'firstResult' => ($offset * $pagerMaxResults),
+            'maxResults' => $pagerMaxResults,
+            'currentUser' => $user,
+            'isAdmin' => $isAdmin,
+            'isGeneralManager' => $isGeneralManager,
+            'entityManager' => $entityManager
+        );        
+       
+            'firstResult' => ($offset * $pagerMaxResults),
+            'maxResults' => $pagerMaxResults,
+            'currentUser' => $user,
+            'isAdmin' => $isAdmin,
+            'isGeneralManager' => $isGeneralManager,
+            'entityManager' => $entityManager
+        );
+        
+        if (null === $isSearch) {
+            $travelRequests = $travelRequestRepository
+                ->getPaginaton($pagnationParameters);
         } else {
-            foreach ($travelRequests as $travelRequest) {
-                $teIds[] = $travelRequestModel->getTravelExpenseId($travelExpenses, $travelRequest);
-                $isLocked[] = $travelRequestModel->setTravelRequestAccessRights(true);
-                $travelRequestStates[] =
-                    $travelRequestModel->getTravelRequestNextStates($travelRequest, $statusManager);
-            }
+            $allRequests = $this->getRequest()->request->all();
+            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+                ->getTravelRequestsBySearchParams(
+                    $allRequests,
+                    $pagnationParameters
+                );
+        }
+        
+        
+        $listingRights = $this->get('opit.model.travel_request')
+            ->setTravelRequestListingRights($travelRequests, $isAdmin, $this->getUser());
+        $teIds = $listingRights['teIds'];
+        $allowedTRs = $listingRights['allowedTRs'];
+        $travelRequestStates = $listingRights['travelRequestStates'];
+        $currentStatusNames = $listingRights['currentStatusNames'];
+        $isLocked = $listingRights['isLocked'];
+        
+        $numberOfPages = ceil(count($travelRequests) / $pagerMaxResults);
+        
+        $trArray = array();
+        foreach ($allowedTRs as $allowedTR) {
+            $trArray[] = $allowedTR;
+        }
+        
+        if ($offset <= $numberOfPages && $offset >= 0) {
+            $allowedTRs = array_slice(
+                $trArray,
+                ((null === $offset ? 0 : $offset - 1) * $pagerMaxResults),
+                $pagerMaxResults
+            );
+        } else {
+            return new JsonResponse('', 500);
             
-            $allowedTRs = $travelRequests;
         }
         
         return $this->render(
@@ -108,32 +124,18 @@ class TravelController extends Controller
                 'currentStatusNames' => $currentStatusNames
             )
         );
-    }
-
-    /**
-     * @Route("/secured/travel/search", name="OpitNotesTravelBundle_travel_search")
-     * @Template()
-     */
-    public function searchAction()
-    {
-        $request = $this->getRequest()->request->all();
-        $empty = array_filter($request, function ($value) {
-            return !empty($value);
-        });
-
-        $travelRequests = null;
-
-        if (array_key_exists('resetForm', $request) || empty($empty)) {
-             list($travelRequests) = array_values($this->listAction());
+        
+        $templateVars['numberOfPages'] = $numberOfPages;
+        $templateVars['maxPages'] = $this->container->getParameter('travel_bundle_max_pages_to_show');
+        $templateVars['offset'] = $offset + 1;
+        
+        if (null === $offset && null === $isSearch) {
+            $template = 'OpitNotesTravelBundle:Travel:list.html.twig';
         } else {
-            $entityManager = $this->getDoctrine()->getManager();
-            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                                 ->getTravelRequestsBySearchParams($request);
+            $template = 'OpitNotesTravelBundle:Travel:_list.html.twig';
         }
-        return $this->render(
-            'OpitNotesTravelBundle:Travel:_list.html.twig',
-            array("travelRequests" => $travelRequests)
-        );
+        
+        return $this->render($template, $templateVars);
     }
 
     /**
@@ -422,17 +424,20 @@ class TravelController extends Controller
                     $travelRequestId = $travelRequest->getId();
                     $currentStatus = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
                             ->getCurrentStatus($travelRequestId);
+                    
                     if ('fa' === $forApproval) {
-                        $nextStatusId = 2;
+                        $this->get('opit.manager.status_manager')->forceTRStatus(1, $this->getUser(), $travelRequest);
+                        $this->get('opit.model.travel_request')->changeStatus(
+                            $travelRequest,
+                            $currentStatus ? $currentStatus->getStatus()->getId() : null,
+                            2,
+                            $this->get('opit.manager.status_manager'),
+                            $forApproval,
+                            $this->getUser()
+                        );
                     } else {
-                        $nextStatusId = 1;
+                        $this->get('opit.manager.status_manager')->forceTRStatus(1, $this->getUser(), $travelRequest);
                     }
-                    $this->get('opit.model.travel_request')->changeStatus(
-                        $travelRequest,
-                        $currentStatus ? $currentStatus->getStatus()->getId() : null,
-                        $nextStatusId,
-                        $this->get('opit.manager.status_manager')
-                    );
 
                     $travelRequestService->handleAccessRights(
                         $travelRequest,

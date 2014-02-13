@@ -487,3 +487,28 @@ header{
         background-color: $defaultLightColor;
     }
 }
+
+#pager{
+    text-align:center;
+    margin:20px 0;
+    
+    i:hover{
+        cursor:pointer;
+        color:$orangeColor;
+    }
+    
+    span{
+        padding:0 5px;
+    }
+    
+    span:hover{
+        cursor:pointer;
+        color:$orangeColor;
+        text-decoration:underline;
+    }
+    
+    .selected-page{
+        color:$orangeColor;
+        text-decoration:underline;
+    }
+}

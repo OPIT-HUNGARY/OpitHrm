@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Description of User
@@ -24,9 +25,8 @@ use Doctrine\ORM\NoResultException;
  * @package Opit
  * @subpackage Notes
  */
-class UserRepository extends EntityRepository implements UserProviderInterface 
+class UserRepository extends EntityRepository implements UserProviderInterface
 {
-    
     /**
      * Method required and called by custom authentication provider
      * 
@@ -75,8 +75,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
             ->setParameter('employeeName', $data['employeeName'])
-            ->setParameter('id',$data['id']);
-        }else{
+            ->setParameter('id', $data['id']);
+        } else {
             $qb->where('u.username = :username OR u.email = :email OR u.employeeName = :employeeName')
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
@@ -135,7 +135,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      * @param type $parameters key value pairs, parameter name and value
      * @return type
      */
-    public function findUsersByPropertyUsingLike($parameters)
+    public function findUsersByPropertyUsingLike($parameters, $firstResult, $maxResults)
     {
         $qb = $this->createQueryBuilder('u');
         $params = array();
@@ -150,10 +150,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         
         $qb->where(call_user_func_array(array($qb->expr(), "andX"), $andx))
         ->setParameters($params);
-
-        $qb = $qb->getQuery();
-                
-        return $qb->getResult();
+        
+        $qb->setFirstResult($firstResult);
+        $qb->setMaxResults($maxResults);
+        
+        return new Paginator($qb->getQuery(), $fetchJoinCollection = true);
     }
 
     /**
@@ -205,5 +206,15 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 ->getQuery();
                 
         return $q->getResult();
+    }
+    
+    public function getPaginaton($firstResult, $maxResults)
+    {
+        $users = $this->createQueryBuilder('user')
+            ->setFirstResult($firstResult)
+            ->setMaxResults($maxResults)
+            ->getQuery();
+        
+        return new Paginator($users, $fetchJoinCollection = true);
     }
 }

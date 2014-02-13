@@ -107,4 +107,12 @@
         {% endfor %}
     {% endif %}
 </table>
+{% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
+    {
+        'numberOfPages': numberOfPages,
+        'maxPages': maxPages,
+        'offset': offset,
+        'url': path('OpitNotesUserBundle_user_list')
+    }
+%}
 </form>

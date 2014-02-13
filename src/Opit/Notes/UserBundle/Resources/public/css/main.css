@@ -239,3 +239,9 @@ header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38
 #notifications-wrapper .notification:first-child { -webkit-border-top-left-radius: 7px; -moz-border-top-left-radius: 7px; -ms-border-top-left-radius: 7px; -o-border-top-left-radius: 7px; border-top-left-radius: 7px; -webkit-border-top-right-radius: 7px; -moz-border-top-right-radius: 7px; -ms-border-top-right-radius: 7px; -o-border-top-right-radius: 7px; border-top-right-radius: 7px; }
 #notifications-wrapper .notification:last-child { border-bottom: none; -webkit-border-bottom-left-radius: 7px; -moz-border-bottom-left-radius: 7px; -ms-border-bottom-left-radius: 7px; -o-border-bottom-left-radius: 7px; border-bottom-left-radius: 7px; -webkit-border-bottom-right-radius: 7px; -moz-border-bottom-right-radius: 7px; -ms-border-bottom-right-radius: 7px; -o-border-bottom-right-radius: 7px; border-bottom-right-radius: 7px; }
 #notifications-wrapper .unread { background-color: #ebebeb; }
+
+#pager { text-align: center; margin: 20px 0; }
+#pager i:hover { cursor: pointer; color: #f28c38; }
+#pager span { padding: 0 5px; }
+#pager span:hover { cursor: pointer; color: #f28c38; text-decoration: underline; }
+#pager .selected-page { color: #f28c38; text-decoration: underline; }

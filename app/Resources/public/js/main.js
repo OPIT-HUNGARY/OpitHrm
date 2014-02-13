@@ -119,6 +119,205 @@
           });
           return $parent.append($toggleIcon);
         });
+      },
+      initTravelRequestListListeners: function() {
+        $('#list-table').on('click', '.clickable', function() {
+          var firstStatusId, travelRequestId;
+          travelRequestId = $(this).attr('data-tr-id');
+          firstStatusId = $(this).parent().find('option:first-child').val();
+          $.ajax({
+            method: 'POST',
+            url: Routing.generate('OpitNotesTravelBundle_travel_show_details'),
+            data: {
+              'id': travelRequestId
+            }
+          }).done(function(data) {
+            var dialogWidth;
+            dialogWidth = 550;
+            $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
+              open: function() {
+                return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
+              },
+              width: dialogWidth,
+              maxHeight: $(window).outerHeight() - 100,
+              modal: true
+            }, firstStatusId === '1' || firstStatusId === '3' ? {
+              buttons: {
+                'Send for approval': function() {
+                  changeTravelStatus(2, travelRequestId, firstStatusId);
+                  return $('#dialog-show-details-tr').dialog('destroy');
+                },
+                Close: function() {
+                  $('#dialog-show-details-tr').dialog('destroy');
+                }
+              }
+            } : {
+              buttons: {
+                Close: function() {
+                  $('#dialog-show-details-tr').dialog('destroy');
+                }
+              }
+            });
+          });
+        });
+        $('.icon-disabled').on('click', function(event) {
+          return event.preventDefault();
+        });
+        $('#list-table th i').click(function() {
+          $('.deleteMultipleTravelRequest').checkAll();
+          return $('.deleteMultipleTravelExpense').checkAll();
+        });
+        $('.deleteSingeTravelRequest').click(function(event) {
+          event.preventDefault();
+          return deleteSingleRequest('request', $(this));
+        });
+        $('.deleteSingeTravelExpense').click(function() {
+          event.preventDefault();
+          return deleteSingleRequest('expense', $(this));
+        });
+        return $('#delete').click(function() {
+          var checkBoxClass, errorText, selectedTravelRequestRow, title, travelRequests, url, warningMessage;
+          warningMessage = 'Are you sure you want to delete the selected travel requests?';
+          checkBoxClass = '.deleteMultipleTravelRequest';
+          url = Routing.generate('OpitNotesTravelBundle_travel_delete');
+          title = 'Travel request removal';
+          errorText = 'The travel request could not be deleted due to an error.';
+          if ($(this).hasClass('expense')) {
+            warningMessage = 'Are you sure you want to delete the selected travel expenses?';
+            checkBoxClass = '.deleteMultipleTravelExpense';
+            url = Routing.generate('OpitNotesTravelBundle_expense_delete');
+            title = 'Travel expense removal';
+            errorText = 'The travel expense could not be deleted due to an error.';
+          }
+          travelRequests = [];
+          selectedTravelRequestRow = [];
+          $(checkBoxClass).each(function() {
+            if ($(this).is(':checked')) {
+              travelRequests.push($(this).val());
+              return selectedTravelRequestRow.push($(this).parent().parent());
+            }
+          });
+          $('<div></div>').html(warningMessage).dialog({
+            title: title,
+            buttons: {
+              Yes: function() {
+                $.ajax({
+                  method: 'POST',
+                  url: url,
+                  data: {
+                    'id': travelRequests
+                  }
+                }).done(function(data) {
+                  $(selectedTravelRequestRow).each(function() {
+                    return $(this).remove();
+                  });
+                }).fail(function() {
+                  return $('<div></div>').html(errorText).dialog({
+                    title: 'Error'
+                  });
+                });
+                $(this).dialog('close');
+              },
+              No: function() {
+                $(this).dialog('close');
+              }
+            },
+            close: function() {
+              $(this).dialog('destroy');
+            }
+          });
+        });
+      },
+      initPager: function() {
+        var maxVisiblepages, newSelectedPage, requestUrl, selectedPageOffset, totalNumberOfPages;
+        selectedPageOffset = $('#pager').data('offset');
+        maxVisiblepages = $('#pager').data('max');
+        newSelectedPage = $('#pager').find('[data-offset="' + selectedPageOffset + '"]');
+        newSelectedPage.addClass('selected-page');
+        totalNumberOfPages = $('#pager').data('pages');
+        requestUrl = $('#pager').data('url');
+        if (selectedPageOffset === totalNumberOfPages) {
+          $('.fa-caret-right').addClass('visibility-hidden');
+        }
+        if (selectedPageOffset === 1) {
+          $('.fa-caret-left').addClass('visibility-hidden');
+        }
+        if (totalNumberOfPages < maxVisiblepages) {
+          $('.fa-caret-left').addClass('visibility-hidden');
+          $('.fa-caret-right').addClass('visibility-hidden');
+        }
+        $('#pager').on('mousedown', 'span', function(event) {
+          var $form, offset, requestData, self;
+          self = $(this);
+          offset = $(this).data('offset');
+          $form = $('#searchFormWrapper').find('form');
+          requestData = "offset=" + (offset - 1);
+          if ($form.formIsEmpty() === true) {
+            requestData = requestData + '&' + $form.serialize();
+          }
+          return $.ajax({
+            method: 'POST',
+            url: requestUrl,
+            data: requestData
+          }).done(function(data) {
+            if (data.indexOf('error') < 0) {
+              $('#list-table').parent().replaceWith(data);
+              $(document).data('notes').funcs.initTravelRequestListListeners();
+              return $(document).data('notes').funcs.initPager();
+            }
+          });
+        });
+        return $('#pager i').on('mousedown', function(event) {
+          var $form, $selectedPage, offset, requestData, self;
+          self = $(this);
+          $selectedPage = $('.selected-page');
+          if ($(this).hasClass('fa-caret-left')) {
+            offset = selectedPageOffset - 1;
+          } else if ($(this).hasClass('fa-caret-right')) {
+            offset = selectedPageOffset + 1;
+          }
+          $form = $('#searchFormWrapper').find('form');
+          requestData = "offset=" + (offset - 1);
+          if ($form.formIsEmpty() === true) {
+            requestData = requestData + '&' + $form.serialize();
+          }
+          return $.ajax({
+            method: 'POST',
+            url: requestUrl,
+            data: requestData
+          }).done(function(data) {
+            var $newPagerItem, $pager, max, num, pages, _i, _ref;
+            $selectedPage.removeClass('selected-page');
+            $('#pager span').each(function() {
+              return $(this).removeClass('selected-page');
+            });
+            $pager = $('#pager');
+            $('#list-table').parent().replaceWith(data);
+            offset = $('#pager').data('offset');
+            pages = $('#pager').data('pages');
+            max = $('#pager').data('max');
+            if (offset > max) {
+              if (self.hasClass('fa-caret-right')) {
+                $('#pager span').remove();
+                for (num = _i = 0, _ref = max - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; num = 0 <= _ref ? ++_i : --_i) {
+                  $newPagerItem = $('<span>');
+                  $newPagerItem.html(offset - num);
+                  $newPagerItem.attr('data-offset', offset - num);
+                  $newPagerItem.insertAfter($('#pager .fa-caret-left'));
+                }
+              }
+              if (self.hasClass('fa-caret-left')) {
+                if (offset < $('#pager').first().data('offset')) {
+                  console.log('');
+                } else {
+                  $('#pager').html($pager.html());
+                }
+              }
+            }
+            $(document).data('notes').funcs.initTravelRequestListListeners();
+            return $(document).data('notes').funcs.initPager();
+          });
+        });
       }
     }
   });

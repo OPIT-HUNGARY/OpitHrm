@@ -14,7 +14,7 @@ use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
-
+use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
 use Opit\Notes\TravelBundle\Entity\Token;
 
 /**
@@ -102,7 +102,7 @@ class StatusManager
                         $this->request->getScheme() .
                         '://' . $this->request->getHttpHost() .
                         $this->request->getBaseURL() .
-                        '/changestatus/' . $generalManager->getId() . '/' . 
+                        '/changestatus/' . $generalManager->getId() . '/' .
                         $travelType . '/' . $key . '/' . $travelToken;
                 }
             }
@@ -178,7 +178,8 @@ class StatusManager
     public function isNewStatusValid($travelRequestId, $firstStatusId)
     {
         $getStatusCountForTravelRequest = $this->entityManager
-            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusCountForTravelRequest($travelRequestId);
+            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+            ->getStatusCountForTravelRequest($travelRequestId);
         if ($getStatusCountForTravelRequest > 2) {
             $getStatusBeforeLast = $this->entityManager
                 ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusBeforeLast($travelRequestId);
@@ -190,5 +191,24 @@ class StatusManager
         } else {
             return true;
         }
+    }
+    
+    /**
+     * 
+     * @param integer $statusId
+     * @param \Opit\Notes\UserBundle\Entity\User $user
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     */
+    public function forceTRStatus($statusId, $user, $travelRequest)
+    {
+        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
+        $createdStatus = new StatesTravelRequests();
+        $createdStatus->setCreatedUser($user);
+        $createdStatus->setUpdatedUser($user);
+        $createdStatus->setStatus($status);
+        $createdStatus->setTravelRequest($travelRequest);
+
+        $this->entityManager->persist($createdStatus);
+        $this->entityManager->flush();
     }
 }

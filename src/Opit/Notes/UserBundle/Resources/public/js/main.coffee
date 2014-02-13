@@ -137,7 +137,8 @@ $.fn.extend
         $el = if element then $(element) else $(@)
         exists = no
         $el.find(':input').each ->
-            exists = yes if($(@).val())
+            if $(@).attr('type') != 'hidden'
+                exists = yes if($(@).val())
         return exists
   
     checkAll: (selector) ->
@@ -149,6 +150,8 @@ $.fn.extend
 
 $(document)
     .ready ->
+        $(document).data('notes').funcs.initTravelRequestListListeners()
+        $(document).data('notes').funcs.initPager()
     
         $(document).on 'click', ->
             $('#notifications-wrapper').addClass 'display-none'

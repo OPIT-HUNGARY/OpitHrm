@@ -4,7 +4,7 @@
         Search Options
     </h3>
 
-    <form id="searchTravelForm" method="post" action="{{ path('OpitNotesTravelBundle_travel_search') }}">
+    <form id="searchTravelForm" method="post" action="{{ path('OpitNotesTravelBundle_travel_list') }}">
         <div id="searchFormProperties">
             <div class="searchProperty">
                 <label for="searchTrId">ID</label>
@@ -44,5 +44,6 @@
             <button class="button search" id="searchButton" type="submit"><i class="fa fa-search"></i>Search</button>
             <button class="button reset" id="resetButton" type="reset"><i class="fa fa-refresh"></i>Reset</button>
         </div>
+        <input type="hidden" name="search" value="1" />
     </form>
 </section>

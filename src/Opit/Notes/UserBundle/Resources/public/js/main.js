@@ -166,8 +166,10 @@
       $el = element ? $(element) : $(this);
       exists = false;
       $el.find(':input').each(function() {
-        if ($(this).val()) {
-          return exists = true;
+        if ($(this).attr('type') !== 'hidden') {
+          if ($(this).val()) {
+            return exists = true;
+          }
         }
       });
       return exists;
@@ -185,6 +187,8 @@
 
   $(document).ready(function() {
     var $deleteButton, $notificationsWrapper;
+    $(document).data('notes').funcs.initTravelRequestListListeners();
+    $(document).data('notes').funcs.initPager();
     $(document).on('click', function() {
       return $('#notifications-wrapper').addClass('display-none');
     });

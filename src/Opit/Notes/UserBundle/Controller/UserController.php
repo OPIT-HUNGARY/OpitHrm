@@ -30,6 +30,7 @@ class UserController extends Controller
             $filters->disable('softdeleteable');
         }*/
         
+        $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
@@ -43,8 +44,19 @@ class UserController extends Controller
         } else {
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')->findAll();
         }
-        $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
- 
+        $isSearch = $request->request->get('search');
+        $offset = $request->request->get('offset');
+        $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
+        
+        if ($isSearch) {
+            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                    ->findUsersByPropertyUsingLike($request, ($offset * $pagerMaxResults), $pagerMaxResults);            
+        } else {
+            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
+        } 
+
+
         foreach ($users as $user) {
             //fetch roles for the user
             $localUserRoles = $groups->findUserGroupsArray($user->getId());
@@ -65,61 +77,22 @@ class UserController extends Controller
             );
         }
 
+        $numberOfPages = ceil(count($users) / $pagerMaxResults);
         $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
-
-        return $this->render(
-            $showList ? 'OpitNotesUserBundle:Shared:_list.html.twig' : 'OpitNotesUserBundle:User:list.html.twig',
-            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues)
-        );
-    }
-    
-    /**
-    * @Route("/secured/user/search", name="OpitNotesUserBundle_user_search")
-    * @Template()
-    * @Method({"POST"})
-    */
-    public function searchAction()
-    {
-        $request = $this->getRequest()->request->all();
-        $empty = array_filter($request, function ($value) {
-            return !empty($value);
-        });
-
-        if (array_key_exists('resetForm', $request) || empty($empty)) {
-            return $this->listAction();
+        
+        $templateVars['numberOfPages'] = $numberOfPages;
+        $templateVars['maxPages'] = $this->container->getParameter('user_bundle_max_pages_to_show');
+        $templateVars['offset'] = $offset + 1;
+        $templateVars['propertyNames'] = $propertyNames;
+        $templateVars['propertyValues'] = $propertyValues;
+        
+        if (null === $offset) {
+            $template = 'OpitNotesUserBundle:User:list.html.twig';
         } else {
-            $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
-            $propertyValues = array();
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $result = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->findUsersByPropertyUsingLike($request);
-
-            $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
-
-            for ($i = 0; $i < count($result); $i++) {
-                $user = $result[$i];
-                $id = $user->getId();
-                $roles = array();
-                $localUserRoles = $groups->findUserGroupsArray($id);
-
-                foreach ($localUserRoles as $role) {
-                    $roles[] = $role["name"];
-                }
-
-                $propertyValues[$id] = array(
-                        "username" => $user->getUsername(),
-                        "email" => $user->getEmail(),
-                        "employeeName" => $user->getEmployeeName(),
-                        "isActive" => $user->getIsActive(),
-                        "roles" => $roles
-                );
-            }
+            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
         }
-        return $this->render(
-            'OpitNotesUserBundle:Shared:_list.html.twig',
-            array("propertyNames" => $propertyNames, "propertyValues" => $propertyValues)
-        );
+        
+        return $this->render($template, $templateVars);
     }
 
     /**

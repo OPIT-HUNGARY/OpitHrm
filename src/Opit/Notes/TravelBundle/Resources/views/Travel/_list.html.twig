@@ -102,4 +102,11 @@
     {#{% endif %}#}
     {% endfor %}
 </table>
+{% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
+    {
+        'numberOfPages': numberOfPages,
+        'maxNumberOfPages': maxPages,
+        'url': path('OpitNotesTravelBundle_travel_list')
+    }
+%}
 </form>

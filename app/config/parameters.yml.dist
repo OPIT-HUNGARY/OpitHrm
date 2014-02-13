@@ -17,3 +17,8 @@ parameters:
 
     monolog_mail_from: notes@opit.hu
     monolog_mail_to:   ~
+
+    travel_bundle_pager_max_results: 10
+    travel_bundle_max_pages_to_show: 3
+    user_bundle_pager_max_results: 10
+    user_bundle_max_pages_to_show: 3
