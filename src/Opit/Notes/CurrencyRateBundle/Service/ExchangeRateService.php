@@ -294,7 +294,7 @@ class ExchangeRateService
     /**
      * Get the last local rate's date
      * 
-     * @throws \Doctrine\ORM\EntityNotFoundException for not found the last rate.
+     * @throws \Doctrine\Common\CommonException for not found the last rate.
      * @return \DateTime the last local rate's date
      */
     public function getLastLocalRateDate()
@@ -306,7 +306,7 @@ class ExchangeRateService
             $this->logger->error(
                 sprintf('[|%s] Rate entity not found. (Empty database)', Utils::getClassBasename($this))
             );
-            throw new EntityNotFoundException('Rate entity not found (empty database).');
+            throw new CommonException('Rate entity not found (empty database).');
         }
         
         return $rate->getCreated()->setTime(0, 0, 0);
@@ -315,7 +315,7 @@ class ExchangeRateService
     /**
      * Get the first local rate's date
      * 
-     * @throws \Doctrine\ORM\EntityNotFoundException for not found the last rate.
+     * @throws \Doctrine\Common\CommonException for not found the last rate.
      * @return \DateTime the last local rate's date
      */
     public function getFirstLocalRateDate()
@@ -327,7 +327,7 @@ class ExchangeRateService
             $this->logger->error(
                 sprintf('[|%s] Rate entity not found. (Empty database)', Utils::getClassBasename($this))
             );
-            throw new EntityNotFoundException('Rate entity not found (empty database).');
+            throw new CommonException('Rate entity not found (empty database).');
         }
         
         return $rate->getCreated()->setTime(0, 0, 0);
@@ -343,6 +343,13 @@ class ExchangeRateService
     {
         // Initialize the start and end datetimes
         $startDate = $this->getLastLocalRateDate();
+        $todayDate = date('Y-m-d', strtotime('today'));
+        $tomorrowDate = date('Y-m-d', strtotime('tomorrow'));
+        
+        // If the last local rate's date is today or tomorrow then aborting.
+        if ($todayDate === $startDate->format('Y-m-d') || $tomorrowDate === $startDate->format('Y-m-d')) {
+            return false;
+        }
         $endDate = new \DateTime('yesterday');
         
         // Set up the options parameter array
@@ -354,7 +361,6 @@ class ExchangeRateService
                 $this->em->getRepository('OpitNotesCurrencyRateBundle:Currency')->getAllCurrencyCodes()
             )
         );
-        
         return $this->getExchangeRates($options);
     }
     
@@ -418,9 +424,14 @@ class ExchangeRateService
                         }
 
                         // If the date is today then save rates for tomorrow.
-                        if (date('Y-m-d') === $date) {
+                        if (date('Y-m-d', strtotime('yesterday')) === $date || date('Y-m-d') === $date) {
                             if (null !== $rate) {
-                                $rateForTomorrow = $this->saveExchangeRatesForTomorrow($rate, $currencyCode, $value);
+                                $rateForTomorrow = $this->saveExchangeRatesForTomorrow(
+                                    $rate,
+                                    $currencyCode,
+                                    $value,
+                                    $date
+                                );
                                 $this->em->persist($rateForTomorrow);
                             }
                         }
@@ -490,7 +501,9 @@ class ExchangeRateService
     }
     
     /**
-     * Save rates for tomorrow.
+     * Save rates for plus one day.
+     * Create or update the plus one day rate.
+     * This function handles if the last remote rate's date is today or yesterday.
      * 
      * @param \Opit\Notes\CurrencyRateBundle\Entity\Rate $rate object.
      * @param string $code the currency's code
@@ -498,19 +511,28 @@ class ExchangeRateService
      * 
      * @return \Opit\Notes\CurrencyRateBundle\Entity\Rate $rate object for tomorrow
      */
-    private function saveExchangeRatesForTomorrow(Rate $rate, $code, $value)
+    private function saveExchangeRatesForTomorrow(Rate $rate, $code, $value, $date)
     {
+        // If the rate's date was yesterday then the tomorrow datetime has to select to today.
+        if (date('Y-m-d', strtotime('yesterday')) === $date) {
+            $dateTime = new \DateTime('now');
+        } else {
+            // Else the datetime is today
+            $dateTime = new \DateTime('tomorrow');
+        }
+        
         //create rate for tomorrow (next day)
-        if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($code, new \DateTime('tomorrow'))) {
+        if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($code, $dateTime)) {
             $rateForTomorrow = clone $rate;
 
         } else {
+            // update the tomorrow rate.
             $rateForTomorrow = $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')
-                                          ->findRateByCodeAndDate($code, new \DateTime('tomorrow'));
+                                          ->findRateByCodeAndDate($code, $dateTime);
             $rateForTomorrow->setRate($value);
         }
-        $rateForTomorrow->setCreated(new \DateTime('tomorrow'));
-        $rateForTomorrow->setUpdated(new \DateTime('tomorrow'));
+        $rateForTomorrow->setCreated($dateTime);
+        $rateForTomorrow->setUpdated($dateTime);
         
         return $rateForTomorrow;
     }

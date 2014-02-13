@@ -42,7 +42,7 @@ The <info>%command.name%</info> command fetching the given rates and insert into
 
 You can optionally specify the following options:
    <comment>--current</comment> option to fetch the today's rates: <info>%command.full_name% --current</info>
-   <comment>--missing</comment> option to fetch the missing rates in the local database: <info>%command.full_name% --missing</info>
+   <comment>--missing</comment> option to fetch the missing rates into the local database from the last saved rate's date': <info>%command.full_name% --missing</info>
    <comment>--start</comment> option to fetch rates from the start date: <info>%command.full_name% --start</info>
    <comment>--end</comment> option to fetch rates to the end date: <info>%command.full_name% --end</info>
    <comment>--currency</comment> option to fetch rates of the given currencies: <info>%command.full_name% --currency</info>
@@ -59,9 +59,18 @@ EOT
             $this->resultOfFetching = $this->exchangeService->getCurrentExchangeRates();
         
         } elseif (isset($this->inputOptions['missing']) && $this->inputOptions['missing']) {
+            $this->isNotRequiredOptions['start'] = true;
             $this->resultOfFetching = $this->exchangeService->getMissingExchangeRates(
                 $this->validateCommandOptions($this->inputOptions, $output)
             );
+            // If the last local rate's date is today or tomorrow then aborting the command.
+            if (false === $this->resultOfFetching) {
+                $output->writeln(
+                    '<comment>The last local rate\'s date is today or tomorrow. The fetching is cancelled.</comment>'
+                );
+                exit(0);
+            }
+            
         } else {
             $this->resultOfFetching = $this->exchangeService->getExchangeRates(
                 $this->validateCommandOptions($this->inputOptions, $output)
