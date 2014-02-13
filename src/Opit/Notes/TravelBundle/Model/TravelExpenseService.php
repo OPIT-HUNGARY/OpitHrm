@@ -8,6 +8,7 @@
 namespace Opit\Notes\TravelBundle\Model;
 
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
+use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\ORM\EntityManager;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -153,7 +154,7 @@ class TravelExpenseService
                 $companyPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $companyPaidExpenses->getAmount(),
-                $this->getMidRate($travelExpense)
+                $this->getMidRate()
             );
         }
 
@@ -162,7 +163,7 @@ class TravelExpenseService
                 $userPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $userPaidExpenses->getAmount(),
-                $this->getMidRate($travelExpense)
+                $this->getMidRate()
             );
         }
         
@@ -237,6 +238,56 @@ class TravelExpenseService
                 $entityManager->remove($child);
             }
         }
+    }
+    
+    /**
+     * 
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
+     * @param type $exchService
+     * @return type
+     */
+    function getApprovedCosts(TravelRequest $travelRequest, $exchService)
+    {
+        $approvedCostsEUR = 0;
+        $approvedCostsHUF = 0;
+        $midRate = $this->getMidRate();
+        foreach ($travelRequest->getAccomodations() as $accomodation) {
+            $accomodationCost = $accomodation->getCost();
+            $accomodationCurrency = $accomodation->getCurrency();
+
+            $approvedCostsHUF += $exchService->convertCurrency(
+                $accomodationCurrency->getCode(),
+                'HUF',
+                $accomodationCost,
+                $midRate
+            );
+            $approvedCostsEUR += $exchService->convertCurrency(
+                $accomodationCurrency->getCode(),
+                'EUR',
+                $accomodationCost,
+                $midRate
+            );
+        }
+
+        foreach ($travelRequest->getDestinations() as $destination) {
+            $destinationCost = $destination->getCost();
+            $destinationCurrency = $destination->getCurrency();
+
+            $approvedCostsHUF += $exchService->convertCurrency(
+                $destinationCurrency->getCode(),
+                'HUF',
+                $destinationCost,
+                $midRate
+            );
+            $approvedCostsEUR += $exchService->convertCurrency(
+                $destinationCurrency->getCode(),
+                'EUR',
+                $destinationCost,
+                $midRate
+            );
+        }    
+        
+        return array('HUF' => $approvedCostsHUF, 'EUR' => $approvedCostsEUR);
     }
     
     /**

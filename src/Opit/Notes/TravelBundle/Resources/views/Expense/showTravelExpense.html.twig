@@ -1,7 +1,7 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
         {% if travelExpense.id is empty %}
-        New travel expense
+        Add travel expense
         {% else %}
         Edit travel expense
         {% endif %}
@@ -37,13 +37,14 @@
 {% endblock %}        
         
 {% block body %}
-    <h1>
         {% if travelExpense.id is empty %}
-        Add Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
+        <h1>Add travel expense</h1>
         {% else %}
-        Edit Travel expense for travel request no. <span class="red-text">{{ trId }}</span>
+        <h1>Edit travel expense</h1>
         {% endif %}
-    </h1>
+        <h3>
+            Travel request [<span class="red-text">{{ trId }}</span>], Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
+        </h3>
     {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
     <div id="changeStateWrapper">
         {% if isStatusLocked == 0 %}
