@@ -95,31 +95,26 @@
         <td></td>
         <td class="align-right">Total</td>
         <td class="align-right">Currency</td>
-        <td class="align-right">Total</td>
     </tr>
     <tr>
         <td class="bold">Advance recieved</td>
         <td class="align-right">{{ travelExpense.advancesRecieved|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td class="align-right">{{ travelExpense.currency.code }}</td>
-        <td class="align-right">{{ travelExpense.advancesRecieved|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Advances spent</td>
         <td class="align-right">{{ travelExpense.toSettle|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td class="align-right">{{ travelExpense.currency.code }}</td>
-        <td class="align-right">{{ travelExpense.toSettle|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Advance payback</td>
         <td class="align-right">{{ travelExpense.advancesPayback|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td class="align-right">{{ travelExpense.currency.code }}</td>
-        <td class="align-right">{{ travelExpense.advancesPayback|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
     <tr>
         <td class="bold">Per Diem in EUR</td>
         <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
         <td class="align-right">EUR</td>
-        <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
@@ -166,6 +161,20 @@
         </td>
         <td>EUR</td>
     </tr>
+</table>
+<div class="height-20 visibility-hidden"></div>
+<table class="bordered">
+    <tr>
+        <td colspan="2" class="table-title">
+            Exchange rates
+        </td>
+    </tr>
+    {% for key, value in rates %}
+        <tr>
+            <td class="bold">{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
 </table>
 <div class="height-20 visibility-hidden"></div>
 <div class="signiture" style="background-color:white;">

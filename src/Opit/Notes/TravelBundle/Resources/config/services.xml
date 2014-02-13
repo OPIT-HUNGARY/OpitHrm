@@ -19,6 +19,7 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="service_container" />
+            <argument>%exchange_rate%</argument>
         </service>
         <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
             <argument type="service" id="security.context" />

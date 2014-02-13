@@ -44,37 +44,37 @@ class StatusFixtures extends AbstractFixture implements OrderedFixtureInterface,
     public function load(ObjectManager $manager)
     {
         $created = new Status();
-        $created->setId(1);
+        $created->setId(Status::CREATED);
         $created->setName('Created');
 
         $manager->persist($created);
 
         $forApproval = new Status();
-        $forApproval->setId(2);
+        $forApproval->setId(Status::FOR_APPROVAL);
         $forApproval->setName('For Approval');
 
         $manager->persist($forApproval);
 
         $revise = new Status();
-        $revise->setId(3);
+        $revise->setId(Status::REVISE);
         $revise->setName('Revise');
 
         $manager->persist($revise);
 
         $approved = new Status();
-        $approved->setId(4);
+        $approved->setId(Status::APPROVED);
         $approved->setName('Approved');
 
         $manager->persist($approved);
 
         $rejected = new Status();
-        $rejected->setId(5);
+        $rejected->setId(Status::REJECTED);
         $rejected->setName('Rejected');
 
         $manager->persist($rejected);
 
         $paid = new Status();
-        $paid->setId(6);
+        $paid->setId(Status::PAID);
         $paid->setName('Paid');
 
         $manager->persist($paid);

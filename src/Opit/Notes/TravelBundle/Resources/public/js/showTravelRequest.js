@@ -341,7 +341,7 @@
               $form.submit();
               $preview.dialog("destroy");
             },
-            'Save and send for approval': function() {
+            'Save & send for approval': function() {
               var formAction;
               formAction = $form.attr('action') + '/fa';
               if (isNaN(window.location.href.slice(-1))) {

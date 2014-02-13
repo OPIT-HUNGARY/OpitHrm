@@ -287,7 +287,7 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
                         $form.submit()
                         $preview.dialog "destroy"
                         return
-                    'Save and send for approval': ->
+                    'Save & send for approval': ->
                         formAction = $form.attr('action') + '/fa'
                         if isNaN(window.location.href.slice(-1))
                             formAction = $form.attr('action') + '/new/fa'

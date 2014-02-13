@@ -50,14 +50,6 @@ class TEUserPaidExpense extends TEPaidExpense
     protected $travelExpense;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="paid_in_advance", type="boolean")
-     * @Assert\GreaterThanOrEqual(value = 0)
-     */
-    protected $paidInAdvance;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
      * @var TravelCurrencyInterface
      */
@@ -209,29 +201,6 @@ class TEUserPaidExpense extends TEPaidExpense
     public function getTravelExpense()
     {
         return $this->travelExpense;
-    }
-    
-    /**
-     * Get paidInAdvance
-     *
-     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
-     */
-    public function getPaidInAdvance()
-    {
-        return $this->paidInAdvance;
-    }
-    
-    /**
-     * Set paidInAdvance
-     *
-     * @param type $paidInAdvance
-     * @return \Opit\Notes\TravelBundle\Entity\TEUserPaidExpense
-     */
-    public function setPaidInAdvance($paidInAdvance)
-    {
-        $this->paidInAdvance = $paidInAdvance;
-        
-        return $this;
     }
     
     /**

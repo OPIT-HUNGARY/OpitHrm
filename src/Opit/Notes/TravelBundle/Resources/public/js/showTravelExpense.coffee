@@ -111,35 +111,6 @@ convertCurrency = (originCode, destinationCode, value) ->
         return value
     else
         return curConverter.convertCurrency(originCode, destinationCode, value).toFixed(2)
-
-calculateAdvancesPayback = () ->
-    advancesRecieved = parseInt $('#travelExpense_advancesRecieved').val()
-    destinationCode = $('#travelExpense_currency').val()
-    payback = advancesRecieved
-    $('.amount').each ->
-        paidInAdvance = $(@).closest('.formFieldsetChild').find('.paid-in-advance').val()
-        originCode = $(@).closest('.formFieldsetChild').find('.currency').val()
-        if paidInAdvance is '0'
-            amount = parseInt $(@).val()
-            if not isNaN(amount)
-                payback -= convertCurrency originCode, destinationCode, amount
-                
-    if payback <= advancesRecieved and payback >= 0
-        $('#travelExpense_advancesSpent').html((advancesRecieved - payback).toFixed(2))
-        $('#travelExpense_advancesPayback').html payback.toFixed(2)
-        $('.custom-error').each ->
-            $(@).parent().children().remove('br')
-            $(@).remove()
-        return true
-    else
-        if $('.formFieldset:nth-child(2)').children('.custom-error').length is 0
-            $break = $('<br>')
-            $errorLabel = $('<label>')
-            $errorLabel.text 'Advance amount spent cannot exceed advances recieved.'
-            $errorLabel.addClass 'custom-error'
-            $errorLabel.insertAfter $('.formFieldset:nth-child(2) h3')
-            $break.insertAfter $errorLabel
-        return false
     
 calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
     departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
@@ -341,13 +312,6 @@ $(document).ready ->
     
     $('#travelExpense_advancesRecieved').parent().after $toSettle
     $toSettle.after $advancesPayback
-    
-    calculateAdvancesPayback()
-    
-    $('#travelExpense_advancesRecieved').on 'change', ->
-        calculateAdvancesPayback()
-    $('.formFieldset').on 'change', '.amount, .currency, .paid-in-advance', ->
-        calculateAdvancesPayback()
         
     $('.changeState').on 'change', ->
         statusId = $(@).val()
@@ -452,7 +416,7 @@ $form.validate
 $('#travelExpense_add_travel_expense').on 'click', (event) ->
     event.preventDefault()
     if not $(@).hasClass 'button-disabled'
-        if $form.valid() and calculateAdvancesPayback() and validateAllExpenseDates()
+        if $form.valid() and validateAllExpenseDates()
             # for browsers that do not support input type date
             if not Modernizr.inputtypes.date
                 $('input[type=date]').each ->

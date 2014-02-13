@@ -61,11 +61,6 @@ class UserPaidExpenseType extends AbstractType
             'label' => 'Destination',
             'attr' => array('placeholder' => 'Destination')
         ));
-        $builder->add('paid_in_advance', 'choice', array(
-            'label' => 'Paid in advance',
-            'choices' => array('1'=>'No', '0'=>'Yes'),
-            'attr' => array('class' => 'paid-in-advance')
-        ));
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

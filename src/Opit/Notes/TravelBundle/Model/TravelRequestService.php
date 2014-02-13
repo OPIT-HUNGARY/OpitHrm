@@ -20,7 +20,7 @@ use Opit\Notes\TravelBundle\Manager\StatusManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
+use Opit\Notes\TravelBundle\Entity\Status;
 
 /**
  * Description of TravelRequestService
@@ -84,41 +84,41 @@ class TravelRequestService
 
                 if (null !== $travelExpenseStatus) {
                     // if the status of the travel expense created do not show the option to view it
-                    if (1 === $travelExpenseStatus->getName()) {
+                    if (Status::CREATED === $travelExpenseStatus->getName()) {
                         $isTravelExpenseLocked = true;
                     }
                 }
 
                 // if travel request has state created do not show it until it has been sent for approval
-                if (1 === $currentStatusId) {
+                if (Status::CREATED === $currentStatusId) {
                     $doNotListTravelRequest = true;
                 }
                 
                 // if travel request has status for approval enable the modification of its status
-                if (2 !== $currentStatusId) {
+                if (Status::FOR_APPROVAL !== $currentStatusId) {
                     $isStatusLocked = true;
                     $isEditLocked = true;
                 }
             } else {
                 // if travel request has been approved allow the option to add a travel expense to it
-                if (4 !== $currentStatusId) {
+                if (Status::APPROVED !== $currentStatusId) {
                     $isAddTravelExpenseLocked = true;
                 }
                 
                 // if travel expense has status created or revise allow the modification of it
-                if (1 !== $currentStatusId && 3 !== $currentStatusId) {
+                if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
                     $isEditLocked = true;
                 }
                 
                 // if travel request has been sent for approval lock all action(edit, delete)
-                if (2 === $currentStatusId) {
+                if (Status::FOR_APPROVAL === $currentStatusId) {
                     $allActionsLocked = true;
                 }
                 
                 // if travel request has any of the below statuses disable the option to change its status
-                if (4 === $currentStatusId ||
-                    5 === $currentStatusId ||
-                    2 === $currentStatusId) {
+                if (Status::APPROVED === $currentStatusId ||
+                    Status::REJECTED === $currentStatusId ||
+                    Status::FOR_APPROVAL === $currentStatusId) {
                     $isStatusLocked = true;
                 }
             }
@@ -267,12 +267,12 @@ class TravelRequestService
             $isEditLocked = false;
         } else {
             if ($userId === $travelRequest->getUser()->getId()) {
-                if ($currentStatusId !== 1 && $currentStatusId !== 3) {
+                if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
                     return false;
                 }
                 $isEditLocked = false;
             } elseif ($userId === $travelRequest->getGeneralManager()->getId()) {
-                if ($currentStatusId !== 2) {
+                if (Status::FOR_APPROVAL !== $currentStatusId) {
                     return false;
                 }
             }

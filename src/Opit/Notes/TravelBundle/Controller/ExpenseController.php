@@ -93,13 +93,14 @@ class ExpenseController extends Controller
         $travelRequestId = $request->query->get('tr');
         $isNewTravelExpense = "new" !== $travelExpenseId;
         $currentUser = $this->getUser();
+        $travelExpenseService = $this->get('opit.model.travel_expense');
 
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
         
         // Get rates
         $exchService = $this->container->get('opit.service.exchange_rates');
-        $rates = $exchService->getRatesByDate($this->getMidRate($travelExpense->getId()));
+        $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());
         
         // te = Travel Expense
         $travelExpenseStates = array();
@@ -111,7 +112,7 @@ class ExpenseController extends Controller
         $currentStatusId = $currentStatus->getId();
         
         // set availabilty(edit, change status) for travel expense
-        $editRights = $this->get('opit.model.travel_expense')->setEditRights(
+        $editRights = $travelExpenseService->setEditRights(
             $travelRequest->getGeneralManager()->getId(),
             $currentUser->getId(),
             $currentStatus->getId()
@@ -321,6 +322,7 @@ class ExpenseController extends Controller
     protected function getTravelExpensePage($travelExpenseId)
     {
         $currencyConfig = $this->container->getParameter('exchange_rate');
+        $travelExpenseService = $this->get('opit.model.travel_expense');
         
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
@@ -330,14 +332,15 @@ class ExpenseController extends Controller
 
         $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
         $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
-        $perDiem =  $this->get('opit.model.travel_expense')->calculatePerDiem(
+        $perDiem =  $travelExpenseService->calculatePerDiem(
             $this->getDoctrine()->getManager(),
             $arrivalDateTime,
             $departureDateTime
         );
-        
-        $travelExpenseExpenses = $this->get('opit.model.travel_expense')->sumExpenses($travelExpense, $currencyConfig);
 
+        $travelExpenseExpenses = $travelExpenseService->sumExpenses($travelExpense);
+        $midRate = $travelExpenseService->getMidRate();
+        
         return $this->render(
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
@@ -348,7 +351,9 @@ class ExpenseController extends Controller
                 'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],
                 'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses'],
                 'currencyFormat' => $currencyConfig['currency_format'],
-                'midRate' => $this->getMidRate($travelExpenseId)
+                'midRate' => $midRate,
+                'rates' => $this->container->get('opit.service.exchange_rates')
+                               ->getRatesByDate($midRate)
             )
         );
     }
@@ -432,27 +437,5 @@ class ExpenseController extends Controller
         }
         
         return $form;
-    }
-    
-    /**
-     * Get the middle rate.
-     * 
-     * @todo handle empty rates
-     * @param type $travelExpenseId
-     * @return type
-     */
-    protected function getMidRate($travelExpenseId)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $lastTEStatus = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
-                                 ->getCurrentStatus($travelExpenseId);
-        // Set the midrate of last month
-        $midRate = $lastTEStatus ? $lastTEStatus->getCreated() : new \DateTime('today');
-        $midRate->setDate($midRate->format('Y'), $midRate->format('m'), 15);
-        $midRate->modify('-1 month');
-        
-        // TODO: handle empty rates.
-        
-        return $midRate;
     }
 }

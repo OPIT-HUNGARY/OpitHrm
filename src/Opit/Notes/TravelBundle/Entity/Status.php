@@ -27,6 +27,13 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Status
 {
+    const CREATED = 1;
+    const FOR_APPROVAL = 2;
+    const REVISE = 3;
+    const APPROVED = 4;
+    const REJECTED = 5;
+    const PAID = 6;
+    
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

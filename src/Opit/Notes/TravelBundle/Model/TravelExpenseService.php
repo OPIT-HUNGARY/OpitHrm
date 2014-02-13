@@ -9,6 +9,7 @@ namespace Opit\Notes\TravelBundle\Model;
 
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Doctrine\ORM\EntityManager;
+use Opit\Notes\TravelBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -20,12 +21,14 @@ class TravelExpenseService
 {
     protected $securityContext;
     protected $entityManager;
+    protected $config;
     
-    public function __construct($securityContext, EntityManager $entityManager, $container)
+    public function __construct($securityContext, EntityManager $entityManager, $container, $config = array())
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->container = $container;
+        $this->config = $config;
     }
     
     /**
@@ -39,9 +42,7 @@ class TravelExpenseService
         $totalAdvanceSpent = 0;
 
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            if (0 == $userPaidExpenses->getPaidInAdvance()) {
                 $totalAdvanceSpent += $userPaidExpenses->getAmount();
-            }
         }
 
         $advancesReceived = $travelExpense->getAdvancesRecieved();
@@ -142,7 +143,7 @@ class TravelExpenseService
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return array
      */
-    public function sumExpenses(TravelExpense $travelExpense, $currencyConfig)
+    public function sumExpenses(TravelExpense $travelExpense)
     {
         $expensesPaidbyCompany = 0;
         $expensesPaidByEmployee = 0;
@@ -150,16 +151,18 @@ class TravelExpenseService
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
             $expensesPaidbyCompany += $exchManager->convertCurrency(
                 $companyPaidExpenses->getCurrency()->getCode(),
-                $currencyConfig['default_currency'],
-                $companyPaidExpenses->getAmount()
+                $this->config['default_currency'],
+                $companyPaidExpenses->getAmount(),
+                $this->getMidRate($travelExpense)
             );
         }
 
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
             $expensesPaidByEmployee += $exchManager->convertCurrency(
                 $userPaidExpenses->getCurrency()->getCode(),
-                $currencyConfig['default_currency'],
-                $userPaidExpenses->getAmount()
+                $this->config['default_currency'],
+                $userPaidExpenses->getAmount(),
+                $this->getMidRate($travelExpense)
             );
         }
         
@@ -182,11 +185,11 @@ class TravelExpenseService
         $isStatusLocked = false;
         if ($travelRequestGM === $currentUser) {
             $isEditLocked = true;
-            if (1 === $currentStatusId || 3 === $currentStatusId) {
+            if (Status::CREATED === $currentStatusId || Status::REVISE === $currentStatusId) {
                 $isStatusLocked = true;
             }
         } else {
-            if (1 !== $currentStatusId && 3 !== $currentStatusId) {
+            if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
                 $isEditLocked = true;
                 $isStatusLocked = true;
             }
@@ -234,5 +237,29 @@ class TravelExpenseService
                 $entityManager->remove($child);
             }
         }
+    }
+    
+    /**
+     * Get the travel expense's midrate
+     * 
+     * Today's date has to be taken unless the travel expense's for approval status was set.
+     * ALWAYS the first "for approval" status fixes the expense's midrate.
+     * 
+     * @return \DateTime The midrate datetime object.
+     */
+    public function getMidRate()
+    {
+        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find(Status::FOR_APPROVAL);
+        $teStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
+                                 ->findOneByStatus($status, array('id' => 'ASC'));
+        
+        // Set the midrate of last month
+        $midRate = $teStatus ? $teStatus->getCreated() : new \DateTime('today');
+        $midRate->setDate($midRate->format('Y'), $midRate->format('m'), $this->config['mid_rate']['day']);
+        $midRate->modify($this->config['mid_rate']['modifier']);
+        
+        // TODO: handle empty rates.
+        
+        return $midRate;
     }
 }

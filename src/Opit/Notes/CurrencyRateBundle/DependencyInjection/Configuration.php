@@ -31,9 +31,15 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('thousands_sep')->cannotBeEmpty()->defaultValue('.')->end()
                     ->end()
                 ->end()
+                ->arrayNode('mid_rate')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('day')->cannotBeEmpty()->defaultValue(15)->end()
+                        ->scalarNode('modifier')->cannotBeEmpty()->defaultValue('-1 month')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;
     }
-    
 }
