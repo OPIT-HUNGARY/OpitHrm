@@ -75,30 +75,32 @@
       $('<div id="dialog-edititem"></div>').html(data).dialog({
         open: function() {
           $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Reset Password');
-          return $(this).html(data);
-        },
-        width: 750,
-        modal: true,
-        buttons: {
-          Save: function() {
-            return $.ajax({
-              type: 'POST',
-              global: false,
-              url: Routing.generate('OpitNotesUserBundle_user_update_password', {
-                id: id
-              }),
-              data: $('#changePassword_frm').serialize()
-            }).done(function(data) {
-              $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
-              return $('#dialog-edititem').dialog("destroy");
-            }).fail(function(data) {
-              data = $.parseJSON(data.responseText);
-              return $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
-            });
-          },
-          Close: function() {
-            $('#dialog-edititem').dialog("destroy");
-          }
+          $(this).html(data);
+          return {
+            width: 750,
+            modal: true,
+            buttons: {
+              Save: function() {
+                return $.ajax({
+                  type: 'POST',
+                  global: false,
+                  url: Routing.generate('OpitNotesUserBundle_user_update_password', {
+                    id: id
+                  }),
+                  data: $('#changePassword_frm').serialize()
+                }).done(function(data) {
+                  $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
+                  return $('#dialog-edititem').dialog("destroy");
+                }).fail(function(data) {
+                  data = $.parseJSON(data.responseText);
+                  return $(document).data('notes').funcs.showAlert(data, "update", "Password reset successfully");
+                });
+              },
+              Close: function() {
+                $('#dialog-edititem').dialog("destroy");
+              }
+            }
+          };
         }
       });
       return;

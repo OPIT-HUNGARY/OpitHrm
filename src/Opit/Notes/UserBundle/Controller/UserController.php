@@ -33,7 +33,6 @@ class UserController extends Controller
         $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();
-        $showList = (boolean) $request->request->get('showList');
         $demand = $request->request->get('demand');
 
         if ($request->isXmlHttpRequest() && isset($demand) && 'ordering'===$demand) {
@@ -49,8 +48,11 @@ class UserController extends Controller
         $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
         
         if ($isSearch) {
+            $allRequests = $request->request->all();
+            unset($allRequests['search']);
+            unset($allRequests['offset']);
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->findUsersByPropertyUsingLike($request, ($offset * $pagerMaxResults), $pagerMaxResults);            
+                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
         } else {
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
                 ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
@@ -82,11 +84,15 @@ class UserController extends Controller
         
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $this->container->getParameter('user_bundle_max_pages_to_show');
-        $templateVars['offset'] = $offset + 1;
+        if (!$request->request->get('incrementOffset')) {
+            $templateVars['offset'] = $offset + 1;
+        } else {
+            $templateVars['offset'] = $offset;
+        }
         $templateVars['propertyNames'] = $propertyNames;
         $templateVars['propertyValues'] = $propertyValues;
         
-        if (null === $offset) {
+        if (null === $offset && !$isSearch) {
             $template = 'OpitNotesUserBundle:User:list.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
@@ -167,6 +173,8 @@ class UserController extends Controller
                 $em->persist($user);
                 $em->flush();
                 $result['response'] = 'success';
+                
+                return $this->listAction();
             }
             $validator = $this->get('validator');
             $errors = $validator->validate($user);

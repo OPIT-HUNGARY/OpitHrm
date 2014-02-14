@@ -11,16 +11,16 @@ changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
             reloadPage = false
             dialogWidth = 550
             $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
-              .dialog
-                open: ->
-                  $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
+                .dialog
+                    open: ->
+                        $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
                 width: dialogWidth
                 maxHeight: $(window).outerHeight()-100
                 modal: on
                 buttons:
-                  Reload: ->
-                     location.reload()
-                     return
+                    Reload: ->
+                        location.reload()
+                        return
     .complete () ->
         if reloadPage is true
             location.reload()
@@ -52,33 +52,33 @@ $(document).ready ->
         .done (data) ->
             dialogWidth = 550
             $('<div id="dialog-show-details-tr"></div>').html(data)
-              .dialog
-                open: ->
-                  $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
+                .dialog
+                    open: ->
+                        $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
                 width: dialogWidth
                 maxHeight: $(window).outerHeight()-100
                 modal: on
                 buttons:
-                  Close: ->
-                     $('#dialog-show-details-tr').dialog 'destroy'
-                     return
+                    Close: ->
+                        $('#dialog-show-details-tr').dialog 'destroy'
+                        return
             return
             
     $('#searchButton').click (event) ->
-      $form = $('#searchFormWrapper').find 'form'
-      url = $form.attr 'action'
-      event.preventDefault()
-      return if not $form.formIsEmpty()
+        $form = $('#searchFormWrapper').find 'form'
+        url = $form.attr 'action'
+        event.preventDefault()
+        return if not $form.formIsEmpty()
 
-      $.ajax
-          method: 'POST'
-          url: url
-          data: $form.serialize()
-      .done (response) ->
-        $('#list-table').parent().html response
-        $(document).data('notes').funcs.initTravelRequestListListeners()
-        $(document).data('notes').funcs.initPager()
-        return
+        $.ajax
+            method: 'POST'
+            url: url
+            data: $form.serialize()
+        .done (response) ->
+            $('#list-table').parent().html response
+            $(document).data('notes').funcs.initTravelRequestListListeners()
+            $(document).data('notes').funcs.initPager()
+            return
       return
 
 # type = expense or request

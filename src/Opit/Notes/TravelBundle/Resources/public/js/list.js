@@ -18,10 +18,12 @@
       if (data === 'error') {
         reloadPage = false;
         dialogWidth = 550;
-        return $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
+        $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
           open: function() {
             return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed');
-          },
+          }
+        });
+        return {
           width: dialogWidth,
           maxHeight: $(window).outerHeight() - 100,
           modal: true,
@@ -30,7 +32,7 @@
               location.reload();
             }
           }
-        });
+        };
       }
     }).complete(function() {
       if (reloadPage === true) {
@@ -71,7 +73,9 @@
         $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
           open: function() {
             return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
-          },
+          }
+        });
+        ({
           width: dialogWidth,
           maxHeight: $(window).outerHeight() - 100,
           modal: true,
@@ -83,7 +87,7 @@
         });
       });
     });
-    return $('#searchButton').click(function(event) {
+    $('#searchButton').click(function(event) {
       var $form, url;
       $form = $('#searchFormWrapper').find('form');
       url = $form.attr('action');
@@ -91,7 +95,7 @@
       if (!$form.formIsEmpty()) {
         return;
       }
-      $.ajax({
+      return $.ajax({
         method: 'POST',
         url: url,
         data: $form.serialize()

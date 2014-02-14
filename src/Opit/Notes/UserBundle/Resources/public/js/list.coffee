@@ -13,25 +13,25 @@ $("#add").click ->
           buttons:
             Create: ->
               $.ajax
-                global: false
-                type: 'POST'
-                url: Routing.generate 'OpitNotesUserBundle_user_add', id: 0
-                data: $('#adduser_frm').serialize()
+                  global: false
+                  type: 'POST'
+                  url: Routing.generate 'OpitNotesUserBundle_user_add', id: 0
+                  data: $('#adduser_frm').serialize()
               .done (data)->
                   response = data
                   $.ajax
-                    type: 'POST'
-                    url: Routing.generate 'OpitNotesUserBundle_user_list'
-                    data: "showList" : 1
+                      type: 'POST'
+                      url: Routing.generate 'OpitNotesUserBundle_user_list'
+                      data: "showList" : 1
                   .done (data)->
-                    $('#user-list').html data
-                    $(document).data('notes').funcs.showAlert response, "create", "User created successfully"
-                    $('#dialog-edititem').dialog "destroy"
+                      $('#user-list').html data
+                      $(document).data('notes').funcs.showAlert response, "create", "User created successfully"
+                      $('#dialog-edititem').dialog "destroy"
               .fail (data) ->
-                response = data.responseText
-                if typeof response is 'string'
-                    response = $.parseJSON response
-                $(document).data('notes').funcs.showAlert response, "create","Error"
+                  response = data.responseText
+                  if typeof response is 'string'
+                      response = $.parseJSON response
+                  $(document).data('notes').funcs.showAlert response, "create","Error"
              Close: ->
                $('#dialog-edititem').dialog "destroy"
                return
@@ -46,32 +46,32 @@ $("#userlistWrapper").on "click", ".list-username", ->
 $("#userlistWrapper").on "click", ".list-change-password", ->
   id = $(@).attr "data-user-id"
   $.ajax
-    method: 'GET'
-    url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id 
+      method: 'GET'
+      url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
   .done (data) ->
     $('<div id="dialog-edititem"></div>').html(data)
-      .dialog
-          open: ->
-            $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
-            $(@).html(data)
-          width: 750
-          modal: on
-          buttons:
-            Save: ->
-              $.ajax
-                type: 'POST'
-                global: false
-                url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
-                data: $('#changePassword_frm').serialize()
-              .done (data)->
-                  $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
-                  $('#dialog-edititem').dialog "destroy"
-              .fail (data) ->
-                  data = $.parseJSON data.responseText
-                  $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
-            Close: ->
-               $('#dialog-edititem').dialog "destroy"
-               return
+        .dialog
+            open: ->
+                $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
+                $(@).html(data)
+                width: 750
+                modal: on
+                buttons:
+                    Save: ->
+                        $.ajax
+                            type: 'POST'
+                            global: false
+                            url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
+                            data: $('#changePassword_frm').serialize()
+                        .done (data)->
+                            $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
+                            $('#dialog-edititem').dialog "destroy"
+                        .fail (data) ->
+                            data = $.parseJSON data.responseText
+                            $(document).data('notes').funcs.showAlert data, "update","Password reset successfully"
+                    Close: ->
+                       $('#dialog-edititem').dialog "destroy"
+                       return
       return
     return
 

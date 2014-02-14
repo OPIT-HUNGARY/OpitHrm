@@ -28,7 +28,8 @@
                   }),
                   data: $('#adduser_frm').serialize()
                 }).done(function(data) {
-                  var response, url;
+                  var offset, response, url;
+                  offset = $('.selected-page').data('offset');
                   url = Routing.generate('OpitNotesUserBundle_user_list');
                   if (url === window.location.pathname) {
                     response = data;
@@ -36,11 +37,18 @@
                       type: 'POST',
                       url: url,
                       data: {
-                        "showList": 1
+                        'offset': offset - 1,
+                        'incrementOffset': false
                       }
                     }).done(function(data) {
                       var postActions;
                       $('#user-list').html(data);
+                      $(document).data('notes').funcs.initTravelRequestListListeners();
+                      $(document).data('notes').funcs.initPager();
+                      $('.selected-page').each(function() {
+                        return $(this).removeClass('selected-page');
+                      });
+                      $('[data-offset="' + offset + '"]').addClass('selected-page');
                       if (successCallback != null) {
                         postActions = successCallback(response, "update", "User modified successfully");
                       }

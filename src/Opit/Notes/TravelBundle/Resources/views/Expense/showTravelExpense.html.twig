@@ -37,14 +37,12 @@
 {% endblock %}        
         
 {% block body %}
-        {% if travelExpense.id is empty %}
-        <h1>Add travel expense</h1>
-        {% else %}
-        <h1>Edit travel expense</h1>
-        {% endif %}
-        <h3>
-            Travel request [<span class="red-text">{{ trId }}</span>], Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
-        </h3>
+    {% if travelExpense.id is empty %}
+    <h1>Add travel expense</h1>
+    {% else %}
+    <h1>Edit travel expense</h1>
+    {% endif %}
+    
     {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
     <div id="changeStateWrapper">
         {% if isStatusLocked == 0 %}
@@ -59,6 +57,10 @@
         </select>
         {% endif %}
     </div>
+    
+    <h3>
+        Travel request [<span class="red-text">{{ trId }}</span>], Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
+    </h3>
     
     <div class="modal-description default-border-radius">
         Travel expense can be added or edited from here.

@@ -1,27 +1,28 @@
 $form = $('#searchFormWrapper').find 'form'
 url = $form.attr 'action'
 $('#searchButton').click (event) ->
-  event.preventDefault()
-  return if not $form.formIsEmpty()
+    event.preventDefault()
+    return if not $form.formIsEmpty()
   
-  $.ajax
-      method: 'POST'
-      url: url
-      data: $form.serialize()
-  .done (response) ->
-    $('#list-table').html response
+    $.ajax
+        method: 'POST'
+        url: url
+        data: $form.serialize()
+    .done (response) ->
+        $('#list-table').parent().html response
+        $(document).data('notes').funcs.initPager()
+        return
     return
-  return
 
 $('#resetButton').click ->
-  $.ajax
-      method: 'POST'
-      url: url
-      data: 'resetForm': true, 'showList' : 1
-  .done (response) ->
-    $('#list-table').html response
+    $.ajax
+        method: 'POST'
+        url: url
+        data: 'resetForm': true, 'showList' : 1
+    .done (response) ->
+        $('#list-table').html response
+        return
     return
-  return
 
 # method to make search form toggleable
 $('#searchFormTitle').click ->

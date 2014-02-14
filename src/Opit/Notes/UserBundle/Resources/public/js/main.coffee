@@ -21,15 +21,21 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                         url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
                         data: $('#adduser_frm').serialize()
                       .done (data)->
+                          offset = $('.selected-page').data('offset')
                           url = Routing.generate 'OpitNotesUserBundle_user_list'
                           if url is window.location.pathname
                             response = data
                             $.ajax
                               type: 'POST'
                               url: url
-                              data: "showList" : 1
+                              data: 'offset' : (offset - 1), 'incrementOffset': false
                             .done (data)->
                               $('#user-list').html data
+                              $(document).data('notes').funcs.initTravelRequestListListeners()
+                              $(document).data('notes').funcs.initPager()
+                              $('.selected-page').each ->
+                                  $(@).removeClass 'selected-page'
+                              $('[data-offset="'+offset+'"]').addClass 'selected-page'
                               postActions = successCallback response, "update","User modified successfully" if successCallback?
                               $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
                           else
