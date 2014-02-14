@@ -163,7 +163,7 @@
         $('.icon-disabled').on('click', function(event) {
           return event.preventDefault();
         });
-        $('#list-table th i').click(function() {
+        $('#list-table th .fa-trash-o').click(function() {
           $('.deleteMultipleTravelRequest').checkAll();
           return $('.deleteMultipleTravelExpense').checkAll();
         });

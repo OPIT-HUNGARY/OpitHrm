@@ -30,8 +30,6 @@ class TravelRequestRepository extends EntityRepository
          * @var array
          */
         $params = array();
-        
-        $qb = $this->createQueryBuilder('tr');
 
         if ($parameters['trId']!="") {
             $params['trId'] = '%'.$parameters['trId'].'%';

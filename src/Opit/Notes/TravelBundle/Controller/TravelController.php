@@ -39,18 +39,9 @@ class TravelController extends Controller
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
-        
-        if ($request->isXmlHttpRequest()) {
-            $order = $request->request->get('order');
-            $field = $request->request->get('field');
-            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                ->findAllOrderByField($field, $order);
-        } else {
-            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->findAll();
-        }
-        
+        $order = $request->request->get('order');
+        $field = $request->request->get('field');
         $travelRequestRepository = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest');
-        $securityContext = $this->get('security.context');
         $user = $this->getUser();
         $isAdmin = $securityContext->isGranted('ROLE_ADMIN');
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
@@ -65,25 +56,22 @@ class TravelController extends Controller
             'isGeneralManager' => $isGeneralManager,
             'entityManager' => $entityManager
         );        
-       
-            'firstResult' => ($offset * $pagerMaxResults),
-            'maxResults' => $pagerMaxResults,
-            'currentUser' => $user,
-            'isAdmin' => $isAdmin,
-            'isGeneralManager' => $isGeneralManager,
-            'entityManager' => $entityManager
-        );
         
-        if (null === $isSearch) {
-            $travelRequests = $travelRequestRepository
-                ->getPaginaton($pagnationParameters);
-        } else {
-            $allRequests = $this->getRequest()->request->all();
+        if (null !== $order && null !== $field) {
             $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                ->getTravelRequestsBySearchParams(
-                    $allRequests,
-                    $pagnationParameters
-                );
+                ->findAllOrderByField($field, $order);
+        } else {
+            if (null === $isSearch) {
+                $travelRequests = $travelRequestRepository
+                    ->getPaginaton($pagnationParameters);
+            } else {
+                $allRequests = $this->getRequest()->request->all();
+                $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+                    ->getTravelRequestsBySearchParams(
+                        $allRequests,
+                        $pagnationParameters
+                    );
+            }
         }
         
         
@@ -112,21 +100,19 @@ class TravelController extends Controller
             
         }
         
-        return $this->render(
-            $showList ? 'OpitNotesTravelBundle:Travel:_list.html.twig' : 'OpitNotesTravelBundle:Travel:list.html.twig',
-            array(
-                'travelRequests' => $allowedTRs,
-                'teIds' => $teIds,
-                'travelRequestStates' => $travelRequestStates,
-                'isLocked' => $isLocked,
-                'currentStatusNames' => $currentStatusNames
-            )
-        );
+        $templateVars = array(
+            'travelRequests' => $trArray,
+            'teIds' => $teIds,
+            'travelRequestStates' => $travelRequestStates,
+            'isLocked' => $isLocked,
+            'currentStatusNames' => $currentStatusNames,
+        );        
+        
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $this->container->getParameter('travel_bundle_max_pages_to_show');
         $templateVars['offset'] = $offset + 1;
         
-        if (null === $offset && null === $isSearch) {
+        if (false === $showList && (null === $offset && null === $isSearch)) {
             $template = 'OpitNotesTravelBundle:Travel:list.html.twig';
         } else {
             $template = 'OpitNotesTravelBundle:Travel:_list.html.twig';

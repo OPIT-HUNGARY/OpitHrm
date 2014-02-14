@@ -142,7 +142,7 @@ $.extend true, $(document).data('notes'),
             $('.icon-disabled').on 'click', (event)->
                 event.preventDefault()
 
-            $('#list-table th i').click ->
+            $('#list-table th .fa-trash-o').click ->
                 $('.deleteMultipleTravelRequest').checkAll()
                 $('.deleteMultipleTravelExpense').checkAll()
 

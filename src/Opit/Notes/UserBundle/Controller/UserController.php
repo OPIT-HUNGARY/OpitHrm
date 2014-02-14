@@ -34,28 +34,27 @@ class UserController extends Controller
         $propertyValues = array();
         $request = $this->getRequest();
         $demand = $request->request->get('demand');
-
-        if ($request->isXmlHttpRequest() && isset($demand) && 'ordering'===$demand) {
+        $showList = $request->request->get('showList');
+        $isSearch = $request->request->get('search');
+        $offset = $request->request->get('offset');
+        $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
+        
+        if ($request->isXmlHttpRequest() && isset($demand) && 'ordering' === $demand) {
             $order = $request->request->get('order');
             $field = $request->request->get('field');
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
                 ->findBy(array(), array($field => $order));
         } else {
-            $users = $entityManager->getRepository('OpitNotesUserBundle:User')->findAll();
-        }
-        $isSearch = $request->request->get('search');
-        $offset = $request->request->get('offset');
-        $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
-        
-        if ($isSearch) {
-            $allRequests = $request->request->all();
-            unset($allRequests['search']);
-            unset($allRequests['offset']);
-            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
-        } else {
-            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
+            if ($isSearch) {
+                $allRequests = $request->request->all();
+                unset($allRequests['search']);
+                unset($allRequests['offset']);
+                $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                        ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
+            } else{
+                $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                    ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
+            }
         } 
 
 
@@ -78,7 +77,7 @@ class UserController extends Controller
                 "roles" => $roles
             );
         }
-
+        
         $numberOfPages = ceil(count($users) / $pagerMaxResults);
         $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
         
@@ -92,7 +91,7 @@ class UserController extends Controller
         $templateVars['propertyNames'] = $propertyNames;
         $templateVars['propertyValues'] = $propertyValues;
         
-        if (null === $offset && !$isSearch) {
+        if (null === $showList && (null === $offset && !$isSearch)) {
             $template = 'OpitNotesUserBundle:User:list.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
