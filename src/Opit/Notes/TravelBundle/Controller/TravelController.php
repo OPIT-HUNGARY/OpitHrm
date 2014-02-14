@@ -34,18 +34,16 @@ class TravelController extends Controller
     public function listAction(Request $request)
     {
         $request = $this->getRequest();
-        $showList = (boolean) $request->request->get('showList');
+        $showList = $request->request->get('showList');
         $securityContext = $this->get('security.context');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
-        $order = $request->request->get('order');
-        $field = $request->request->get('field');
         $travelRequestRepository = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest');
         $user = $this->getUser();
         $isAdmin = $securityContext->isGranted('ROLE_ADMIN');
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
-        $isSearch = $request->request->get('search');
+        $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
         $pagerMaxResults = $this->container->getParameter('travel_bundle_pager_max_results');
         $pagnationParameters = array(
@@ -57,21 +55,17 @@ class TravelController extends Controller
             'entityManager' => $entityManager
         );        
         
-        if (null !== $order && null !== $field) {
+        if ($isSearch) {
+            $allRequests = $this->getRequest()->request->all();
+
             $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                ->findAllOrderByField($field, $order);
+                ->getTravelRequestsBySearchParams(
+                    $allRequests,
+                    $pagnationParameters
+                );
         } else {
-            if (null === $isSearch) {
-                $travelRequests = $travelRequestRepository
-                    ->getPaginaton($pagnationParameters);
-            } else {
-                $allRequests = $this->getRequest()->request->all();
-                $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                    ->getTravelRequestsBySearchParams(
-                        $allRequests,
-                        $pagnationParameters
-                    );
-            }
+            $travelRequests = $travelRequestRepository
+                ->getPaginaton($pagnationParameters);
         }
         
         
@@ -111,8 +105,8 @@ class TravelController extends Controller
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $this->container->getParameter('travel_bundle_max_pages_to_show');
         $templateVars['offset'] = $offset + 1;
-        
-        if (false === $showList && (null === $offset && null === $isSearch)) {
+
+        if (null === $showList && (null === $offset && !$isSearch)) {
             $template = 'OpitNotesTravelBundle:Travel:list.html.twig';
         } else {
             $template = 'OpitNotesTravelBundle:Travel:_list.html.twig';

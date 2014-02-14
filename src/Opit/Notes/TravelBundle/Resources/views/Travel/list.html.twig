@@ -4,7 +4,7 @@
 {% endblock %}
 {% block body %}
 <h1>Travel request list</h1>
-{% include 'OpitNotesTravelBundle:Travel:_searchForm.html.twig' %}
+{% include 'OpitNotesTravelBundle:Travel:_searchForm.html.twig' with { 'order_field': 'id' } %}
 <table>
     <tr>
         <td class="no-padding">
@@ -13,7 +13,9 @@
         </td>
     </tr>
 </table>
-{% include 'OpitNotesTravelBundle:Travel:_list.html.twig' %}
+<div id="travel_list">
+    {% include 'OpitNotesTravelBundle:Travel:_list.html.twig' %}
+</div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

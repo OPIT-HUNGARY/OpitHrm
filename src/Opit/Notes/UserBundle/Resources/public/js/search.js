@@ -30,7 +30,8 @@
         'showList': 1
       }
     }).done(function(response) {
-      $('#list-table').html(response);
+      $('#list-table').parent().html(response);
+      $(document).data('notes').funcs.initPager();
     });
   });
 

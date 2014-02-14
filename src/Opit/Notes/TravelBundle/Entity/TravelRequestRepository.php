@@ -30,39 +30,41 @@ class TravelRequestRepository extends EntityRepository
          * @var array
          */
         $params = array();
+        $whereParams = $parameters['search'];
+        $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
 
-        if ($parameters['trId']!="") {
-            $params['trId'] = '%'.$parameters['trId'].'%';
+        if ($whereParams['trId']!="") {
+            $params['trId'] = '%'.$whereParams['trId'].'%';
             $qb->andWhere($qb->expr()->like('tr.travelRequestId', ':trId'));
         }
-        if ($parameters['employeeName']!="") {
+        if ($whereParams['employeeName']!="") {
             $qb->leftJoin('tr.user', 'u', 'WITH');
-            $params['employeeName'] = '%'.$parameters['employeeName'].'%';
+            $params['employeeName'] = '%'.$whereParams['employeeName'].'%';
             $qb->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
         }
-        if ($parameters['opportunityName']!="") {
-            $params['opportunityName'] = '%'.$parameters['opportunityName'].'%';
+        if ($whereParams['opportunityName']!="") {
+            $params['opportunityName'] = '%'.$whereParams['opportunityName'].'%';
             $qb->andWhere($qb->expr()->like('tr.opportunityName', ':opportunityName'));
         }
-        if ($parameters['destinationName']!="") {
-            $params['destinationName'] = '%'.$parameters['destinationName'].'%';
+        if ($whereParams['destinationName']!="") {
+            $params['destinationName'] = '%'.$whereParams['destinationName'].'%';
             $qb->leftJoin('tr.destinations', 'd', 'WITH');
             $qb->andWhere($qb->expr()->like('d.name', ':destinationName'));
         }
-        if ($parameters['departureDateFrom']!="") {
-            $params['departureDateFrom'] = $parameters['departureDateFrom'];
+        if ($whereParams['departureDateFrom']!="") {
+            $params['departureDateFrom'] = $whereParams['departureDateFrom'];
             $qb->andWhere($qb->expr()->gte('tr.departureDate', ':departureDateFrom'));
         }
-        if ($parameters['departureDateTo']!="") {
-            $params['departureDateTo'] = $parameters['departureDateTo'];
+        if ($whereParams['departureDateTo']!="") {
+            $params['departureDateTo'] = $whereParams['departureDateTo'];
             $qb->andWhere($qb->expr()->lte('tr.departureDate', ':departureDateTo'));
         }
-        if ($parameters['arrivalDateFrom']!="") {
-            $params['arrivalDateFrom'] = $parameters['arrivalDateFrom'];
+        if ($whereParams['arrivalDateFrom']!="") {
+            $params['arrivalDateFrom'] = $whereParams['arrivalDateFrom'];
             $qb->andWhere($qb->expr()->gte('tr.arrivalDate', ':arrivalDateFrom'));
         }
-        if ($parameters['arrivalDateTo']!="") {
-            $params['arrivalDateTo'] = $parameters['arrivalDateTo'];
+        if ($whereParams['arrivalDateTo']!="") {
+            $params['arrivalDateTo'] = $whereParams['arrivalDateTo'];
             $qb->andWhere($qb->expr()->lte('tr.arrivalDate', ':arrivalDateTo'));
         }
 
@@ -84,6 +86,10 @@ class TravelRequestRepository extends EntityRepository
             $qb->setParameters($params);
             $qb->setFirstResult($pagnationParameters['firstResult']);
             $qb->setMaxResults($pagnationParameters['maxResults']);
+        }
+        
+        if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
+            $qb->orderBy('tr.'.$orderParams['field'], $orderParams['dir']);
         }
         
         return new Paginator($qb->getQuery(), $fetchJoinCollection = true);

@@ -1,5 +1,3 @@
-order = 'desc'
-
 changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
     reloadPage = true
     $.ajax
@@ -112,16 +110,22 @@ deleteSingleRequest = (type, self) ->
             $(@).dialog 'destroy'
             return
     return
+    
 # Ordering.
-$('#list-table').on 'click', 'th .fa-sort', ->
+$('#travel_list').on 'click', 'th .fa-sort', ->
     field = $(@).attr('data-field')
-    if order is 'desc'
-        order = 'asc'
-    else
-        order = 'desc'
+    $form = $('#searchFormWrapper').find 'form'
+    order = $form.find('#order_dir').val()
+    order = if order is 'desc' then 'asc' else 'desc'
+    $form.find('#order_field').val field
+    $form.find('#order_dir').val order
+    searchData = $form.serialize()
+    
     $.ajax
        method: 'POST'
        url: Routing.generate 'OpitNotesTravelBundle_travel_list'
-       data: 'field': field, 'order': order, 'showList': 1
+       data: "showList=1&" + searchData
      .done (data) ->
-        $('#list-table').html(data)
+        $('#travel_list').html(data)
+        $(document).data('notes').funcs.initTravelRequestListListeners()
+        $(document).data('notes').funcs.initPager()

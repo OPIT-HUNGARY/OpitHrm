@@ -20,7 +20,8 @@ $('#resetButton').click ->
         url: url
         data: 'resetForm': true, 'showList' : 1
     .done (response) ->
-        $('#list-table').html response
+        $('#list-table').parent().html response
+        $(document).data('notes').funcs.initPager()
         return
     return
 

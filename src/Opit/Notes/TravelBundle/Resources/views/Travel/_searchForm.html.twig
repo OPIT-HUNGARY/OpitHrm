@@ -7,43 +7,45 @@
     <form id="searchTravelForm" method="post" action="{{ path('OpitNotesTravelBundle_travel_list') }}">
         <div id="searchFormProperties">
             <div class="searchProperty">
-                <label for="searchTrId">ID</label>
-                <input type="text" name="trId" id="searchTrId" />
+                <label for="search_tr_id">ID</label>
+                <input type="text" name="search[trId]" id="search_tr_id" />
             </div>
             <div class="searchProperty">
-                <label for="searchEmployeeName">Employee name</label>
-                <input type="text" name="employeeName" id="searchEmployeeName" />
+                <label for="search_employee_name">Employee name</label>
+                <input type="text" name="search[employeeName]" id="search_employee_name" />
             </div>
             <div class="searchProperty">
-                <label for="searchOpportunityName">Opportunity Name</label>
-                <input type="text" name="opportunityName" id="searchOpportunityName" />
+                <label for="search_opportunity_name">Opportunity Name</label>
+                <input type="text" name="search[opportunityName]" id="search_opportunity_name" />
             </div>
             <div class="searchProperty">
-                <label for="searchDestinationName">Destination Name</label>
-                <input type="text" name="destinationName" id="searchDestinationName" />
+                <label for="search_destination_name">Destination Name</label>
+                <input type="text" name="search[destinationName]" id="search_destination_name" />
             </div>
             <br />
             <div class="searchProperty">
-                <label for="searchDepartureDateFrom">Departure date from</label>
-                <input type="date" name="departureDateFrom" id="searchDepartureDateFrom" />
+                <label for="search_departure_date_from">Departure date from</label>
+                <input type="date" name="search[departureDateFrom]" id="search_departure_date_from" />
             </div>
             <div class="searchProperty">
-                <label for="searchDepartureDateTo">Departure date to</label>
-                <input type="date" name="departureDateTo" id="searchDepartureDateTo" />
+                <label for="search_departure_date_to">Departure date to</label>
+                <input type="date" name="search[departureDateTo]" id="search_departure_date_to" />
             </div>
             <div class="searchProperty">
-                <label for="searchArrivalDateFrom">Arrival date from</label>
-                <input type="date" name="arrivalDateFrom" id="searchArrivalDateFrom" />
+                <label for="search_arrival_date_from">Arrival date from</label>
+                <input type="date" name="search[arrivalDateFrom]" id="search_arrival_date_from" />
             </div>
             <div class="searchProperty">
-                <label for="searchArrivalDateTo">Arrival date to</label>
-                <input type="date" name="arrivalDateTo" id="searchArrivalDateTo" />
+                <label for="search_arrival_date_to">Arrival date to</label>
+                <input type="date" name="search[arrivalDateTo]" id="search_arrival_date-_tTo" />
             </div>
         </div>
         <div id="searchFormButtons">
             <button class="button search" id="searchButton" type="submit"><i class="fa fa-search"></i>Search</button>
             <button class="button reset" id="resetButton" type="reset"><i class="fa fa-refresh"></i>Reset</button>
         </div>
-        <input type="hidden" name="search" value="1" />
+        <input type="hidden" name="issearch" value="1" />
+        <input type="hidden" name="order[field]" id="order_field" value="{{ order_field is defined ? order_field : 'id' }}" />
+        <input type="hidden" name="order[dir]" id="order_dir" value="{{ order_dir is defined ? order_dir : 'asc' }}" />
     </form>
 </section>

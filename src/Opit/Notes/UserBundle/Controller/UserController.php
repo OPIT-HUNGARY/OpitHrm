@@ -33,31 +33,21 @@ class UserController extends Controller
         $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();
-        $demand = $request->request->get('demand');
         $showList = $request->request->get('showList');
-        $isSearch = $request->request->get('search');
+        $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
         $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
         
-        if ($request->isXmlHttpRequest() && isset($demand) && 'ordering' === $demand) {
-            $order = $request->request->get('order');
-            $field = $request->request->get('field');
+        if ($isSearch) {
+            $allRequests = $request->request->all();
+
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                ->findBy(array(), array($field => $order));
-        } else {
-            if ($isSearch) {
-                $allRequests = $request->request->all();
-                unset($allRequests['search']);
-                unset($allRequests['offset']);
-                $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                        ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
-            } else{
-                $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
-            }
-        } 
-
-
+                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
+        } else{
+            $users = $entityManager->getRepository('OpitNotesUserBundle:User')
+                ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
+        }
+        
         foreach ($users as $user) {
             //fetch roles for the user
             $localUserRoles = $groups->findUserGroupsArray($user->getId());

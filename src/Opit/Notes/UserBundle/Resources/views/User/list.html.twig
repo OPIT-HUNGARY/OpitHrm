@@ -4,7 +4,7 @@
 {% endblock %}
 {% block body %}
 <h1>User list</h1>
-    {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' %}
+    {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' with { 'order_field': 'id' } %}
     <div id="userlistWrapper">
         <table>
             <tr>

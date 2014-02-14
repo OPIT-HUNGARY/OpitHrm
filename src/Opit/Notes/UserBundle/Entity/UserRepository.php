@@ -140,21 +140,30 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $this->createQueryBuilder('u');
         $params = array();
         $andx = array();
+        $whereParams = $parameters['search'];
+        $oderParams = isset($parameters['order']) ? $parameters['order'] : array();
         
-        foreach ($parameters as $key => $value) {
+        foreach ($whereParams as $key => $value) {
             if ($value != '') {
                 $params[':'.$key] = '%'.$value.'%';
                 $andx[] = $qb->expr()->andX($qb->expr()->like('u.'.$key, ':'.$key));
             }
         }
         
-        $qb->where(call_user_func_array(array($qb->expr(), "andX"), $andx))
-        ->setParameters($params);
+        // Only apply where if parameters are given
+        if (count($andx) > 0) {
+            $qb->where(call_user_func_array(array($qb->expr(), "andX"), $andx))
+                ->setParameters($params);
+        }
+        
+        if (isset($oderParams['field']) && $oderParams['field'] && isset($oderParams['dir']) && $oderParams['dir']) {
+            $qb->orderBy('u.'.$oderParams['field'], $oderParams['dir']);
+        }
         
         $qb->setFirstResult($firstResult);
         $qb->setMaxResults($maxResults);
         
-        return new Paginator($qb->getQuery(), $fetchJoinCollection = true);
+        return new Paginator($qb->getQuery(), true);
     }
 
     /**

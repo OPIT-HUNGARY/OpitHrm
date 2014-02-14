@@ -1,4 +1,4 @@
-<form>
+<form class="delete-checkbox-form">
 <table id="list-table">
     <tr>
         <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
@@ -102,11 +102,14 @@
     {#{% endif %}#}
     {% endfor %}
 </table>
+{% if numberOfPages is defined %}
 {% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
     {
         'numberOfPages': numberOfPages,
         'maxNumberOfPages': maxPages,
+        'offset': offset,
         'url': path('OpitNotesTravelBundle_travel_list')
     }
 %}
+{% endif %}
 </form>
