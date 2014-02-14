@@ -197,15 +197,18 @@
     var $deleteButton, $notificationsWrapper;
     $(document).data('notes').funcs.initTravelRequestListListeners();
     $(document).data('notes').funcs.initPager();
-    $(document).on('click', function() {
-      return $('#notifications-wrapper').addClass('display-none');
-    });
+    $('#notifications').toggleClass('right-0');
     $notificationsWrapper = $('#notifications-wrapper');
     $('#notifications').on('click', function(event) {
       event.stopPropagation();
-      $('#notifications i').removeClass('active-text');
-      $('#unread-notifications-count').addClass('display-none');
-      return getAllNotifications($notificationsWrapper);
+      if ($(this).hasClass('right-0')) {
+        $('#notifications i').removeClass('active-text');
+        $('#unread-notifications-count').addClass('display-none');
+        getAllNotifications($notificationsWrapper);
+        return $(this).toggleClass('right-300');
+      } else {
+        return $(this).toggleClass('right-0');
+      }
     });
     getUnreadNotifications();
     $('#loggedInUser').click(function() {

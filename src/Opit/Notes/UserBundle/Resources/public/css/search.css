@@ -63,6 +63,10 @@ and open the template in the editor.
 
 .height-60 { height: 60px; }
 
+.right-300 { right: 300px !important; }
+
+.right-0 { right: 0; }
+
 .default-border, table.bordered tr, table.bordered td, table.bordered th { border: 1px solid #646464; }
 
 .overflow-hidden { overflow: hidden; }

@@ -159,18 +159,22 @@ $(document)
         $(document).data('notes').funcs.initTravelRequestListListeners()
         $(document).data('notes').funcs.initPager()
     
-        $(document).on 'click', ->
-            $('#notifications-wrapper').addClass 'display-none'
-    
+#        $(document).on 'click', ->
+#            $('#notifications-wrapper').addClass 'display-none'
+        $('#notifications').toggleClass 'right-0'
         $notificationsWrapper = $('#notifications-wrapper')
         $('#notifications').on 'click', (event) ->
             #stop event bubbling
             event.stopPropagation()
-            # remove classes that make the notifications tab active
-            $('#notifications i').removeClass 'active-text'
-            $('#unread-notifications-count').addClass 'display-none'
-            #call get all notifications function
-            getAllNotifications($notificationsWrapper)
+            if $(@).hasClass 'right-0'
+                # remove classes that make the notifications tab active
+                $('#notifications i').removeClass 'active-text'
+                $('#unread-notifications-count').addClass 'display-none'
+                #call get all notifications function
+                getAllNotifications($notificationsWrapper)
+                $(@).toggleClass 'right-300'
+            else
+                $(@).toggleClass 'right-0'
         # start checking for new notifications
         getUnreadNotifications()
     

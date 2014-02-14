@@ -396,33 +396,42 @@ header{
 }
 
 #notifications{
-    float:right;
+    position:fixed;
+    z-index:100;
+    right:0;
+    top:200px;
     text-decoration:none;
-    background-color:$lightGrayColor;
+    background-color:$lightGrayColorFull;
     padding:4px 10px 4px 10px;
-    margin:-20px 10px 0 0;
+    @include border-top-left-radius(10px);
     @include border-bottom-left-radius(10px);
-    @include border-bottom-right-radius(10px);
+    @include transition(right, .5s);
     
     i{
-        font-size:18px;
+        font-size:25px;
         color:$defaultDarkColor;
     }
 }
 #notifications:hover{
     cursor:pointer;
+    
+    i{
+        color:$orangeColor;
+    }    
 }
 
 #unread-notifications-count{
     background-color:$orangeColor;
-    width:18px;
-    height:18px;
-    color:white;
-    text-align:center;
-    line-height:1.8em;
-    font-size:11px;
-    margin-left: -18px;
-    margin-top:-4px
+    width: 16px;
+    height: 16px;
+    color: white;
+    text-align: center;
+    line-height: 1.4em;
+    font-size: 10px;
+    margin-left: -6px;
+    margin-top: -14px;
+    font-weight: bold;
+    @include border-radius(6px);
 }
 
 #unread-notifications-count:hover{
@@ -430,17 +439,18 @@ header{
 }
 
 #notifications-wrapper{
-    width:250px;
+    width:280px;
     min-height:50px;
-    max-height:350px;
-    border:solid 5px $orangeColor;
+    max-height:400px;
+    border:solid 10px $lightGrayColorFull;
     position:absolute;
     background-color:white;
-    right:228px;
-    margin-top:-5px;
-    z-index:50;
+    right:-300px;
+    top: 0;
+    background-color:$lightGrayColorFull;
+    z-index:100;
+    margin:inherit;
     overflow-y:auto;
-    @include border-radius(12px);
     
     .notification{
         width:100%;
@@ -484,7 +494,7 @@ header{
     } 
 
     .unread{
-        background-color: $defaultLightColor;
+        background-color: white;
     }
 }
 

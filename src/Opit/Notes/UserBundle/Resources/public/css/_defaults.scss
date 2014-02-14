@@ -13,6 +13,7 @@ $darkSnowColor: rgb(244, 244, 244);
 $defaultLightColor: rgba(235, 235, 235, 1);
 $darkerSnowColor: rgba(230, 230, 230, 1);
 $lightGrayColor: rgba(220, 220, 220, 0.8);
+$lightGrayColorFull: rgb(220, 220, 220);
 $bgGrey: rgb(219, 219, 219);
 $formDarkColor: rgba(210, 210, 210, 1);
 $lightGrayHover: rgba(200, 200, 200, 1);
@@ -104,6 +105,12 @@ $defaultFontSize: .9em;
     -o-box-shadow: none;
 }
 
+@mixin transition($property, $time) {
+    transition: $property $time;
+    -webkit-transition: $property $time;
+    -moz-transition: $property $time;
+}
+
 .bold {
     font-weight: bold;
 }
@@ -190,6 +197,14 @@ $defaultFontSize: .9em;
 
 .height-60{
     height: 60px;
+}
+
+.right-300{
+    right:300px !important;
+}
+
+.right-0{
+    right:0;
 }
 
 .default-border {
