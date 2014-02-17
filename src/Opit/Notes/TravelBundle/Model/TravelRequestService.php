@@ -395,7 +395,15 @@ class TravelRequestService
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusName = $currentStatus->getName();
         $currentStatusId = $currentStatus->getId();
-        $trSelectableStates = $statusManager->getNextStates($currentStatus);
+        
+        // handle "paid" status
+        $excludeStatusIds = array();
+        $relExpenseStatus = $statusManager->getCurrentStatus($travelRequest->getTravelExpense());
+        if (!$relExpenseStatus || $relExpenseStatus->getId() != Status::APPROVED) {
+            array_push($excludeStatusIds, Status::PAID);
+        }
+        
+        $trSelectableStates = $statusManager->getNextStates($currentStatus, $excludeStatusIds);
         $trSelectableStates[$currentStatusId] = $currentStatusName;
         
         return $trSelectableStates;

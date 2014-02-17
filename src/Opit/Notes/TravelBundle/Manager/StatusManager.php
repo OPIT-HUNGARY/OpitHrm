@@ -83,33 +83,26 @@ class StatusManager
             //split class name at uppercase letters
             $subjectType = preg_split('/(?=[A-Z])/', $className);
             $subjectType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
-            $generalManager = null;
-            if ($resource instanceof TravelRequest) {
-                $generalManager = $resource->getGeneralManager();
-                $to = $generalManager->getEmail();
-                $travelRequestId = $resource->getTravelRequestId();
-                $travelType = 'tr';
-            } elseif ($resource instanceof TravelExpense) {
-                $generalManager = $resource->getTravelRequest()->getGeneralManager();
-                $to = $generalManager->getEmail();
-                $travelRequestId = $resource->getTravelRequest()->getTravelRequestId();
-                $travelType = 'te';
-            }
+            $travelRequest = ($resource instanceof TravelExpense) ? $resource->getTravelRequest() : $resource;
+            $generalManager = $travelRequest->getGeneralManager();
+            
+            $router = $this->container->get('router');
             
             foreach ($nextStates as $key => $value) {
                 if ($key !== $requiredStatus) {
-                    $stateChangeLinks[] =
-                        $this->request->getScheme() .
-                        '://' . $this->request->getHttpHost() .
-                        $this->request->getBaseURL() .
-                        '/changestatus/' . $generalManager->getId() . '/' .
-                        $travelType . '/' . $key . '/' . $travelToken;
+                    // Generate change status links
+                    $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
+                        'gmId' => $generalManager->getId(),
+                        'travelType' => $resource::TYPE,
+                        'status' => $key,
+                        'token' => $travelToken
+                    ));
                 }
             }
             
             $estimatedCosts = $this->container->get('opit.model.travel_expense')
-                ->getTRCosts($resource, $this->container->get('opit.service.exchange_rates'));
-            $this->mail->setSubject($subjectType . ' (' . $travelRequestId . ') sent for approval');
+                ->getTRCosts($travelRequest, $this->container->get('opit.service.exchange_rates'));
+            $this->mail->setSubject($subjectType . ' (' . $travelRequest->getTravelRequestId() . ') sent for approval');
             $this->mail->setBaseTemplate(
                 'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
                 array(
@@ -120,7 +113,7 @@ class StatusManager
                     'estimatedCostsHUF' => ceil($estimatedCosts['HUF'])
                 )
             );
-            $this->mail->setRecipient($to);
+            $this->mail->setRecipient($generalManager->getEmail());
             $this->mail->sendMail();
             
             $toGeneralManager = true;
@@ -158,13 +151,13 @@ class StatusManager
      * @param \Opit\Notes\TravelBundle\Entity\Status $currentState
      * @return array
      */
-    public function getNextStates(Status $currentState)
+    public function getNextStates(Status $currentState, $excludeIds = array())
     {
         $statesToDisplay = array();
         $currentStateId = $currentState->getId();
         $nextStates =
             $this->entityManager->getRepository('OpitNotesTravelBundle:StatusWorkflow')
-            ->findBy(array('parent' => $currentState));
+            ->findAvailableStates($currentState, $excludeIds);
         
         $statesToDisplay[$currentStateId] = $currentState->getName();
         

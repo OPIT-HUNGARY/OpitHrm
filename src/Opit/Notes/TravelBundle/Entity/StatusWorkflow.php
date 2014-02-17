@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @subpackage TravelBundle
  *
  * @ORM\Table(name="notes_status_workflow")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatusWorkflowRepository")
  */
 class StatusWorkflow
 {

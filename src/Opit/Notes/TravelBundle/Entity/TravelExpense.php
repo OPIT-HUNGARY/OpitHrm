@@ -14,6 +14,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class TravelExpense
 {
+    const TYPE = 'te';
+    
     /**
      * @var integer
      *

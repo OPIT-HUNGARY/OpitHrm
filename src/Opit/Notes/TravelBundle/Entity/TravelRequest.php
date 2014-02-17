@@ -17,6 +17,8 @@ use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
  */
 class TravelRequest
 {
+    const TYPE = 'tr';
+    
     private $trIdPattern = 'TR-{year}-{id}';
     
     /**

@@ -26,7 +26,6 @@ class DefaultController extends Controller
     public function changeStatusAction(Request $request)
     {
         $method = 'get';
-        $requestMethod = $request->getMethod();
         $entityManager = $this->getDoctrine()->getManager();
         $generalManager = $entityManager->getRepository('OpitNotesUserBundle:User')
             ->find($request->attributes->get('gmId'));
@@ -45,7 +44,7 @@ class DefaultController extends Controller
             throw $this->createNotFoundException('Security token is not valid. Status cannot be updated.');
         }
         
-        if ('POST' === $requestMethod) {
+        if ($request->isMethod('POST')) {
             $method = 'post';
             //get the travel id from the token
             $travelId = $token->getTravelId();
