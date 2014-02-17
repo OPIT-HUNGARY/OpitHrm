@@ -36,16 +36,16 @@ class UserController extends Controller
         $showList = $request->request->get('showList');
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
-        $pagerMaxResults = $this->container->getParameter('user_bundle_pager_max_results');
+        $config = $this->container->getParameter('opit_notes_user');
         
         if ($isSearch) {
             $allRequests = $request->request->all();
 
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $pagerMaxResults), $pagerMaxResults);            
+                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $config['max_results']), $config['max_results']);            
         } else{
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                ->getPaginaton(($offset * $pagerMaxResults), $pagerMaxResults);
+                ->getPaginaton(($offset * $config['max_results']), $config['max_results']);
         }
         
         foreach ($users as $user) {
@@ -68,11 +68,11 @@ class UserController extends Controller
             );
         }
         
-        $numberOfPages = ceil(count($users) / $pagerMaxResults);
+        $numberOfPages = ceil(count($users) / $config['max_results']);
         $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
         
         $templateVars['numberOfPages'] = $numberOfPages;
-        $templateVars['maxPages'] = $this->container->getParameter('user_bundle_max_pages_to_show');
+        $templateVars['maxPages'] = $config['max_pager_pages'];
         if (!$request->request->get('incrementOffset')) {
             $templateVars['offset'] = $offset + 1;
         } else {

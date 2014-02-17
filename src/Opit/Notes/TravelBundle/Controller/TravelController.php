@@ -36,6 +36,7 @@ class TravelController extends Controller
         $request = $this->getRequest();
         $showList = $request->request->get('showList');
         $securityContext = $this->get('security.context');
+        $config = $this->container->getParameter('opit_notes_travel');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
@@ -45,10 +46,9 @@ class TravelController extends Controller
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
-        $pagerMaxResults = $this->container->getParameter('travel_bundle_pager_max_results');
         $pagnationParameters = array(
-            'firstResult' => ($offset * $pagerMaxResults),
-            'maxResults' => $pagerMaxResults,
+            'firstResult' => ($offset * $config['max_results']),
+            'maxResults' => $config['max_results'],
             'currentUser' => $user,
             'isAdmin' => $isAdmin,
             'isGeneralManager' => $isGeneralManager,
@@ -76,7 +76,7 @@ class TravelController extends Controller
         $travelRequestStates = $listingRights['travelRequestStates'];
         $currentStatusNames = $listingRights['currentStatusNames'];
         $isLocked = $listingRights['isLocked'];
-        $numberOfPages = ceil(count($travelRequests) / $pagerMaxResults);
+        $numberOfPages = ceil(count($travelRequests) / $config['max_results']);
         
         $trArray = array();
         foreach ($allowedTRs as $allowedTR) {
@@ -86,8 +86,8 @@ class TravelController extends Controller
         if ($offset <= $numberOfPages && $offset >= 0) {
             $allowedTRs = array_slice(
                 $trArray,
-                ((null === $offset ? 0 : $offset - 1) * $pagerMaxResults),
-                $pagerMaxResults
+                ((null === $offset ? 0 : $offset - 1) * $config['max_results']),
+                $config['max_results']
             );
         } else {
             return new JsonResponse('', 500);
@@ -103,7 +103,7 @@ class TravelController extends Controller
         );        
         
         $templateVars['numberOfPages'] = $numberOfPages;
-        $templateVars['maxPages'] = $this->container->getParameter('travel_bundle_max_pages_to_show');
+        $templateVars['maxPages'] = $config['max_pager_pages'];
         $templateVars['offset'] = $offset + 1;
 
         if (null === $showList && (null === $offset && !$isSearch)) {

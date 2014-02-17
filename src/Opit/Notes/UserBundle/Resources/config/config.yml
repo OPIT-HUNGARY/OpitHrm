@@ -2,6 +2,7 @@ parameters:
     notes.user.status:
         1: Active
         0: Inactive
-        
-    user_bundle_pager_max_results: 3
-    use_bundle_max_pages_to_show: 3
+
+opit_notes_user:
+    max_results: %max_results%
+    max_pager_pages: %max_pager_pages%

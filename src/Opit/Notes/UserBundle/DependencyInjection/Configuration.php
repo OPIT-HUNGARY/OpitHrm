@@ -20,9 +20,11 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opit_notes_user');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+            ->children()
+                ->integerNode('max_results')->cannotBeEmpty()->defaultValue('%max_results%')->end()
+                ->integerNode('max_pager_pages')->cannotBeEmpty()->defaultValue('%max_pager_pages%')->end()
+            ->end();
 
         return $treeBuilder;
     }

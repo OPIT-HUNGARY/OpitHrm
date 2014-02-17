@@ -20,9 +20,11 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opit_notes_travel');
 
-        $rootNode->children()
-            ->scalarNode('mail_sender')
-                ->isRequired()
+        $rootNode
+            ->children()
+                ->scalarNode('mail_sender')->isRequired()->end()
+                ->integerNode('max_results')->cannotBeEmpty()->defaultValue('%max_results%')->end()
+                ->integerNode('max_pager_pages')->cannotBeEmpty()->defaultValue('%max_pager_pages%')->end()
             ->end();
 
         return $treeBuilder;
