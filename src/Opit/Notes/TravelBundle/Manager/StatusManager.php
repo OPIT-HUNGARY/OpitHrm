@@ -172,26 +172,29 @@ class StatusManager
     /**
      * Method to check status before the last is not equal to the first selectable option in dropdown
      * 
-     * @param integer $travelRequestId
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer $firstStatusId
      * @return boolean
      */
-    public function isNewStatusValid($travelRequestId, $firstStatusId)
+    public function isNewStatusValid(TravelRequest $travelRequest, $firstStatusId)
     {
+        $valid = true;
+        
         $getStatusCountForTravelRequest = $this->entityManager
             ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-            ->getStatusCountForTravelRequest($travelRequestId);
+            ->getStatusCountForTravelRequest($travelRequest);
+        
         if ($getStatusCountForTravelRequest > 2) {
-            $getStatusBeforeLast = $this->entityManager
-                ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')->getStatusBeforeLast($travelRequestId);
-            if ($firstStatusId != $getStatusBeforeLast->getStatus()->getId()) {
-                return true;
+            $getStatusBeforeLast = $this->entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+                ->getStatusBeforeLast($travelRequest);
+            
+            // Set validity to false if second last status equals first status
+            if ($firstStatusId === $getStatusBeforeLast->getStatus()->getId()) {
+                $valid = false;
             }
-
-            return false;
-        } else {
-            return true;
         }
+        
+        return $valid;
     }
     
     /**
@@ -200,7 +203,7 @@ class StatusManager
      * @param \Opit\Notes\UserBundle\Entity\User $user
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      */
-    public function forceTRStatus($statusId, $user, $travelRequest)
+    public function forceTRStatus($statusId, $user, TravelRequest $travelRequest)
     {
         $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
         $createdStatus = new StatesTravelRequests();

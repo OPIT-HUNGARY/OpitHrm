@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
+use Opit\Notes\TravelBundle\Entity\Status;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Doctrine\ORM\EntityManager;
@@ -380,20 +381,20 @@ class TravelController extends Controller
         $travelRequestService = $this->get('opit.model.travel_request');
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $isModificationAllowedForUser =
-                $travelRequestService->isModificationAllowedForUser(
-                    $isNewTravelRequest,
-                    $travelRequest,
-                    $userId,
-                    $oldUser,
-                    $form
-                );
+            $isModificationAllowedForUser = $travelRequestService->isModificationAllowedForUser(
+                $isNewTravelRequest,
+                $travelRequest,
+                $userId,
+                $oldUser,
+                $form
+            );
             if (true !== $isModificationAllowedForUser) {
                 $form = $isModificationAllowedForUser['form'];
                 $travelRequest = $isModificationAllowedForUser['travelRequest'];
             }
 
             if ($form->isValid()) {
+                $statusManager = $this->get('opit.manager.status_manager');
                 // Persist deleted destinations/accomodations
                 $travelRequestService->removeChildNodes($entityManager, $travelRequest, $children);
                 $entityManager->persist($travelRequest);
@@ -408,17 +409,17 @@ class TravelController extends Controller
                             ->getCurrentStatus($travelRequestId);
                     
                     if ('fa' === $forApproval) {
-                        $this->get('opit.manager.status_manager')->forceTRStatus(1, $this->getUser(), $travelRequest);
-                        $this->get('opit.model.travel_request')->changeStatus(
+                        $statusManager->forceTRStatus(Status::CREATED, $this->getUser(), $travelRequest);
+                        $travelRequestService->changeStatus(
                             $travelRequest,
                             $currentStatus ? $currentStatus->getStatus()->getId() : null,
-                            2,
-                            $this->get('opit.manager.status_manager'),
+                            Status::FOR_APPROVAL,
+                            $statusManager,
                             $forApproval,
                             $this->getUser()
                         );
                     } else {
-                        $this->get('opit.manager.status_manager')->forceTRStatus(1, $this->getUser(), $travelRequest);
+                        $statusManager->forceTRStatus(Status::CREATED, $this->getUser(), $travelRequest);
                     }
 
                     $travelRequestService->handleAccessRights(

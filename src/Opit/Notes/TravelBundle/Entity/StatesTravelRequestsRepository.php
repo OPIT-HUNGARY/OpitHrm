@@ -33,37 +33,39 @@ class StatesTravelRequestsRepository extends EntityRepository
     }
     
     /**
-     * Get the penult status of a travel request
+     * Get the second last status of a travel request
      * 
-     * @param integer $trId travel request id
+     * @param mixed $id An id or TravelRequest object
      * @return Opit\Notes\TravelBundle\Entity\StatesTravelRequests
      */
-    public function getStatusBeforeLast($trId)
+    public function getStatusBeforeLast($id)
     {
-        $travelRequestState = $this->createQueryBuilder('tr')
-            ->where('tr.travelRequest = :trId')
-            ->setParameter(':trId', $trId)
+        $qb = $this->createQueryBuilder('tr')
+            ->where('tr.travelRequest = :id')
+            ->setParameter(':id', $id)
             ->add('orderBy', 'tr.id DESC')
             ->setMaxResults(2)
             ->getQuery();
         
-        $results = $travelRequestState->getResult();
-        return $results[1];
+        $results = $qb->getResult();
+        
+        return isset($results[1]) ? $results[1] : null;
     }
     
     /**
      * Get the count of the statuses of a travel request
      * 
-     * @param integer $trId travel request id
-     * @return integer the counted statuses
+     * @param mixed $id An id or TravelRequest object
+     * @return integer The states count
      */
-    public function getStatusCountForTravelRequest($trId)
+    public function getStatusCountForTravelRequest($id)
     {
-        $travelRequestState = $this->createQueryBuilder('tr')
-            ->where('tr.travelRequest = :trId')
-            ->setParameter(':trId', $trId)
+        $qb = $this->createQueryBuilder('tr')
+            ->select('COUNT(tr.id)')
+            ->where('tr.travelRequest = :id')
+            ->setParameter(':id', $id)
             ->getQuery();
         
-        return count($travelRequestState->getResult());
+        return $qb->getSingleScalarResult();
     }
 }
