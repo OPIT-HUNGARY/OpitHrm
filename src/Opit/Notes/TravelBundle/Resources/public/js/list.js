@@ -99,7 +99,7 @@
         data: $form.serialize()
       }).done(function(response) {
         $('#list-table').parent().html(response);
-        $(document).data('notes').funcs.initTravelRequestListListeners();
+        $(document).data('notes').funcs.initListPageListeners();
         $(document).data('notes').funcs.initPager();
       });
     });
@@ -156,7 +156,7 @@
       data: "showList=1&" + searchData
     }).done(function(data) {
       $('#travel_list').html(data);
-      $(document).data('notes').funcs.initTravelRequestListListeners();
+      $(document).data('notes').funcs.initListPageListeners();
       return $(document).data('notes').funcs.initPager();
     });
   });

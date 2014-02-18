@@ -129,29 +129,31 @@
     var arrival, departure;
     departure = new Date("" + departureDate + " " + departureHour + ":" + departureMinute);
     arrival = new Date("" + arrivalDate + " " + arrivalHour + ":" + arrivalMinute);
-    return $.ajax({
-      method: 'POST',
-      url: Routing.generate('OpitNotesTravelBundle_expense_perdiem'),
-      data: {
-        arrival: arrival,
-        departure: departure
-      }
-    }).done(function(data) {
-      var $perDiemTable;
-      $('.perDiemTable').remove();
-      $perDiemTable = $('<table>');
-      $perDiemTable.addClass('perDiemTable bordered');
-      if (data['totalTravelHoursOnSameDay'] > 0) {
-        $perDiemTable.append(createTableRow('Travel hours', data['totalTravelHoursOnSameDay'], ""));
-        return $perDiemTable.append(createTableRow('Total', data['totalPerDiem'], ""));
-      } else {
-        $perDiemTable.append(createTableRow('Departure day', data['departurePerDiem'], "Number of hours traveled on departure day " + data['departureHours'] + "."));
-        $perDiemTable.append(createTableRow("Full days (" + data['daysBetween'] + ")", data['daysBetweenPerDiem'], "Number of full days " + data['daysBetween'] + "."));
-        $perDiemTable.append(createTableRow('Arrival day', data['arrivalPerDiem'], "Number of hours traveled on arrival day " + data['arrivalHours'] + "."));
-        $perDiemTable.append(createTableRow('Total', data['totalPerDiem']));
+    if (arrival > departure) {
+      return $.ajax({
+        method: 'POST',
+        url: Routing.generate('OpitNotesTravelBundle_expense_perdiem'),
+        data: {
+          arrival: arrival,
+          departure: departure
+        }
+      }).done(function(data) {
+        var $perDiemTable;
+        $('.perDiemTable').remove();
+        $perDiemTable = $('<table>');
+        $perDiemTable.addClass('perDiemTable bordered');
+        if (data['totalTravelHoursOnSameDay'] > 0) {
+          console.log(data['totalTravelHoursOnSameDay']);
+          $perDiemTable.append(createTableRow('Travel hours', data['totalPerDiem'], data['totalTravelHoursOnSameDay']));
+        } else {
+          $perDiemTable.append(createTableRow('Departure day', data['departurePerDiem'], "Number of hours traveled on departure day " + data['departureHours'] + "."));
+          $perDiemTable.append(createTableRow("Full days (" + data['daysBetween'] + ")", data['daysBetweenPerDiem'], "Number of full days " + data['daysBetween'] + "."));
+          $perDiemTable.append(createTableRow('Arrival day', data['arrivalPerDiem'], "Number of hours traveled on arrival day " + data['arrivalHours'] + "."));
+          $perDiemTable.append(createTableRow('Total', data['totalPerDiem']));
+        }
         return $perDiem.append($perDiemTable);
-      }
-    });
+      });
+    }
   };
 
   convertCurrency = function(originCode, destinationCode, value) {
@@ -168,8 +170,8 @@
     departureDate = $('#travelExpense_departureDateTime_date');
     departureTime = $('#travelExpense_departureDateTime_time');
     if (!Modernizr.inputtypes.date) {
-      arrivalDate.datepicker("destroy");
-      departureDate.datepicker("destroy");
+      arrivalDate.datepicker('destroy');
+      departureDate.datepicker('destroy');
       $('input[type=date]').each(function() {
         var dateVal;
         dateVal = $(this).val();

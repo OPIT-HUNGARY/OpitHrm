@@ -115,49 +115,45 @@ convertCurrency = (originCode, destinationCode, value) ->
 calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, arrivalHour, arrivalMinute) ->
     departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
     arrival = new Date "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
-    $.ajax
-        method: 'POST'
-        url: Routing.generate 'OpitNotesTravelBundle_expense_perdiem'
-        data: {arrival: arrival, departure: departure}
-    .done (data) ->
-        $('.perDiemTable').remove()
-        $perDiemTable = $('<table>')
-        $perDiemTable.addClass 'perDiemTable bordered'
-        
-        if data['totalTravelHoursOnSameDay'] > 0
-            $perDiemTable.append createTableRow(
-                'Travel hours',
-                data['totalTravelHoursOnSameDay'],
-                ""
-            )                 
-            
-            $perDiemTable.append createTableRow(
-                'Total',
-                data['totalPerDiem'],
-                ""
-            )
-            
-        else
-            $perDiemTable.append createTableRow(
-                'Departure day',
-                data['departurePerDiem'],
-                "Number of hours traveled on departure day #{ data['departureHours'] }."
-            )
-        
-            $perDiemTable.append createTableRow(
-                "Full days (#{ data['daysBetween'] })",
-                data['daysBetweenPerDiem'], 
-                "Number of full days #{ data['daysBetween'] }."
-            )        
-        
-            $perDiemTable.append createTableRow(
-                'Arrival day',
-                data['arrivalPerDiem'],
-                "Number of hours traveled on arrival day #{ data['arrivalHours'] }."
-            )
+    if arrival > departure
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesTravelBundle_expense_perdiem'
+            data: {arrival: arrival, departure: departure}
+        .done (data) ->
+            $('.perDiemTable').remove()
+            $perDiemTable = $('<table>')
+            $perDiemTable.addClass 'perDiemTable bordered'
 
-            $perDiemTable.append createTableRow('Total', data['totalPerDiem'])
-            
+            if data['totalTravelHoursOnSameDay'] > 0
+                console.log data['totalTravelHoursOnSameDay']
+                $perDiemTable.append createTableRow(
+                    'Travel hours',
+                    data['totalPerDiem'],
+                    data['totalTravelHoursOnSameDay']
+                )
+
+            else
+                $perDiemTable.append createTableRow(
+                    'Departure day',
+                    data['departurePerDiem'],
+                    "Number of hours traveled on departure day #{ data['departureHours'] }."
+                )
+
+                $perDiemTable.append createTableRow(
+                    "Full days (#{ data['daysBetween'] })",
+                    data['daysBetweenPerDiem'],
+                    "Number of full days #{ data['daysBetween'] }."
+                )
+
+                $perDiemTable.append createTableRow(
+                    'Arrival day',
+                    data['arrivalPerDiem'],
+                    "Number of hours traveled on arrival day #{ data['arrivalHours'] }."
+                )
+
+                $perDiemTable.append createTableRow('Total', data['totalPerDiem'])
+
             $perDiem.append $perDiemTable
 
 convertCurrency = (originCode, destinationCode, value) ->
@@ -175,8 +171,8 @@ $(document).ready ->
     
     # for browsers that do not support input type date
     if not Modernizr.inputtypes.date
-        arrivalDate.datepicker( "destroy" );
-        departureDate.datepicker( "destroy" );
+        arrivalDate.datepicker 'destroy'
+        departureDate.datepicker 'destroy'
         # change date format so that symfony will accept it
         $('input[type=date]').each ->
             dateVal = $(@).val()

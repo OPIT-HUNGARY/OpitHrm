@@ -106,8 +106,8 @@ $.extend true, $(document).data('notes'),
                             $parent.next().slideToggle()
                 $parent.append $toggleIcon
                 
-        initTravelRequestListListeners: () ->
-            $('#list-table').on 'click', '.clickable', ->
+        initListPageListeners: () ->
+            $('#travel_list #list-table').on 'click', '.clickable', ->
               travelRequestId = $(@).attr 'data-tr-id'
               firstStatusId = $(@).parent().find('option:first-child').val()
               $.ajax
@@ -234,7 +234,7 @@ $.extend true, $(document).data('notes'),
                 .done (data) ->
                     if data.indexOf('error') < 0
                         $('#list-table').parent().replaceWith data
-                        $(document).data('notes').funcs.initTravelRequestListListeners()
+                        $(document).data('notes').funcs.initListPageListeners()
                         $(document).data('notes').funcs.initPager()
 
             $('#pager i').on 'mousedown', (event) ->
@@ -283,7 +283,7 @@ $.extend true, $(document).data('notes'),
                             else
                                 $('#pager').html $pager.html()
                         
-                    $(document).data('notes').funcs.initTravelRequestListListeners()
+                    $(document).data('notes').funcs.initListPageListeners()
                     $(document).data('notes').funcs.initPager()
 
 ###

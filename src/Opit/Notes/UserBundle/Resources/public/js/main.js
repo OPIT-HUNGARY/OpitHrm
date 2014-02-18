@@ -43,7 +43,7 @@
                     }).done(function(data) {
                       var postActions;
                       $('#user-list').html(data);
-                      $(document).data('notes').funcs.initTravelRequestListListeners();
+                      $(document).data('notes').funcs.initListPageListeners();
                       $(document).data('notes').funcs.initPager();
                       $('.selected-page').each(function() {
                         return $(this).removeClass('selected-page');
@@ -195,7 +195,7 @@
 
   $(document).ready(function() {
     var $deleteButton, $notificationsWrapper;
-    $(document).data('notes').funcs.initTravelRequestListListeners();
+    $(document).data('notes').funcs.initListPageListeners();
     $(document).data('notes').funcs.initPager();
     $('#notifications').toggleClass('right-0');
     $notificationsWrapper = $('#notifications-wrapper');

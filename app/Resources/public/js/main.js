@@ -120,8 +120,8 @@
           return $parent.append($toggleIcon);
         });
       },
-      initTravelRequestListListeners: function() {
-        $('#list-table').on('click', '.clickable', function() {
+      initListPageListeners: function() {
+        $('#travel_list #list-table').on('click', '.clickable', function() {
           var firstStatusId, travelRequestId;
           travelRequestId = $(this).attr('data-tr-id');
           firstStatusId = $(this).parent().find('option:first-child').val();
@@ -262,7 +262,7 @@
           }).done(function(data) {
             if (data.indexOf('error') < 0) {
               $('#list-table').parent().replaceWith(data);
-              $(document).data('notes').funcs.initTravelRequestListListeners();
+              $(document).data('notes').funcs.initListPageListeners();
               return $(document).data('notes').funcs.initPager();
             }
           });
@@ -314,7 +314,7 @@
                 }
               }
             }
-            $(document).data('notes').funcs.initTravelRequestListListeners();
+            $(document).data('notes').funcs.initListPageListeners();
             return $(document).data('notes').funcs.initPager();
           });
         });

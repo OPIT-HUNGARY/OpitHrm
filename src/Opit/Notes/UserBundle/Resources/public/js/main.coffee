@@ -31,7 +31,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                               data: 'offset' : (offset - 1), 'incrementOffset': false
                             .done (data)->
                               $('#user-list').html data
-                              $(document).data('notes').funcs.initTravelRequestListListeners()
+                              $(document).data('notes').funcs.initListPageListeners()
                               $(document).data('notes').funcs.initPager()
                               $('.selected-page').each ->
                                   $(@).removeClass 'selected-page'
@@ -156,7 +156,7 @@ $.fn.extend
 
 $(document)
     .ready ->
-        $(document).data('notes').funcs.initTravelRequestListListeners()
+        $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
     
 #        $(document).on 'click', ->

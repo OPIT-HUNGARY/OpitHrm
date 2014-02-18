@@ -74,7 +74,7 @@ $(document).ready ->
             data: $form.serialize()
         .done (response) ->
             $('#list-table').parent().html response
-            $(document).data('notes').funcs.initTravelRequestListListeners()
+            $(document).data('notes').funcs.initListPageListeners()
             $(document).data('notes').funcs.initPager()
             return
       return
@@ -127,5 +127,5 @@ $('#travel_list').on 'click', 'th .fa-sort', ->
        data: "showList=1&" + searchData
      .done (data) ->
         $('#travel_list').html(data)
-        $(document).data('notes').funcs.initTravelRequestListListeners()
+        $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
