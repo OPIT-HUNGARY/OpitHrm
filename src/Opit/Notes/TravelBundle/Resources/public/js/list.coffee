@@ -53,13 +53,13 @@ $(document).ready ->
                 .dialog
                     open: ->
                         $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
-                width: dialogWidth
-                maxHeight: $(window).outerHeight()-100
-                modal: on
-                buttons:
-                    Close: ->
-                        $('#dialog-show-details-tr').dialog 'destroy'
-                        return
+                    width: dialogWidth
+                    maxHeight: $(window).outerHeight()-100
+                    modal: on
+                    buttons:
+                        Close: ->
+                            $('#dialog-show-details-tr').dialog 'destroy'
+                            return
             return
             
     $('#searchButton').click (event) ->

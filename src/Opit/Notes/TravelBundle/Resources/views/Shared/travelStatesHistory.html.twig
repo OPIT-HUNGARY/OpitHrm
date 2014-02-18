@@ -6,9 +6,8 @@
     <caption class="dialog-table-title">Travel request history</caption>
     {% for travelRequestState in travelRequestStates %}
         <tr>
-            {#{{ dump(travelRequestState) }}#}
-            <td>{{ travelRequestState.status.name }}</td>
-            <td>{{ travelRequestState.created|date('Y-m-d H:i:s') }}</td>
+            <td class="width-30">{{ travelRequestState.status.name }}</td>
+            <td class="width-30">{{ travelRequestState.created|date('Y-m-d H:i') }}</td>
             <td>{{ travelRequestState.createdUser is empty ? '--' : travelRequestState.createdUser.employeeName }}</td>
         </tr>
     {% endfor %}
@@ -20,8 +19,8 @@
         <caption class="dialog-table-title">Travel expense history</caption>
         {% for travelExpenseState in travelExpenseStates %}
             <tr>
-                <td>{{ travelExpenseState.status.name }}</td>
-                <td>{{ travelExpenseState.created|date('Y-m-d H:i:s') }}</td>
+                <td class="width-30">{{ travelExpenseState.status.name }}</td>
+                <td class="width-30">{{ travelExpenseState.created|date('Y-m-d H:i') }}</td>
                 <td>{{ travelExpenseState.createdUser is empty ? '--' : travelExpenseState.createdUser.employeeName }}</td>
             </tr>
         {% endfor %}
