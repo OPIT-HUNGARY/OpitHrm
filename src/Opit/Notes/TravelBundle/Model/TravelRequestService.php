@@ -163,18 +163,33 @@ class TravelRequestService
                         $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
                         $currentStatusNames[] = $currentStatus->getName();
                         $allowedTRs[] = $travelRequest;
-                        $isLocked[] = $travelRequestAccessRights;
+                        $isTRLocked = $travelRequestAccessRights;
                         $travelRequestStates[] =
                             $this->getTravelRequestNextStates($travelRequest, $statusManager);
+
+                        if (Status::PAID === $currentStatus->getId()) {
+                            $isTRLocked['isStatusLocked'] = true;
+                        }
+                        
+                        $isLocked[] = $isTRLocked;
                     }
                 }
             }
         } else {
             foreach ($travelRequests as $travelRequest) {
+                $currentStatus = $statusManager->getCurrentStatus($travelRequest);
                 $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
-                $isLocked[] = $this->setTravelRequestAccessRights(true);
+                $isTRLocked = $this->setTravelRequestAccessRights(true);
                 $travelRequestStates[] =
                     $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                
+                $trStatusCurrent = $this->statusManager->getCurrentStatus($travelRequest)->getId();
+                if (Status::APPROVED === $trStatusCurrent || Status::PAID == $trStatusCurrent) {
+                    $isTRLocked['isEditLocked'] = true;
+                    $isTRLocked['isStatusLocked'] = true;
+                    $currentStatusNames[] = $currentStatus->getName();
+                }
+                $isLocked[] = $isTRLocked;
             }
             
             $allowedTRs = $travelRequests;
@@ -275,9 +290,16 @@ class TravelRequestService
                 if (Status::FOR_APPROVAL !== $currentStatusId) {
                     return false;
                 }
+            } elseif ($this->securityContext->isGranted('ROLE_ADMIN')) {
+                $trCurrentStatus = $this->statusManager->getCurrentStatus($travelRequest)->getId();
+                if (Status::APPROVED === $trCurrentStatus || Status::PAID === $trCurrentStatus) {
+                    $isEditLocked = true;
+                } else {
+                    $isEditLocked = false;
+                }
             }
         }
-        
+
         return array('isEditLocked' => $isEditLocked, 'isStatusLocked' => $isStatusLocked);
     }
     

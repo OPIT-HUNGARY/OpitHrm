@@ -179,7 +179,7 @@ class TravelExpenseService
     {
         $isEditLocked = false;
         $isStatusLocked = false;
-        if ($travelRequestGM === $currentUser) {
+        if ($travelRequestGM === $currentUser || $this->securityContext->isGranted('ROLE_ADMIN')) {
             $isEditLocked = true;
             if (Status::CREATED === $currentStatusId || Status::REVISE === $currentStatusId) {
                 $isStatusLocked = true;

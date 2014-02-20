@@ -54,7 +54,7 @@ class TravelController extends Controller
             'isAdmin' => $isAdmin,
             'isGeneralManager' => $isGeneralManager,
             'entityManager' => $entityManager
-        );        
+        );
         
         if ($isSearch) {
             $allRequests = $this->getRequest()->request->all();
@@ -101,7 +101,7 @@ class TravelController extends Controller
             'travelRequestStates' => $travelRequestStates,
             'isLocked' => $isLocked,
             'currentStatusNames' => $currentStatusNames,
-        );        
+        );
         
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $config['max_pager_pages'];
@@ -168,13 +168,12 @@ class TravelController extends Controller
         $statusManager = $this->get('opit.manager.status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
+        $isEditLocked = false;
         $editRights = $this->get('opit.model.travel_request')
             ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
         
-        if (false === $editRights) {
-                throw new AccessDeniedException(
-                    'Access denied for travel request.'
-                );
+        if (false === $editRights && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $isEditLocked = true;
         }
         
         if (false !== $isNewTravelRequest) {
@@ -214,7 +213,7 @@ class TravelController extends Controller
             'form' => $form->createView(),
             'travelRequest' => $travelRequest,
             'travelRequestStates' => $travelRequestStates,
-            'isEditLocked' => $editRights['isEditLocked'],
+            'isEditLocked' => $isEditLocked ? $isEditLocked : $editRights['isEditLocked'],
             'isStatusLocked' => $editRights['isStatusLocked']
         );
     }
