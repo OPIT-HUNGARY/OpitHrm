@@ -37,7 +37,6 @@ class ExpenseType extends AbstractType
     {
         $userAttributes = array('placeholder' => 'Name', 'class' => 'te-claim');
         $entityManager = $options['em'];
-        $currency = $options['data']->getCurrency();
         $user = $options['data']->getUser();
         $taxId = null;
         $bankName = null;
@@ -117,20 +116,11 @@ class ExpenseType extends AbstractType
             'attr' => array('placeholder' => 'Arrival date time', 'class' => 'te-claim')
         ));
         
-        $builder->add('advancesRecieved', 'number', array(
-            'label' => 'Advances recieved',
-            'attr' => array('class' => 'te-claim')
-        ));
-        
-        $builder->add('currency', 'entity', array('attr' => array(
-                'class' => 'te-claim currency'
-            ),
-            'class' => 'OpitNotesCurrencyRateBundle:Currency',
-            'data' => (null !== $currency ? $currency :
-                            $entityManager->getReference('OpitNotesCurrencyRateBundle:Currency', 'EUR')
-            ),
-            'property' => 'code',
-            'multiple' => false
+        $builder->add('teAdvancesReceived', 'collection', array(
+            'type' => new TEAdvancesReceivedType($entityManager),
+            'allow_add' => true,
+            'allow_delete' => true,
+            'by_reference' => false
         ));
         
         $builder->add('companyPaidExpenses', 'collection', array(
@@ -166,6 +156,10 @@ class ExpenseType extends AbstractType
         ));
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getName()
     {
         return 'travelExpense';

@@ -72,27 +72,6 @@ class TravelExpense
     /**
      * @var boolean
      *
-     * @ORM\Column(name="advances_recieved", type="float")
-     */
-    private $advancesRecieved;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="advances_payback", type="float")
-     */
-    private $advancesPayback;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="to_settle", type="float")
-     */
-    private $toSettle;
-
-    /**
-     * @var boolean
-     *
      * @ORM\Column(name="pay_in_euro", type="boolean")
      */
     private $payInEuro;
@@ -140,13 +119,21 @@ class TravelExpense
      * @ORM\OneToMany(targetEntity="StatesTravelExpenses", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
     protected $states;
-
+    
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelCurrencyInterface")
-     * @ORM\JoinColumn(name="currency_id", referencedColumnName="code")
-     * @var TravelCurrencyInterface
+     * @ORM\OneToMany(targetEntity="TEAdvancesReceived", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
-    protected $currency;
+    protected $advancesReceived;
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->userPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->companyPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->states = new ArrayCollection();
+    }
     
     /**
      * Get id
@@ -295,76 +282,7 @@ class TravelExpense
     {
         return $this->arrivalCountry;
     }
-
-    /**
-     * Set advancesRecieved
-     *
-     * @param boolean $advancesRecieved
-     * @return TravelExpense
-     */
-    public function setAdvancesRecieved($advancesRecieved)
-    {
-        $this->advancesRecieved = $advancesRecieved;
     
-        return $this;
-    }
-
-    /**
-     * Get advancesRecieved
-     *
-     * @return boolean
-     */
-    public function getAdvancesRecieved()
-    {
-        return $this->advancesRecieved;
-    }
-
-    /**
-     * Set advancesPayback
-     *
-     * @param float $advancesPayback
-     * @return TravelExpense
-     */
-    public function setAdvancesPayback($advancesPayback)
-    {
-        $this->advancesPayback = $advancesPayback;
-    
-        return $this;
-    }
-
-    /**
-     * Get advancesPayback
-     *
-     * @return float
-     */
-    public function getAdvancesPayback()
-    {
-        return $this->advancesPayback;
-    }
-
-    /**
-     * Set toSettle
-     *
-     * @param float $toSettle
-     * @return TravelExpense
-     */
-    public function setToSettle($toSettle)
-    {
-        $this->toSettle = $toSettle;
-    
-        return $this;
-    }
-
-    /**
-     * Get toSettle
-     *
-     * @return float
-     */
-    public function getToSettle()
-    {
-        return $this->toSettle;
-    }
-
     /**
      * Set payInEuro
      *
@@ -455,15 +373,6 @@ class TravelExpense
     public function getTaxIdentification()
     {
         return $this->taxIdentification;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->userPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->companyPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->states = new ArrayCollection();
     }
 
     /**
@@ -592,29 +501,6 @@ class TravelExpense
     }
     
     /**
-     * Set currency
-     *
-     * @param \Opit\Notes\CurrencyRateBundle\Entity\Currency $currency
-     * @return TEPaidExpense
-     */
-    public function setCurrency(\Opit\Notes\CurrencyRateBundle\Entity\Currency $currency = null)
-    {
-        $this->currency = $currency;
-    
-        return $this;
-    }
-
-    /**
-     * Get currency
-     *
-     * @return \Opit\Notes\CurrencyRateBundle\Entity\Currency
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
-    }
-    
-    /**
      * 
      * @param Entity $notifications
      * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
@@ -633,5 +519,39 @@ class TravelExpense
     public function getNotification()
     {
         return $this->notifications;
+    }
+    
+    /**
+     * Add teAdvancesReceived
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived teAdvancesReceived
+     * @return TravelExpense
+     */
+    public function addTeAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
+    {
+        $this->advancesReceived[] = $advancesReceived;
+        $advancesReceived->setTravelExpense($this);
+
+        return $this;
+    }
+
+    /**
+     * Remove teAdvancesReceived
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived teAdvancesReceived
+     */
+    public function removeTeAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
+    {
+        $this->advancesReceived->removeElement($advancesReceived);
+    }
+
+    /**
+     * Get teAdvancesReceived
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTeAdvancesReceived()
+    {
+        return $this->advancesReceived;
     }
 }

@@ -1,3 +1,68 @@
+calculateAdvancesPayback = () ->
+    spent = []
+    amount = 0
+    $('.elementContainer .currency').each ->
+        amount = parseInt $(@).closest('.formFieldsetChild').find('.amount').val()
+        if spent[$(@).val()] is undefined
+            spent[$(@).val()] = amount
+        else
+            spent[$(@).val()] += amount
+            
+        if isNaN(spent[$(@).val()])
+            console.warn 'is not number'
+        
+    $('.generalFormFieldset .te-advances-received-currency').each ->
+        $closestAdvancesReceived = $(@).closest '.advances-received'
+        advancesSpent = spent[$(@).val()]
+        $advancesSpent = $closestAdvancesReceived.find '.te-advances-spent'
+        advancesReceived = $closestAdvancesReceived.find('.te-advances-received').val()
+        advancePayBack = parseInt advancesReceived  - parseInt advancesSpent
+
+        $advancesSpent.html(if advancesSpent is undefined then '0' else if isNaN(advancesSpent) then '0' else advancesSpent)
+        $closestAdvancesReceived.find('.te-advances-payback').html(
+            if advancePayBack
+                if advancePayBack < 0 then '0' else advancePayBack
+            else if isNaN(advancePayBack)
+                if advancesReceived is '' then '0' else advancesReceived
+            else '0'
+        )
+        
+excludedCurrencies = []
+allCurrencies = []
+availableCurrencies = []
+setAvailableCurrencies = (fillAllCurrenciesArray) ->
+    excludedCurrencies = []
+    availableCurrencies = []git gu
+    # go through all advances received currency selectors
+    $('.te-advances-received-currency').each ->
+        # go through all options
+        $(@).find('option').each ->
+            # if option is selected exclude it from the available options that can be selected from other selectors
+            if $(@).prop 'selected'
+                excludedCurrencies.push $(@).val()
+            # if option is not selected remove it
+            else
+                $(@).remove()
+            # if fillAllCurrenciesArray is set that means that all the currencies need to be added to the
+            # allCurrencies array to later be used
+            if fillAllCurrenciesArray
+                # only add currency to array if it has not yet been added to it
+                if $.inArray( $(@).val(), allCurrencies ) <= -1 then allCurrencies.push $(@).val()
+                
+    # loop through all currencies
+    for currency in allCurrencies
+        # if currency is not in excludedCurrencies array
+        if $.inArray( currency, excludedCurrencies ) <= -1
+            availableCurrencies.push(currency)
+            # add this specific currency to all the selectors
+            $('.te-advances-received-currency').each ->
+                $option = $('<option>')
+                $option.html currency
+                $option.attr 'value', currency
+                $(@).append $option
+                
+    calculateAdvancesPayback()
+
 createDeleteButton = ->
     $deleteButton = $('<div>')
     $deleteButton.addClass('deleteFormFieldsetChild formFieldsetButton').html '<i class="fa fa-minus-square"></i>Delete'
@@ -6,6 +71,20 @@ createDeleteButton = ->
         calculateAdvancesPayback()
         
     return $deleteButton
+
+createDeleteExpenseButton = ($parent) ->
+    $inlineElement = $('<div>')
+    $inlineElement.addClass 'inlineElements'
+
+    $deleteButton = $('<i>')
+    $deleteButton.addClass 'fa fa-minus-square color-red hover-cursor-pointer margin-top-24'
+    $deleteButton.on 'mousedown', ->
+        $(@).closest('.advances-received').remove()
+        setAvailableCurrencies()
+        calculateAdvancesPayback()
+        
+    $inlineElement.append $deleteButton
+    $parent.append $inlineElement
 
 validateAllExpenseDates = ->
     isDateValid = true
@@ -50,9 +129,103 @@ reCreateExpenses = (self) ->
     $container.append createDeleteButton()
     $container.prepend $selectedExpense
     
+    $container.find('.amount').on 'change', ->
+        calculateAdvancesPayback()
+        
+    $container.find('.currency').on 'change', ->
+        calculateAdvancesPayback()
+    
     expenseDateChange($container)
     
     return $container
+
+createCustomField = (className, labelText, content) ->
+    $customFieldInline = $('<div>')
+    $customFieldInline.addClass 'inlineElements'
+    $customField = $('<div>')
+    $customField.html content
+    $customField.addClass className
+    $customFieldInline.append $('<label>').html labelText
+    $customFieldInline.append $customField
+    
+    return $customFieldInline
+
+reCreateAdvances = () ->
+    collectionIndex = 0
+    $teAdvancesReceived = $('#travelExpense_teAdvancesReceived')
+    $generalFormFieldset = $('.generalFormFieldset')
+    $teAdvancesReceived.parent().children('label').remove()
+    $teAdvancesReceived.children().each ->
+        $(@).find('label').remove()
+        
+    $('.te-advances-received').parent().addClass 'inlineElements'
+    $('.te-advances-received-currency').parent().addClass 'inlineElements'
+    $('.te-advances-received-currency').parent().prepend $('<label>').html 'Currency'
+    
+    $('.te-advances-received').each (index) ->
+        $selfParent = $(@).parent()
+        $selfParent.prepend $('<label>').html 'Advances received'
+        
+        $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0')
+        $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
+        
+        $selfParent.after $advancesSpent
+        $advancesSpent.after $advancesPayback
+        
+        collectionIndex++
+        
+        $teAdvances = $('#travelExpense_teAdvancesReceived_' + index)
+        $advancesReceived = $('<div>')
+        $advancesReceived.addClass 'advances-received'
+        $advancesReceived.append $teAdvances
+        $generalFormFieldset.append $advancesReceived
+        
+        createDeleteExpenseButton($teAdvances)
+        
+    $teAdvancesReceived.data 'index', collectionIndex
+    
+    $generalFormFieldset.on 'change', '.te-advances-received', ->
+        calculateAdvancesPayback()
+    $generalFormFieldset.on 'change', '.te-advances-received-currency', ->
+        calculateAdvancesPayback()
+    
+    calculateAdvancesPayback()
+
+addNewAdvanceReceived = (collectionHolder) ->
+    prototype = collectionHolder.data 'prototype'
+    index = collectionHolder.data 'index'
+    
+    prototype = prototype.replace '<label class="required">__name__label__</label>', ''
+    newAdvancesReceived = prototype.replace /__name__/g, index
+    $newAdvancesReceived = $(newAdvancesReceived)
+    $newAdvancesReceived.addClass 'advances-received'
+    $newAdvancesReceived.children('div').children('div').each ->
+        $(@).addClass 'inlineElements'
+   
+    $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0')
+    $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
+    $newAdvancesReceived.find('.te-advances-received').parent().after $advancesSpent
+    $advancesSpent.after $advancesPayback
+        
+    createDeleteExpenseButton($newAdvancesReceived.children('div'))
+        
+    $('.generalFormFieldset .addFormFieldsetChild').before $newAdvancesReceived
+        
+    collectionHolder.data 'index', index + 1
+    
+    if allCurrencies.length is 0
+        $($('#travelExpense_teAdvancesReceived').data('prototype')).find('option').each ->
+            allCurrencies.push $(@).val()
+    
+    if availableCurrencies.length > 0
+        $newAdvancesReceived.find('.te-advances-received-currency').find('option').remove()
+        $defaultOption = $('<option>')
+        $defaultOption.html availableCurrencies[0]
+        $defaultOption.val availableCurrencies[0]
+        $newAdvancesReceived.find('.te-advances-received-currency').append $defaultOption
+
+        setAvailableCurrencies()
+        calculateAdvancesPayback()
 
 addNewForm = (collectionHolder, parent) ->
     # get form data from collection holder
@@ -74,6 +247,11 @@ addNewForm = (collectionHolder, parent) ->
     expenseDateChange($($formFieldsetChild))
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected','selected')
     collectionHolder.data 'index', index + 1
+    
+    $formFieldsetChild.find('.amount').on 'change', ->
+        calculateAdvancesPayback()
+    $formFieldsetChild.find('.currency').on 'change', ->
+        calculateAdvancesPayback()
     
     # for browsers that do not support input type date
     if not Modernizr.inputtypes.date
@@ -126,18 +304,17 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
             $perDiemTable.addClass 'perDiemTable bordered'
 
             if data['totalTravelHoursOnSameDay'] > 0
-                console.log data['totalTravelHoursOnSameDay']
                 $perDiemTable.append createTableRow(
-                    'Travel hours',
+                    'One day trip',
                     data['totalPerDiem'],
-                    data['totalTravelHoursOnSameDay']
+                    "Hours traveled #{ data['totalTravelHoursOnSameDay'] }."
                 )
 
             else
                 $perDiemTable.append createTableRow(
                     'Departure day',
                     data['departurePerDiem'],
-                    "Number of hours traveled on departure day #{ data['departureHours'] }."
+                    "Hours traveled on departure day #{ data['departureHours'] }."
                 )
 
                 $perDiemTable.append createTableRow(
@@ -149,7 +326,7 @@ calculatePerDiem = (departureDate, departureHour, departureMinute, arrivalDate, 
                 $perDiemTable.append createTableRow(
                     'Arrival day',
                     data['arrivalPerDiem'],
-                    "Number of hours traveled on arrival day #{ data['arrivalHours'] }."
+                    "Hours traveled on arrival day #{ data['arrivalHours'] }."
                 )
 
                 $perDiemTable.append createTableRow('Total', data['totalPerDiem'])
@@ -279,35 +456,20 @@ $(document).ready ->
     $arrivalMinute.on 'change', ->
         arrivalMinuteVal = $arrivalMinute.val()
         calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
-       
-    $advancesRecieved = $('#travelExpense_advancesRecieved')
-    if $advancesRecieved.val() is ''
-        $advancesRecieved.val(0)
+
+    reCreateAdvances()
+    $advancesReceived = $('#travelExpense_teAdvancesReceived')
+
+    $addNewAdvance = $('<div>')
+    $addNewAdvance.addClass 'addFormFieldsetChild formFieldsetButton margin-left-0'
+    $addNewAdvance.html '<i class="fa fa-plus-square"></i>Add advances received'
+    $('.generalFormFieldset').append $addNewAdvance
+    $addNewAdvance.on 'mousedown', ->
+        addNewAdvanceReceived($advancesReceived) 
         
-    $advancesPayback = $('<div>')
-    $advancesPayback.addClass 'inlineElements'
-    $advancesPaybackLabel = $('<label>')
-    $advancesPaybackLabel.html 'Advances payback'
-    $advancesPaybackText = $('<div>')
-    $advancesPaybackText.html '0'
-    $advancesPaybackText.addClass 'custom-field'
-    $advancesPaybackText.attr 'id', 'travelExpense_advancesPayback'
-    $advancesPayback.append $advancesPaybackLabel
-    $advancesPayback.append $advancesPaybackText
-    
-    $toSettle = $('<div>')
-    $toSettle.addClass 'inlineElements'
-    $toSettleLabel = $('<label>')
-    $toSettleLabel.html 'Advances spent'
-    $toSettleText = $('<div>')
-    $toSettleText.html '0'
-    $toSettleText.addClass 'custom-field'
-    $toSettleText.attr 'id', 'travelExpense_advancesSpent'
-    $toSettle.append $toSettleLabel
-    $toSettle.append $toSettleText
-    
-    $('#travelExpense_advancesRecieved').parent().after $toSettle
-    $toSettle.after $advancesPayback
+    setAvailableCurrencies(true)
+    $('.generalFormFieldset').on 'change', '.te-advances-received-currency', ->
+        setAvailableCurrencies()
         
     $('.changeState').on 'change', ->
         statusId = $(@).val()

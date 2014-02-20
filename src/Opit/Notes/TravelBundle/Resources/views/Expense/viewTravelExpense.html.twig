@@ -91,26 +91,17 @@
             Summarization
         </td>
     </tr>
-    <tr class="bold">
-        <td></td>
-        <td class="align-right">Total</td>
-        <td class="align-right">Currency</td>
-    </tr>
+    {% for advancesReceived in travelExpense.teAdvancesReceived %}
     <tr>
-        <td class="bold">Advance recieved</td>
-        <td class="align-right">{{ travelExpense.advancesRecieved|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class="align-right">{{ travelExpense.currency.code }}</td>
+        {% if '0' == loop.index0%}
+        <td class="bgGrey bold">Advances received</td>
+        {% else %}
+        <td class="bgGrey bold"></td>
+        {% endif %}
+        <td class="align-right">{{ advancesReceived.teAdvancesReceived }}</td>
+        <td class="align-right">{{ advancesReceived.currency.code }}</td>
     </tr>
-    <tr>
-        <td class="bold">Advances spent</td>
-        <td class="align-right">{{ travelExpense.toSettle|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class="align-right">{{ travelExpense.currency.code }}</td>
-    </tr>
-    <tr>
-        <td class="bold">Advance payback</td>
-        <td class="align-right">{{ travelExpense.advancesPayback|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class="align-right">{{ travelExpense.currency.code }}</td>
-    </tr>
+    {% endfor %}
     <tr>
         <td class="bold">Per Diem in EUR</td>
         <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>

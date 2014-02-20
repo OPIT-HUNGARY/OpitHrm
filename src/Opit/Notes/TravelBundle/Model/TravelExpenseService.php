@@ -12,6 +12,7 @@ use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\ORM\EntityManager;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
+use Opit\Notes\TravelBundle\Helper\Utils;
 
 /**
  * Description of TravelExpense
@@ -45,12 +46,6 @@ class TravelExpenseService
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
                 $totalAdvanceSpent += $userPaidExpenses->getAmount();
         }
-
-        $advancesReceived = $travelExpense->getAdvancesRecieved();
-        $advancesPayback = $advancesReceived - $totalAdvanceSpent;
-
-        $travelExpense->setAdvancesPayback($advancesPayback);
-        $travelExpense->setToSettle($totalAdvanceSpent);
         
         return $travelExpense;
     }
@@ -217,6 +212,13 @@ class TravelExpenseService
             $children->add($userPaidExpenses);
         }
         
+        $travelExpenseAdvancesReceived = $travelExpense->getTeAdvancesReceived();
+        if (null !== $travelExpenseAdvancesReceived) {
+            foreach ($travelExpense->getTeAdvancesReceived() as $teAdvancesReceived) {
+                $children->add($teAdvancesReceived);
+            }
+        }
+        
         return $children;
     }
     
@@ -230,10 +232,21 @@ class TravelExpenseService
     public function removeChildNodes(EntityManager $entityManager, TravelExpense $travelExpense, $children)
     {
         foreach ($children as $child) {
-            $getter =
-                (strstr(get_class($child), 'TEUserPaidExpense')) ? 'getUserPaidExpenses' : 'getCompanyPaidExpenses';
+            $className = Utils::getClassBasename($child);
+            $getter = null;
+            switch ($className){
+                case 'TEUserPaidExpense':
+                    $getter = 'getUserPaidExpenses';
+                    break;
+                case 'TECompanyPaidExpense':
+                    $getter = 'getCompanyPaidExpenses';
+                    break;
+                case 'TEAdvancesReceived':
+                    $getter = 'getTeAdvancesReceived';
+                    break;
+            }
             
-            if (false === $travelExpense->$getter()->contains($child)) {
+            if (null !== $getter && false === $travelExpense->$getter()->contains($child)) {
                 $child->setTravelExpense(null);
                 $entityManager->remove($child);
             }

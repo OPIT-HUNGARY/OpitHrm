@@ -48,18 +48,16 @@
                 <td class="bgGrey bold">Arrival date time</td>
                 <td>{{ travelExpense.arrivalDateTime|date('Y-m-d H:i') }}</td>
             </tr>
+            {% for advancesReceived in travelExpense.teAdvancesReceived %}
             <tr>
-                <td class="bgGrey bold">Advances recieved</td>
-                <td>{{ travelExpense.advancesRecieved ~ ' ' ~ travelExpense.currency.code }}</td>
+                {% if '0' == loop.index0%}
+                <td class="bgGrey bold">Advances received</td>
+                {% else %}
+                <td class="bgGrey bold"></td>
+                {% endif %}
+                <td>{{ advancesReceived.teAdvancesReceived }} {{ advancesReceived.currency.code }}</td>
             </tr>
-            <tr>
-                <td class="bgGrey bold">Advances spent</td>
-                <td>{{ travelExpense.toSettle ~ ' ' ~ travelExpense.currency.code }}</td>
-            </tr>
-            <tr>
-                <td class="bgGrey bold">Advances payback</td>
-                <td>{{ travelExpense.advancesPayback ~ ' ' ~ travelExpense.currency.code }}</td>
-            </tr>
+            {% endfor %}
         </table>
         {% if travelExpense.userPaidExpenses is defined %}
         {% if travelExpense.userPaidExpenses|length > 0 %}  

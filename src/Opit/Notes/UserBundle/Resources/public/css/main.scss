@@ -483,14 +483,8 @@ header{
         }  
     }
     
-    .notification:first-child{
-        @include border-top-left-radius(7px);
-        @include border-top-right-radius(7px);
-    }
     .notification:last-child{
         border-bottom: none;
-        @include border-bottom-left-radius(7px);
-        @include border-bottom-right-radius(7px);
     } 
 
     .unread{
@@ -521,4 +515,20 @@ header{
         color:$orangeColor;
         text-decoration:underline;
     }
+}
+
+.color-red{
+    color:rgb(170, 0, 0);
+}
+
+.hover-cursor-pointer:hover{
+    cursor:pointer;
+}
+
+.margin-top-24{
+    margin-top:24px;
+}
+
+.margin-left-0{
+    margin-left:0 !important;
 }

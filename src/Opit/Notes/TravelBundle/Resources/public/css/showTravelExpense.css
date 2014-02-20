@@ -45,7 +45,7 @@ and open the template in the editor.
 
 .formFieldsetDescription { position: absolute; margin: -70px 0 0 100px; padding: 5px; background-color: #000; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
-.per-diem-details-wrapper { background-color: #d2d2d2; padding: 9px; float: right; margin: 0 4px 0 0; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.per-diem-details-wrapper { background-color: #d2d2d2; padding: 9px; float: right; margin: 0 6px 0 0; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 .per-diem-details-wrapper .per-diem-amounts-slab { width: 100%; }
 .per-diem-details-wrapper .per-diem-amounts-slab tr td:first-child { width: 150px; }
 .per-diem-details-wrapper .per-diem-amounts-slab tr td:last-child { background-color: #ebebeb; }
