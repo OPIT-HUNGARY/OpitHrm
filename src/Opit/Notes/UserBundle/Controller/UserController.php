@@ -128,11 +128,12 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $id = $request->attributes->get('id');
         $errorMessages = array();
         $result = array('response' => 'error');
         $statusCode = 200;
-
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN') ? true : false;
+        $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
+        
         if ($id) {
             $user = $this->getUserObject($request->attributes->get('id'));
         } else {
@@ -162,8 +163,10 @@ class UserController extends Controller
                 $em->persist($user);
                 $em->flush();
                 $result['response'] = 'success';
-                
-                return $this->listAction();
+             
+                if ($isAdmin) {
+                    return $this->listAction();
+                }
             }
             $validator = $this->get('validator');
             $errors = $validator->validate($user);
