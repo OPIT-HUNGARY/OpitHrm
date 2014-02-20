@@ -39,21 +39,21 @@
         <td style="border-bottom: solid 1px;padding-top:4px;">{{ attribute(travelExpense, 'arrivalDateTime')|date('Y-m-d H:i:s') }}</td>
     </tr>
     
-    {% set advancesRecieved = travelExpense.advancesRecieved %}
-    {% set advancesPayback = travelExpense.advancesPayback %}
-    
-    <tr>
-        <td style="border-bottom: solid 1px;padding-top:4px;">Advances recieved</td>
-        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesRecieved }}</td>
-    </tr>
-    <tr>
-        <td style="border-bottom: solid 1px;padding-top:4px;">Advances spent</td>
-        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesRecieved - advancesPayback }}</td>
-    </tr>
-    <tr>
-        <td style="border-bottom: solid 1px;padding-top:4px;">Advances payback</td>
-        <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesPayback }}</td>
-    </tr>
+    {% for teAdvancesReceived in travelExpense.teAdvancesReceived %}
+        {% set currencyCode = teAdvancesReceived.currency.code %}
+        {% set advancesReceived = teAdvancesReceived.teAdvancesReceived %}
+        {% if '0' == loop.index0 %}
+            <tr>
+                <td style="border-bottom: solid 1px;padding-top:4px;">Advances recieved</td>
+                <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesReceived }} {{ currencyCode }}</td>        
+            </tr>
+        {% else %}
+            <tr>
+                <td style="border-bottom: solid 1px;padding-top:4px;"></td>
+                <td style="border-bottom: solid 1px;padding-top:4px;">{{ advancesReceived }} {{ currencyCode }}</td>        
+            </tr>
+        {% endif %}
+    {% endfor %}
 </table>
 <h3>Advances paid by employee</h3>
     {% for userPaidExpenses in travelExpense.userPaidExpenses %}

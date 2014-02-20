@@ -26,13 +26,17 @@ calculateAdvancesPayback = () ->
                 if advancesReceived is '' then '0' else advancesReceived
             else '0'
         )
-        
 excludedCurrencies = []
 allCurrencies = []
 availableCurrencies = []
+  
+setCurrenciesArray = (arrayToPushTo) ->
+    $($('#travelExpense_teAdvancesReceived').data('prototype')).find('option').each ->
+        arrayToPushTo.push $(@).val()
+  
 setAvailableCurrencies = (fillAllCurrenciesArray) ->
     excludedCurrencies = []
-    availableCurrencies = []git gu
+    availableCurrencies = []
     # go through all advances received currency selectors
     $('.te-advances-received-currency').each ->
         # go through all options
@@ -192,32 +196,30 @@ reCreateAdvances = () ->
     calculateAdvancesPayback()
 
 addNewAdvanceReceived = (collectionHolder) ->
-    prototype = collectionHolder.data 'prototype'
-    index = collectionHolder.data 'index'
-    
-    prototype = prototype.replace '<label class="required">__name__label__</label>', ''
-    newAdvancesReceived = prototype.replace /__name__/g, index
-    $newAdvancesReceived = $(newAdvancesReceived)
-    $newAdvancesReceived.addClass 'advances-received'
-    $newAdvancesReceived.children('div').children('div').each ->
-        $(@).addClass 'inlineElements'
-   
-    $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0')
-    $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
-    $newAdvancesReceived.find('.te-advances-received').parent().after $advancesSpent
-    $advancesSpent.after $advancesPayback
-        
-    createDeleteExpenseButton($newAdvancesReceived.children('div'))
-        
-    $('.generalFormFieldset .addFormFieldsetChild').before $newAdvancesReceived
-        
-    collectionHolder.data 'index', index + 1
-    
-    if allCurrencies.length is 0
-        $($('#travelExpense_teAdvancesReceived').data('prototype')).find('option').each ->
-            allCurrencies.push $(@).val()
-    
     if availableCurrencies.length > 0
+        prototype = collectionHolder.data 'prototype'
+        index = collectionHolder.data 'index'
+
+        prototype = prototype.replace '<label class="required">__name__label__</label>', ''
+        newAdvancesReceived = prototype.replace /__name__/g, index
+        $newAdvancesReceived = $(newAdvancesReceived)
+        $newAdvancesReceived.addClass 'advances-received'
+        $newAdvancesReceived.children('div').children('div').each ->
+            $(@).addClass 'inlineElements'
+
+        $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0')
+        $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
+        $newAdvancesReceived.find('.te-advances-received').parent().after $advancesSpent
+        $advancesSpent.after $advancesPayback
+
+        createDeleteExpenseButton($newAdvancesReceived.children('div'))
+
+        $('.generalFormFieldset .addFormFieldsetChild').before $newAdvancesReceived
+
+        collectionHolder.data 'index', index + 1
+
+        if allCurrencies.length is 0 then setCurrenciesArray(allCurrencies)
+
         $newAdvancesReceived.find('.te-advances-received-currency').find('option').remove()
         $defaultOption = $('<option>')
         $defaultOption.html availableCurrencies[0]
@@ -226,6 +228,12 @@ addNewAdvanceReceived = (collectionHolder) ->
 
         setAvailableCurrencies()
         calculateAdvancesPayback()
+    else
+        if setCurrenciesArray(availableCurrencies) is true
+            if availableCurrencies.length != $('.te-advances-received-currency').length
+                addNewAdvanceReceived(collectionHolder)
+            else
+                availableCurrencies = []
 
 addNewForm = (collectionHolder, parent) ->
     # get form data from collection holder
