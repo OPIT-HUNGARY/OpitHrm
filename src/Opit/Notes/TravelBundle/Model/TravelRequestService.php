@@ -187,8 +187,8 @@ class TravelRequestService
                 if (Status::APPROVED === $trStatusCurrent || Status::PAID == $trStatusCurrent) {
                     $isTRLocked['isEditLocked'] = true;
                     $isTRLocked['isStatusLocked'] = true;
-                    $currentStatusNames[] = $currentStatus->getName();
                 }
+                $currentStatusNames[] = $currentStatus->getName();
                 $isLocked[] = $isTRLocked;
             }
             

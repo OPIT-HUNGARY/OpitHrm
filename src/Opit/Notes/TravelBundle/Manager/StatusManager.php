@@ -96,7 +96,7 @@ class StatusManager
                         'travelType' => $resource::TYPE,
                         'status' => $key,
                         'token' => $travelToken
-                    ));
+                    ), true);
                 }
             }
             

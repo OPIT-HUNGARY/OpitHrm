@@ -3,6 +3,7 @@
     {% if propertyNames is defined %}
         <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
         {% for propertyName in propertyNames %}
+        {% if 'role' != propertyName %}
         <th>
             {% if propertyName == 'roles' %}
                 {{ propertyName|underscore|humanize }}
@@ -11,6 +12,7 @@
                 {{ propertyName|underscore|humanize }}
             {% endif %}
         </th>
+        {% endif %}
         {% endfor %}
         {% if numberOfRelations is defined %}
         <th>Assigned Users</th>
@@ -52,7 +54,9 @@
                         <td>Inactive</td>
                     {% endif %}
                 {% else %}
-                    <td>{{ attribute(value, propertyName) }}</td>
+                    {% if 'role' != propertyName %}
+                        <td>{{ attribute(value, propertyName) }}</td>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
                 {% if numberOfRelations is defined %}

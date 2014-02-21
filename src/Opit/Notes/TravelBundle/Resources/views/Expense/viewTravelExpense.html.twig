@@ -87,7 +87,7 @@
 {# Summarization #}
 <table>
     <tr>
-        <td colspan="4" class="table-title">
+        <td colspan="3" class="table-title">
             Summarization
         </td>
     </tr>
@@ -180,20 +180,6 @@
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
-<table class="bordered">
-    <tr>
-        <td colspan="2" class="table-title">
-            Exchange rates
-        </td>
-    </tr>
-    {% for key, value in rates %}
-        <tr>
-            <td class="bold">{{ key }}</td>
-            <td>{{ value }}</td>
-        </tr>
-    {% endfor %}
-</table>
-<div class="height-20 visibility-hidden"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -229,9 +215,7 @@
     </tr>
     <tr>
         <td class="bold width-265">Amount</td>
-        <td class="width-265">
-            {{ userPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} {{ userPaidExpenses.currency.code }}
-        </td>
+        <td class="width-265">{{ userPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} {{ userPaidExpenses.currency.code }}</td>
     </tr>
     <tr>
         <td class="bold width-265">Date</td>
@@ -305,6 +289,21 @@
 </div>
 {% endif %}
 {% endif %}
+<div class="page-break-after"></div>
+<table class="bordered">
+    <tr>
+        <td colspan="2" class="table-title">
+            Exchange rates
+        </td>
+    </tr>
+    {% for key, value in rates %}
+        <tr>
+            <td class="bold">{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="height-20 visibility-hidden"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="{{ asset('bundles/opitnotestravel/js/travelExpensePrintView.js') }}"></script>
