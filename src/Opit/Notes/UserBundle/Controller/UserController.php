@@ -111,7 +111,7 @@ class UserController extends Controller
         $form = $this->createForm(
             new UserShowType(
                 $this->getDoctrine()->getManager(),
-                $this->container->getParameter('notes.user.status')
+                $this->container
             ),
             $user
         );
@@ -142,7 +142,7 @@ class UserController extends Controller
         $form = $this->createForm(
             new UserShowType(
                 $this->getDoctrine()->getManager(),
-                $this->container->getParameter('notes.user.status')
+                $this->container
             ),
             $user
         );

@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
 
 /**
  * Description of ContactType
@@ -29,21 +30,25 @@ class UserShowType extends AbstractType
 
     /**
      * Entity Manager
-     * @var object instance of EntityManager
+     * @var object of EntityManager
      */
     protected $em;
 
-    protected $status;
+    /**
+     * Container
+     * @var object of Container
+     */
+    protected $container;
 
     /**
      * Constructor for this class.
      *
      * @param \Doctrine\ORM\EntityManager $em
      */
-    public function __construct(EntityManager $em, $status)
+    public function __construct(EntityManager $em, $container)
     {
         $this->em = $em;
-        $this->status = $status;
+        $this->container = $container;
     }
 
     /**
@@ -55,6 +60,7 @@ class UserShowType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $dataArr = $builder->getData();
+        $config = $this->container->getParameter('opit_notes_user');
         $userId = null;
 
         // If we modify an existed user.
@@ -71,7 +77,8 @@ class UserShowType extends AbstractType
         $builder->add('employeeName', 'text', array('attr' => array(
             'placeholder' => 'Employee Name'
         )));
-        $builder->add('isActive', 'choice', array('choices' => $this->status
+        $builder->add('isActive', 'choice', array(
+            'choices' => $this->container->getParameter('notes_user_status')
         ));
         $builder->add('jobTitle', 'entity', array(
             'class' => 'OpitNotesUserBundle:JobTitle',
@@ -91,9 +98,17 @@ class UserShowType extends AbstractType
         $builder->add('bankName', 'text', array('attr' => array(
             'placeholder' => 'Bank Name'
         )));
-        $builder->add('taxIdentification', 'integer', array('attr' => array(
+        $tax = $builder->create('taxIdentification', 'integer', array('attr' => array(
             'placeholder' => 'Tax number'
         )));
+        
+        // If the php's version is less than the required min php version then load the data transformet class.
+        if ($config['min_php_version'] > phpversion()) {
+            $tax->resetViewTransformers();
+            $tax->addViewTransformer(new SimpleIntegerToStringTransformer());
+        }
+        $builder->add($tax);
+        
         if (null === $userId) {
             $builder->add('password', 'repeated', array(
                 'first_name' => 'password',

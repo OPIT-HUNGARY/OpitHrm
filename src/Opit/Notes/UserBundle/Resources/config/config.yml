@@ -1,8 +1,9 @@
 parameters:
-    notes.user.status:
+    notes_user_status:
         1: Active
         0: Inactive
 
 opit_notes_user:
+    min_php_version: 5.4.0
     max_results: %max_results%
     max_pager_pages: %max_pager_pages%
