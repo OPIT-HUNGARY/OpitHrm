@@ -113,6 +113,7 @@ deleteSingleRequest = (type, self) ->
     
 # Ordering.
 $('#travel_list').on 'click', 'th .fa-sort', ->
+    indexOfTh = $(@).parent().index()
     field = $(@).attr('data-field')
     $form = $('#searchFormWrapper').find 'form'
     order = $form.find('#order_dir').val()
@@ -129,3 +130,7 @@ $('#travel_list').on 'click', 'th .fa-sort', ->
         $('#travel_list').html(data)
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
+        if order is 'desc'
+            $('#travel_list').find('th').eq(indexOfTh).children().addClass 'fa-sort-desc'
+        else
+            $('#travel_list').find('th').eq(indexOfTh).children().addClass 'fa-sort-asc'

@@ -109,5 +109,10 @@ $('form').on 'click', '.fa-sort', ->
                 return if (if isNaN(a) or isNaN(b) then a > b else +a > +b) then (if inverse then -1 else 1) else (if inverse then 1 else -1)
             () ->
                 return @.parentNode
-        )
+        )    
     inverse = not inverse
+    $('#list-table').find('th:gt(1)').not(index).children().removeClass('fa-sort-desc').removeClass('fa-sort-asc')
+    if inverse
+            $('#list-table').find('th').eq(index).children().removeClass('fa-sort-asc').addClass 'fa-sort-desc'
+        else
+            $('#list-table').find('th').eq(index).children().removeClass('fa-sort-desc').addClass 'fa-sort-asc'

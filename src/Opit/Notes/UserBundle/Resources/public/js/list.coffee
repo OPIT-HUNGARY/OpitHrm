@@ -100,6 +100,7 @@ $('#list').on "click", "#list-reply-message", ->
 
 # Ordering.
 $('#user-list').on 'click', '.fa-sort', ->
+    indexOfTh = $(@).parent().index()
     field = $(@).attr('data-field')
     $form = $('#searchFormWrapper').find 'form'
     order = $form.find('#order_dir').val()
@@ -115,3 +116,7 @@ $('#user-list').on 'click', '.fa-sort', ->
      .done (data) ->
         $('#user-list').html(data)
         $(document).data('notes').funcs.initPager()
+        if order is 'desc'
+            $('#user-list').find('th').eq(indexOfTh).children().addClass 'fa-sort-desc'
+        else
+            $('#user-list').find('th').eq(indexOfTh).children().addClass 'fa-sort-asc'
