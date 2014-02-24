@@ -103,7 +103,9 @@ class RateRepository extends EntityRepository
     public function getRatesArray(\DateTime $date)
     {
         $rarrRates = array();
-        $rates = $this->findByCreated($date);
+        $created = clone $date;
+        // Set time to 0 to match all days rates
+        $rates = $this->findByCreated($created->setTime(0, 0, 0));
         
         foreach ($rates as $rate) {
             $rarrRates[$rate->getCurrencyCode()->getCode()] = $rate->getRate();
