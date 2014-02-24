@@ -11,10 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\TEPerDiem;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of PerDiemFixtures
@@ -24,12 +23,12 @@ use Opit\Notes\TravelBundle\Entity\TEPerDiem;
  * @package Opit
  * @subpackage TravelBundle
  */
-class PerDiemFixtures extends AbstractFixture implements OrderedFixtureInterface
+class PerDiemFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $perDiems = array(
             array(8,6),
@@ -53,5 +52,14 @@ class PerDiemFixtures extends AbstractFixture implements OrderedFixtureInterface
     public function getOrder()
     {
         return 10; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

@@ -11,12 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\StatusWorkflow;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * travel bundle status workflow fixtures
@@ -26,26 +23,14 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
  * @package Opit
  * @subpackage TravelBundle
  */
-class StatusWorkflowFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class StatusWorkflowFixtures extends AbstractDataFixture
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
     /**
      *
      * @param \Doctrine\Common\Persistence\ObjectManager $manager
      */
 
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $statusWorkflow1 = new StatusWorkflow();
         $statusWorkflow1->setStatus($this->getReference('created'));//Created
@@ -89,6 +74,7 @@ class StatusWorkflowFixtures extends AbstractFixture implements OrderedFixtureIn
         $manager->persist($statusWorkflow7);
 
         $manager->flush();
+        
     }
 
      /**
@@ -97,5 +83,14 @@ class StatusWorkflowFixtures extends AbstractFixture implements OrderedFixtureIn
     public function getOrder()
     {
         return 4; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

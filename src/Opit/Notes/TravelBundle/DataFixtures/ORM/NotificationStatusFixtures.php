@@ -11,10 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Opit\Notes\TravelBundle\Entity\NotificationStatus;
 use Doctrine\Common\Persistence\ObjectManager;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * travel bundle status fixtures
@@ -24,25 +23,12 @@ use Doctrine\Common\Persistence\ObjectManager;
  * @package Opit
  * @subpackage TravelBundle
  */
-class NotificationStatusFixtures extends AbstractFixture implements OrderedFixtureInterface
+class NotificationStatusFixtures extends AbstractDataFixture
 {
     /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
      * {@inheritDoc}
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $reflectionNS = new \ReflectionClass('Opit\Notes\TravelBundle\Entity\NotificationStatus');
         $notificationStates = $reflectionNS->getConstants();
@@ -63,5 +49,14 @@ class NotificationStatusFixtures extends AbstractFixture implements OrderedFixtu
     public function getOrder()
     {
         return 8; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

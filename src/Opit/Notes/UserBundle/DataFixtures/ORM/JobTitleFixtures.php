@@ -11,10 +11,9 @@
 
 namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\JobTitle;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of JobFixtures
@@ -24,12 +23,12 @@ use Opit\Notes\UserBundle\Entity\JobTitle;
  * @package Opit
  * @subpackage UserBundle
  */
-class JobTitleFixtures extends AbstractFixture implements OrderedFixtureInterface
+class JobTitleFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         // init the encoder factory
         $job1 = new JobTitle();
@@ -74,7 +73,7 @@ class JobTitleFixtures extends AbstractFixture implements OrderedFixtureInterfac
 
         $manager->flush();
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -82,4 +81,13 @@ class JobTitleFixtures extends AbstractFixture implements OrderedFixtureInterfac
     {
         return 0; // the order in which fixtures will be loaded
     }
+    
+    /**
+     * 
+     * @return array
+     */     
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
+    }  
 }

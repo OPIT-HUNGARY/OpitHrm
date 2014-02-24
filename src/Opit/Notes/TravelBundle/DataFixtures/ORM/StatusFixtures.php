@@ -11,12 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\Status;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * travel bundle status fixtures
@@ -26,22 +23,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
  * @package Opit
  * @subpackage TravelBundle
  */
-class StatusFixtures extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
+class StatusFixtures extends AbstractDataFixture
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $created = new Status();
         $created->setId(Status::CREATED);
@@ -96,5 +80,14 @@ class StatusFixtures extends AbstractFixture implements OrderedFixtureInterface,
     public function getOrder()
     {
         return 3; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

@@ -11,10 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\TEExpenseType;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of ExpenseTypeFixtures
@@ -24,18 +23,18 @@ use Opit\Notes\TravelBundle\Entity\TEExpenseType;
  * @package Opit
  * @subpackage TravelBundle
  */
-class ExpenseTypeFixtures extends AbstractFixture implements OrderedFixtureInterface
+class ExpenseTypeFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $expenseTypes = array('Tickets', 'Taxi', 'Hotel', 'Exchange cost', 'Other');
         
-        foreach ($expenseTypes as $key => $value) {
+        foreach ($expenseTypes as $type) {
             $expenseType = new TEExpenseType();
-            $expenseType->setName($value);
+            $expenseType->setName($type);
             $manager->persist($expenseType);
         }
         
@@ -50,5 +49,14 @@ class ExpenseTypeFixtures extends AbstractFixture implements OrderedFixtureInter
     public function getOrder()
     {
         return 10; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

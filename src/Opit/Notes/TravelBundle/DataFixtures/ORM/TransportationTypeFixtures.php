@@ -11,10 +11,9 @@
 
 namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\TransportationType;
+use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of GroupFixtures
@@ -24,12 +23,12 @@ use Opit\Notes\TravelBundle\Entity\TransportationType;
  * @package Opit
  * @subpackage UserBundle
  */
-class TransportationTypeFixtures extends AbstractFixture implements OrderedFixtureInterface
+class TransportationTypeFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $transportationTypes = array('Airplane', 'Bus', 'Car');
         
@@ -48,5 +47,14 @@ class TransportationTypeFixtures extends AbstractFixture implements OrderedFixtu
     public function getOrder()
     {
         return 10; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
     }
 }

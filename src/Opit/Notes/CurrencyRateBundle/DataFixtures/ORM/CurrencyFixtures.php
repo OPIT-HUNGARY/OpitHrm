@@ -6,6 +6,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\CurrencyRateBundle\Entity\Currency;
+use Opit\Notes\CurrencyRateBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of PerDiemFixtures
@@ -15,12 +16,12 @@ use Opit\Notes\CurrencyRateBundle\Entity\Currency;
  * @package Opit
  * @subpackage CurrencyRateBundle
  */
-class CurrencyFixtures extends AbstractFixture implements OrderedFixtureInterface
+class CurrencyFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         $codes = array(
             'CHF' => 'Swiss Franc',
@@ -46,5 +47,14 @@ class CurrencyFixtures extends AbstractFixture implements OrderedFixtureInterfac
     public function getOrder()
     {
         return 10; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('dev', 'prod');
     }
 }

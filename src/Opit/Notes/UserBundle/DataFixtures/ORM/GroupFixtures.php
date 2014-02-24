@@ -11,8 +11,6 @@
 
 namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\Groups;
 
@@ -24,12 +22,12 @@ use Opit\Notes\UserBundle\Entity\Groups;
  * @package Opit
  * @subpackage UserBundle
  */
-class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
+class GroupFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
-    public function load(ObjectManager $manager)
+    public function doLoad(ObjectManager $manager)
     {
         // init the encoder factory
         $adminRole = new Groups();
@@ -78,7 +76,7 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
         $this->addReference('payroll-group', $payrollRole);
         $this->addReference('finance-group', $financeRole);
     }
-    
+        
     /**
      * {@inheritDoc}
      */
@@ -86,4 +84,13 @@ class GroupFixtures extends AbstractFixture implements OrderedFixtureInterface
     {
         return 0; // the order in which fixtures will be loaded
     }
+    
+    /**
+     * 
+     * @return array
+     */    
+    protected function getEnvironments()
+    {
+        return array('prod', 'dev');
+    }    
 }
