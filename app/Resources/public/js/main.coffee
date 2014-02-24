@@ -185,17 +185,20 @@ $.extend true, $(document).data('notes'),
 
 
             $('#delete').click ->
-                warningMessage = 'Are you sure you want to delete the selected travel requests?'
-                checkBoxClass = '.deleteMultipleTravelRequest'
-                url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
-                title = 'Travel request removal'
-                errorText = 'The travel request could not be deleted due to an error.'
-                if $(@).hasClass 'expense'
-                    warningMessage = 'Are you sure you want to delete the selected travel expenses?'
-                    checkBoxClass = '.deleteMultipleTravelExpense'
-                    url = Routing.generate 'OpitNotesTravelBundle_expense_delete'
-                    title = 'Travel expense removal'
-                    errorText = 'The travel expense could not be deleted due to an error.'
+                if $('#userlistWrapper').length is 1
+                    title = 'User delete'
+                    message = 'user(s)'
+                    url = Routing.generate 'OpitNotesUserBundle_user_delete'
+                    $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
+                    return false
+                else if $('#travel_list').length is 1
+                    warningMessage = 'Are you sure you want to delete the selected travel requests?'
+                    checkBoxClass = '.deleteMultipleTravelRequest'
+                    url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
+                    title = 'Travel request removal'
+                    errorText = 'The travel request could not be deleted due to an error.'
+                else
+                    return false
 
                 travelRequests = []
                 selectedTravelRequestRow = []

@@ -218,25 +218,29 @@
           return deleteSingleRequest('expense', $(this));
         });
         return $('#delete').click(function() {
-          var checkBoxClass, errorText, selectedTravelRequestRow, title, travelRequests, url, warningMessage;
-          warningMessage = 'Are you sure you want to delete the selected travel requests?';
-          checkBoxClass = '.deleteMultipleTravelRequest';
-          url = Routing.generate('OpitNotesTravelBundle_travel_delete');
-          title = 'Travel request removal';
-          errorText = 'The travel request could not be deleted due to an error.';
-          if ($(this).hasClass('expense')) {
-            warningMessage = 'Are you sure you want to delete the selected travel expenses?';
-            checkBoxClass = '.deleteMultipleTravelExpense';
-            url = Routing.generate('OpitNotesTravelBundle_expense_delete');
-            title = 'Travel expense removal';
-            errorText = 'The travel expense could not be deleted due to an error.';
+          var checkBoxClass, elements, errorText, message, selectedRow, title, url, warningMessage;
+          if ($('#userlistWrapper').length === 1) {
+            title = 'User delete';
+            message = 'user(s)';
+            url = Routing.generate('OpitNotesUserBundle_user_delete');
+            $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
+            return false;
+          } else if ($('#travel_list').length === 1) {
+            warningMessage = 'Are you sure you want to delete the selected travel requests?';
+            checkBoxClass = '.deleteMultipleTravelRequest';
+            url = Routing.generate('OpitNotesTravelBundle_travel_delete');
+            title = 'Travel request removal';
+            errorText = 'The travel request could not be deleted due to an error.';
+          } else {
+            console.log('else');
+            return false;
           }
-          travelRequests = [];
-          selectedTravelRequestRow = [];
+          elements = [];
+          selectedRow = [];
           $(checkBoxClass).each(function() {
             if ($(this).is(':checked')) {
-              travelRequests.push($(this).val());
-              return selectedTravelRequestRow.push($(this).parent().parent());
+              elements.push($(this).val());
+              return selectedRow.push($(this).parent().parent());
             }
           });
           $('<div></div>').html(warningMessage).dialog({
@@ -247,10 +251,10 @@
                   method: 'POST',
                   url: url,
                   data: {
-                    'id': travelRequests
+                    'id': elements
                   }
                 }).done(function(data) {
-                  $(selectedTravelRequestRow).each(function() {
+                  $(selectedRow).each(function() {
                     return $(this).remove();
                   });
                 }).fail(function() {
