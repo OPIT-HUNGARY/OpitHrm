@@ -77,21 +77,27 @@ class UserShowType extends AbstractType
         $builder->add('employeeName', 'text', array('attr' => array(
             'placeholder' => 'Employee Name'
         )));
-        $builder->add('isActive', 'choice', array(
-            'choices' => $this->container->getParameter('notes_user_status')
-        ));
+        // If the current user has admin role then the field will be changeable
+        if (true === $this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $builder->add('isActive', 'choice', array(
+                'choices' => $this->container->getParameter('notes_user_status')
+            ));
+        }
         $builder->add('jobTitle', 'entity', array(
             'class' => 'OpitNotesUserBundle:JobTitle',
             'property' => 'title',
             'multiple' => false,
             'data' => $dataArr->getJobTitle()
         ));
-        $builder->add('groups', 'entity', array(
-            'class' => 'OpitNotesUserBundle:Groups',
-            'property' => 'name',
-            'multiple' => true,
-            'expanded' => true
-        ));
+        // If the current user has admin role then the field will be changeable
+        if (true === $this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
+            $builder->add('groups', 'entity', array(
+                'class' => 'OpitNotesUserBundle:Groups',
+                'property' => 'name',
+                'multiple' => true,
+                'expanded' => true
+            ));
+        }
         $builder->add('bankAccountNumber', 'text', array('attr' => array(
             'placeholder' => 'Bank account number'
         )));
