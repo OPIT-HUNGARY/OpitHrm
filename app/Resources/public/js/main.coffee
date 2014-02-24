@@ -30,6 +30,33 @@ $.extend true, $(document).data('notes'),
                   $(@).dialog 'destroy'
                   return
                   
+        changeTravelStatus: (statusId, travelRequestId, firstStatusId) ->
+            reloadPage = true
+            $.ajax
+                method: 'POST'
+                url: Routing.generate 'OpitNotesTravelBundle_request_state'
+                data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
+            .done (data) ->
+                if data is 'error'
+                    reloadPage = false
+                    dialogWidth = 550
+                    $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
+                        .dialog
+                            open: ->
+                                $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
+                        width: dialogWidth
+                        maxHeight: $(window).outerHeight()-100
+                        modal: on
+                        buttons:
+                            Reload: ->
+                                location.reload()
+                                return
+            .complete () ->
+                if reloadPage is true
+                    location.reload()
+            .fail (data) ->
+                console.warn 'An error occured while setting new status for the request.'
+                  
         showAlert: (response, actionType, message, forceClass) ->
             $('#reply-message').addClass "alert-message"
             
@@ -108,6 +135,7 @@ $.extend true, $(document).data('notes'),
                 
         initListPageListeners: () ->
             $('#travel_list #list-table').on 'click', '.clickable', ->
+              $changeState = $(@).closest('tr').find('.changeState')
               travelRequestId = $(@).attr 'data-tr-id'
               firstStatusId = $(@).parent().find('option:first-child').val()
               $.ajax
@@ -126,7 +154,8 @@ $.extend true, $(document).data('notes'),
                     if firstStatusId is '1' or firstStatusId is '3'
                         buttons:
                           'Send for approval': ->
-                             changeTravelStatus(2, travelRequestId, firstStatusId)
+                             $changeState.addClass 'dropdown-disabled'
+                             $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId, firstStatusId)
                              $('#dialog-show-details-tr').dialog 'destroy'
                           Close: ->
                              $('#dialog-show-details-tr').dialog 'destroy'
@@ -285,7 +314,7 @@ $.extend true, $(document).data('notes'),
                         
                     $(document).data('notes').funcs.initListPageListeners()
                     $(document).data('notes').funcs.initPager()
-
+                    
 ###
  * jQuery datepicker extension
  * Datepicker extended by custom rendering possibility

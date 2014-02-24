@@ -57,7 +57,7 @@
       statusId = $(this).val();
       travelRequestId = $(this).closest('tr').find('.clickable').data('tr-id');
       firstStatusId = $(this).find('option:first-child').val();
-      return changeTravelStatus(statusId, travelRequestId, firstStatusId);
+      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId);
     });
     $('.status-history').click(function(event) {
       event.preventDefault();

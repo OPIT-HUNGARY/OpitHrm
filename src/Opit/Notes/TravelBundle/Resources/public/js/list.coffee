@@ -38,7 +38,7 @@ $(document).ready ->
         statusId = $(@).val()
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
         firstStatusId = $(@).find('option:first-child').val()
-        changeTravelStatus(statusId, travelRequestId, firstStatusId)
+        $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId)
 
             
     $('.status-history').click (event) ->
