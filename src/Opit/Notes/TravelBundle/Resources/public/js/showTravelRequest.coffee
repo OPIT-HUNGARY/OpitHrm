@@ -52,6 +52,12 @@ $(document).ready ->
     $('.disabled button').each ->
         $(@).attr 'disabled', 'disabled'
         $(@).addClass 'button-disabled'
+        
+    if $('#travelRequest_add_travel_request').attr 'disabled'
+        $('.addFormFieldsetChild').each ->
+            $(@).remove()
+        $('.deleteFormFieldsetChild').each ->
+            $(@).remove()
     
     $('.changeState').on 'change', ->
         statusId = $(@).val()

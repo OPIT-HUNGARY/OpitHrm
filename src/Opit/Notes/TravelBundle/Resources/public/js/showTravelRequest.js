@@ -61,6 +61,14 @@
       $(this).attr('disabled', 'disabled');
       return $(this).addClass('button-disabled');
     });
+    if ($('#travelRequest_add_travel_request').attr('disabled')) {
+      $('.addFormFieldsetChild').each(function() {
+        return $(this).remove();
+      });
+      $('.deleteFormFieldsetChild').each(function() {
+        return $(this).remove();
+      });
+    }
     $('.changeState').on('change', function() {
       var parameters, statusId, travelRequestId;
       statusId = $(this).val();

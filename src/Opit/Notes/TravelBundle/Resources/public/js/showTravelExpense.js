@@ -491,6 +491,17 @@
     $('.generalFormFieldset').on('change', '.te-advances-received-currency', function() {
       return setAvailableCurrencies();
     });
+    if ($('#travelExpense_add_travel_expense').hasClass('button-disabled')) {
+      $('.addFormFieldsetChild').each(function() {
+        return $(this).remove();
+      });
+      $('.deleteFormFieldsetChild').each(function() {
+        return $(this).remove();
+      });
+      $('.fa-minus-square').each(function() {
+        return $(this).remove();
+      });
+    }
     return $('.changeState').on('change', function() {
       var parameters, statusId, travelExpenseId;
       statusId = $(this).val();

@@ -66,3 +66,5 @@ label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; bo
 .custom-field { background-color: #d2d2d2; width: 110px; padding: 3px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 
 h1 { display: inline-block; margin: 0; }
+
+.te-claim .fa-calendar { top: 0; }

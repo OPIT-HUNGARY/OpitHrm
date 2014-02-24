@@ -479,6 +479,14 @@ $(document).ready ->
     $('.generalFormFieldset').on 'change', '.te-advances-received-currency', ->
         setAvailableCurrencies()
         
+    if $('#travelExpense_add_travel_expense').hasClass 'button-disabled'
+        $('.addFormFieldsetChild').each ->
+            $(@).remove()
+        $('.deleteFormFieldsetChild').each ->
+            $(@).remove()
+        $('.fa-minus-square').each ->
+            $(@).remove()
+        
     $('.changeState').on 'change', ->
         statusId = $(@).val()
         parameters = window.location.pathname.split('/')
