@@ -318,13 +318,14 @@ class TravelExpenseService
                                  ->findOneByStatus($status, array('id' => 'ASC'));
         
         // Set the midrate of last month
-        $midRate = $teStatus ? $teStatus->getCreated() : new \DateTime('today');
-        $midRate->setDate($midRate->format('Y'), $midRate->format('m'), $this->config['mid_rate']['day']);
-        $midRate->modify($this->config['mid_rate']['modifier']);
+        $teDate = $teStatus ? $teStatus->getCreated() : new \DateTime('today');
+        $midRateDate = clone $teDate;
+        $midRateDate->setDate($midRateDate->format('Y'), $midRateDate->format('m'), $this->config['mid_rate']['day']);
+        $midRateDate->modify($this->config['mid_rate']['modifier']);
         
         // TODO: handle empty rates.
         
-        return $midRate;
+        return $midRateDate;
     }
     
     /**
