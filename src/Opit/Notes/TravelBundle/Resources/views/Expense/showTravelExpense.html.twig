@@ -84,7 +84,6 @@
 {% block scripts %}
     {{ parent() }}
     <script>
-        var rates = {{ rates|raw }};
         try {
             var curConverter = new CurrencyConverter({{ rates|raw }});
         } catch (err) {

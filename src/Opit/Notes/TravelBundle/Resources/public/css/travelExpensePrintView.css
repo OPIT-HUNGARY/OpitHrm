@@ -51,6 +51,8 @@ h3 { margin: 0.4em 0 0.4em 0; }
 
 .fix-right-50 { right: 50px; }
 
+.width-15-percent { width: 15% !important; }
+
 .icons:hover { cursor: pointer; }
 
 .icons { float: right; width: 36px; height: 36px; margin: 0 0 0 5px; }

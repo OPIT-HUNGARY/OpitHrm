@@ -99,13 +99,13 @@
         <td class="bgGrey bold"></td>
         {% endif %}
         <td class="align-right">{{ advancesReceived.teAdvancesReceived }}</td>
-        <td class="align-right">{{ advancesReceived.currency.code }}</td>
+        <td class="width-15-percent align-right">{{ advancesReceived.currency.code }}</td>
     </tr>
     {% endfor %}
     <tr>
         <td class="bold">Per Diem in EUR</td>
         <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class="align-right">EUR</td>
+        <td class="width-15-percent align-right">EUR</td>
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
@@ -129,7 +129,7 @@
             <td></td>
             {% endif %}
             <td class="width-80 align-right">{{ cost }}</td>
-            <td class="width-50">{{ currency }}</td>
+            <td class="width-15-percent align-right">{{ currency }}</td>
             </tr>
         {% endif %}
     {% endfor %}
@@ -137,7 +137,7 @@
         <tr>
             <td class="bold width-420">Expenses paid by employee (payable to your own bank account)</td>
             <td class="width-80 align-right">0</td>
-            <td class="width-50"></td>
+            <td class="width-15-percent align-right"></td>
         </tr>
     {% endif %}
     
@@ -151,7 +151,7 @@
             <td></td>
             {% endif %}
             <td class="width-80 align-right">{{ cost }}</td>
-            <td class="width-50">{{ currency }}</td>
+            <td class="width-15-percent align-right">{{ currency }}</td>
             </tr>
         {% endif %}
     {% endfor %}
@@ -159,7 +159,7 @@
         <tr>
             <td class="bold width-420">Expenses paid by OPIT (already paid by OPIT)</td>
             <td class="width-80 align-right">0</td>
-            <td class="width-50"></td>
+            <td class="width-15-percent align-right"></td>
         </tr>
     {% endif %}
    
@@ -169,14 +169,14 @@
         <td class="align-right">
             {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
         </td>
-        <td>HUF</td>
+        <td class="width-15-percent align-right">HUF</td>
     </tr>
     <tr class="bold">
         <td>Total expenses in EUR (OPIT + Employee + Per diem)</td>
         <td class="align-right">
             {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
         </td>
-        <td>EUR</td>
+        <td class="width-15-percent align-right">EUR</td>
     </tr>
 </table>
 <div class="height-20 visibility-hidden"></div>
