@@ -9,13 +9,14 @@ parameters:
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_port:       25
+    mailer_encryption: ~
     mailer_user:       ~
     mailer_password:   ~
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    monolog_mail_from: notes@opit.hu
+    monolog_mail_from: portal@opit.hu
     monolog_mail_to:   ~
 
     max_results: 25

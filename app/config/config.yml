@@ -71,11 +71,12 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: %mailer_transport%
-    host:      %mailer_host%
-    port:      %mailer_port%
-    username:  %mailer_user%
-    password:  %mailer_password%
+    transport:  %mailer_transport%
+    host:       %mailer_host%
+    port:       %mailer_port%
+    username:   %mailer_user%
+    password:   %mailer_password%
+    encryption: %mailer_encryption%
 #    spool:     { type: memory }
 
 fos_js_routing:
