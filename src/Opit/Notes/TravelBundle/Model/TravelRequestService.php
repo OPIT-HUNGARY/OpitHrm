@@ -136,7 +136,6 @@ class TravelRequestService
     
     public function setTravelRequestListingRights($travelRequests, $isAdmin, $user)
     {
-        $travelExpenses = $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense');
         $statusManager = $this->statusManager;
         $currentStatusNames = array();
         $teIds = array();
@@ -160,12 +159,10 @@ class TravelRequestService
                     
                     // add travel request to allowed travel requests to show
                     if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
-                        $teId = $this->getTravelExpenseId($travelExpenses, $travelRequest);
-                        $teStatus = $statusManager->getCurrentStatus(
-                            $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($teId)
-                        );
+                        $travelExpense = $travelRequest->getTravelExpense();
+                        $teStatus = $statusManager->getCurrentStatus($travelExpense);
                         $teIds[] = array(
-                            'id' => $teId,
+                            'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
                             'status' => null !== $teStatus ? $teStatus->getId() : 0
                         );
                         $currentStatusNames[] = $currentStatus->getName();
@@ -185,12 +182,10 @@ class TravelRequestService
         } else {
             foreach ($travelRequests as $travelRequest) {
                 $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-                $teId = $this->getTravelExpenseId($travelExpenses, $travelRequest);
-                $teStatus = $statusManager->getCurrentStatus(
-                    $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($teId)
-                );
+                $travelExpense = $travelRequest->getTravelExpense();
+                $teStatus = $statusManager->getCurrentStatus($travelExpense);
                 $teIds[] = array(
-                    'id' => $teId,
+                    'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
                     'status' => null !== $teStatus ? $teStatus->getId() : 0
                 );
                 $isTRLocked = $this->setTravelRequestAccessRights(true);
@@ -443,23 +438,6 @@ class TravelRequestService
         $trSelectableStates[$currentStatusId] = $currentStatusName;
         
         return $trSelectableStates;
-    }
-    
-    /**
-     * Method to check if travel expense exists
-     * 
-     * @param $travelExpenses
-     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @return string
-     */
-    public function getTravelExpenseId($travelExpenses, TravelRequest $travelRequest)
-    {
-        $travelExpense = $travelExpenses->findOneBy(array('travelRequest' => $travelRequest));
-        if (null !== $travelExpense) {
-            return $travelExpense->getId();
-        } else {
-            return 'new';
-        }
     }
     
     /**
