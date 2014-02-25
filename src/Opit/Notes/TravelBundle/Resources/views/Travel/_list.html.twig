@@ -23,7 +23,7 @@
         <td>{{ travelRequest.opportunityName }}</td>
         <td>
             {% if teIds is defined %}
-                {% if teIds[i] == 'new' %}
+                {% if teIds[i].id == 'new' %}
                     {# if all actions are not locked #}
                     {% if isLocked[i]['allActionsLocked'] == 0 %}
                         {# if add travel expense action is not locked #}
@@ -35,16 +35,17 @@
                         {% endif %}
                     {% endif %}
                 {% else %}
-                    {% if isLocked[i]['isTravelExpenseLocked'] == 0 %}
-                    <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i], 'tr': travelRequest.id}) }}" class="small-button">
-                        <i class="fa fa-pencil-square-o"></i>
-                        <span>Edit travel expense</span>
-                    </a>
-                    <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i] }) }}" class="small-button print-view">
+                    {% set expenseButton %}
+                        <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teIds[i].id, 'tr': travelRequest.id}) }}" class="small-button">
+                            <i class="fa {% if teIds[i].status == 4 or teIds[i].status == 5 %} fa-list-alt {% else%} fa-pencil-square-o {% endif %}"></i>
+                            <span>{% if teIds[i].status == 4 or teIds[i].status == 5 %} Preview {% else%} Edit {% endif %} travel expense</span>
+                        </a>
+                    {% endset%}
+                    {{ expenseButton}}
+                    <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[i].id }) }}" class="small-button print-view">
                         <i class="fa fa-print"></i>
                         <span>Print view</span>
                     </a>
-                    {% endif %}
                 {% endif %}
             {% endif %}
         </td>

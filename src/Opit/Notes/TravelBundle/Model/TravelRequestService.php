@@ -52,7 +52,7 @@ class TravelRequestService
      * @param integer $travelRequestGM
      * @param integer $currentUser
      * @param integer $currentStatusId
-     * @param integer $travelExpenseStatus
+     * @param \Opit\Notes\TravelBundle\Entity\Status $travelRequestStatus
      * @return type
      */
     public function setTravelRequestAccessRights(
@@ -60,7 +60,7 @@ class TravelRequestService
         $travelRequestGM = null,
         $currentUser = null,
         $currentStatusId = null,
-        $travelExpenseStatus = null
+        $travelRequestStatus = null
     ) {
         $isTravelExpenseLocked = false;
         $isEditLocked = false;
@@ -70,7 +70,7 @@ class TravelRequestService
         $isStatusLocked = false;
         
         if (true === $isAdmin) {
-            if (null !== $travelExpenseStatus) {
+            if (null !== $travelRequestStatus) {
                 $isTravelExpenseLocked = true;
             }
         } else {
@@ -82,9 +82,9 @@ class TravelRequestService
                 // travel expense cannot be added to travel request
                 $isAddTravelExpenseLocked = true;
 
-                if (null !== $travelExpenseStatus) {
-                    // if the status of the travel expense created do not show the option to view it
-                    if (Status::CREATED === $travelExpenseStatus->getName()) {
+                if (null !== $travelRequestStatus) {
+                    // if the status of the travel request not created do not show the option to view the travel expense
+                    if (Status::CREATED === $travelRequestStatus->getId()) {
                         $isTravelExpenseLocked = true;
                     }
                 }
@@ -160,7 +160,14 @@ class TravelRequestService
                     
                     // add travel request to allowed travel requests to show
                     if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
-                        $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                        $teId = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                        $teStatus = $statusManager->getCurrentStatus(
+                            $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($teId)
+                        );
+                        $teIds[] = array(
+                            'id' => $teId,
+                            'status' => null !== $teStatus ? $teStatus->getId() : 0
+                        );
                         $currentStatusNames[] = $currentStatus->getName();
                         $allowedTRs[] = $travelRequest;
                         $isTRLocked = $travelRequestAccessRights;
@@ -178,7 +185,14 @@ class TravelRequestService
         } else {
             foreach ($travelRequests as $travelRequest) {
                 $currentStatus = $statusManager->getCurrentStatus($travelRequest);
-                $teIds[] = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                $teId = $this->getTravelExpenseId($travelExpenses, $travelRequest);
+                $teStatus = $statusManager->getCurrentStatus(
+                    $this->entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($teId)
+                );
+                $teIds[] = array(
+                    'id' => $teId,
+                    'status' => null !== $teStatus ? $teStatus->getId() : 0
+                );
                 $isTRLocked = $this->setTravelRequestAccessRights(true);
                 $travelRequestStates[] =
                     $this->getTravelRequestNextStates($travelRequest, $statusManager);
