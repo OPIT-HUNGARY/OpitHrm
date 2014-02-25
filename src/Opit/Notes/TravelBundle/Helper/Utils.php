@@ -48,4 +48,37 @@ class Utils
 
         return $classname;
     }
+    
+    /**
+     * Collects error messages from a symfony form object
+     * 
+     * @param \Symfony\Component\Form\Form $form
+     * @return array An array containing form error messages
+     */
+    public static function getErrorMessages(\Symfony\Component\Form\Form $form, $i = null)
+    {
+        $errors = array();
+        if (null === $i) {
+            $i = 0;
+        }
+        foreach ($form->getErrors() as $error) {
+            $template = $error->getMessageTemplate();
+            $parameters = $error->getMessageParameters();
+
+            foreach ($parameters as $var => $value) {
+                $template = str_replace($var, $value, $template);
+            }
+
+            $errors[$i] = $template;
+            $i++;
+        }
+        if ($form->count()) {
+            foreach ($form as $child) {
+                if (!$child->isValid()) {
+                    $errors = array_merge($errors, self::getErrorMessages($child, $i));
+                }
+            }
+        }
+        return $errors;
+    }
 }

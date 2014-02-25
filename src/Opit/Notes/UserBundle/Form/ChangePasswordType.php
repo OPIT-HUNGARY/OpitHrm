@@ -11,7 +11,6 @@
 
 namespace Opit\Notes\UserBundle\Form;
 
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -50,6 +49,7 @@ class ChangePasswordType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Opit\Notes\UserBundle\Entity\User',
+            'validation_groups' => array('password')
         ));
     }
     /**

@@ -11,6 +11,7 @@ use Opit\Notes\UserBundle\Form\UserShowType;
 use Opit\Notes\UserBundle\Form\ChangePasswordType;
 use Opit\Notes\UserBundle\Entity\User;
 use JMS\SecurityExtraBundle\Annotation\Secure;
+use Opit\Notes\TravelBundle\Helper\Utils;
 
 class UserController extends Controller
 {
@@ -128,18 +129,14 @@ class UserController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $errorMessages = array();
         $result = array('response' => 'error');
         $statusCode = 200;
+        $errors = array();
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN') ? true : false;
         $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
         
-        if ($id) {
-            $user = $this->getUserObject($request->attributes->get('id'));
-        } else {
-            $user = new User();
-        }
-
+        $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
+        
         $form = $this->createForm(
             new UserShowType(
                 $this->getDoctrine()->getManager(),
@@ -167,22 +164,12 @@ class UserController extends Controller
                 if ($isAdmin) {
                     return $this->listAction();
                 }
-            }
-            $validator = $this->get('validator');
-            $errors = $validator->validate($user);
-            $formData = $request->request->get('user');
-
-            if (isset($formData['password']) && $formData['password']['password'] != $formData['password']['confirm']) {
-                $errorMessages[] = 'The passwords do not match.';
-            }
-
-            if (count($errors) > 0) {
-                foreach ($errors as $e) {
-                    $errorMessages[] = $e->getMessage();
-                }
+            } else {
                 $statusCode = 500;
+                $errors = Utils::getErrorMessages($form);
+                $result['errorMessage'] = $errors;
             }
-            $result['errorMessage'] = $errorMessages;
+            
         }
         return new JsonResponse(array($result), $statusCode);
     }
@@ -279,20 +266,11 @@ class UserController extends Controller
                 $result['response'] = 'success';
             } else {
                 $statusCode = 500;
+                $errors = Utils::getErrorMessages($form);
+                $result['errorMessage'] = $errors;
             }
-            $validator = $this->get('validator');
-            $errors = $validator->validate($user);
-            $formData = $request->request->get('user');
-
-            if ($formData['password']['first'] != $formData['password']['second']) {
-                $errorMessages[] = 'The passwords do not match.';
-            }
-            if (count($errors) > 0) {
-                foreach ($errors as $e) {
-                    $errorMessages[] = $e->getMessage();
-                }
-            }
-            $result['errorMessage'] = $errorMessages;
+            
+            
         }
         
         return new JsonResponse(array($result), $statusCode);

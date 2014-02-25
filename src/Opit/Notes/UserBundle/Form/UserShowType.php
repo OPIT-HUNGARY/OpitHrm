@@ -134,6 +134,7 @@ class UserShowType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Opit\Notes\UserBundle\Entity\User',
+            'validation_groups' => array('user', 'password')
         ));
     }
     /**

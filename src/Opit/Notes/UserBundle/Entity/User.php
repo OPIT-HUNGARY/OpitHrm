@@ -51,13 +51,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     
     /**
      * @ORM\Column(type="string", length=25, unique=true)
-     * @Assert\NotBlank(message="The username should not be blank.")
+     * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
      */
     protected $username;
     
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(message="The employeeName should not be blank.")
+     * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
      */
     protected $employeeName;
 
@@ -68,20 +68,21 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
 
     /**
      * @ORM\Column(type="string", length=64)
-     * @Assert\NotBlank(message="The password should not be blank.")
+     * @Assert\NotBlank(message="The password may not be blank.", groups={"password"})
      * @Assert\Length(
      *      min = "6",
      *      max = "50",
-     *      minMessage = "The password should not be at least {{ limit }} characters length",
-     *      maxMessage = "The password should not be longer than {{ limit }} characters length"
+     *      minMessage = "The password must be greater equal {{ limit }} characters",
+     *      maxMessage = "The password must be less equal {{ limit }} characters",
+     *      groups={"password"}
      * )
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
-     * @Assert\NotBlank(message="The email should not be blank.")
-     * @Assert\Email(message = "The email '{{ value }}' is not a valid email.")
+     * @Assert\NotBlank(message="The email may not be blank.", groups={"password"})
+     * @Assert\Email(message = "The email '{{ value }}' is not a valid email address.", groups={"user"})
      */
     protected $email;
 
@@ -100,12 +101,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var string
      *
      * @ORM\Column(name="bank_account_number", type="string", length=50)
-     * @Assert\NotBlank(message="The Bank account number should not be blank.")
+     * @Assert\NotBlank(message="The Bank account may not be blank.", groups={"user"})
      * @Assert\Length(
      *      min = "16",
      *      max = "34",
-     *      minMessage = "The Bank account number should not be at least {{ limit }} characters length",
-     *      maxMessage = "The Bank account number should not be longer than {{ limit }} characters length"
+     *      minMessage = "The Bank account number must be greater equal {{ limit }} characters",
+     *      maxMessage = "The Bank account number must be less equal {{ limit }} characters",
+     *      groups={"user"}
      * )
      */
     protected $bankAccountNumber;
@@ -114,10 +116,11 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=30)
-     * @Assert\NotBlank(message="The bank name should not be blank.")
+     * @Assert\NotBlank(message="The bank name may not be blank.", groups={"user"})
      * @Assert\Length(
      *      max = "34",
-     *      maxMessage = "The bank name should not be longer than {{ limit }} characters in length."
+     *      maxMessage = "The bank name must be less equal {{ limit }} characters.",
+     *      groups={"user"}
      * )
      */
     protected $bankName;
@@ -126,13 +129,14 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var integer
      *
      * @ORM\Column(name="tax_identification", type="bigint", unique=true, nullable=true)
-     * @Assert\NotBlank(message="The tax number should not be blank.")
-     * @Assert\Type(type="integer", message="The tax  number {{ value }} should only contain numbers.")
+     * @Assert\NotBlank(message="The tax number may not be blank.", groups={"user"})
+     * @Assert\Type(type="integer", message="The tax number {{ value }} may only contain numbers.", groups={"user"})
      * @Assert\Range(
      *      min = "1000000000",
      *      max = "9999999999",
-     *      minMessage = "The tax number should not be shorter than 10 characters long.",
-     *      maxMessage = "The tax number should not be longer than 10 characters."
+     *      minMessage = "The tax number must be greater equal 1000000000.",
+     *      maxMessage = "The tax number must be less equal 9999999999.",
+     *      groups={"user"}
      * )
      */
     protected $taxIdentification;
