@@ -134,37 +134,11 @@
   inverse = false;
 
   $('form').on('click', '.fa-sort', function() {
-    var header, index;
-    header = $(this).parent();
-    index = header.index();
-    header.closest('table').find('td').filter(function() {
-      return $(this).index() === index;
-    }).sort(function(a, b) {
-      a = $(a).text();
-      b = $(b).text();
-      if ((isNaN(a) || isNaN(b) ? a > b : +a > +b)) {
-        if (inverse) {
-          return -1;
-        } else {
-          return 1;
-        }
-      } else {
-        if (inverse) {
-          return 1;
-        } else {
-          return -1;
-        }
-      }
-    }, function() {
-      return this.parentNode;
-    });
-    inverse = !inverse;
-    $('#list-table').find('th:gt(1)').not(index).children().removeClass('fa-sort-desc').removeClass('fa-sort-asc');
-    if (inverse) {
-      return $('#list-table').find('th').eq(index).children().removeClass('fa-sort-asc').addClass('fa-sort-desc');
-    } else {
-      return $('#list-table').find('th').eq(index).children().removeClass('fa-sort-desc').addClass('fa-sort-asc');
-    }
+    return inverse = $(document).data('notes').funcs.clientSideListOrdering($(this), inverse);
+  });
+
+  $('form').on('click', '.order-text', function() {
+    return inverse = $(document).data('notes').funcs.clientSideListOrdering($(this).parent().find('i'), inverse);
   });
 
 }).call(this);

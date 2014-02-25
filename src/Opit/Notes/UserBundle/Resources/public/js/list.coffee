@@ -91,25 +91,7 @@ $(document).ready ->
     $('#list').on 'click', '#list-reply-message', ->
         $(@).hide()
 
-    # Ordering.
+    $('#user-list').on 'click', '.order-text', ->
+        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesUserBundle_user_list', 'user-list'
     $('#user-list').on 'click', '.fa-sort', ->
-        indexOfTh = $(@).parent().index()
-        field = $(@).attr('data-field')
-        $form = $('#searchFormWrapper').find 'form'
-        order = $form.find('#order_dir').val()
-        order = if order is 'desc' then 'asc' else 'desc'
-        $form.find('#order_field').val field
-        $form.find('#order_dir').val order
-        searchData = $form.serialize()
-
-        $.ajax
-           method: 'POST'
-           url: Routing.generate 'OpitNotesUserBundle_user_list'
-           data: 'showList=1&' + searchData
-         .done (data) ->
-            $('#user-list').html(data)
-            $(document).data('notes').funcs.initPager()
-            if order is 'desc'
-                $('#user-list').find('th').eq(indexOfTh).children().addClass 'fa-sort-desc'
-            else
-                $('#user-list').find('th').eq(indexOfTh).children().addClass 'fa-sort-asc'
+        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesUserBundle_user_list', 'user-list'

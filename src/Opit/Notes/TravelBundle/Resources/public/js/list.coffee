@@ -26,7 +26,6 @@ changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
         console.warn 'An error occured while setting new status for the request.'
         
 $(document).ready ->
-            
     $('.print-view').on 'click', (event) ->
         event.preventDefault()
         url =  $(@).attr 'href'
@@ -56,59 +55,8 @@ $(document).ready ->
             $(document).data('notes').funcs.initPager()
             return
       return
-
-# type = expense or request
-deleteSingleRequest = (type, self) ->
-    $checkbox = self.closest('tr').find(':checkbox')
-    $checkbox.prop 'checked', true
-    # TODO: Add travel request ID to the dialog body text.
-    #$('<div></div>').html("Are you sure you want to delete the travel request \"#{travel-request-id}\"?").dialog
-    $('<div></div>').html("Are you sure you want to delete the travel #{ type }?").dialog
-        title: 'Travel request removal'
-        buttons:
-            Yes: ->
-                $.ajax
-                  method: 'POST'
-                  url: if type is 'expense' then Routing.generate 'OpitNotesTravelBundle_expense_delete' else Routing.generate 'OpitNotesTravelBundle_travel_delete'
-                  data: 'id': self.data 'id'
-                .done (data) ->
-                    if data is '0' then self.parent().parent().remove()
-                    return
-                .fail () ->
-                    $('<div></div>').html("The travel #{ type } could not be deleted due to an error.").dialog
-                        title: 'Error'
-                $(@).dialog 'close'
-                return
-            No: ->
-                # Unset checkbox
-                $checkbox.prop 'checked', false
-                $(@).dialog 'close'
-                return
-        close: ->
-            $(@).dialog 'destroy'
-            return
-    return
-    
-# Ordering.
-$('#travel_list').on 'click', 'th .fa-sort', ->
-    indexOfTh = $(@).parent().index()
-    field = $(@).attr('data-field')
-    $form = $('#searchFormWrapper').find 'form'
-    order = $form.find('#order_dir').val()
-    order = if order is 'desc' then 'asc' else 'desc'
-    $form.find('#order_field').val field
-    $form.find('#order_dir').val order
-    searchData = $form.serialize()
-    
-    $.ajax
-       method: 'POST'
-       url: Routing.generate 'OpitNotesTravelBundle_travel_list'
-       data: "showList=1&" + searchData
-     .done (data) ->
-        $('#travel_list').html(data)
-        $(document).data('notes').funcs.initListPageListeners()
-        $(document).data('notes').funcs.initPager()
-        if order is 'desc'
-            $('#travel_list').find('th').eq(indexOfTh).children().addClass 'fa-sort-desc'
-        else
-            $('#travel_list').find('th').eq(indexOfTh).children().addClass 'fa-sort-asc'
+                
+    $('#travel_list').on 'click', '.order-text', ->
+        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'
+    $('#travel_list').on 'click', '.fa-sort', ->
+        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'

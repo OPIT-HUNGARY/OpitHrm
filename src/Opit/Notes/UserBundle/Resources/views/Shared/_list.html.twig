@@ -6,10 +6,14 @@
         {% if 'role' != propertyName %}
         <th>
             {% if propertyName == 'roles' %}
-                {{ propertyName|underscore|humanize }}
+                <span class="order-text">
+                    {{ propertyName|underscore|humanize }}
+                </span>
             {% else %}
                 <i class="fa fa-sort default-right" data-field="{{ propertyName }}"></i>
+                <span class="order-text">
                 {{ propertyName|underscore|humanize }}
+                </span>
             {% endif %}
         </th>
         {% endif %}

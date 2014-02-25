@@ -6,6 +6,54 @@
 
   $.extend(true, $(document).data('notes'), {
     funcs: {
+      clientSideListOrdering: function($self, inverse) {
+        var header, index;
+        header = $self.parent();
+        index = header.index();
+        header.closest('table').find('td').filter(function() {
+          return $(this).index() === index;
+        }).sort(function(a, b) {
+          a = $(a).text();
+          b = $(b).text();
+          if ((isNaN(a) || isNaN(b) ? a > b : +a > +b)) {
+            if (inverse) {
+              return -1;
+            } else {
+              return 1;
+            }
+          } else {
+            if (inverse) {
+              return 1;
+            } else {
+              return -1;
+            }
+          }
+        }, function() {
+          return this.parentNode;
+        });
+        inverse = !inverse;
+        $('#list-table').find('.fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc');
+        $self.removeClass('fa-sort-asc').addClass(inverse ? 'fa-sort-desc' : 'fa-sort-asc');
+        return inverse;
+      },
+      serverSideListOrdering: function($self, dataField, url, toRelplace) {
+        var $form, index, order;
+        index = $self.parent().index();
+        $form = $('#searchFormWrapper').find('form');
+        order = $form.find('#order_dir').val();
+        order = order === 'desc' ? 'asc' : 'desc';
+        $form.find('#order_field').val(dataField);
+        $form.find('#order_dir').val(order);
+        return $.ajax({
+          method: 'POST',
+          url: Routing.generate(url),
+          data: 'showList=1&' + $form.serialize()
+        }).done(function(data) {
+          $('#' + toRelplace).html(data);
+          $(document).data('notes').funcs.initPager();
+          return $('#' + toRelplace).find('th').eq(index).find('i').addClass(order === 'desc' ? 'fa-sort-desc' : 'fa-sort-asc');
+        });
+      },
       deleteSingleRequest: function(type, self) {
         var $checkbox;
         $checkbox = self.closest('tr').find(':checkbox');

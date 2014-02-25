@@ -101,9 +101,6 @@
         });
       });
     });
-    $('.fa-trash-o').on('click', function() {
-      return console.log('y');
-    });
     deleteUser = function() {
       var message, title, url;
       title = 'User delete';
@@ -113,7 +110,6 @@
     };
     $('#userlistWrapper').on('click', '.delete-single-user', function() {
       var $checkbox;
-      console.log('click');
       $checkbox = $(this).closest('tr').find(':checkbox').not('disabled');
       $checkbox.prop('checked', true);
       return deleteUser();
@@ -126,29 +122,11 @@
     $('#list').on('click', '#list-reply-message', function() {
       return $(this).hide();
     });
+    $('#user-list').on('click', '.order-text', function() {
+      return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).parent().find('i').attr('data-field'), 'OpitNotesUserBundle_user_list', 'user-list');
+    });
     return $('#user-list').on('click', '.fa-sort', function() {
-      var $form, field, indexOfTh, order, searchData;
-      indexOfTh = $(this).parent().index();
-      field = $(this).attr('data-field');
-      $form = $('#searchFormWrapper').find('form');
-      order = $form.find('#order_dir').val();
-      order = order === 'desc' ? 'asc' : 'desc';
-      $form.find('#order_field').val(field);
-      $form.find('#order_dir').val(order);
-      searchData = $form.serialize();
-      return $.ajax({
-        method: 'POST',
-        url: Routing.generate('OpitNotesUserBundle_user_list'),
-        data: 'showList=1&' + searchData
-      }).done(function(data) {
-        $('#user-list').html(data);
-        $(document).data('notes').funcs.initPager();
-        if (order === 'desc') {
-          return $('#user-list').find('th').eq(indexOfTh).children().addClass('fa-sort-desc');
-        } else {
-          return $('#user-list').find('th').eq(indexOfTh).children().addClass('fa-sort-asc');
-        }
-      });
+      return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).data('field'), 'OpitNotesUserBundle_user_list', 'user-list');
     });
   });
 

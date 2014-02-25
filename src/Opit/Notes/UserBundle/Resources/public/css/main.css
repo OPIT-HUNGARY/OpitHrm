@@ -257,3 +257,5 @@ header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38
 .margin-top-24 { margin-top: 24px; }
 
 .margin-left-0 { margin-left: 0 !important; }
+
+.order-text:hover { cursor: pointer; }

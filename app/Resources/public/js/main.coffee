@@ -1,6 +1,45 @@
 $(document).data 'notes', {}
 $.extend true, $(document).data('notes'),
     funcs:
+        clientSideListOrdering: ($self, inverse) ->
+            header = $self.parent()
+            index = header.index()
+            header
+                .closest('table')
+                .find('td')
+                .filter () ->
+                    return $(@).index() == index
+                .sort(
+                    (a,b) ->
+                        a = $(a).text()
+                        b = $(b).text()
+                        return if (if isNaN(a) or isNaN(b) then a > b else +a > +b) then (if inverse then -1 else 1) else (if inverse then 1 else -1)
+                    () ->
+                        return @.parentNode
+                )
+            inverse = not inverse
+            $('#list-table').find('.fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc')
+            $self.removeClass('fa-sort-asc').addClass if inverse then 'fa-sort-desc' else 'fa-sort-asc'
+            
+            return inverse
+            
+        serverSideListOrdering: ($self, dataField, url, toRelplace) ->
+            index = $self.parent().index()
+            $form = $('#searchFormWrapper').find 'form'
+            order = $form.find('#order_dir').val()
+            order = if order is 'desc' then 'asc' else 'desc'
+            $form.find('#order_field').val(dataField)
+            $form.find('#order_dir').val order
+
+            $.ajax
+               method: 'POST'
+               url: Routing.generate url
+               data: 'showList=1&' + $form.serialize()
+             .done (data) ->
+                $('#' + toRelplace).html(data)
+                $(document).data('notes').funcs.initPager()
+                $('#' + toRelplace).find('th').eq(index).find('i').addClass(if order is 'desc' then 'fa-sort-desc' else 'fa-sort-asc')
+            
         deleteSingleRequest: (type, self) ->
             $checkbox = self.closest('tr').find(':checkbox')
             $checkbox.prop 'checked', true
