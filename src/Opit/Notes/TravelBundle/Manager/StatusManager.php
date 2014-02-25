@@ -52,6 +52,8 @@ class StatusManager
             new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . $className . 's');
         $resourceStatus = $instanceS->newInstanceArgs(array($status, $resource));
         
+        $this->removeTravelTokens($resource->getId());
+        
         //check if the state the resource will be set to is the parent of the current status of the resource
         foreach ($this->getNextStates($status) as $key => $value) {
             if ($key === $status->getId()) {
@@ -213,6 +215,20 @@ class StatusManager
         $createdStatus->setTravelRequest($travelRequest);
 
         $this->entityManager->persist($createdStatus);
+        $this->entityManager->flush();
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     */
+    public function removeTravelTokens($id)
+    {
+        $tokens = $this->entityManager->getRepository('OpitNotesTravelBundle:Token')
+            ->findBy(array('travelId' => $id));
+        foreach ($tokens as $token) {
+            $this->entityManager->remove($token);
+        }
         $this->entityManager->flush();
     }
 }
