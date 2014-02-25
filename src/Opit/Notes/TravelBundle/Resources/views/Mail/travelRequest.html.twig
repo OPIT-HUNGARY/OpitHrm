@@ -1,34 +1,56 @@
 {% set travelRequest = templateVars['travelRequest'] %}
-{% set nextStates = templateVars['nextStates'] %}
-{% set stateChangeLinks = templateVars['stateChangeLinks'] %}
-<div style="width:650px;">
+{% if templateVars['nextStates'] is defined %}
+    {% set nextStates = templateVars['nextStates'] %}
+    {% set stateChangeLinks = templateVars['stateChangeLinks'] %}
+    <div style="width:650px;">
 
-<h3>Status update options</h3>
-<div style="margin-left:10px;font-size: 15px;">
-{% for nextState in nextStates %}
-<a href="{{ stateChangeLinks[loop.index0] }}">{{ nextState }}</a>
-{% if loop.index != nextStates|length %}
- | 
+    <h3>Status update options</h3>
+    <div style="margin-left:10px;font-size: 15px;">
+    {% for nextState in nextStates %}
+    <a href="{{ stateChangeLinks[loop.index0] }}">{{ nextState }}</a>
+    {% if loop.index != nextStates|length %}
+     | 
+    {% endif %}
+    {% endfor %}
+    </div>
+{% else %}
+    <p>
+        The status of your travel request (
+        <span style="color:rgb(150, 30, 30);">
+            {{ travelRequest.travelRequestId }}
+        </span>
+        ) has been changed to <strong style="color:rgb(150, 30, 30);">{{ templateVars['currentState']|upper }}</strong>.
+        <br />
+        {% if templateVars['isApproved'] is defined %}
+            You can now add travel expense to your request
+        {% elseif templateVars['isRevised'] is defined %}
+            You need to edit your travel request
+        {% elseif templateVars['isRejected'] is defined %}
+            Your travel request has been rejected, you can create a new one
+        {% endif %}
+         by logging into 
+        <a href="{{ templateVars['url'] }}">
+            NOTES
+        </a>.            
+    </p>
 {% endif %}
-{% endfor %}
-</div>
 
 <h2>Travel request (<span style="color:rgb(150, 30, 30);">{{ travelRequest.travelRequestId }}</span>) details</h2>
 <table style="margin:0 0 0 10px;" bordercolor="rgb(30, 30, 30)">
     <tr>
-        <td width="140px" style="border-bottom: solid 1px;">Employee name</td>
+        <td width="240px" style="border-bottom: solid 1px;font-weight:bold;">Employee name</td>
         <td style="border-bottom: solid 1px;">{{ travelRequest.user.employeeName }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Departure date</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Departure date</td>
         <td style="border-bottom: solid 1px;">{{ attribute(travelRequest, 'departureDate')|date('Y-m-d') }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Arrival date</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Arrival date</td>
         <td style="border-bottom: solid 1px;">{{ attribute(travelRequest, 'arrivalDate')|date('Y-m-d') }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Trip purpose</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Trip purpose</td>
         <td style="border-bottom: solid 1px;">{{ travelRequest.tripPurpose }}</td>
     </tr>
 </table>
@@ -36,15 +58,15 @@
     {% for i, destination in attribute(travelRequest, 'destinations') %}
     <table style="margin:0 0 10px 10px;" bordercolor="rgb(30, 30, 30)">
     <tr>
-        <td width="140px" style="border-bottom: solid 1px;">Destination name</td>
+        <td width="240px" style="border-bottom: solid 1px;font-weight:bold;">Destination name</td>
         <td style="border-bottom: solid 1px;">{{ destination.name }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Transportation type</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Transportation type</td>
         <td style="border-bottom: solid 1px;">{{ attribute(destination.transportationType, 'name') }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Cost</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Cost</td>
         <td style="border-bottom: solid 1px;">{{ destination.cost }}</td>
     </tr>
     </table>
@@ -53,19 +75,19 @@
     {% for accomodation in travelRequest.accomodations %}
     <table style="margin:0 0 10px 10px;">
     <tr>
-        <td width="140px" style="border-bottom: solid 1px;">City</td>
+        <td width="240px" style="border-bottom: solid 1px;font-weight:bold;">City</td>
         <td style="border-bottom: solid 1px;">{{ accomodation.city }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Hotel</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Hotel</td>
         <td style="border-bottom: solid 1px;">{{ accomodation.hotelName }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Number of nights</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Number of nights</td>
         <td style="border-bottom: solid 1px;">{{ accomodation.numberOfNights }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">Cost</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">Cost</td>
         <td style="border-bottom: solid 1px;">{{ accomodation.cost }}</td>
     </tr>
     </table>
@@ -73,11 +95,11 @@
 <h3>Estimated total costs</h3>
 <table style="margin:0 0 10px 10px;">
     <tr>
-        <td width="140px" style="border-bottom: solid 1px;">HUF</td>
+        <td width="240px" style="border-bottom: solid 1px;font-weight:bold;">HUF</td>
         <td style="border-bottom: solid 1px;">{{ templateVars['estimatedCostsHUF'] }}</td>
     </tr>
     <tr>
-        <td style="border-bottom: solid 1px;">EUR</td>
+        <td style="border-bottom: solid 1px;font-weight:bold;">EUR</td>
         <td style="border-bottom: solid 1px;">{{ templateVars['estimatedCostsEUR'] }}</td>
     </tr>
 </table>

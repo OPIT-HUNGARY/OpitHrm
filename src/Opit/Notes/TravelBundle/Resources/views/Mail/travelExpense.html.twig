@@ -1,17 +1,39 @@
 {% set travelExpense = templateVars['travelExpense'] %}
-{% set nextStates = templateVars['nextStates'] %}
-{% set stateChangeLinks = templateVars['stateChangeLinks'] %}
-<div style="width:650px;">
+{% if templateVars['nextStates'] is defined %}
+    {% set nextStates = templateVars['nextStates'] %}
+    {% set stateChangeLinks = templateVars['stateChangeLinks'] %}
+    <div style="width:650px;">
 
-<h3>Status update options</h3>
-<div style="margin-left:10px;font-size: 15px;">
-{% for nextState in nextStates %}
-<a href="{{ stateChangeLinks[loop.index0] }}">{{ nextState }}</a>
-{% if loop.index != nextStates|length %}
- | 
+    <h3>Status update options</h3>
+    <div style="margin-left:10px;font-size: 15px;">
+    {% for nextState in nextStates %}
+    <a href="{{ stateChangeLinks[loop.index0] }}">{{ nextState }}</a>
+    {% if loop.index != nextStates|length %}
+     | 
+    {% endif %}
+    {% endfor %}
+    </div>
+{% else %}
+    <p>
+        The status of your travel expense (
+        <span style="color:rgb(150, 30, 30);">
+            {{ attribute(travelExpense.travelRequest, 'travelRequestId') }}
+        </span>
+        ) has been changed to <strong style="color:rgb(150, 30, 30);">{{ templateVars['currentState']|upper }}</strong>.
+        <br />
+        {% if templateVars['isApproved'] is defined %}
+            Your travel expense has been approved. You can check it
+        {% elseif templateVars['isRevised'] is defined %}
+            You need to edit your travel expense
+        {% elseif templateVars['isRejected'] is defined %}
+            Your travel expense has been rejected, you can create a new travel request
+        {% endif %}
+         by logging into 
+        <a href="{{ templateVars['url'] }}">
+            NOTES
+        </a>.            
+    </p>    
 {% endif %}
-{% endfor %}
-</div>
 
 <h2>Travel expense (<span style="color:rgb(150, 30, 30);">{{ attribute(travelExpense.travelRequest, 'travelRequestId') }}</span>) details</h2>
 

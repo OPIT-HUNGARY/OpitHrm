@@ -46,80 +46,97 @@ class StatusManager
     public function addStatus($resource, $requiredStatus)
     {
         $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($requiredStatus);
+        $statusId = $status->getId();
+        $statusName = $status->getName();
+        $router = $this->container->get('router');
         $nextStates = array();
         $className = Utils::getClassBasename($resource);
         $instanceS =
             new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . $className . 's');
-        $resourceStatus = $instanceS->newInstanceArgs(array($status, $resource));
-        
-        $this->removeTravelTokens($resource->getId());
-        
+        $resourceId = $resource->getId();
+        $toGeneralManager = false;
+        $stateChangeLinks = array();
+
         //check if the state the resource will be set to is the parent of the current status of the resource
         foreach ($this->getNextStates($status) as $key => $value) {
-            if ($key === $status->getId()) {
-                $this->entityManager->persist($resourceStatus);
+            if ($key === $statusId) {
+                $this->entityManager->persist($instanceS->newInstanceArgs(array($status, $resource)));
                 $this->entityManager->flush();
             } else {
                 $nextStates[$key] = $value;
             }
         }
+
+        //get template name by converting entity name first letter to lower
+        $template = lcfirst($className);
+        //split class name at uppercase letters
+        $subjectType = preg_split('/(?=[A-Z])/', $className);
+        $travelRequest = ($resource instanceof TravelExpense) ? $resource->getTravelRequest() : $resource;
+        $generalManager = $travelRequest->getGeneralManager();
+
+        $estimatedCosts = $this->container->get('opit.model.travel_expense')
+            ->getTRCosts($travelRequest, $this->container->get('opit.service.exchange_rates'));
+            
+        $this->removeTravelTokens($resourceId);
         
-        $toGeneralManager = false;
-        
-        if (2 === $status->getId()) {
-            //set token for travel
-            $token = new Token();
-            // encode token with factory encoder
-            $encoder = $this->factory->getEncoder($token);
-            $travelToken =
-                str_replace('/', '', $encoder->encodePassword(serialize($resource->getId()) . date('Y-m-d H:i:s'), ''));
-            $token->setToken($travelToken);
-            $token->setTravelId($resource->getId());
-            $this->entityManager->persist($token);
-            $this->entityManager->flush();
-            
-            $stateChangeLinks = array();
-            
-            //get template name by converting entity name first letter to lower
-            $template = lcfirst($className);
-            //split class name at uppercase letters
-            $subjectType = preg_split('/(?=[A-Z])/', $className);
-            $subjectType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
-            $travelRequest = ($resource instanceof TravelExpense) ? $resource->getTravelRequest() : $resource;
-            $generalManager = $travelRequest->getGeneralManager();
-            
-            $router = $this->container->get('router');
-            
-            foreach ($nextStates as $key => $value) {
-                if ($key !== $requiredStatus) {
-                    // Generate change status links
-                    $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
-                        'gmId' => $generalManager->getId(),
-                        'travelType' => $resource::TYPE,
-                        'status' => $key,
-                        'token' => $travelToken
-                    ), true);
+        if (Status::CREATED !== $statusId) {
+            if (Status::FOR_APPROVAL === $statusId) {
+                $travelToken = $this->setTravelToken($resourceId);
+
+                foreach ($nextStates as $key => $value) {
+                    if ($key !== $requiredStatus) {
+                        // Generate change status links
+                        $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
+                            'gmId' => $generalManager->getId(),
+                            'travelType' => $resource::TYPE,
+                            'status' => $key,
+                            'token' => $travelToken
+                        ), true);
+                    }
+                }
+
+                $this->mail->setRecipient($generalManager->getEmail());
+                $templateVariables = array(
+                    'nextStates' => $nextStates,
+                    'stateChangeLinks' => $stateChangeLinks
+                );
+                $toGeneralManager = true;
+            } else {
+                $this->mail->setRecipient($travelRequest->getUser()->getEmail());
+                $templateVariables = array(
+                    'currentState' => $statusName,
+                    'url' => $router->generate('OpitNotesUserBundle_security_login', array(), true)
+                );
+                
+                switch ($statusId) {
+                    case Status::APPROVED:
+                        $templateVariables['isApproved'] = true;
+                        break;
+                    case Status::REVISE:
+                        $templateVariables['isRevised'] = true;
+                        break;
+                    case Status::REJECTED:
+                        $templateVariables['isRejected'] = true;
+                        break;
                 }
             }
-            
-            $estimatedCosts = $this->container->get('opit.model.travel_expense')
-                ->getTRCosts($travelRequest, $this->container->get('opit.service.exchange_rates'));
-            $this->mail->setSubject($subjectType . ' (' . $travelRequest->getTravelRequestId() . ') sent for approval');
-            $this->mail->setBaseTemplate(
-                'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
-                array(
-                    $template => $resource,
-                    'nextStates' => $nextStates,
-                    'stateChangeLinks' => $stateChangeLinks,
-                    'estimatedCostsEUR' => ceil($estimatedCosts['EUR']),
-                    'estimatedCostsHUF' => ceil($estimatedCosts['HUF'])
-                )
+
+            $templateVariables['estimatedCostsEUR'] = ceil($estimatedCosts['EUR']);
+            $templateVariables['estimatedCostsHUF'] = ceil($estimatedCosts['HUF']);
+            $templateVariables[$template] = $resource;
+
+            $this->mail->setSubject(
+                $subjectType[1] . '' . strtolower($subjectType[2]) .
+                ' (' . $travelRequest->getTravelRequestId() . ') status changed to ' .
+                strtolower($statusName)
             );
-            $this->mail->setRecipient($generalManager->getEmail());
+            $this->mail->setBaseTemplate(
+                ('OpitNotesTravelBundle:Mail:' . $template . '.html.twig'),
+                $templateVariables
+            );
             $this->mail->sendMail();
-            
-            $toGeneralManager = true;
         }
+    
         // set a new notification when travel request or expense status changes
         $notificationManager = $this->container->get('opit.manager.notification_manager');
         $notificationManager->addNewNotification($resource, $toGeneralManager, $status);
@@ -219,6 +236,7 @@ class StatusManager
     }
     
     /**
+     * Removes the tokens to the related travel request or travel expense.
      * 
      * @param integer $id
      */
@@ -230,5 +248,26 @@ class StatusManager
             $this->entityManager->remove($token);
         }
         $this->entityManager->flush();
+    }
+    
+    /**
+     * Method to set token for a travel request or travel expense.
+     * 
+     * @param integer $id
+     */
+    public function setTravelToken($id)
+    {
+        //set token for travel
+        $token = new Token();
+        // encode token with factory encoder
+        $encoder = $this->factory->getEncoder($token);
+        $travelToken =
+            str_replace('/', '', $encoder->encodePassword(serialize($id) . date('Y-m-d H:i:s'), ''));
+        $token->setToken($travelToken);
+        $token->setTravelId($id);
+        $this->entityManager->persist($token);
+        $this->entityManager->flush();
+        
+        return $travelToken;
     }
 }
