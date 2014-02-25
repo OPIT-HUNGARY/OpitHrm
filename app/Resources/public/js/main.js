@@ -6,6 +6,41 @@
 
   $.extend(true, $(document).data('notes'), {
     funcs: {
+      deleteSingleRequest: function(type, self) {
+        var $checkbox;
+        $checkbox = self.closest('tr').find(':checkbox');
+        $checkbox.prop('checked', true);
+        $('<div></div>').html("Are you sure you want to delete the travel " + type + "?").dialog({
+          title: 'Travel request removal',
+          buttons: {
+            Yes: function() {
+              $.ajax({
+                method: 'POST',
+                url: type === 'expense' ? Routing.generate('OpitNotesTravelBundle_expense_delete') : Routing.generate('OpitNotesTravelBundle_travel_delete'),
+                data: {
+                  'id': self.data('id')
+                }
+              }).done(function(data) {
+                if (data === '0') {
+                  self.parent().parent().remove();
+                }
+              }).fail(function() {
+                return $('<div></div>').html("The travel " + type + " could not be deleted due to an error.").dialog({
+                  title: 'Error'
+                });
+              });
+              $(this).dialog('close');
+            },
+            No: function() {
+              $checkbox.prop('checked', false);
+              $(this).dialog('close');
+            }
+          },
+          close: function() {
+            $(this).dialog('destroy');
+          }
+        });
+      },
       deleteAction: function(title, message, url, identifier) {
         if ($(identifier + ':checked').length > 0) {
           return $('<div></div>').html('Are you sure you want to delete the ' + message + '?').dialog({
@@ -237,11 +272,7 @@
         });
         $('.deleteSingeTravelRequest').click(function(event) {
           event.preventDefault();
-          return deleteSingleRequest('request', $(this));
-        });
-        $('.deleteSingeTravelExpense').click(function() {
-          event.preventDefault();
-          return deleteSingleRequest('expense', $(this));
+          return $(document).data('notes').funcs.deleteSingleRequest('request', $(this));
         });
         return $('#delete').click(function() {
           var checkBoxClass, errorText, message, selectedTravelRequestRow, title, travelRequests, url, warningMessage;

@@ -1,6 +1,37 @@
 $(document).data 'notes', {}
 $.extend true, $(document).data('notes'),
     funcs:
+        deleteSingleRequest: (type, self) ->
+            $checkbox = self.closest('tr').find(':checkbox')
+            $checkbox.prop 'checked', true
+            # TODO: Add travel request ID to the dialog body text.
+            #$('<div></div>').html("Are you sure you want to delete the travel request \"#{travel-request-id}\"?").dialog
+            $('<div></div>').html("Are you sure you want to delete the travel #{ type }?").dialog
+                title: 'Travel request removal'
+                buttons:
+                    Yes: ->
+                        $.ajax
+                          method: 'POST'
+                          url: if type is 'expense' then Routing.generate 'OpitNotesTravelBundle_expense_delete' else Routing.generate 'OpitNotesTravelBundle_travel_delete'
+                          data: 'id': self.data 'id'
+                        .done (data) ->
+                            if data is '0' then self.parent().parent().remove()
+                            return
+                        .fail () ->
+                            $('<div></div>').html("The travel #{ type } could not be deleted due to an error.").dialog
+                                title: 'Error'
+                        $(@).dialog 'close'
+                        return
+                    No: ->
+                        # Unset checkbox
+                        $checkbox.prop 'checked', false
+                        $(@).dialog 'close'
+                        return
+                close: ->
+                    $(@).dialog 'destroy'
+                    return
+            return
+            
         deleteAction: (title, message, url, identifier) ->
           if $(identifier+':checked').length > 0
             $('<div></div>').html('Are you sure you want to delete the '+message+'?').dialog
@@ -198,11 +229,7 @@ $.extend true, $(document).data('notes'),
 
             $('.deleteSingeTravelRequest').click (event) ->
                 event.preventDefault()
-                deleteSingleRequest('request', $(@))
-
-            $('.deleteSingeTravelExpense').click ->
-                event.preventDefault()
-                deleteSingleRequest('expense', $(@))
+                $(document).data('notes').funcs.deleteSingleRequest 'request', $(@)
 
 
             $('#delete').click ->
