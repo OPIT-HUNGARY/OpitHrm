@@ -56,7 +56,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     protected $username;
     
     /**
-     * @ORM\Column(type="string", length=25, unique=true)
+     * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="The employeeName should not be blank.")
      */
     protected $employeeName;
