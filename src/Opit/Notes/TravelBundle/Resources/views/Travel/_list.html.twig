@@ -118,7 +118,7 @@
     </tr>
     {% endfor %}
 </table>
-{% if numberOfPages is defined %}
+{% if numberOfPages is defined and numberOfPages > 0 %}
 {% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
     {
         'numberOfPages': numberOfPages,
