@@ -39,28 +39,6 @@ $(document).ready ->
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
         firstStatusId = $(@).find('option:first-child').val()
         $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId)
-
-            
-    $('.status-history').click (event) ->
-        event.preventDefault()
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_travel_states_history'
-            data: {'id': $(@).find('.fa-book').data 'id'}
-        .done (data) ->
-            dialogWidth = 550
-            $('<div id="dialog-show-details-tr"></div>').html(data)
-                .dialog
-                    open: ->
-                        $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
-                    width: dialogWidth
-                    maxHeight: $(window).outerHeight()-100
-                    modal: on
-                    buttons:
-                        Close: ->
-                            $('#dialog-show-details-tr').dialog 'destroy'
-                            return
-            return
             
     $('#searchButton').click (event) ->
         $form = $('#searchFormWrapper').find 'form'

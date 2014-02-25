@@ -161,6 +161,32 @@
         });
       },
       initListPageListeners: function() {
+        $('.status-history').click(function(event) {
+          event.preventDefault();
+          return $.ajax({
+            method: 'POST',
+            url: Routing.generate('OpitNotesTravelBundle_travel_states_history'),
+            data: {
+              'id': $(this).find('.fa-book').data('id')
+            }
+          }).done(function(data) {
+            var dialogWidth;
+            dialogWidth = 550;
+            $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
+              open: function() {
+                return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
+              },
+              width: dialogWidth,
+              maxHeight: $(window).outerHeight() - 100,
+              modal: true,
+              buttons: {
+                Close: function() {
+                  $('#dialog-show-details-tr').dialog('destroy');
+                }
+              }
+            });
+          });
+        });
         $('#travel_list #list-table').on('click', '.clickable', function() {
           var $changeState, firstStatusId, travelRequestId;
           $changeState = $(this).closest('tr').find('.changeState');
@@ -218,7 +244,7 @@
           return deleteSingleRequest('expense', $(this));
         });
         return $('#delete').click(function() {
-          var checkBoxClass, elements, errorText, message, selectedRow, title, url, warningMessage;
+          var checkBoxClass, errorText, message, selectedTravelRequestRow, title, travelRequests, url, warningMessage;
           if ($('#userlistWrapper').length === 1) {
             title = 'User delete';
             message = 'user(s)';
@@ -232,15 +258,14 @@
             title = 'Travel request removal';
             errorText = 'The travel request could not be deleted due to an error.';
           } else {
-            console.log('else');
             return false;
           }
-          elements = [];
-          selectedRow = [];
+          travelRequests = [];
+          selectedTravelRequestRow = [];
           $(checkBoxClass).each(function() {
             if ($(this).is(':checked')) {
-              elements.push($(this).val());
-              return selectedRow.push($(this).parent().parent());
+              travelRequests.push($(this).val());
+              return selectedTravelRequestRow.push($(this).parent().parent());
             }
           });
           $('<div></div>').html(warningMessage).dialog({
@@ -251,10 +276,10 @@
                   method: 'POST',
                   url: url,
                   data: {
-                    'id': elements
+                    'id': travelRequests
                   }
                 }).done(function(data) {
-                  $(selectedRow).each(function() {
+                  $(selectedTravelRequestRow).each(function() {
                     return $(this).remove();
                   });
                 }).fail(function() {

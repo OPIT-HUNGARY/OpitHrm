@@ -59,32 +59,6 @@
       firstStatusId = $(this).find('option:first-child').val();
       return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId);
     });
-    $('.status-history').click(function(event) {
-      event.preventDefault();
-      return $.ajax({
-        method: 'POST',
-        url: Routing.generate('OpitNotesTravelBundle_travel_states_history'),
-        data: {
-          'id': $(this).find('.fa-book').data('id')
-        }
-      }).done(function(data) {
-        var dialogWidth;
-        dialogWidth = 550;
-        $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
-          open: function() {
-            return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
-          },
-          width: dialogWidth,
-          maxHeight: $(window).outerHeight() - 100,
-          modal: true,
-          buttons: {
-            Close: function() {
-              $('#dialog-show-details-tr').dialog('destroy');
-            }
-          }
-        });
-      });
-    });
     $('#searchButton').click(function(event) {
       var $form, url;
       $form = $('#searchFormWrapper').find('form');

@@ -134,6 +134,27 @@ $.extend true, $(document).data('notes'),
                 $parent.append $toggleIcon
                 
         initListPageListeners: () ->
+            $('.status-history').click (event) ->
+                event.preventDefault()
+                $.ajax
+                    method: 'POST'
+                    url: Routing.generate 'OpitNotesTravelBundle_travel_states_history'
+                    data: {'id': $(@).find('.fa-book').data 'id'}
+                .done (data) ->
+                    dialogWidth = 550
+                    $('<div id="dialog-show-details-tr"></div>').html(data)
+                        .dialog
+                            open: ->
+                                $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
+                            width: dialogWidth
+                            maxHeight: $(window).outerHeight()-100
+                            modal: on
+                            buttons:
+                                Close: ->
+                                    $('#dialog-show-details-tr').dialog 'destroy'
+                                    return
+                    return
+        
             $('#travel_list #list-table').on 'click', '.clickable', ->
               $changeState = $(@).closest('tr').find('.changeState')
               travelRequestId = $(@).attr 'data-tr-id'
