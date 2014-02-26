@@ -61,46 +61,6 @@
       id = $(this).attr('data-user-id');
       $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('notes').funcs.showAlert);
     });
-    $('#userlistWrapper').on('click', '.list-change-password', function() {
-      var id;
-      id = $(this).attr("data-user-id");
-      return $.ajax({
-        method: 'GET',
-        url: Routing.generate('OpitNotesUserBundle_user_show_password', {
-          id: id
-        })
-      }).done(function(data) {
-        return $('<div id="dialog-edititem"></div>').html(data).dialog({
-          open: function() {
-            return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Reset Password');
-          }
-        }, $(this).html(data), {
-          width: 500,
-          modal: true,
-          buttons: {
-            Save: function() {
-              return $.ajax({
-                type: 'POST',
-                global: false,
-                url: Routing.generate('OpitNotesUserBundle_user_update_password', {
-                  id: id
-                }),
-                data: $('#changePassword_frm').serialize()
-              }).done(function(data) {
-                $(document).data('notes').funcs.showAlert(data, 'update', 'Password reset successfully');
-                return $('#dialog-edititem').dialog("destroy");
-              }).fail(function(data) {
-                data = $.parseJSON(data.responseText);
-                return $(document).data('notes').funcs.showAlert(data, 'update', 'Password reset successfully');
-              });
-            },
-            Close: function() {
-              return $('#dialog-edititem').dialog('destroy');
-            }
-          }
-        });
-      });
-    });
     deleteUser = function() {
       var message, title, url;
       title = 'User delete';

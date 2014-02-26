@@ -69,11 +69,6 @@
                 </td>
                 {% endif %}
                 <td>
-                    {% if hideReset is not defined %}
-                    <span class="list-change-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
-                       <i class="fa fa-key"></i>
-                    </span>
-                    {% endif %}
                     {% set title %}
                         {% if 'groups' in app.request.attributes.get('_route') %}
                             role

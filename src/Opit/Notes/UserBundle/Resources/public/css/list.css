@@ -146,12 +146,12 @@ table .clickable:hover { cursor: pointer; text-decoration: underline; }
 #list-table a { float: left; }
 #list-table tr td:last-child { font-size: 1.3em; }
 
-#dialog-edititem h2 { margin: 0 0 5px 0; font-size: 1.1em; }
-#dialog-edititem #user { margin-top: 15px; }
-#dialog-edititem #user > div { margin-bottom: 10px; }
-#dialog-edititem .description { background-color: #f28c38; color: white; margin-bottom: 5px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
-#dialog-edititem .ui-dialog-content { padding: 10px; }
-#dialog-edititem .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { float: left; }
+.ui-dialog-content h2 { margin: 0 0 5px 0; font-size: 1.1em; }
+.ui-dialog-content #user { margin-top: 15px; }
+.ui-dialog-content #user > div { margin-bottom: 10px; }
+.ui-dialog-content .description { background-color: #f28c38; color: white; margin-bottom: 5px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.ui-dialog-content .ui-dialog-content { padding: 10px; }
+.ui-dialog-content .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset { float: left; }
 
 #dialog-details-travel h2 { margin: 0 0 5px 0; font-size: 1.1em; }
 #dialog-details-travel table { width: 100%; }

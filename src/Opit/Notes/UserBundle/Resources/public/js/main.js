@@ -235,7 +235,7 @@
       $(this).addClass("active");
       return cloneSubmenu();
     });
-    return $(window).scroll(function() {
+    $(window).scroll(function() {
       var $menuWrapperActive;
       $menuWrapperActive = $('#menuWrapper .active');
       if ($menuWrapperActive.length > 0) {
@@ -254,6 +254,47 @@
           }
         }
       }
+    });
+    return $('#changePassword').on('click', function() {
+      var id;
+      id = $(this).attr("data-user-id");
+      return $.ajax({
+        method: 'GET',
+        url: Routing.generate('OpitNotesUserBundle_user_show_password', {
+          id: id
+        })
+      }).done(function(data) {
+        return $('<div id="password-dialog"></div>').html(data).dialog({
+          open: function() {
+            $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Reset Password');
+            return $(this).html(data);
+          },
+          width: 500,
+          modal: true,
+          buttons: {
+            Save: function() {
+              return $.ajax({
+                type: 'POST',
+                global: false,
+                url: Routing.generate('OpitNotesUserBundle_user_update_password', {
+                  id: id
+                }),
+                data: $('#changePassword_frm').serialize()
+              }).done(function(data) {
+                $('#password-dialog').dialog('destroy');
+                return $(document).data('notes').funcs.showAlert(data, 'update', 'Password successfully changed');
+              }).fail(function(data) {
+                data = $.parseJSON(data.responseText);
+                return $(document).data('notes').funcs.showAlert(data, 'update', 'Password reset successfully');
+              });
+            },
+            Close: function() {
+              console.log($('#password-dialog'));
+              $('#password-dialog').dialog('destroy');
+            }
+          }
+        });
+      });
     });
   });
 

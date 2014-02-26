@@ -158,9 +158,7 @@ $(document)
     .ready ->
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
-    
-#        $(document).on 'click', ->
-#            $('#notifications-wrapper').addClass 'display-none'
+
         $('#notifications').toggleClass 'right-0'
         $notificationsWrapper = $('#notifications-wrapper')
         $('#notifications').on 'click', (event) ->
@@ -213,6 +211,37 @@ $(document)
                 if $menuWrapperActive.children('.subMenu').offset().top > $(window).scrollTop()
                     if $('body').has(subMenuCloneClass).length
                         $subMenuClone.css({display: 'none'})
+                        
+        $('#changePassword').on 'click', ->
+            id = $(@).attr "data-user-id"
+            $.ajax
+                method: 'GET'
+                url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
+            .done (data) ->
+                $('<div id="password-dialog"></div>').html(data)
+                .dialog
+                    open: ->
+                        $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
+                        $(@).html(data)
+                    width: 500
+                    modal: on
+                    buttons:
+                        Save: ->
+                            $.ajax
+                                type: 'POST'
+                                global: false
+                                url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
+                                data: $('#changePassword_frm').serialize()
+                            .done (data)->
+                                $('#password-dialog').dialog 'destroy'
+                                $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
+                            .fail (data) ->
+                                data = $.parseJSON data.responseText
+                                $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
+                        Close: ->
+                            console.log $('#password-dialog')
+                            $('#password-dialog').dialog 'destroy'
+                            return
                 
 
 

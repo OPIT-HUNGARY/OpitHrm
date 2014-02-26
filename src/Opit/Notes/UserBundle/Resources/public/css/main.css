@@ -187,8 +187,8 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
 header { margin-bottom: 100px; }
 header #logoutButton { float: right; color: white; text-decoration: none; background-color: #f28c38; padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
 header #logoutButton > i { margin: 0; float: none; }
-header #loggedInUser { float: right; text-decoration: none; background-color: rgba(220, 220, 220, 0.8); padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
-header #loggedInUser > i { margin: 0; float: none; }
+header .header-tab { float: right; text-decoration: none; background-color: rgba(220, 220, 220, 0.8); padding: 4px 10px 4px 10px; font-weight: bold; margin: -20px 10px 0 0; -webkit-border-bottom-left-radius: 10px; -moz-border-bottom-left-radius: 10px; -ms-border-bottom-left-radius: 10px; -o-border-bottom-left-radius: 10px; border-bottom-left-radius: 10px; -webkit-border-bottom-right-radius: 10px; -moz-border-bottom-right-radius: 10px; -ms-border-bottom-right-radius: 10px; -o-border-bottom-right-radius: 10px; border-bottom-right-radius: 10px; }
+header .header-tab > i { margin: 0; float: none; }
 header #menuWrapper { margin: 20px 0 30px 0; width: 100%; height: 80px; }
 header #menuWrapper .menu { height: 40px; width: 100%; float: left; }
 header #menuWrapper nav:first-child { background-color: rgba(220, 220, 220, 0.8); }

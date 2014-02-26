@@ -26,8 +26,13 @@
             <span>New OPIT Travel Expense System</span>
         </a>
         <a href="{{ path('OpitNotesUserBundle_logout') }}" id="logoutButton">logout <i class="fa fa-sign-out"></i></a>
-        <div id="loggedInUser" class="pointer">
-            <span data-user-id="{{app.user.id}}">{{ app.user.username }} <i class="fa fa-user"></i></span>
+        <div id="loggedInUser" class="pointer header-tab">
+            <span data-user-id="{{app.user.id}}">{{ app.user.username }} <i class="fa fa-cog"></i></span>
+        </div>
+        <div id="changePassword" class="pointer header-tab" data-user-id="{{ app.user.id }}">
+            <span class="list-change-password clickable no-text-decoration" title="Reset password">
+               <i class="fa fa-key"></i>
+            </span>
         </div>
         <div id="notifications">
             <i class="fa fa-globe"></i>
