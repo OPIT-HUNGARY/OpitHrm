@@ -293,13 +293,12 @@ class TravelController extends Controller
     public function changeTravelRequestStateAction(Request $request)
     {
         $statusId = $request->request->get('statusId');
-        $firstStatusId = $request->request->get('firstStatusId');
         $travelRequestId = $request->request->get('travelRequestId');
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
 
         return $this->get('opit.model.travel_request')
-            ->changeStatus($travelRequest, $firstStatusId, $statusId, $this->get('opit.manager.status_manager'));
+            ->changeStatus($travelRequest, $statusId);
     }
     
     /**
@@ -402,23 +401,13 @@ class TravelController extends Controller
                 // Persist travel request object again if travel request id is set (insert actions)
                 // set travel request id is handled inside its entity using lifecycle callbacks
                 if ($travelRequest->getTravelRequestId()) {
-                    $travelRequestService->addStatus($travelRequest, $entityManager);
-                    $travelRequestId = $travelRequest->getId();
-                    $currentStatus = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-                            ->getCurrentStatus($travelRequestId);
+                    $travelRequestService->addStatus($travelRequest);
                     
                     if ('fa' === $forApproval) {
-                        $statusManager->forceTRStatus(Status::CREATED, $this->getUser(), $travelRequest);
-                        $travelRequestService->changeStatus(
-                            $travelRequest,
-                            $currentStatus ? $currentStatus->getStatus()->getId() : null,
-                            Status::FOR_APPROVAL,
-                            $statusManager,
-                            $forApproval,
-                            $this->getUser()
-                        );
+                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                        $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
                     } else {
-                        $statusManager->forceTRStatus(Status::CREATED, $this->getUser(), $travelRequest);
+                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
                     }
 
                     $travelRequestService->handleAccessRights(

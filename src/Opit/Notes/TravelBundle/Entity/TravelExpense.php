@@ -5,6 +5,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
 
 /**
  * TravelExpense
@@ -12,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table(name="notes_travel_expense")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TravelExpenseRepository")
  */
-class TravelExpense
+class TravelExpense implements TravelResourceInterface
 {
     const TYPE = 'te';
     
@@ -148,10 +149,10 @@ class TravelExpense
     /**
      * Set user
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $user
+     * @param \Opit\Notes\TravelBundle\Model\TravelRequestUserInterface $user
      * @return TravelExpense
      */
-    public function setUser(\Opit\Notes\UserBundle\Entity\User $user)
+    public function setUser(\Opit\Notes\TravelBundle\Model\TravelRequestUserInterface $user = null)
     {
         $this->user = $user;
     
@@ -553,5 +554,15 @@ class TravelExpense
     public function getTeAdvancesReceived()
     {
         return $this->advancesReceived;
+    }
+    
+    /**
+     * Returns the travel type constant
+     * 
+     * @return string The travel entity type
+     */
+    public static function getType()
+    {
+        return self::TYPE;
     }
 }

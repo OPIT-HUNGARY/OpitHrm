@@ -13,6 +13,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\Common\CommonException;
+use Opit\Notes\TravelBundle\Entity\Status;
 
 /**
  * Status Repository
@@ -50,11 +51,6 @@ class StatusRepository extends EntityRepository
     
     public function findStatusCreate()
     {
-        $firstStatus = $this->createQueryBuilder('s')
-            ->add('orderBy', 's.id ASC')
-            ->setMaxResults(1)
-            ->getQuery();
-        
-        return current($firstStatus->getResult());
+        return $this->find(Status::CREATED);
     }
 }

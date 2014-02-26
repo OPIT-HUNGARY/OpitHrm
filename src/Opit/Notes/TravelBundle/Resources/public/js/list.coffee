@@ -1,9 +1,9 @@
-changeTravelStatus = (statusId, travelRequestId, firstStatusId) ->
+changeTravelStatus = (statusId, travelRequestId) ->
     reloadPage = true
     $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_request_state'
-        data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
+        data: {'statusId': statusId, 'travelRequestId': travelRequestId}
     .done (data) ->
         if data is 'error'
             reloadPage = false
@@ -37,7 +37,7 @@ $(document).ready ->
         statusId = $(@).val()
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
         firstStatusId = $(@).find('option:first-child').val()
-        $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId)
+        $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId)
             
     $('#searchButton').click (event) ->
         $form = $('#searchFormWrapper').find 'form'

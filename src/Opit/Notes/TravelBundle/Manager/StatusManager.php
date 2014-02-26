@@ -10,6 +10,7 @@ namespace Opit\Notes\TravelBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
+use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\Status;
@@ -88,7 +89,7 @@ class StatusManager
                         // Generate change status links
                         $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
                             'gmId' => $generalManager->getId(),
-                            'travelType' => $resource::TYPE,
+                            'travelType' => $resource::getType(),
                             'status' => $key,
                             'token' => $travelToken
                         ), true);
@@ -144,25 +145,29 @@ class StatusManager
     
     /**
      * 
-     * @param mixed (TravelRequest/TravelExpense) $resource
+     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $resource
      * @return Status
      */
     public function getCurrentStatus($resource)
     {
+        $status = null;
+        
         if (null === $resource) {
             return null;
-        } else {
-            $id = $resource->getId();
-            $className = Utils::getClassBasename($resource);
-            $currentStatus =
-                $this->entityManager->getRepository('OpitNotesTravelBundle:States' . $className . 's')
-                ->getCurrentStatus($id);
-            if (null === $currentStatus) {
-                return $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
-            } else {
-                return $currentStatus->getStatus();
-            }
         }
+        
+        $className = Utils::getClassBasename($resource);
+        $currentStatus = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:States' . $className . 's')
+            ->getCurrentStatus($resource->getId());
+        
+        if (null === $currentStatus) {
+            $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
+        } else {
+            $status = $currentStatus->getStatus();
+        }
+        
+        return $status;
     }
     
     /**
@@ -189,47 +194,45 @@ class StatusManager
     }
     
     /**
-     * Method to check status before the last is not equal to the first selectable option in dropdown
+     * Validates if next status can be set
      * 
-     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param integer $firstStatusId
+     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $travelResource
+     * @param integer $statusId The new status to be set
      * @return boolean
      */
-    public function isNewStatusValid(TravelRequest $travelRequest, $firstStatusId)
+    public function isValid(TravelResourceInterface $travelResource, $statusId)
     {
-        $valid = true;
+        $valid = false;
         
-        $getStatusCountForTravelRequest = $this->entityManager
-            ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-            ->getStatusCountForTravelRequest($travelRequest);
+        $currentStatus = $this->getCurrentStatus($travelResource);
+        $availableStateIds = array_keys($this->getNextStates($currentStatus));
         
-        if ($getStatusCountForTravelRequest > 2) {
-            $getStatusBeforeLast = $this->entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-                ->getStatusBeforeLast($travelRequest);
-            
-            // Set validity to false if second last status equals first status
-            if ($firstStatusId === $getStatusBeforeLast->getStatus()->getId()) {
-                $valid = false;
-            }
+        // Set validity true if current status does not match new status
+        // and new status is in available states list
+        if ($currentStatus->getId() != $statusId && in_array($statusId, $availableStateIds)) {
+            $valid = true;
         }
         
         return $valid;
     }
     
     /**
+     * Enforce status persistence
      * 
      * @param integer $statusId
+     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $travelResource
      * @param \Opit\Notes\UserBundle\Entity\User $user
-     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      */
-    public function forceTRStatus($statusId, $user, TravelRequest $travelRequest)
+    public function forceStatus($statusId, TravelResourceInterface $travelResource, $user = null)
     {
         $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
         $createdStatus = new StatesTravelRequests();
-        $createdStatus->setCreatedUser($user);
-        $createdStatus->setUpdatedUser($user);
+        if (null !== $user) {
+            $createdStatus->setCreatedUser($user);
+            $createdStatus->setUpdatedUser($user);
+        }
         $createdStatus->setStatus($status);
-        $createdStatus->setTravelRequest($travelRequest);
+        $createdStatus->setTravelRequest($travelResource);
 
         $this->entityManager->persist($createdStatus);
         $this->entityManager->flush();

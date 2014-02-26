@@ -2,7 +2,7 @@
 (function() {
   var changeTravelStatus;
 
-  changeTravelStatus = function(statusId, travelRequestId, firstStatusId) {
+  changeTravelStatus = function(statusId, travelRequestId) {
     var reloadPage;
     reloadPage = true;
     return $.ajax({
@@ -10,8 +10,7 @@
       url: Routing.generate('OpitNotesTravelBundle_request_state'),
       data: {
         'statusId': statusId,
-        'travelRequestId': travelRequestId,
-        'firstStatusId': firstStatusId
+        'travelRequestId': travelRequestId
       }
     }).done(function(data) {
       var dialogWidth;
@@ -57,7 +56,7 @@
       statusId = $(this).val();
       travelRequestId = $(this).closest('tr').find('.clickable').data('tr-id');
       firstStatusId = $(this).find('option:first-child').val();
-      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, firstStatusId);
+      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId);
     });
     $('#searchButton').click(function(event) {
       var $form, url;

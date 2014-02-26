@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
+use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
 
 /**
  * travel_request
@@ -15,7 +16,7 @@ use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TravelRequestRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class TravelRequest
+class TravelRequest implements TravelResourceInterface
 {
     const TYPE = 'tr';
     
@@ -322,10 +323,10 @@ class TravelRequest
     /**
      * Set user
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $user
+     * @param \Opit\Notes\TravelBundle\Model\TravelRequestUserInterface $user
      * @return TravelRequest
      */
-    public function setUser(\Opit\Notes\UserBundle\Entity\User $user = null)
+    public function setUser(\Opit\Notes\TravelBundle\Model\TravelRequestUserInterface $user = null)
     {
         $this->user = $user;
     
@@ -497,5 +498,15 @@ class TravelRequest
     public function getNotification()
     {
         return $this->notifications;
+    }
+    
+    /**
+     * Returns the travel type constant
+     * 
+     * @return string The travel entity type
+     */
+    public static function getType()
+    {
+        return self::TYPE;
     }
 }

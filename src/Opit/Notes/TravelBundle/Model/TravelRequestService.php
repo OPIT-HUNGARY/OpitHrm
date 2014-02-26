@@ -253,19 +253,20 @@ class TravelRequestService
     }
     
     /**
-     * Method to add new status from travel request
+     * Method to add new status to travel request
      * 
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param \Doctrine\ORM\EntityManager $entityManager
      */
-    public function addStatus(TravelRequest $travelRequest, EntityManager $entityManager)
+    public function addStatus(TravelRequest $travelRequest)
     {
-        //get current status of travel request
+        // Get current status of travel request
         $currentStatus = $this->statusManager->getCurrentStatus($travelRequest);
-        //if travel request current status is null
+        // Get initial status if travel request current status is null
         if (null === $currentStatus) {
-            //get the first(default) status and assign in to the newly created travel request
-            $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
+            $status = $this->entityManager
+                ->getRepository('OpitNotesTravelBundle:Status')
+                ->findStatusCreate();
+            
             //add status to travel request
             $this->statusManager->addStatus($travelRequest, $status->getId());
         }
@@ -442,16 +443,14 @@ class TravelRequestService
     
     /**
      * 
-     * @param TravelRequest $travelRequest
-     * @param integer $firstStatusId
+     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer $statusId
-     * @param StatusManager $statusManager
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function changeStatus(TravelRequest $travelRequest, $firstStatusId, $statusId, $statusManager)
+    public function changeStatus(TravelRequest $travelRequest, $statusId)
     {
-        if ($statusManager->isNewStatusValid($travelRequest, $firstStatusId)) {
-            $statusManager->addStatus($travelRequest, $statusId);
+        if ($this->statusManager->isValid($travelRequest, $statusId)) {
+            $this->statusManager->addStatus($travelRequest, $statusId);
             return new JsonResponse();
         } else {
             return new JsonResponse('error');
