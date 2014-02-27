@@ -34,14 +34,12 @@ class TravelController extends Controller
      */
     public function listAction(Request $request)
     {
-        $request = $this->getRequest();
         $showList = $request->request->get('showList');
         $securityContext = $this->get('security.context');
         $config = $this->container->getParameter('opit_notes_travel');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
-        $travelRequestRepository = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest');
         $user = $this->getUser();
         $isAdmin = $securityContext->isGranted('ROLE_ADMIN');
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
@@ -53,23 +51,16 @@ class TravelController extends Controller
             'currentUser' => $user,
             'isAdmin' => $isAdmin,
             'isGeneralManager' => $isGeneralManager,
-            'entityManager' => $entityManager
         );
         
+        $allRequests = array();
         if ($isSearch) {
-            $allRequests = $this->getRequest()->request->all();
-
-            $travelRequests = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
-                ->getTravelRequestsBySearchParams(
-                    $allRequests,
-                    $pagnationParameters
-                );
-        } else {
-            $travelRequests = $travelRequestRepository
-                ->getPaginaton($pagnationParameters);
+            $allRequests = $request->request->all();
         }
         
-        
+        $travelRequests = $entityManager
+            ->getRepository('OpitNotesTravelBundle:TravelRequest')
+            ->findAllByFiltersPaginated($pagnationParameters, $allRequests);
         $listingRights = $this->get('opit.model.travel_request')
             ->setTravelRequestListingRights($travelRequests, $isAdmin, $this->getUser());
         $teIds = $listingRights['teIds'];
@@ -77,26 +68,10 @@ class TravelController extends Controller
         $travelRequestStates = $listingRights['travelRequestStates'];
         $currentStatusNames = $listingRights['currentStatusNames'];
         $isLocked = $listingRights['isLocked'];
-        $numberOfPages = ceil(count($travelRequests) / $config['max_results']);
-        
-        $trArray = array();
-        foreach ($allowedTRs as $allowedTR) {
-            $trArray[] = $allowedTR;
-        }
-        
-        if ($offset <= $numberOfPages && $offset >= 0) {
-            $allowedTRs = array_slice(
-                $trArray,
-                ((null === $offset ? 0 : $offset - 1) * $config['max_results']),
-                $config['max_results']
-            );
-        } else {
-            return new JsonResponse('', 500);
-            
-        }
+        $numberOfPages = ceil(count($allowedTRs) / $config['max_results']);
         
         $templateVars = array(
-            'travelRequests' => $trArray,
+            'travelRequests' => $allowedTRs,
             'teIds' => $teIds,
             'travelRequestStates' => $travelRequestStates,
             'isLocked' => $isLocked,

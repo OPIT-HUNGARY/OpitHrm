@@ -123,7 +123,7 @@
           });
         }
       },
-      changeTravelStatus: function(statusId, travelRequestId, firstStatusId) {
+      changeTravelStatus: function(statusId, travelRequestId) {
         var reloadPage;
         reloadPage = true;
         return $.ajax({
@@ -131,8 +131,7 @@
           url: Routing.generate('OpitNotesTravelBundle_request_state'),
           data: {
             'statusId': statusId,
-            'travelRequestId': travelRequestId,
-            'firstStatusId': firstStatusId
+            'travelRequestId': travelRequestId
           }
         }).done(function(data) {
           var dialogWidth;
@@ -295,7 +294,7 @@
               buttons: {
                 'Send for approval': function() {
                   $changeState.addClass('dropdown-disabled');
-                  $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId, firstStatusId);
+                  $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId);
                   return $('#dialog-show-details-tr').dialog('destroy');
                 },
                 Close: function() {

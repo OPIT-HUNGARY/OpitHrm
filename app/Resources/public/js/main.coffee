@@ -100,12 +100,12 @@ $.extend true, $(document).data('notes'),
                   $(@).dialog 'destroy'
                   return
                   
-        changeTravelStatus: (statusId, travelRequestId, firstStatusId) ->
+        changeTravelStatus: (statusId, travelRequestId) ->
             reloadPage = true
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_request_state'
-                data: {'statusId': statusId, 'travelRequestId': travelRequestId, 'firstStatusId': firstStatusId}
+                data: {'statusId': statusId, 'travelRequestId': travelRequestId}
             .done (data) ->
                 if data is 'error'
                     reloadPage = false
@@ -246,7 +246,7 @@ $.extend true, $(document).data('notes'),
                         buttons:
                           'Send for approval': ->
                              $changeState.addClass 'dropdown-disabled'
-                             $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId, firstStatusId)
+                             $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId)
                              $('#dialog-show-details-tr').dialog 'destroy'
                           Close: ->
                              $('#dialog-show-details-tr').dialog 'destroy'

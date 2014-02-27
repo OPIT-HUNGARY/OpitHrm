@@ -17,6 +17,7 @@
       data: $form.serialize()
     }).done(function(response) {
       $('#list-table').parent().html(response);
+      $(document).data('notes').funcs.initListPageListeners();
       $(document).data('notes').funcs.initPager();
     });
   });

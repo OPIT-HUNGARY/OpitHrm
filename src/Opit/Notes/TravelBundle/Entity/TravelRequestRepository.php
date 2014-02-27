@@ -4,7 +4,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\TravelBundle\Entity\Status;
 
 /**
  * TravelRequestRepository
@@ -17,112 +17,80 @@ class TravelRequestRepository extends EntityRepository
     /**
      * Get back travel requests by the given search paramteres.
      *
-     * @param array $parameters query parameters
-     * @return array data of travel requests
+     * @param array $pagnationParameters Pagination parameters
+     * @param array $parameters Query parameters
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator Travel requests paginator object
      * @todo create search opportunity on TeamManager name
      * @todo create search opportunity on GeneralManager name
      */
-    public function getTravelRequestsBySearchParams($parameters, $pagnationParameters)
+    public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
-        $qb = $this->createQueryBuilder('tr');
-        /**
-         * Params which will be pass to the setParameter function.
-         * @var array
-         */
         $params = array();
-        $whereParams = $parameters['search'];
+        $whereParams = isset($parameters['search']) ? $parameters['search'] : array();
         $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
+        
+        $qb = $this->createQueryBuilder('tr')->distinct();
 
-        if ($whereParams['trId']!="") {
+        if (isset($whereParams['trId']) && $whereParams['trId'] != "") {
             $params['trId'] = '%'.$whereParams['trId'].'%';
             $qb->andWhere($qb->expr()->like('tr.travelRequestId', ':trId'));
         }
-        if ($whereParams['employeeName']!="") {
-            $qb->leftJoin('tr.user', 'u', 'WITH');
+        if (isset($whereParams['employeeName']) && $whereParams['employeeName'] != "") {
             $params['employeeName'] = '%'.$whereParams['employeeName'].'%';
-            $qb->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
+            $qb->innerJoin('tr.user', 'u', 'WITH')
+                ->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
         }
-        if ($whereParams['opportunityName']!="") {
-            $params['opportunityName'] = '%'.$whereParams['opportunityName'].'%';
+        if (isset($whereParams['opportunityName']) && $whereParams['opportunityName'] != "") {
+            $params['opportunityName'] = '%' . $whereParams['opportunityName'] . '%';
             $qb->andWhere($qb->expr()->like('tr.opportunityName', ':opportunityName'));
         }
-        if ($whereParams['destinationName']!="") {
-            $params['destinationName'] = '%'.$whereParams['destinationName'].'%';
+        if (isset($whereParams['destinationName']) && $whereParams['destinationName'] != "") {
+            $params['destinationName'] = '%' . $whereParams['destinationName'] . '%';
             $qb->leftJoin('tr.destinations', 'd', 'WITH');
             $qb->andWhere($qb->expr()->like('d.name', ':destinationName'));
         }
-        if ($whereParams['departureDateFrom']!="") {
+        if (isset($whereParams['departureDateFrom']) && $whereParams['departureDateFrom'] != "") {
             $params['departureDateFrom'] = $whereParams['departureDateFrom'];
             $qb->andWhere($qb->expr()->gte('tr.departureDate', ':departureDateFrom'));
         }
-        if ($whereParams['departureDateTo']!="") {
+        if (isset($whereParams['departureDateTo']) && $whereParams['departureDateTo'] != "") {
             $params['departureDateTo'] = $whereParams['departureDateTo'];
             $qb->andWhere($qb->expr()->lte('tr.departureDate', ':departureDateTo'));
         }
-        if ($whereParams['arrivalDateFrom']!="") {
+        if (isset($whereParams['arrivalDateFrom']) && $whereParams['arrivalDateFrom'] != "") {
             $params['arrivalDateFrom'] = $whereParams['arrivalDateFrom'];
             $qb->andWhere($qb->expr()->gte('tr.arrivalDate', ':arrivalDateFrom'));
         }
-        if ($whereParams['arrivalDateTo']!="") {
+        if (isset($whereParams['arrivalDateTo']) && $whereParams['arrivalDateTo'] != "") {
             $params['arrivalDateTo'] = $whereParams['arrivalDateTo'];
             $qb->andWhere($qb->expr()->lte('tr.arrivalDate', ':arrivalDateTo'));
         }
-
-        if ($pagnationParameters['isAdmin']) {
-            $qb->setParameters($params);
-            $qb->setFirstResult($pagnationParameters['firstResult']);
-            $qb->setMaxResults($pagnationParameters['maxResults']);
-        } elseif ($pagnationParameters['isGeneralManager']) {
-            $status = $pagnationParameters['entityManager']->getRepository('OpitNotesTravelBundle:Status')->find(1);
-            $travelRequests = $this->createQueryBuilder('tr')
-                ->leftJoin('tr.states', 's', 'WITH')
-                ->where($travelRequests->expr()->notIn('s', ':status'))
-                ->setParameter(':status', $status)
-                ->setFirstResult($pagnationParameters['firstResult'])
-                ->setMaxResults($pagnationParameters['maxResults']);
+        
+        $params['user'] = $pagnationParameters['currentUser'];
+        // If general manager filter created travel requests unless current user is the owner
+        if ($pagnationParameters['isGeneralManager']) {
+            $params['status'] = Status::CREATED;
+            $status_expr = $qb->expr()->orX(
+                $qb->expr()->notIn('s.status', ':status'),
+                $qb->expr()->eq('tr.user', ':user')
+            );
+            $qb->leftJoin('tr.states', 's', 'WITH')
+                ->andWhere($status_expr);
         } else {
-            $params['user'] = $pagnationParameters['currentUser'];
             $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
-            $qb->setParameters($params);
-            $qb->setFirstResult($pagnationParameters['firstResult']);
-            $qb->setMaxResults($pagnationParameters['maxResults']);
         }
+        
+        $qb->setParameters($params)
+            ->setFirstResult($pagnationParameters['firstResult'])
+            ->setMaxResults($pagnationParameters['maxResults']);
         
         if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
             $qb->orderBy('tr.'.$orderParams['field'], $orderParams['dir']);
         }
-        
-        return new Paginator($qb->getQuery(), $fetchJoinCollection = true);
+ 
+        return new Paginator($qb->getQuery(), true);
     }
     
-    public function getPaginaton($pagnationParameters)
-    {
-        $travelRequests = array();
-        if ($pagnationParameters['isAdmin']) {
-            $travelRequests = $this->createQueryBuilder('tr')
-                ->setFirstResult($pagnationParameters['firstResult'])
-                ->setMaxResults($pagnationParameters['maxResults'])
-                ->getQuery();
-        } elseif ($pagnationParameters['isGeneralManager']) {
-            $status = $pagnationParameters['entityManager']->getRepository('OpitNotesTravelBundle:Status')->find(1);
-            $travelRequests = $this->createQueryBuilder('tr')->leftJoin('tr.states', 's', 'WITH');
-            if (null !== $travelRequests) {
-                $travelRequests->where($travelRequests->expr()->notIn('s', ':status'));
-                $travelRequests->setParameter(':status', $status);
-            }
-            $travelRequests->setFirstResult($pagnationParameters['firstResult']);
-            $travelRequests->setMaxResults($pagnationParameters['maxResults']);
-        } else {
-            $travelRequests = $this->createQueryBuilder('tr')
-                ->where('tr.user = :user')
-                ->setParameter(':user', $pagnationParameters['currentUser'])
-                ->setFirstResult($pagnationParameters['firstResult'])
-                ->setMaxResults($pagnationParameters['maxResults'])
-                ->getQuery();
-        }
-        
-        return new Paginator($travelRequests, $fetchJoinCollection = true);
-    }
     /**
      * Find all travel request with ordering by fields.
      * 
@@ -146,6 +114,7 @@ class TravelRequestRepository extends EntityRepository
         }
        
         $q = $qb->getQuery();
+        
         return $q->getResult();
-	}    
+    }    
 }
