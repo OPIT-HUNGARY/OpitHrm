@@ -504,7 +504,7 @@ $(document).ready ->
 $formFieldset = $('<div>')
 $formFieldset.addClass 'formFieldset'
 
-$generalFormFieldset = $formFieldset.clone().addClass 'generalFormFieldset'
+$generalFormFieldset = $formFieldset.clone().addClass 'generalFormFieldset clearfix'
 $expensesPaidByMe = $formFieldset.clone().append $('<h3>').html 'Expenses paid by me <i class="fa fa-question-circle"></i>'
 $expensesPaidByOpit = $formFieldset.clone().append $('<h3>').html 'Expenses paid by opit <i class="fa fa-question-circle"></i>'
 
