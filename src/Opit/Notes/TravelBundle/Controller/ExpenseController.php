@@ -113,8 +113,8 @@ class ExpenseController extends Controller
         
         // set availabilty(edit, change status) for travel expense
         $editRights = $travelExpenseService->setEditRights(
-            $travelRequest->getGeneralManager()->getId(),
-            $currentUser->getId(),
+            $travelRequest,
+            $currentUser,
             $currentStatus->getId()
         );
         $isEditLocked = $editRights['isEditLocked'];

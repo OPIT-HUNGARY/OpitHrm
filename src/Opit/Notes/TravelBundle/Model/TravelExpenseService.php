@@ -14,6 +14,7 @@ use Opit\Notes\TravelBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
+use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
 
 /**
  * Description of TravelExpense
@@ -168,24 +169,25 @@ class TravelExpenseService
     /**
      * Method to set edit rights for travel request depending on its current status
      * 
-     * @param integer $travelRequestGM
+     * @param integer $travelRequest
      * @param integer $currentUser
      * @param integer $currentStatusId
      * @return array
      */
-    public function setEditRights($travelRequestGM, $currentUser, $currentStatusId)
+    public function setEditRights(TravelRequest $travelRequest, TravelRequestUserInterface $currentUser, $currentStatusId)
     {
-        $isEditLocked = false;
-        $isStatusLocked = false;
-        if ($travelRequestGM === $currentUser || $this->securityContext->isGranted('ROLE_ADMIN')) {
-            $isEditLocked = true;
-            if (Status::CREATED === $currentStatusId || Status::REVISE === $currentStatusId) {
-                $isStatusLocked = true;
+        $isEditLocked = true;
+        $isStatusLocked = true;
+        
+        // If request was created by current user
+        if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
+            if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
+                $isEditLocked = false;
+                $isStatusLocked = false;
             }
-        } else {
-            if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
-                $isEditLocked = true;
-                $isStatusLocked = true;
+        } elseif ($travelRequest->getGeneralManager()->getId() === $currentUser->getId()) {
+            if (!in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
+                $isStatusLocked = false;
             }
         }
         
