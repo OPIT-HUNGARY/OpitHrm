@@ -94,10 +94,10 @@ class ExpenseController extends Controller
         $isNewTravelExpense = "new" !== $travelExpenseId;
         $currentUser = $this->getUser();
         $travelExpenseService = $this->get('opit.model.travel_expense');
-        $exchService = $this->container->get('opit.service.exchange_rates');
+        $exchService = $this->container->get('rate.exchange_service');
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
-        $approvedCosts = $travelExpenseService->getTRCosts($travelRequest, $exchService);
+        $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
         
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());
@@ -357,7 +357,7 @@ class ExpenseController extends Controller
                 'midRate' => $midRate,
                 'companyPaidExpenses' => $sumOfCostsByCurrencies['companyPaidExpenses'],
                 'employeePaidExpenses' => $sumOfCostsByCurrencies['employeePaidExpenses'],
-                'rates' => $this->container->get('opit.service.exchange_rates')
+                'rates' => $this->container->get('rate.exchange_service')
                                ->getRatesByDate($midRate)
             )
         );

@@ -12,7 +12,7 @@
         <parameter key="opit.twig.opit_currency_extension.class">Opit\Notes\CurrencyRateBundle\Twig\OpitExtension</parameter>
     </parameters>
     <services>
-        <service id="opit.service.exchange_rates" class="%opit.service.exchange_rates.class%">
+        <service id="opit.service.exchange_rates" lazy="true" class="%opit.service.exchange_rates.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="logger" />
             <argument>%opit.service.exchange_rates.huf_value%</argument>

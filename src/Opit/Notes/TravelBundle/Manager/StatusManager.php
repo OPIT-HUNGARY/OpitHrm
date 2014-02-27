@@ -76,7 +76,7 @@ class StatusManager
         $generalManager = $travelRequest->getGeneralManager();
 
         $estimatedCosts = $this->container->get('opit.model.travel_expense')
-            ->getTRCosts($travelRequest, $this->container->get('opit.service.exchange_rates'));
+            ->getTRCosts($travelRequest);
             
         $this->removeTravelTokens($resourceId);
         

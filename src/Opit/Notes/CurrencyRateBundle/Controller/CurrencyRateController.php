@@ -4,8 +4,10 @@ namespace Opit\Notes\CurrencyRateBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * This controller class is for the ChangeRateBundle.
@@ -19,37 +21,40 @@ class CurrencyRateController extends Controller
 {
 
     /**
-     * To get exchange rates
+     * Returns exchange rates from MNB
      *
      * @Route("/secured/currencyrates/view", name="OpitNotesCurrencyRateBundle_currencyrates_view")
+     * @Method({"GET"})
      * @Template()
      */
-    public function getExchangeRatesAction()
+    public function getExchangeRatesAction(Request $request)
     {
-        $exch = $this->get('opit.service.exchange_rates');
-        $exch->getExchangeRates(array(
-            //'startDate' => '2014-01-20',
-            'endDate' => '2014-01-25',
-            'currencyNames' => 'EUR,USD'
-        ));
-        $exch->saveExchangeRates(true);
-        return new \Symfony\Component\HttpFoundation\Response();
+        $options = $request->query->all();
+        if (!isset($options['startDate'])) {
+            $today = new \DateTime('today');
+            $options['startDate'] = $today->format('Y-m-d');
+        }
+        
+        $exch = $this->get('rate.exchange_service');
+        $rates = $exch->getExchangeRates($options);
+        
+        return new JsonResponse($rates);
     }
     
     /**
      * To get covnerted rate of currency
      *
      * @Route("/secured/currencyrates/convert", name="OpitNotesCurrencyRateBundle_currencyrate_convert")
+     * @Method({"GET"})
      * @Template()
      */
-    public function getConvertedRateOfCurrencyAction()
+    public function getConvertedRateOfCurrencyAction(Request $request)
     {
-        $request = $this->getRequest();
-        $originCode = $request->request->get('originCode');
-        $destinationCode = $request->request->get('destinationCode');
-        $value = $request->request->get('value');
-
-        $exch = $this->get('opit.service.exchange_rates');
+        $originCode = $request->query->get('codeFrom');
+        $destinationCode = $request->query->get('codeTo');
+        $value = $request->query->get('value');
+        
+        $exch = $this->get('rate.exchange_service');
         $convertedValue = $exch->convertCurrency($originCode, $destinationCode, $value);
         
         return new JsonResponse(array($destinationCode => $convertedValue));

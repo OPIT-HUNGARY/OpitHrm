@@ -16,6 +16,7 @@ use Doctrine\Common\CommonException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Bridge\Monolog\Logger;
 use Opit\Notes\CurrencyRateBundle\Helper\Utils;
+use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 
 /**
  * This class is a service for the ChangeRateBundle to get the exchange rates.
@@ -25,7 +26,7 @@ use Opit\Notes\CurrencyRateBundle\Helper\Utils;
  * @package Opit
  * @subpackage CurrencyRateBundle
  */
-class ExchangeRateService
+class ExchangeRateService implements ExchangeRateInterface
 {
     /**
      * em 
@@ -128,7 +129,7 @@ class ExchangeRateService
     * 
     * @param string $code the currency code
     * @param \DateTime $datetime the searched datetime
-    * @return integer rate
+    * @return float rate
     */
     public function getRateOfCurrency($code, \DateTime $datetime = null)
     {
@@ -286,7 +287,7 @@ class ExchangeRateService
             sprintf('[|%s] Exchange rates retrieved from MNB.', Utils::getClassBasename($this))
         );
         
-        $this->currencyRates = $currencyRates;
+        $this->setExchangeRates($currencyRates);
         
         return $this->currencyRates;
     }

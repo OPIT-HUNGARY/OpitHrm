@@ -115,7 +115,7 @@ class TravelController extends Controller
         }
         
         $estimatedCosts = $this->get('opit.model.travel_expense')
-            ->getTRCosts($travelRequest, $this->container->get('opit.service.exchange_rates'));
+            ->getTRCosts($travelRequest);
         
         return array(
             'travelRequest' => $travelRequest,

@@ -111,7 +111,7 @@ EOT
         $this->logger = $this->getContainer()->get('logger');
         $this->logger->info(sprintf('[|%s] %s command is called.', Utils::getClassBasename($this), $this->getName()));
         
-        $this->exchangeService = $this->getContainer()->get('opit.service.exchange_rates');
+        $this->exchangeService = $this->getContainer()->get('rate.exchange_service');
         $this->inputOptions = $input->getOptions();
     }
 

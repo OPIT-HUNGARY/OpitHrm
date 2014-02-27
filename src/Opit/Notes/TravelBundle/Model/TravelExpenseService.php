@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 
 /**
  * Description of TravelExpense
@@ -25,11 +26,11 @@ class TravelExpenseService
     protected $entityManager;
     protected $config;
     
-    public function __construct($securityContext, EntityManager $entityManager, $container, $config = array())
+    public function __construct($securityContext, EntityManager $entityManager, ExchangeRateInterface $exchangeService, $config = array())
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
-        $this->container = $container;
+        $this->exchangeService = $exchangeService;
         $this->config = $config;
     }
     
@@ -74,9 +75,7 @@ class TravelExpenseService
         $daysBetweenPerDiem = 0;
         $departureDayTravelHours = 0;
         $arrivalDayTravelHours = 0;
-        $departureDayTravelHours = 0;
         $departureDayPerDiem = 0;
-        $arrivalDayTravelHours = 0;
         $arrivalDayPerDiem = 0;
         
         if ($departureDate !== $arrivalDate) {
@@ -143,9 +142,8 @@ class TravelExpenseService
     {
         $expensesPaidbyCompany = 0;
         $expensesPaidByEmployee = 0;
-        $exchManager = $this->container->get('opit.service.exchange_rates');
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
-            $expensesPaidbyCompany += $exchManager->convertCurrency(
+            $expensesPaidbyCompany += $this->exchangeService->convertCurrency(
                 $companyPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $companyPaidExpenses->getAmount(),
@@ -154,7 +152,7 @@ class TravelExpenseService
         }
 
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
-            $expensesPaidByEmployee += $exchManager->convertCurrency(
+            $expensesPaidByEmployee += $this->exchangeService->convertCurrency(
                 $userPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $userPaidExpenses->getAmount(),
@@ -256,10 +254,9 @@ class TravelExpenseService
     /**
      * 
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param type $exchService
-     * @return type
+     * @return array Travel request costs in HUF and EUR
      */
-    public function getTRCosts(TravelRequest $travelRequest, $exchService)
+    public function getTRCosts(TravelRequest $travelRequest)
     {
         $approvedCostsEUR = 0;
         $approvedCostsHUF = 0;
@@ -268,13 +265,13 @@ class TravelExpenseService
             $accomodationCost = $accomodation->getCost();
             $accomodationCurrency = $accomodation->getCurrency();
 
-            $approvedCostsHUF += $exchService->convertCurrency(
+            $approvedCostsHUF += $this->exchangeService->convertCurrency(
                 $accomodationCurrency->getCode(),
                 'HUF',
                 $accomodationCost,
                 $midRate
             );
-            $approvedCostsEUR += $exchService->convertCurrency(
+            $approvedCostsEUR += $this->exchangeService->convertCurrency(
                 $accomodationCurrency->getCode(),
                 'EUR',
                 $accomodationCost,
@@ -286,13 +283,13 @@ class TravelExpenseService
             $destinationCost = $destination->getCost();
             $destinationCurrency = $destination->getCurrency();
 
-            $approvedCostsHUF += $exchService->convertCurrency(
+            $approvedCostsHUF += $this->exchangeService->convertCurrency(
                 $destinationCurrency->getCode(),
                 'HUF',
                 $destinationCost,
                 $midRate
             );
-            $approvedCostsEUR += $exchService->convertCurrency(
+            $approvedCostsEUR += $this->exchangeService->convertCurrency(
                 $destinationCurrency->getCode(),
                 'EUR',
                 $destinationCost,
