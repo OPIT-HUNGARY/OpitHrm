@@ -38,10 +38,8 @@ class NotificationManager
      */
     public function getUnreadNotifications(User $currentUser)
     {
-        $unreadStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:NotificationStatus')
-            ->find(NotificationStatus::UNREAD);
         $unreadNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
-            ->findBy(array('receiver' => $currentUser, 'read' => $unreadStatus));
+            ->findBy(array('receiver' => $currentUser, 'read' => NotificationStatus::UNREAD));
         
         return $unreadNotifications;
     }
@@ -54,19 +52,26 @@ class NotificationManager
      */
     public function getAllNotifications(User $currentUser)
     {
-        $unreadNotifications = $this->getUnreadNotifications($currentUser);
+        // TODO: Unify the 2 queries or refactor the set unseen business logic
+        $allNotifications = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:Notification')
+            ->findByReceiver($currentUser);
 
-        foreach ($unreadNotifications as $notification) {
-            $this->setNotificationStatus($notification, NotificationStatus::UNSEEN);
-            $this->entityManager->persist($notification);
+        // Set new notifications to unseen
+        foreach ($allNotifications as $notification) {
+            if ($notification->getRead()->getId() === NotificationStatus::UNREAD) {
+                $this->setNotificationStatus($notification, NotificationStatus::UNSEEN);
+                $this->entityManager->persist($notification);
+            }
         }
         
         $this->entityManager->flush();
         
-        $allNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
+        // Retrieve last 10 matching notifications (see repository method for details)
+        $lastNotifications = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
             ->getLastTenNotifications($currentUser->getId());
         
-        return $allNotifications;
+        return $lastNotifications;
     }
     
     /**
