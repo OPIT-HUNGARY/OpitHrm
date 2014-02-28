@@ -172,7 +172,7 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
 .formFieldset .formFieldsetButton i { margin: 0 2px 0 0; }
 .formFieldset .formFieldsetButton:hover { cursor: pointer; }
 .formFieldset .deleteFormFieldsetChild { color: #aa0000; }
-.formFieldset .addFormFieldsetChild { color: darkgreen; margin-left: 1em; }
+.formFieldset .addFormFieldsetChild { color: darkgreen; margin-left: 1em; display: table; }
 
 .inlineElements { display: inline-block !important; vertical-align: top; margin-right: 1em; }
 
@@ -259,3 +259,5 @@ header #menuWrapper nav:first-child .active .subMenu { background-color: #f28c38
 .margin-left-0 { margin-left: 0 !important; }
 
 .order-text:hover { cursor: pointer; }
+
+.underline { text-decoration: underline; }
