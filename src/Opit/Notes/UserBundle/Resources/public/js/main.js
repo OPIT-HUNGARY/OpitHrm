@@ -221,7 +221,7 @@
     $(document).data('notes').funcs.initListPageListeners();
     $(document).data('notes').funcs.initPager();
     $notificationsWrapper = $('#notifications-wrapper');
-    $('#notifications > i.fa-globe').on('click.notifications', function(event) {
+    $('#notifications > i.fa-bell-o').on('click.notifications', function(event) {
       var $container;
       event.stopPropagation();
       $container = $(this).parent();

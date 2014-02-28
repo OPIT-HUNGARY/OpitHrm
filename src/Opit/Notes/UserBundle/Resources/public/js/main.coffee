@@ -184,7 +184,7 @@ $(document)
 
         $notificationsWrapper = $('#notifications-wrapper')
         
-        $('#notifications > i.fa-globe').on 'click.notifications', (event) ->
+        $('#notifications > i.fa-bell-o').on 'click.notifications', (event) ->
             # stop event bubbling
             event.stopPropagation()
             $container = $(@).parent()

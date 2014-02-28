@@ -409,7 +409,7 @@ header{
     @include transition(right, .5s);
     
     i{
-        font-size:25px;
+        font-size:1.6em;
         color:$defaultDarkColor;
     }
 }
@@ -423,12 +423,12 @@ header{
 
 #unread-notifications-count{
     background-color:$orangeColor;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     color: white;
     text-align: center;
-    line-height: 1.4em;
-    font-size: 10px;
+    line-height: 1.5em;
+    font-size: 9px;
     margin-left: -6px;
     margin-top: -14px;
     font-weight: bold;
