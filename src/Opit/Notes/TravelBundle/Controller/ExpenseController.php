@@ -83,20 +83,19 @@ class ExpenseController extends Controller
     /**
      * Method to show and edit travel expense
      *
-     * @Route("/secured/expense/show/{id}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Route("/secured/expense/{id}/show/{trId}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+", "trId" = "\d+"})
+     * @Method({"GET"})
      * @Template()
      */
-    public function showTravelExpenseAction(Request $request)
+    public function showTravelExpenseAction(Request $request, $trId, $id)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $travelExpenseId = $request->attributes->get('id');
-        $travelRequestId = $request->query->get('tr');
-        $isNewTravelExpense = "new" !== $travelExpenseId;
+        $isNewTravelExpense = "new" !== $id;
         $currentUser = $this->getUser();
         $travelExpenseService = $this->get('opit.model.travel_expense');
         $exchService = $this->container->get('rate.exchange_service');
-        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
-        $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($travelExpenseId) : new TravelExpense();
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
+        $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($id) : new TravelExpense();
         $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
         
         // Get rates

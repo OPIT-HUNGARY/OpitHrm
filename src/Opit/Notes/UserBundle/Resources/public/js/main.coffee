@@ -73,6 +73,21 @@ changeDeleteButton = (disableInputCheck = false) ->
                 return false
                
 getAllNotifications = ($notificationsWrapper) ->
+    changeStatus = (el, callback) ->
+        if el.closest('.notification').hasClass 'unread'
+            $.ajax
+                method: 'POST'
+                url: Routing.generate 'OpitNotesTravelBundle_notifications_state_change'
+                data: "id" : el.data('id')
+            .complete ->
+                # if ajax request is completed, remove unread class
+                el.closest('.notification').removeClass 'unread'
+                console.log callback
+                callback() if callback?
+                return
+        else
+            callback() if callback?
+        return
     # post an AJAX request to get all notifications
     $.ajax
         method: 'POST'
@@ -86,25 +101,33 @@ getAllNotifications = ($notificationsWrapper) ->
             notificationId = $(self).data 'id'
             # if delete icon clicked send an AJAX request to delete notification
             $.ajax
-                method: 'GET'
-                url: Routing.generate 'OpitNotesTravelBundle_notification_delete', id: notificationId
+                method: 'POST'
+                url: Routing.generate 'OpitNotesTravelBundle_notification_delete'
+                data: "id" : notificationId
             .done (data) ->
                 # if item was deleted remove row from wrapper
                 self.closest('.notification').remove()
-        # add listener to details buton
-        $('.notification-details').on 'click', (event) ->
-            # if clicked prevent default event
-            event.preventDefault()
+        # add listener to message container
+        $('.notification-message').on 'click', (event) ->
+            # if clicked prevent propagation
+            event.stopPropagation()
             self = $(@)
-            notificationId = self.data 'id'
-            # set an AJAX request to change the read state of the notification
-            $.ajax
-                method: 'POST'
-                url: Routing.generate 'OpitNotesTravelBundle_notifications_state_change'
-                data: "id" : notificationId
-            .complete ->
-                # if ajax request is completed redirect user
+            # Change notification status
+            changeStatus self
+            return
+      
+        # prevent propagation for details links
+        $('.notification-details').on 'click.notifications', (event) ->
+            # stop event bubbling
+            event.preventDefault()
+            event.stopPropagation()
+            self = $(@)
+            # Change notification status
+            changeStatus self.parent(), ->
                 window.location.href = self.attr 'href'
+                return
+            return
+                
         # show notifications wrapper
         $notificationsWrapper.removeClass 'display-none'
                
@@ -159,20 +182,38 @@ $(document)
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
 
-        $('#notifications').toggleClass 'right-0'
         $notificationsWrapper = $('#notifications-wrapper')
-        $('#notifications').on 'click', (event) ->
-            #stop event bubbling
+        
+        $('#notifications > i.fa-globe').on 'click.notifications', (event) ->
+            # stop event bubbling
             event.stopPropagation()
-            if $(@).hasClass 'right-0'
+            $container = $(@).parent()
+            if !$container.hasClass 'right-300'
+                $container.addClass 'right-300'
                 # remove classes that make the notifications tab active
-                $('#notifications i').removeClass 'active-text'
+                $(@).removeClass 'active-text'
                 $('#unread-notifications-count').addClass 'display-none'
-                #call get all notifications function
+                # call get all notifications function
                 getAllNotifications($notificationsWrapper)
-                $(@).toggleClass 'right-300'
+                
+                # prevent event propagation for elements inside notifications container
+                $('#notifications-wrapper').on 'click.notifications', (event) ->
+                    event.stopPropagation()
+                    
+                # register hide listener clicking outside of the notifications boundaries
+                $('body').on 'click.notifications', (event) ->
+                    console.log 'yes'
+                    if $('#notifications').hasClass 'right-300'
+                        $('#notifications').removeClass 'right-300'
+                        
+                        # detach event listener if notifications are hidden
+                        $('body, #notifications-wrapper').off 'click.notifications'
             else
-                $(@).toggleClass 'right-0'
+                $container.removeClass 'right-300'
+                
+                # detach event listener if notifications are hidden
+                $('body, #notifications-wrapper').off 'click.notifications'
+        
         # start checking for new notifications
         getUnreadNotifications()
     

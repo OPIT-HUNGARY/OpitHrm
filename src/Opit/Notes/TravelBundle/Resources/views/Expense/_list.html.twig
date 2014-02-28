@@ -25,7 +25,7 @@
             <td>{{ travelExpense.departureCountry }}</td>
             <td>{{ travelExpense.arrivalCountry}}</td>
             <td>
-                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.id}) }}" title="Edit travel expense"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.id, 'trId': travelExpense.travelRequest.id}) }}" title="Edit travel expense"><i class="fa fa-pencil-square-o"></i></a>
                 {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelExpense) %}
                 <a href="#" data-id="{{ travelExpense.id }}" class="deleteSingeTravelExpense" title="Delete travel expense"><i class="fa fa-trash-o"></i></a>
                 {% endif %}

@@ -74,7 +74,7 @@
     {% endif %}
 
     {{ form(form, {
-        'action': (path('OpitNotesTravelBundle_expense_show', { 'id': app.request.get('id'), 'tr': app.request.get('tr')})),
+        'action': (path('OpitNotesTravelBundle_expense_show', { 'id': app.request.get('id'), 'trId': app.request.get('trId')})),
         'method': 'POST',
         'attr':{'id': 'travelExpenseForm'}
        })

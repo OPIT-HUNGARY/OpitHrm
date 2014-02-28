@@ -14,12 +14,13 @@
                 <i class="fa fa-trash-o" data-id="{{ travelRequest.id }}"></i>
             </div>
         </div>
-        <div class="notification-message">
+        <div class="notification-message" data-id="{{ travelRequest.id }}">
             {% set msg = travelRequest.message %}
             {{ msg }}
             {% if 'approved' not in msg and 'rejected' not in msg %}
-            <a class="notification-details" data-id="{{ travelRequest.id }}"
-               href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.travelRequest.id}) }}"> details</a>
+            <a class="notification-details" href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.travelRequest.id}) }}">
+                details
+            </a>
             {% endif %}
         </div>
     </div>
@@ -30,22 +31,23 @@
     You have no travel expense notifications.
 </h5>
 {% endif %}
-{% for travelExpense in travelExpenses %}
-    <div class="notification {% if 2 == travelExpense.read.id %}unread{% endif %}">
+{% for teNotification in travelExpenses %}
+    <div class="notification {% if 2 == teNotification.read.id %}unread{% endif %}">
         <div class="notification-header">
             <div class="notification-header-datetime">
-                {{ travelExpense.dateTime|date('Y-m-d H:i:s') }}
+                {{ teNotification.dateTime|date('Y-m-d H:i:s') }}
             </div>
             <div class="notification-header-delete">
-                <i class="fa fa-trash-o" data-id="{{ travelExpense.id }}"></i>
+                <i class="fa fa-trash-o" data-id="{{ teNotification.id }}"></i>
             </div>
         </div>
-        <div class="notification-message">
-            {% set msg = travelExpense.message %}
+        <div class="notification-message" data-id="{{ teNotification.id }}">
+            {% set msg = teNotification.message %}
             {{ msg }}
             {% if 'approved' not in msg and 'rejected' not in msg %}
-            <a class="notification-details" data-id="{{ travelExpense.id }}"
-               href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelExpense.travelExpense.id}) }}?tr={{ travelExpense.travelExpense.travelRequest.id }}"> details</a>
+            <a class="notification-details" href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': teNotification.travelExpense.id, 'trId': teNotification.travelExpense.travelRequest.id}) }}">
+                details
+            </a>
             {% endif %}
         </div>
     </div>

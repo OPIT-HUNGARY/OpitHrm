@@ -107,6 +107,28 @@
   };
 
   getAllNotifications = function($notificationsWrapper) {
+    var changeStatus;
+    changeStatus = function(el, callback) {
+      if (el.closest('.notification').hasClass('unread')) {
+        $.ajax({
+          method: 'POST',
+          url: Routing.generate('OpitNotesTravelBundle_notifications_state_change'),
+          data: {
+            "id": el.data('id')
+          }
+        }).complete(function() {
+          el.closest('.notification').removeClass('unread');
+          console.log(callback);
+          if (callback != null) {
+            callback();
+          }
+        });
+      } else {
+        if (callback != null) {
+          callback();
+        }
+      }
+    };
     return $.ajax({
       method: 'POST',
       url: Routing.generate('OpitNotesTravelBundle_notifications_all')
@@ -117,27 +139,28 @@
         self = $(this);
         notificationId = $(self).data('id');
         return $.ajax({
-          method: 'GET',
-          url: Routing.generate('OpitNotesTravelBundle_notification_delete', {
-            id: notificationId
-          })
+          method: 'POST',
+          url: Routing.generate('OpitNotesTravelBundle_notification_delete'),
+          data: {
+            "id": notificationId
+          }
         }).done(function(data) {
           return self.closest('.notification').remove();
         });
       });
-      $('.notification-details').on('click', function(event) {
-        var notificationId, self;
-        event.preventDefault();
+      $('.notification-message').on('click', function(event) {
+        var self;
+        event.stopPropagation();
         self = $(this);
-        notificationId = self.data('id');
-        return $.ajax({
-          method: 'POST',
-          url: Routing.generate('OpitNotesTravelBundle_notifications_state_change'),
-          data: {
-            "id": notificationId
-          }
-        }).complete(function() {
-          return window.location.href = self.attr('href');
+        changeStatus(self);
+      });
+      $('.notification-details').on('click.notifications', function(event) {
+        var self;
+        event.preventDefault();
+        event.stopPropagation();
+        self = $(this);
+        changeStatus(self.parent(), function() {
+          window.location.href = self.attr('href');
         });
       });
       return $notificationsWrapper.removeClass('display-none');
@@ -197,17 +220,29 @@
     var $deleteButton, $notificationsWrapper;
     $(document).data('notes').funcs.initListPageListeners();
     $(document).data('notes').funcs.initPager();
-    $('#notifications').toggleClass('right-0');
     $notificationsWrapper = $('#notifications-wrapper');
-    $('#notifications').on('click', function(event) {
+    $('#notifications > i.fa-globe').on('click.notifications', function(event) {
+      var $container;
       event.stopPropagation();
-      if ($(this).hasClass('right-0')) {
-        $('#notifications i').removeClass('active-text');
+      $container = $(this).parent();
+      if (!$container.hasClass('right-300')) {
+        $container.addClass('right-300');
+        $(this).removeClass('active-text');
         $('#unread-notifications-count').addClass('display-none');
         getAllNotifications($notificationsWrapper);
-        return $(this).toggleClass('right-300');
+        $('#notifications-wrapper').on('click.notifications', function(event) {
+          return event.stopPropagation();
+        });
+        return $('body').on('click.notifications', function(event) {
+          console.log('yes');
+          if ($('#notifications').hasClass('right-300')) {
+            $('#notifications').removeClass('right-300');
+            return $('body, #notifications-wrapper').off('click.notifications');
+          }
+        });
       } else {
-        return $(this).toggleClass('right-0');
+        $container.removeClass('right-300');
+        return $('body, #notifications-wrapper').off('click.notifications');
       }
     });
     getUnreadNotifications();

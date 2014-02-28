@@ -114,7 +114,7 @@ class NotificationManager
         $notification->setMessage($message);
         $notification->setReceiver($receiver);
         $notification->setDateTime(new \DateTime('now'));
-        $notification = $this->setNotificationStatus($notification);
+        $this->setNotificationStatus($notification);
         $this->entityManager->persist($notification);
         $this->entityManager->flush();
     }
@@ -126,8 +126,8 @@ class NotificationManager
      */
     public function deleteNotification($notificationId)
     {
-        $this->entityManager->getFilters()->enable('softdeleteable');
-        $notification = $this->entityManager->getRepository('OpitNotesTravelBundle:Notification')
+        $notification = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:Notification')
             ->find($notificationId);
         $this->entityManager->remove($notification);
         $this->entityManager->flush();

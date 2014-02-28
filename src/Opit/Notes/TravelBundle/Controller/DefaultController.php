@@ -164,23 +164,23 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $notification = $entityManager->getRepository('OpitNotesTravelBundle:Notification')->find($notificationId);
         $notificationManager = $this->get('opit.manager.notification_manager');
-        $notification = $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
+        $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
         $entityManager->persist($notification);
         $entityManager->flush();
-        
-        return new JsonResponse();
+
+        return new JsonResponse(array('success' => ($notification->getRead()->getId() === NotificationStatus::READ)));
     }
     
     /**
      * Method to delete a notification
      *
-     * @Route("/secured/notification/delete/{id}", name="OpitNotesTravelBundle_notification_delete", requirements={ "id" = "\d+" }))
+     * @Route("/secured/notification/delete", name="OpitNotesTravelBundle_notification_delete")
      * @Template()
-     * @Method({"GET"})
+     * @Method({"POST"})
      */
     public function deleteNotificationAction(Request $request)
     {
-        $notificationId = $request->attributes->get('id');
+        $notificationId = $request->request->get('id');
         $notificationManager = $this->get('opit.manager.notification_manager');
         $notificationManager->deleteNotification($notificationId);
         
