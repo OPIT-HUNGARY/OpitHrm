@@ -7,10 +7,16 @@
 
     <parameters>
         <parameter key="opit.twig.opit_extension.class">Opit\Notes\UserBundle\Twig\OpitExtension</parameter>
+        <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
+        <parameter key="opit.model.user.class">Opit\Notes\UserBundle\Model\UserService</parameter>
     </parameters>
     <services>
         <service id="opit.twig.opit_extension" class="%opit.twig.opit_extension.class%">
             <tag name="twig.extension" />
+        </service>
+        <service id="opit.model.user" class="%opit.model.user.class%">
+            <argument type="service" id="opit.manager.email_manager" />
+            <argument type="service" id="security.encoder_factory" />
         </service>
     </services>
 </container>

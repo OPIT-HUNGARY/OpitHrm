@@ -56,6 +56,34 @@ $(document).ready ->
         $checkbox.prop 'checked', true
         deleteUser()
 
+    $('#userlistWrapper').on 'click', '.reset-password', ->
+        employeeName = $(@).closest('tr').find('td:nth-child(4)').html()
+        userId = $(@).data 'user-id'
+        $('<div id="reset-password-dialog"></div>').html(
+            "Are you sure you want to reset <b class='underline'>#{ employeeName }'s</b> password ?
+            The user will be informed about new password via email."
+        )
+            .dialog
+                open: ->
+                  $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Reset user password')
+                dialogClass: 'popup-dialog'
+                width: 750
+                modal: on
+                buttons:
+                  Reset: ->
+                    $.ajax
+                        global: false
+                        type: 'POST'
+                        url: Routing.generate 'OpitNotesUserBundle_user_password_reset'
+                        data: 'id': userId
+                    .done (data)->
+                        $('#reset-password-dialog').dialog 'destroy'
+                    .fail (data) ->
+                        console.warn data
+                  Close: ->
+                      $('#reset-password-dialog').dialog 'destroy'
+                      return
+        
     $('#userlistWrapper').on 'click', 'th .fa-trash-o', ->
         $('.list-delete-user').filter(() -> return not @.disabled).checkAll()
 

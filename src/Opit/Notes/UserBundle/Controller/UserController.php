@@ -43,7 +43,7 @@ class UserController extends Controller
             $allRequests = $request->request->all();
 
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
-                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $config['max_results']), $config['max_results']);            
+                    ->findUsersByPropertyUsingLike($allRequests, ($offset * $config['max_results']), $config['max_results']);
         } else{
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
                 ->getPaginaton(($offset * $config['max_results']), $config['max_results']);
@@ -133,6 +133,7 @@ class UserController extends Controller
         $statusCode = 200;
         $errors = array();
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN') ? true : false;
+        $userService = $this->get('opit.model.user');
         $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
         
         $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
@@ -144,21 +145,22 @@ class UserController extends Controller
             ),
             $user
         );
-
+        
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             // Process form data and create user
             if ($form->isValid()) {
-
-                if (!$user->getId()) {
-                    // Encode the user's password.
-                    $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
-                    $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                    $user->setPassword($newPassword);
+                
+                if (null === $user->getId()) {
+                    $user->setIsFirstLogin(true);
+                    $user->setPassword($userService->encodePassword($user));
+                    $userService->sendNewPasswordMail($user);
                 }
+                
                 // Save the user.
                 $em->persist($user);
                 $em->flush();
+
                 $result['response'] = 'success';
              
                 if ($isAdmin) {
@@ -214,6 +216,30 @@ class UserController extends Controller
     }
 
     /**
+     * Method to change password for user
+     *
+     * @Route("/secured/user/password/reset", name="OpitNotesUserBundle_user_password_reset")
+     * @Method({"POST"})
+     */
+    public function resetPasswordAction()
+    {
+        $request = $this->getRequest();
+        $entityManager = $this->getDoctrine()->getManager();
+        $userService = $this->get('opit.model.user');
+        $userId = $request->request->get('id');
+        $user =  $this->getDoctrine()->getManager()
+            ->getRepository('OpitNotesUserBundle:User')
+            ->find($userId);
+        $user->setIsFirstLogin(true);
+        $user->setPassword($userService->encodePassword($user));
+        $userService->sendNewPasswordMail($user, true);
+        $entityManager->persist($user);
+        $entityManager->flush();
+                
+        return new JsonResponse('');
+    }
+    
+    /**
      * To generate change password form
      *
      * @Route("/secured/user/show/password/{id}", name="OpitNotesUserBundle_user_show_password", requirements={"id" = "\d+"})
@@ -243,7 +269,6 @@ class UserController extends Controller
      */
     public function updatePasswordAction()
     {
-        $errorMessages = array();
         $result = array('response' => 'error');
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();

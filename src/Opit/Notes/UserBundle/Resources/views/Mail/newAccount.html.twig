@@ -1,0 +1,17 @@
+{% set loginPageLink %}
+<a href="{{ path('OpitNotesUserBundle_security_login') }}">
+    NOTES
+</a>
+{% endset %}
+<div style="margin: 0 0 10px 0;">Hi {{ templateVars['user'].employeeName }}</div>
+<div style="margin: 0 0 10px 0;">
+    Welcome to {{ loginPageLink }} (New Opit Travel Expense System).
+    You can now log into {{ loginPageLink }} by using the following credentials.
+</div>
+<div style="margin: 0 0 5px 0;">
+    <strong>Username:</strong> {{ templateVars['user'].userName }}
+</div>
+<div>
+    <strong>Password:</strong> {{ templateVars['password'] }}
+</div>
+{% include 'OpitNotesUserBundle:Mail:footer.html.twig' %}

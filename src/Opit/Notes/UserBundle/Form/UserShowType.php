@@ -115,14 +115,6 @@ class UserShowType extends AbstractType
         }
         $builder->add($tax);
         
-        if (null === $userId) {
-            $builder->add('password', 'repeated', array(
-                'first_name' => 'password',
-                'second_name' => 'confirm',
-                'type' => 'password',
-                'invalid_message' => 'Passwords do not match'
-            ));
-        }
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
     }
     /**
@@ -134,7 +126,7 @@ class UserShowType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Opit\Notes\UserBundle\Entity\User',
-            'validation_groups' => array('user', 'password')
+            'validation_groups' => array('user')
         ));
     }
     /**

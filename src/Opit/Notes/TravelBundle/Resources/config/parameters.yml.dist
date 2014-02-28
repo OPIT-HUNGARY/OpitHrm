@@ -1,2 +1,2 @@
 parameters:
-    mail_sender: 'notes@opit.hu'
+    mail_sender: 'portal@opit.hu'

@@ -134,8 +134,8 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @Assert\Range(
      *      min = "1000000000",
      *      max = "9999999999",
-     *      minMessage = "The tax number must be greater equal 1000000000.",
-     *      maxMessage = "The tax number must be less equal 9999999999.",
+     *      minMessage = "The tax number should be greater than 1000000000.",
+     *      maxMessage = "The tax number should be less than 9999999999.",
      *      groups={"user"}
      * )
      */
@@ -176,6 +176,11 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelExpense", mappedBy="user", cascade={"remove"})
      */
     protected $userTravelExpenses;
+    
+    /**
+     * @ORM\Column(name="is_first_login", type="boolean")
+     */
+    protected $isFirstLogin;
 
     public function __construct()
     {
@@ -522,5 +527,28 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function getTaxIdentification()
     {
         return $this->taxIdentification;
+    }
+    
+    /**
+     * Set firstLogin
+     * 
+     * @param boolean $firstLogin
+     * @return User
+     */
+    public function setIsFirstLogin($isFirstLogin)
+    {
+        $this->isFirstLogin = $isFirstLogin;
+        
+        return $this;
+    }
+    
+    /**
+     * Get firstLogin
+     * 
+     * @return boolean
+     */
+    public function getIsFirstLogin()
+    {
+        return $this->isFirstLogin;
     }
 }

@@ -99,6 +99,9 @@
                             {{ actionIcons }}
                         {% endif %}
                     {% elseif  attribute(value, 'username') is defined %}
+                        <span class="reset-password clickable no-text-decoration" data-user-id="{{ key }}" title="Reset password">
+                            <i class="fa fa-undo"></i>
+                        </span>
                         <span class="list-username clickable no-text-decoration edit-group" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
                             <i class="fa fa-pencil-square-o"></i>
                         </span>

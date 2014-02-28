@@ -74,6 +74,38 @@
       $checkbox.prop('checked', true);
       return deleteUser();
     });
+    $('#userlistWrapper').on('click', '.reset-password', function() {
+      var employeeName, userId;
+      employeeName = $(this).closest('tr').find('td:nth-child(4)').html();
+      userId = $(this).data('user-id');
+      return $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + employeeName + "'s</b> password ? The user will be informed about new password via email.").dialog({
+        open: function() {
+          return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Reset user password');
+        },
+        dialogClass: 'popup-dialog',
+        width: 750,
+        modal: true,
+        buttons: {
+          Reset: function() {
+            return $.ajax({
+              global: false,
+              type: 'POST',
+              url: Routing.generate('OpitNotesUserBundle_user_password_reset'),
+              data: {
+                'id': userId
+              }
+            }).done(function(data) {
+              return $('#reset-password-dialog').dialog('destroy');
+            }).fail(function(data) {
+              return console.warn(data);
+            });
+          },
+          Close: function() {
+            $('#reset-password-dialog').dialog('destroy');
+          }
+        }
+      });
+    });
     $('#userlistWrapper').on('click', 'th .fa-trash-o', function() {
       return $('.list-delete-user').filter(function() {
         return !this.disabled;
