@@ -216,7 +216,7 @@ $(document)
                 $('body, #notifications-wrapper').off 'click.notifications'
         
         # start checking for new notifications
-        getUnreadNotifications()
+        getUnreadNotifications() if $('#notifications').length > 0
     
         $('#loggedInUser').click ->
             $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('OpitNotesUserBundle').funcs?.showAlert

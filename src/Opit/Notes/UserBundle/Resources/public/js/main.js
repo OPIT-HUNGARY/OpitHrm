@@ -246,7 +246,9 @@
         return $('body, #notifications-wrapper').off('click.notifications');
       }
     });
-    getUnreadNotifications();
+    if ($('#notifications').length > 0) {
+      getUnreadNotifications();
+    }
     $('#loggedInUser').click(function() {
       var _ref;
       return $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).children('span').data('user-id'), (_ref = $(document).data('OpitNotesUserBundle').funcs) != null ? _ref.showAlert : void 0);
