@@ -101,14 +101,14 @@ $.extend true, $(document).data('notes'),
                   return
                   
         changeTravelStatus: (statusId, travelRequestId) ->
-            reloadPage = true
+            reloadPage = false
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_request_state'
                 data: {'statusId': statusId, 'travelRequestId': travelRequestId}
             .done (data) ->
+                # Show custom error dialog if validation of status change fails
                 if data is 'error'
-                    reloadPage = false
                     dialogWidth = 550
                     $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
                         .dialog
@@ -121,12 +121,14 @@ $.extend true, $(document).data('notes'),
                             Reload: ->
                                 location.reload()
                                 return
+                else
+                    reloadPage = true
             .complete () ->
                 if reloadPage is true
                     location.reload()
             .fail (data) ->
                 console.warn 'An error occured while setting new status for the request.'
-                  
+                
         showAlert: (response, actionType, message, forceClass) ->
             $('#reply-message').addClass "alert-message"
             

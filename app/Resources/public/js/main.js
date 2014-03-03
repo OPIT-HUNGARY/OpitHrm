@@ -125,7 +125,7 @@
       },
       changeTravelStatus: function(statusId, travelRequestId) {
         var reloadPage;
-        reloadPage = true;
+        reloadPage = false;
         return $.ajax({
           method: 'POST',
           url: Routing.generate('OpitNotesTravelBundle_request_state'),
@@ -136,7 +136,6 @@
         }).done(function(data) {
           var dialogWidth;
           if (data === 'error') {
-            reloadPage = false;
             dialogWidth = 550;
             $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
               open: function() {
@@ -153,6 +152,8 @@
                 }
               }
             };
+          } else {
+            return reloadPage = true;
           }
         }).complete(function() {
           if (reloadPage === true) {
