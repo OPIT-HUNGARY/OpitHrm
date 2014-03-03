@@ -489,14 +489,16 @@ $(document).ready ->
         
     $('.changeState').on 'change', ->
         statusId = $(@).val()
-        parameters = window.location.pathname.split('/')
-        travelExpenseId = parameters[parameters.length - 1]
+        travelExpenseId = $(@).data 'te'
+        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitNotesTravelBundle_expense_state'
             data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
         .done (data) ->
             window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
+        .complete () ->
+            $spinner.remove()
         .fail (data) ->
             console.warn 'Error occured while saving state for travel expense.'
 

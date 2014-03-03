@@ -100,7 +100,7 @@ $.extend true, $(document).data('notes'),
                   $(@).dialog 'destroy'
                   return
                   
-        changeTravelStatus: (statusId, travelRequestId) ->
+        changeTravelStatus: (statusId, travelRequestId, $spinner) ->
             reloadPage = false
             $.ajax
                 method: 'POST'
@@ -124,10 +124,19 @@ $.extend true, $(document).data('notes'),
                 else
                     reloadPage = true
             .complete () ->
+                $spinner.remove()
                 if reloadPage is true
                     location.reload()
             .fail (data) ->
                 console.warn 'An error occured while setting new status for the request.'
+                
+        disableStatusDropdown: ($self) ->
+            $spinner = $('<i>')
+            $spinner.addClass 'fa fa-spinner fa-spin'
+            $self.parent().append $spinner
+            $self.addClass 'dropdown-disabled'
+            
+            return $spinner
                 
         showAlert: (response, actionType, message, forceClass) ->
             $('#reply-message').addClass "alert-message"

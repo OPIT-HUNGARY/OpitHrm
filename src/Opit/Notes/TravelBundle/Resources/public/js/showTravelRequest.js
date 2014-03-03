@@ -70,22 +70,11 @@
       });
     }
     $('.changeState').on('change', function() {
-      var parameters, statusId, travelRequestId;
+      var $spinner, statusId, travelRequestId;
       statusId = $(this).val();
-      parameters = window.location.pathname.split('/');
-      travelRequestId = parameters[parameters.length - 1];
-      return $.ajax({
-        method: 'POST',
-        url: Routing.generate('OpitNotesTravelBundle_request_state'),
-        data: {
-          'statusId': statusId,
-          'travelRequestId': travelRequestId
-        }
-      }).done(function(data) {
-        return window.location.href = Routing.generate('OpitNotesTravelBundle_travel_list');
-      }).fail(function(data) {
-        return console.warn('Error occured while saving state for travel expense.');
-      });
+      travelRequestId = $(this).data('tr');
+      $spinner = $(document).data('notes').funcs.disableStatusDropdown($(this));
+      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, $spinner);
     });
     if (!Modernizr.inputtypes.date) {
       $arrivalDate = $('#travelRequest_arrival_date');

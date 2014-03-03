@@ -123,7 +123,7 @@
           });
         }
       },
-      changeTravelStatus: function(statusId, travelRequestId) {
+      changeTravelStatus: function(statusId, travelRequestId, $spinner) {
         var reloadPage;
         reloadPage = false;
         return $.ajax({
@@ -156,12 +156,21 @@
             return reloadPage = true;
           }
         }).complete(function() {
+          $spinner.remove();
           if (reloadPage === true) {
             return location.reload();
           }
         }).fail(function(data) {
           return console.warn('An error occured while setting new status for the request.');
         });
+      },
+      disableStatusDropdown: function($self) {
+        var $spinner;
+        $spinner = $('<i>');
+        $spinner.addClass('fa fa-spinner fa-spin');
+        $self.parent().append($spinner);
+        $self.addClass('dropdown-disabled');
+        return $spinner;
       },
       showAlert: function(response, actionType, message, forceClass) {
         var errorString, i, returnVal, _i, _len, _ref;

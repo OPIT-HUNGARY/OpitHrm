@@ -6,11 +6,11 @@ $(document).ready ->
         win.focus()
 
     $('#travel_list').on 'change.tr_status', '.changeState', ->
-        $(@).addClass 'dropdown-disabled'
         statusId = $(@).val()
+        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
+        
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
-        firstStatusId = $(@).find('option:first-child').val()
-        $(document).data('notes').funcs.changeTravelStatus statusId, travelRequestId
+        $(document).data('notes').funcs.changeTravelStatus statusId, travelRequestId, $spinner
             
     $('#travel_list').on 'click', '.order-text', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'

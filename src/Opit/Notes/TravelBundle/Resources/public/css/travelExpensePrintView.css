@@ -29,7 +29,9 @@ and open the template in the editor.
 
 .display-inline-block { display: inline-block !important; }
 
-#changeStateWrapper { display: inline-block; position: absolute; right: 20px; margin-top: 10px; }
+#changeStateWrapper { display: block; }
+#changeStateWrapper .changeState { display: inline-block; }
+#changeStateWrapper h3 { display: inline-block; margin-top: 0; margin-right: 5px; }
 
 .visibility-hidden { visibility: hidden; }
 

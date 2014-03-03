@@ -9,12 +9,11 @@
       return win.focus();
     });
     $('#travel_list').on('change.tr_status', '.changeState', function() {
-      var firstStatusId, statusId, travelRequestId;
-      $(this).addClass('dropdown-disabled');
+      var $spinner, statusId, travelRequestId;
       statusId = $(this).val();
+      $spinner = $(document).data('notes').funcs.disableStatusDropdown($(this));
       travelRequestId = $(this).closest('tr').find('.clickable').data('tr-id');
-      firstStatusId = $(this).find('option:first-child').val();
-      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId);
+      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, $spinner);
     });
     $('#travel_list').on('click', '.order-text', function() {
       return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list');

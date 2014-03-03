@@ -61,16 +61,9 @@ $(document).ready ->
     
     $('.changeState').on 'change', ->
         statusId = $(@).val()
-        parameters = window.location.pathname.split('/')
-        travelRequestId = parameters[parameters.length - 1]
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_request_state'
-            data: {'statusId': statusId, 'travelRequestId': travelRequestId}
-        .done (data) ->
-            window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
-        .fail (data) ->
-            console.warn 'Error occured while saving state for travel expense.'
+        travelRequestId = $(@).data 'tr'
+        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
+        $(document).data('notes').funcs.changeTravelStatus statusId, travelRequestId, $spinner
             
     if not Modernizr.inputtypes.date
         $arrivalDate = $('#travelRequest_arrival_date')

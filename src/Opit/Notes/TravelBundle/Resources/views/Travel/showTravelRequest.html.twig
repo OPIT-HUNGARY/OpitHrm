@@ -24,9 +24,11 @@
         Edit Travel Request ({{ travelRequest.travelRequestId }})
         {% endif %}
     </h1>
+
     <div id="changeStateWrapper">
+        <h3>Change status:</h3>
         {% if isStatusLocked == '0' %}
-        <select class="changeState">
+        <select data-tr="{{ travelRequest.id }}" class="changeState">
             {% for key, value in travelRequestStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}

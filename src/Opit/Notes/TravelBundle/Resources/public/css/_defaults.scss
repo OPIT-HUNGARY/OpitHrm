@@ -93,10 +93,17 @@ $defaultFontSize: 13px;
 }
 
 #changeStateWrapper{
-    display:inline-block;
-    position:absolute;
-    right:20px;
-    margin-top:10px;
+    display:block;
+    
+    .changeState{
+        display:inline-block;
+    }
+    
+    h3{
+        display:inline-block;
+        margin-top:0;
+        margin-right:5px;
+    }
 }
 
 .visibility-hidden{

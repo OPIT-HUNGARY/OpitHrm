@@ -46,7 +46,7 @@
     {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
     <div id="changeStateWrapper">
         {% if isStatusLocked == 0 %}
-        <select class="changeState {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}>
+        <select data-te="{{ travelExpense.id }}" class="changeState {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}>
             {% for key, value in travelExpenseStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}
@@ -57,7 +57,7 @@
         </select>
         {% endif %}
     </div>
-    
+
     <h3>
         Travel request [<span class="red-text">{{ trId }}</span>], Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
     </h3>
