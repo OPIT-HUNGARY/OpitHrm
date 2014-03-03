@@ -236,7 +236,6 @@
           return event.stopPropagation();
         });
         return $('body').on('click.notifications', function(event) {
-          console.log('yes');
           if ($('#notifications').hasClass('right-300')) {
             $('#notifications').removeClass('right-300');
             return $('body, #notifications-wrapper').off('click.notifications');

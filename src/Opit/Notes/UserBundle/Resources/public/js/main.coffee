@@ -204,7 +204,6 @@ $(document)
                     
                 # register hide listener clicking outside of the notifications boundaries
                 $('body').on 'click.notifications', (event) ->
-                    console.log 'yes'
                     if $('#notifications').hasClass 'right-300'
                         $('#notifications').removeClass 'right-300'
                         
