@@ -139,7 +139,7 @@ getUnreadNotifications = () ->
         url: Routing.generate 'OpitNotesTravelBundle_notifications_unread_count'
     .done (data) ->
         $unreadNotificationsCount = $('#unread-notifications-count')
-        $notificationsGlobe = $('#notifications i')
+        $notificationsIcon = $('#notifications i')
         unreadNotificationCount = $('#unread-notifications').html()
         # if number of unread notifications and data returned from the server are not the same
         if unreadNotificationCount !=  data
@@ -148,13 +148,15 @@ getUnreadNotifications = () ->
                 # show number of unread notifications indicator
                 $unreadNotificationsCount.removeClass 'display-none'
                 # set globe to active
-                $notificationsGlobe.addClass 'active-text'
+                $notificationsIcon.addClass 'active-text'
                 # replace the number in the indicator
                 $unreadNotificationsCount.html data
+                $('#notifications').addClass 'right-0'
             
         if '0' == $unreadNotificationsCount.html()
             $unreadNotificationsCount.addClass 'display-none'
-            $notificationsGlobe.removeClass 'active-text'
+            $notificationsIcon.removeClass 'active-text'
+            $('#notifications').removeClass 'right-0'
             
         # check for new notifications every 10 seconds
         setTimeout getUnreadNotifications, 10000

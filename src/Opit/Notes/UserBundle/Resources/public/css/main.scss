@@ -399,7 +399,7 @@ header{
 #notifications{
     position:fixed;
     z-index:100;
-    right:0;
+    right:-20px;
     top:200px;
     text-decoration:none;
     background-color:$lightGrayColorFull;
@@ -412,8 +412,13 @@ header{
         font-size:1.6em;
         color:$defaultDarkColor;
     }
+    
+    &.right-0 {
+        right: 0;
+    }
 }
 #notifications:hover{
+    right:0;
     cursor:pointer;
     
     i{

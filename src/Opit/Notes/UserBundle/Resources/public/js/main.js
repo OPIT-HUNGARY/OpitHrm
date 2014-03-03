@@ -172,20 +172,22 @@
       method: 'POST',
       url: Routing.generate('OpitNotesTravelBundle_notifications_unread_count')
     }).done(function(data) {
-      var $notificationsGlobe, $unreadNotificationsCount, unreadNotificationCount;
+      var $notificationsIcon, $unreadNotificationsCount, unreadNotificationCount;
       $unreadNotificationsCount = $('#unread-notifications-count');
-      $notificationsGlobe = $('#notifications i');
+      $notificationsIcon = $('#notifications i');
       unreadNotificationCount = $('#unread-notifications').html();
       if (unreadNotificationCount !== data) {
         if ('0' !== data) {
           $unreadNotificationsCount.removeClass('display-none');
-          $notificationsGlobe.addClass('active-text');
+          $notificationsIcon.addClass('active-text');
           $unreadNotificationsCount.html(data);
+          $('#notifications').addClass('right-0');
         }
       }
       if ('0' === $unreadNotificationsCount.html()) {
         $unreadNotificationsCount.addClass('display-none');
-        $notificationsGlobe.removeClass('active-text');
+        $notificationsIcon.removeClass('active-text');
+        $('#notifications').removeClass('right-0');
       }
       return setTimeout(getUnreadNotifications, 10000);
     });
