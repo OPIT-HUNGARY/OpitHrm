@@ -256,7 +256,7 @@ class ExchangeRateService implements ExchangeRateInterface
         } elseif ('<MNBExchangeRates />' === $response) {
             $this->logger->alert(
                 sprintf(
-                    '[|%s] Empty response have been gotten..',
+                    '[|%s] Empty response has been received.',
                     Utils::getClassBasename($this)
                 )
             );
@@ -394,51 +394,45 @@ class ExchangeRateService implements ExchangeRateInterface
         }
 
         if (!empty($this->currencyRates)) {
-            
+        
             try {
                 // Iterate the currencies
                 foreach ($this->currencyRates as $currencyCode => $dates) {
-
+                    
                     $lastDateObj = new \DateTime(key($dates));
+                    
                     // Iterate the date and rate
                     foreach ($dates as $date => $value) {
                         $dateObj = new \DateTime($date);
-
-                        // Persist rates for date differences between current and last date
+                        
+                        // Persist rates for date differences between current and last date (weekend)
                         $interval = date_diff($lastDateObj, $dateObj);
-                        $days = $interval->format('%d');
-
-                        if ($days > 1) {
-                            for ($i=1; $i < $days; $i++) {
-                                $lastDateObj->add(new \DateInterval('P1D'))->setTime(0, 0, 0);
-                                $rate = $this->createOrUpdateRate($currencyCode, $value, clone $lastDateObj, $force);
-                                if (null !== $rate) {
-                                    $this->em->persist($rate);
-                                }
-                            }
-                        }
-
+                        $this->setMissingRatesAndPersist(
+                            $lastDateObj,
+                            $interval->format('%d')-1,
+                            $currencyCode,
+                            $value,
+                            $force
+                        );
+                       
                         // Persist the current rate
                         $rate = $this->createOrUpdateRate($currencyCode, $value, $dateObj, $force);
                         if (null !== $rate) {
                             $this->em->persist($rate);
                         }
-
-                        // If the date is today then save rates for tomorrow.
-                        if (date('Y-m-d', strtotime('yesterday')) === $date || date('Y-m-d') === $date) {
-                            if (null !== $rate) {
-                                $rateForTomorrow = $this->saveExchangeRatesForTomorrow(
-                                    $rate,
-                                    $currencyCode,
-                                    $value,
-                                    $date
-                                );
-                                $this->em->persist($rateForTomorrow);
-                            }
-                        }
-
                         $lastDateObj = clone $dateObj;
                     }
+                    
+                    // Insert difference of last MNB date and tomorrow using last MNB rate
+                    $tomorrow = new \DateTime('tomorrow');
+                    $difference = $tomorrow->diff($lastDateObj);
+                    $this->setMissingRatesAndPersist(
+                        $lastDateObj,
+                        $difference->format('%d'),
+                        $currencyCode,
+                        $value,
+                        $force
+                    );
                 }
                 $this->em->flush();
 
@@ -466,6 +460,29 @@ class ExchangeRateService implements ExchangeRateInterface
         }
         
         $this->logger->info(sprintf('[|%s] Rates sync is ended.', Utils::getClassBasename($this)));
+    }
+    
+    /**
+     * Create rates for MNB date differences.
+     * 
+     * @param \DateTime $date
+     * @param integer $days
+     * @param string $currencyCode
+     * @param float $value
+     * @param boolean $force
+     */
+    private function setMissingRatesAndPersist(\DateTime $date, $days, $currencyCode, $value, $force)
+    {
+        $rateDate = clone $date;
+        
+        // Insert difference of last MNB date and tomorrow using last MNB rate
+        for ($i = 0; $i < $days; $i++) {
+            $rateDate->add(new \DateInterval('P1D'));
+            $rate = $this->createOrUpdateRate($currencyCode, $value, clone $rateDate, $force);
+            if (null !== $rate) {
+                $this->em->persist($rate);
+            }
+        }
     }
     
     /**
@@ -499,43 +516,6 @@ class ExchangeRateService implements ExchangeRateInterface
         $rate->setUpdated(new \DateTime('now'));
         
         return $rate;
-    }
-    
-    /**
-     * Save rates for plus one day.
-     * Create or update the plus one day rate.
-     * This function handles if the last remote rate's date is today or yesterday.
-     * 
-     * @param \Opit\Notes\CurrencyRateBundle\Entity\Rate $rate object.
-     * @param string $code the currency's code
-     * @param float $value the rate's value
-     * 
-     * @return \Opit\Notes\CurrencyRateBundle\Entity\Rate $rate object for tomorrow
-     */
-    private function saveExchangeRatesForTomorrow(Rate $rate, $code, $value, $date)
-    {
-        // If the rate's date was yesterday then the tomorrow datetime has to select to today.
-        if (date('Y-m-d', strtotime('yesterday')) === $date) {
-            $dateTime = new \DateTime('now');
-        } else {
-            // Else the datetime is today
-            $dateTime = new \DateTime('tomorrow');
-        }
-        
-        //create rate for tomorrow (next day)
-        if (!$this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')->hasRate($code, $dateTime)) {
-            $rateForTomorrow = clone $rate;
-
-        } else {
-            // update the tomorrow rate.
-            $rateForTomorrow = $this->em->getRepository('OpitNotesCurrencyRateBundle:Rate')
-                                          ->findRateByCodeAndDate($code, $dateTime);
-            $rateForTomorrow->setRate($value);
-        }
-        $rateForTomorrow->setCreated($dateTime);
-        $rateForTomorrow->setUpdated($dateTime);
-        
-        return $rateForTomorrow;
     }
     
     /**
