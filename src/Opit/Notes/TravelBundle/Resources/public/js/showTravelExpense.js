@@ -515,7 +515,7 @@
           'travelExpenseId': travelExpenseId
         }
       }).done(function(data) {
-        return window.location.href = Routing.generate('OpitNotesTravelBundle_travel_list');
+        return location.reload();
       }).complete(function() {
         return $spinner.remove();
       }).fail(function(data) {

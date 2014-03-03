@@ -496,7 +496,7 @@ $(document).ready ->
             url: Routing.generate 'OpitNotesTravelBundle_expense_state'
             data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
         .done (data) ->
-            window.location.href = Routing.generate 'OpitNotesTravelBundle_travel_list'
+            location.reload()
         .complete () ->
             $spinner.remove()
         .fail (data) ->

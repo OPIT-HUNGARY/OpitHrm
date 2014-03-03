@@ -99,36 +99,6 @@ $.extend true, $(document).data('notes'),
               close: ->
                   $(@).dialog 'destroy'
                   return
-                  
-        changeTravelStatus: (statusId, travelRequestId, $spinner) ->
-            reloadPage = false
-            $.ajax
-                method: 'POST'
-                url: Routing.generate 'OpitNotesTravelBundle_request_state'
-                data: {'statusId': statusId, 'travelRequestId': travelRequestId}
-            .done (data) ->
-                # Show custom error dialog if validation of status change fails
-                if data is 'error'
-                    dialogWidth = 550
-                    $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.')
-                        .dialog
-                            open: ->
-                                $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
-                        width: dialogWidth
-                        maxHeight: $(window).outerHeight()-100
-                        modal: on
-                        buttons:
-                            Reload: ->
-                                location.reload()
-                                return
-                else
-                    reloadPage = true
-            .complete () ->
-                $spinner.remove()
-                if reloadPage is true
-                    location.reload()
-            .fail (data) ->
-                console.warn 'An error occured while setting new status for the request.'
                 
         disableStatusDropdown: ($self) ->
             $spinner = $('<i>')

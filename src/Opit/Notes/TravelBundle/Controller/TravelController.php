@@ -76,11 +76,11 @@ class TravelController extends Controller
             'travelRequestStates' => $travelRequestStates,
             'isLocked' => $isLocked,
             'currentStatusNames' => $currentStatusNames,
+            'numberOfPages' => $numberOfPages,
+            'maxPages' => $config['max_pager_pages'],
+            'offset' => ($offset + 1),
+            'isFirstLogin' => $user->getIsFirstLogin()
         );
-        
-        $templateVars['numberOfPages'] = $numberOfPages;
-        $templateVars['maxPages'] = $config['max_pager_pages'];
-        $templateVars['offset'] = $offset + 1;
 
         if (null === $showList && (null === $offset && !$isSearch)) {
             $template = 'OpitNotesTravelBundle:Travel:list.html.twig';
@@ -143,6 +143,7 @@ class TravelController extends Controller
         $statusManager = $this->get('opit.manager.status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
+        
         $isEditLocked = false;
         $editRights = $this->get('opit.model.travel_request')
             ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
@@ -368,6 +369,7 @@ class TravelController extends Controller
 
             if ($form->isValid()) {
                 $statusManager = $this->get('opit.manager.status_manager');
+                $isNew = $travelRequest->getId();
                 // Persist deleted destinations/accomodations
                 $travelRequestService->removeChildNodes($entityManager, $travelRequest, $children);
                 $entityManager->persist($travelRequest);
@@ -378,11 +380,13 @@ class TravelController extends Controller
                 if ($travelRequest->getTravelRequestId()) {
                     $travelRequestService->addStatus($travelRequest);
                     
-                    if ('fa' === $forApproval) {
-                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
-                        $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
-                    } else {
-                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                    if (null === $isNew) {
+                        if ('fa' === $forApproval) {
+                            $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                            $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
+                        } else {
+                            $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                        }
                     }
 
                     $travelRequestService->handleAccessRights(

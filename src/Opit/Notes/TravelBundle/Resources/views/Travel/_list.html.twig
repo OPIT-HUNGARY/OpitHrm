@@ -68,7 +68,7 @@
             {# is statuses can be edited #}
             {% if isLocked[i]['isStatusLocked'] == 0 %}
                 {# loop through all statuses and display them in a dropdown #}
-                <select class="changeState">
+                <select class="changeState" data-tr="{{ travelRequest.id }}">
                 {% for key, value in travelRequestStates[i] %}
                     <option value="{{ key }}">{{ value }}</option>
                 {% endfor %}

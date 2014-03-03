@@ -123,47 +123,6 @@
           });
         }
       },
-      changeTravelStatus: function(statusId, travelRequestId, $spinner) {
-        var reloadPage;
-        reloadPage = false;
-        return $.ajax({
-          method: 'POST',
-          url: Routing.generate('OpitNotesTravelBundle_request_state'),
-          data: {
-            'statusId': statusId,
-            'travelRequestId': travelRequestId
-          }
-        }).done(function(data) {
-          var dialogWidth;
-          if (data === 'error') {
-            dialogWidth = 550;
-            $('<div id="dialog-show-details-tr"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
-              open: function() {
-                return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed');
-              }
-            });
-            return {
-              width: dialogWidth,
-              maxHeight: $(window).outerHeight() - 100,
-              modal: true,
-              buttons: {
-                Reload: function() {
-                  location.reload();
-                }
-              }
-            };
-          } else {
-            return reloadPage = true;
-          }
-        }).complete(function() {
-          $spinner.remove();
-          if (reloadPage === true) {
-            return location.reload();
-          }
-        }).fail(function(data) {
-          return console.warn('An error occured while setting new status for the request.');
-        });
-      },
       disableStatusDropdown: function($self) {
         var $spinner;
         $spinner = $('<i>');

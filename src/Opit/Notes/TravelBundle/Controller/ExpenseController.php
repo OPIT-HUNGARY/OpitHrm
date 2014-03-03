@@ -84,7 +84,7 @@ class ExpenseController extends Controller
      * Method to show and edit travel expense
      *
      * @Route("/secured/expense/{id}/show/{trId}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+", "trId" = "\d+"})
-     * @Method({"GET"})
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function showTravelExpenseAction(Request $request, $trId, $id)
