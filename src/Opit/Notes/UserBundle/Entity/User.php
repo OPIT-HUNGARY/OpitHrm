@@ -30,10 +30,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity(fields={"username"}, message="The username is already used.")
- * @UniqueEntity(fields={"email"}, message="The email is already used.")
- * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.")
- * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.")
+ * @UniqueEntity(fields={"username"}, message="The username is already used.", groups={"user"})
+ * @UniqueEntity(fields={"email"}, message="The email is already used.", groups={"user"})
+ * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.", groups={"user"})
+ * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.", groups={"user"})
  */
 class User implements UserInterface, \Serializable, TravelRequestUserInterface
 {
