@@ -45,6 +45,7 @@
     
     {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
     <div id="changeStateWrapper">
+        <h3>Change status:</h3>
         {% if isStatusLocked == 0 %}
         <select data-te="{{ travelExpense.id }}" class="changeState {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}>
             {% for key, value in travelExpenseStates %}
