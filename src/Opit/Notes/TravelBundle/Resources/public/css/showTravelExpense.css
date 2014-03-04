@@ -1,46 +1,82 @@
 /*
-Syntax error: Invalid CSS after "h1{": expected "}", was "<<<<<<< HEAD"
-        on line 121 of src/Opit/Notes/TravelBundle/Resources/public/css/showTravelExpense.scss
-
-116:     padding:3px;
-117:     @include border-radius(5px);
-118: }
-119: 
-120: h1{
-121: <<<<<<< HEAD
-122:     display:inline-block;
-123:     margin-top:0;
-124: =======
-125:     margin:0;
-126: >>>>>>> Implement status history for travel module entities (#4033)
-
-Backtrace:
-src/Opit/Notes/TravelBundle/Resources/public/css/showTravelExpense.scss:121
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:1148:in `expected'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:1084:in `expected'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:1079:in `tok!'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:535:in `block'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:528:in `ruleset'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:552:in `block_child'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:545:in `block_contents'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:82:in `stylesheet'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/scss/parser.rb:27:in `parse'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/engine.rb:342:in `_to_tree'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/engine.rb:315:in `_render'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/engine.rb:262:in `render'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/plugin/compiler.rb:362:in `update_stylesheet'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/plugin/compiler.rb:203:in `block in update_stylesheets'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/plugin/compiler.rb:201:in `each'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/plugin/compiler.rb:201:in `update_stylesheets'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/lib/sass/plugin/compiler.rb:283:in `block in watch'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/multi_listener.rb:108:in `call'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/multi_listener.rb:108:in `on_change'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/multi_listener.rb:117:in `block in initialize_adapter'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/adapters/polling.rb:56:in `call'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/adapters/polling.rb:56:in `poll'
-/var/lib/gems/1.9.1/gems/sass-3.2.12/vendor/listen/lib/listen/adapters/polling.rb:32:in `block in start'
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
 */
-body:before {
-  white-space: pre;
-  font-family: monospace;
-  content: "Syntax error: Invalid CSS after \"h1{\": expected \"}\", was \"<<<<<<< HEAD\"\A         on line 121 of src/Opit/Notes/TravelBundle/Resources/public/css/showTravelExpense.scss\A \A 116:     padding:3px;\A 117:     @include border-radius(5px);\A 118: }\A 119: \A 120: h1{\A 121: <<<<<<< HEAD\A 122:     display:inline-block;\A 123:     margin-top:0;\A 124: =======\A 125:     margin:0;\A 126: >>>>>>> Implement status history for travel module entities (#4033)"; }
+/*  Created on : Dec 18, 2013, 2:37:14 PM Author     : OPIT\Notes
+*/
+/* Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\Notes
+*/
+.vertical-align-top { vertical-align: top; }
+
+.align-right { text-align: right; }
+
+.display-none { display: none !important; }
+
+.red-text { color: #aa0000; }
+
+.bold { font-weight: bold; }
+
+.deleteFormFieldsetChild { display: inline-block; }
+
+.height-20 { height: 20px; }
+
+.width-420 { width: 420px; }
+
+.width-80 { width: 80px; }
+
+.width-50 { width: 50px; }
+
+.display-inline-block { display: inline-block !important; }
+
+#changeStateWrapper { display: block; }
+#changeStateWrapper .changeState { display: inline-block; }
+#changeStateWrapper h3 { display: inline-block; margin-top: 0; margin-right: 5px; }
+
+.visibility-hidden { visibility: hidden; }
+
+.toggle-icon { font-size: .5em; padding: 4px; color: white; border: solid 1px white; background-color: #f28c38; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin: 2px 4px 0 0; }
+
+.toggle-icon:hover { cursor: pointer; background-color: #d46e1a; }
+
+/*  Created on : Mar 4, 2014, 9:27:23 AM Author     : OPIT\Notes
+*/
+.travel-status-history { font-size: 0.65em; margin-top: 10px; margin-right: 10px; }
+
+h1:hover i.travel-status-history { visibility: visible; }
+
+i.travel-status-history { visibility: hidden; }
+
+#travelExpense { display: none; }
+
+.time-picker { margin: 2px 0 0 5px; }
+
+.selected-expense { margin: 0; background-color: #505050; color: white; display: block; top: -10px; left: -10px; padding: 1px; text-align: center; margin-bottom: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+
+.formFieldsetDescription { position: absolute; margin: -70px 0 0 100px; padding: 5px; background-color: #000; color: #FFF; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+
+.per-diem-details-wrapper { background-color: #d2d2d2; padding: 9px; float: right; margin: 0 6px 0 0; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.per-diem-details-wrapper .per-diem-amounts-slab { width: 100%; }
+.per-diem-details-wrapper .per-diem-amounts-slab tr td:first-child { width: 150px; }
+.per-diem-details-wrapper .per-diem-amounts-slab tr td:last-child { background-color: #ebebeb; }
+.per-diem-details-wrapper .per-diem-amounts-slab tr td { padding: 3.5px 9px; }
+.per-diem-details-wrapper .per-diem-amounts-slab tr:first-child { font-weight: bold; }
+.per-diem-details-wrapper .per-diem-amounts-slab tr:first-child td { background-color: #d2d2d2; }
+.per-diem-details-wrapper .perDiemTable { margin: 10px 0 0 0; width: 100%; }
+.per-diem-details-wrapper .perDiemTable tr td:first-child { width: 150px; }
+.per-diem-details-wrapper .perDiemTable tr td:last-child { background-color: #ebebeb; }
+.per-diem-details-wrapper .perDiemTable tr td { padding: 3.5px 9px; }
+
+.short-description { margin: -60px 0 0 190px !important; }
+
+.fa-question-circle:hover { cursor: pointer; }
+
+label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; display: inline-block; z-index: 4; margin-left: 1em !important; margin-bottom: 10px !important; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+
+.custom-field { background-color: #d2d2d2; width: 110px; padding: 3px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+
+h1 { margin-top: 0; }
+
+.te-claim .fa-calendar { top: 0; }
+
+#changeStateWrapper h3 { margin-bottom: 0; }
