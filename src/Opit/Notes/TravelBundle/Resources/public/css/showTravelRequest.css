@@ -39,6 +39,14 @@ and open the template in the editor.
 
 .toggle-icon:hover { cursor: pointer; background-color: #d46e1a; }
 
+/*  Created on : Mar 4, 2014, 9:27:23 AM Author     : OPIT\Notes
+*/
+.travel-status-history { font-size: 0.65em; margin-top: 10px; margin-right: 10px; }
+
+h1:hover i.travel-status-history { visibility: visible; }
+
+i.travel-status-history { visibility: hidden; }
+
 #travelRequest { display: none; }
 
 #travelRequest label, .travelForm label { display: block; }
@@ -51,4 +59,4 @@ and open the template in the editor.
 #travelRequest label.custom-error, .travelForm label.custom-error { display: inline-block; margin-bottom: 10px; margin-left: 1em; }
 #travelRequest label.valid, .travelForm label.valid { display: none !important; }
 
-h1 { display: inline-block; margin-top: 0; }
+h1 { margin-top: 0; }

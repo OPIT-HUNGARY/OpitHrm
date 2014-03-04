@@ -19,6 +19,13 @@
     });
   };
 
+  $('.travel-status-history').click(function(event) {
+    var id;
+    event.preventDefault();
+    id = $(this).data('id');
+    return $(document).data('notes_travel').funcs.showTravelStatusHistory(id, 'tr');
+  });
+
   compareDays = function() {
     var $accomodationWrapper, $errorMessage, accomodationDays, arrivalDate, departureDate, diffDays;
     departureDate = new Date($('#travelRequest_departure_date').val());

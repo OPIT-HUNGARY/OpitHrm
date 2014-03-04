@@ -161,7 +161,7 @@ class TravelController extends Controller
         } else {
             $travelRequest->setUser($user);
         }
-        
+        // The next available statuses.
         $travelRequestStates[$currentStatusId] = $currentStatus->getName();
         $children = $this->get('opit.model.travel_request')->addChildNodes($travelRequest);
         // Disable softdeleteable filter for user entity to allow persistence

@@ -9,7 +9,12 @@ numberOfNightsListener = (form) ->
         form.find('input[type=number]').first().addClass 'number-of-nights'
         form.find('input[type=number]').first().on 'change', ->
             compareDays()
-            
+
+$('.travel-status-history').click (event) ->
+    event.preventDefault()
+    id = $(@).data 'id'
+    $(document).data('notes_travel').funcs.showTravelStatusHistory id, 'tr'
+
 # custom compare validator to compare length of trip and number of nights
 compareDays = () ->
     #get arrival and departure date value

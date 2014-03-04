@@ -1,3 +1,8 @@
+$('.travel-status-history').click (event) ->
+    event.preventDefault()
+    id = $(@).data 'id'
+    $(document).data('notes_travel').funcs.showTravelStatusHistory id, 'te'
+
 calculateAdvancesPayback = () ->
     spent = []
     amount = 0

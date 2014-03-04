@@ -2,6 +2,13 @@
 (function() {
   var $addCompanyTagLink, $addUserTagLink, $expensesPaidByMe, $expensesPaidByMeDesc, $expensesPaidByOpit, $expensesPaidByOpitDesc, $form, $formFieldset, $generalFormFields, $generalFormFieldset, $perDiem, addNewAdvanceReceived, addNewForm, allCurrencies, availableCurrencies, calculateAdvancesPayback, calculatePerDiem, convertCurrency, createCustomField, createDeleteButton, createDeleteExpenseButton, createTableRow, excludedCurrencies, expenseDateChange, reCreateAdvances, reCreateExpenses, setAvailableCurrencies, setCurrenciesArray, validateAllExpenseDates, validateExpenseDate;
 
+  $('.travel-status-history').click(function(event) {
+    var id;
+    event.preventDefault();
+    id = $(this).data('id');
+    return $(document).data('notes_travel').funcs.showTravelStatusHistory(id, 'te');
+  });
+
   calculateAdvancesPayback = function() {
     var amount, spent;
     spent = [];

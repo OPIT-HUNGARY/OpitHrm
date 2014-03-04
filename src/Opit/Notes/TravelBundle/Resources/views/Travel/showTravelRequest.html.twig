@@ -10,6 +10,7 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
+    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/travel.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
@@ -19,9 +20,10 @@
 {% block body %}
     <h1>
         {% if travelRequest.id is empty or travelRequest.id == 'new' %}
-        New Travel Request
+            New Travel Request
         {% else %}
-        Edit Travel Request ({{ travelRequest.travelRequestId }})
+            <i class="fa fa-book pointer float-right travel-status-history" data-id="{{ travelRequest.id }}"></i>
+            Edit Travel Request ({{ travelRequest.travelRequestId }})
         {% endif %}
     </h1>
 
@@ -39,7 +41,6 @@
         </select>
         {% endif %}
     </div>
-
     <div class="modal-description default-border-radius">
         Travel request can be added or edited from here.
     </div>

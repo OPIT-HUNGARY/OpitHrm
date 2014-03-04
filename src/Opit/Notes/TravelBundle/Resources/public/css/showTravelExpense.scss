@@ -9,6 +9,7 @@ and open the template in the editor.
 */
 
 @import '_defaults';
+@import '_travelForm';
 
 #travelExpense{
     display:none;
@@ -117,7 +118,6 @@ label.custom-error{
 }
 
 h1{
-    display:inline-block;
     margin-top:0;
 }
 

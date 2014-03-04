@@ -9,6 +9,7 @@ and open the template in the editor.
 */
 
 @import '_defaults';
+@import '_travelForm';
 
 #travelRequest{
     display:none;
@@ -68,6 +69,5 @@ and open the template in the editor.
 }
 
 h1{
-    display:inline-block;
     margin-top:0;
 }

@@ -97,7 +97,6 @@ class ExpenseController extends Controller
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($id) : new TravelExpense();
         $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
-        
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());
         

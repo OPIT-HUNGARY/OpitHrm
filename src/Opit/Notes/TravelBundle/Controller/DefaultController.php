@@ -75,26 +75,31 @@ class DefaultController extends Controller
     /**
      * Method to get the history for a travel request and travel expense if it exists
      *
-     * @Route("/secured/travel/states/history", name="OpitNotesTravelBundle_travel_states_history")
+     * @Route("/secured/travel/states/history/{mode}", name="OpitNotesTravelBundle_travel_states_history", requirements={"mode"="tr|te|both"}, defaults={"mode"="both"})
+     * @Method({"POST"})
      * @Template()
      */
-    public function getTravelStatusHistoryAction(Request $request)
+    public function getTravelStatusHistoryAction(Request $request, $mode)
     {
+        $travelRequestStates = array();
+        $travelExpenseStates = array();
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequestId = $request->request->get('id');
-        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+        $travelRequest = $entityManager
+            ->getRepository('OpitNotesTravelBundle:TravelRequest')
             ->find($travelRequestId);
-        $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')
-            ->findOneBy(array('travelRequest' => $travelRequest));
-        $travelRequestStates = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
-            ->findBy(array('travelRequest' => $travelRequestId));
         
-        $travelExpenseStates = array();
-        if (null !== $travelExpense) {
-            $travelExpenseStates = $entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
-                ->findBy(array('travelExpense' => $travelExpense->getId()));
+        if (in_array($mode, array('tr', 'both'))) {
+            $travelRequestStates = $entityManager
+                ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
+                ->findBy(array('travelRequest' => $travelRequest), array('created' => 'DESC'));
         }
         
+        if (in_array($mode, array('te', 'both')) && null !== $travelExpense = $travelRequest->getTravelExpense()) {
+            $travelExpenseStates = $entityManager
+                ->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
+                ->findBy(array('travelExpense' => $travelExpense), array('created' => 'DESC'));
+        }
         return $this->render(
             'OpitNotesTravelBundle:Shared:travelStatesHistory.html.twig',
             array(
