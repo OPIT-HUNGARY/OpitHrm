@@ -28,7 +28,6 @@
     </script>
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
     <script type="text/javascript" src="{{ asset('bundles/opitnotescurrencyrate/js/CurrencyConverter.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/travel.js') }}" ></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -42,7 +41,7 @@
     <h1>Add travel expense</h1>
     {% else %}
     <h1>
-        <i class="fa fa-book pointer float-right travel-status-history" data-id="{{ travelExpense.id }}"></i>
+        <i class="fa fa-book pointer float-right travel-status-history" data-id="{{ travelExpense.travelRequest.id }}"></i>
         Edit travel expense
     </h1>
     {% endif %}

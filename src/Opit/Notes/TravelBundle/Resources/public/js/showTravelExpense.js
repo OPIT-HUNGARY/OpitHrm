@@ -6,7 +6,7 @@
     var id;
     event.preventDefault();
     id = $(this).data('id');
-    return $(document).data('notes_travel').funcs.showTravelStatusHistory(id, 'te');
+    return $(document).data('notes').funcs.showTravelStatusHistory(id, 'te');
   });
 
   calculateAdvancesPayback = function() {

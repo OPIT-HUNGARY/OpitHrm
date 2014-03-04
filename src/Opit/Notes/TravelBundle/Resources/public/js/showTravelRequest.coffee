@@ -13,7 +13,7 @@ numberOfNightsListener = (form) ->
 $('.travel-status-history').click (event) ->
     event.preventDefault()
     id = $(@).data 'id'
-    $(document).data('notes_travel').funcs.showTravelStatusHistory id, 'tr'
+    $(document).data('notes').funcs.showTravelStatusHistory id, 'tr'
 
 # custom compare validator to compare length of trip and number of nights
 compareDays = () ->

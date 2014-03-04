@@ -23,7 +23,7 @@
     var id;
     event.preventDefault();
     id = $(this).data('id');
-    return $(document).data('notes_travel').funcs.showTravelStatusHistory(id, 'tr');
+    return $(document).data('notes').funcs.showTravelStatusHistory(id, 'tr');
   });
 
   compareDays = function() {
