@@ -46,6 +46,7 @@ class UserFixtures extends AbstractDataFixture
         $testAdmin->setEmail("admin@mail.com");
         $testAdmin->setEmployeeName("admin");
         $testAdmin->setIsActive(1);
+        $testAdmin->setIsFirstLogin(1);
         $testAdmin->addGroup($this->getReference('admin-group'));
         $testAdmin->setBankAccountNumber("11112222-99999999-99999999");
         $testAdmin->setBankName("Fictive Bank");
@@ -62,6 +63,7 @@ class UserFixtures extends AbstractDataFixture
                 $testUser->setEmail("mymail".$i."@mail.com");
                 $testUser->setEmployeeName("empname".$i);
                 $testUser->setIsActive(1);
+                $testAdmin->setIsFirstLogin(1);
                 $testUser->addGroup($this->getReference('user-group'));
                 $testUser->setBankAccountNumber("11112222-22223333-4444".$i.$i.$i.$i);
                 $testUser->setBankName("Fictive Bank");
@@ -78,6 +80,7 @@ class UserFixtures extends AbstractDataFixture
             $testTeamManager->setEmail("tm@mail.com");
             $testTeamManager->setEmployeeName("team_manager");
             $testTeamManager->setIsActive(1);
+            $testAdmin->setIsFirstLogin(1);
             $testTeamManager->addGroup($this->getReference('team-manager-group'));
             $testTeamManager->addGroup($this->getReference('user-group'));
             $testTeamManager->setBankAccountNumber("11112222-99999999-99999999");
@@ -93,6 +96,7 @@ class UserFixtures extends AbstractDataFixture
             $testGeneralManager->setEmail("gm@mail.com");
             $testGeneralManager->setEmployeeName("general_manager");
             $testGeneralManager->setIsActive(1);
+            $testAdmin->setIsFirstLogin(1);
             $testGeneralManager->addGroup($this->getReference('general-manager-group'));
             $testGeneralManager->addGroup($this->getReference('user-group'));
             $testGeneralManager->setBankAccountNumber("11112222-99999999-99999999");
@@ -108,6 +112,7 @@ class UserFixtures extends AbstractDataFixture
             $user->setEmail("user@mail.com");
             $user->setEmployeeName("user");
             $user->setIsActive(1);
+            $testAdmin->setIsFirstLogin(1);
             $user->addGroup($this->getReference('user-group'));
             $user->setBankAccountNumber("11112222-99999999-11999999");
             $user->setBankName("Fictive Bank");
