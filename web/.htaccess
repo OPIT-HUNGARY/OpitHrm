@@ -8,6 +8,12 @@ DirectoryIndex app.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Disable environment if lock file exists
+    RewriteCond %{DOCUMENT_ROOT}/\.lock -f
+    RewriteCond %{REQUEST_URI} !maintenance\.html
+    RewriteCond %{REQUEST_URI} !\.(jpg|png|css|js)$
+    RewriteRule ^.*$ /maintenance.html [L]
+
     # Determine the RewriteBase automatically and set it as environment variable.
     # If you are using Apache aliases to do mass virtual hosting or installed the
     # project in a subdirectory, the base path will be prepended to allow proper
