@@ -16,6 +16,7 @@ use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
+use Opit\Notes\TravelBundle\Entity\StatesTravelExpenses;
 use Opit\Notes\TravelBundle\Entity\Token;
 
 /**
@@ -162,14 +163,17 @@ class StatusManager
     public function forceStatus($statusId, TravelResourceInterface $travelResource, $user = null)
     {
         $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
-        $createdStatus = new StatesTravelRequests();
+        
+        $instanceS =
+            new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($travelResource) . 's');
+        $createdStatus = $instanceS->newInstanceArgs(array($status, $travelResource));
+        
         if (null !== $user) {
             $createdStatus->setCreatedUser($user);
             $createdStatus->setUpdatedUser($user);
         }
         $createdStatus->setStatus($status);
-        $createdStatus->setTravelRequest($travelResource);
-
+        
         $this->entityManager->persist($createdStatus);
         $this->entityManager->flush();
     }

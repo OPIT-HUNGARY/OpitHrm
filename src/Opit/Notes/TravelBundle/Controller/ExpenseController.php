@@ -11,6 +11,7 @@ use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
+use Opit\Notes\TravelBundle\Entity\Status;
 
 /**
  * Description of ExpenseController
@@ -427,13 +428,19 @@ class ExpenseController extends Controller
             $form->handleRequest($request);
             
             if ($form->isValid()) {
-                
+                $statusManager = $this->get('opit.manager.status_manager');
+                $isNew = $travelExpense->getId();
                 $travelExpense = $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense);
                 
                 $this->get('opit.model.travel_expense')->removeChildNodes($entityManager, $travelExpense, $children);
                 $travelExpense->setTravelRequest($travelRequest);
                 $entityManager->persist($travelExpense);
                 $entityManager->flush();
+                
+                // Create initial state for new travel expense.
+                if (null === $isNew) {
+                    $statusManager->forceStatus(Status::CREATED, $travelExpense, $this->getUser());
+                }
                 
                 return true;
             }
