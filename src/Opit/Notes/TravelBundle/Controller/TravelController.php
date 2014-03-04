@@ -375,40 +375,36 @@ class TravelController extends Controller
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
 
-                // Persist travel request object again if travel request id is set (insert actions)
-                // set travel request id is handled inside its entity using lifecycle callbacks
-                if ($travelRequest->getTravelRequestId()) {
-                    $travelRequestService->addStatus($travelRequest);
-                    
-                    if (null === $isNew) {
-                        if ('fa' === $forApproval) {
-                            $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
-                            $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
-                        } else {
-                            $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
-                        }
+                // Create initial states for new travel request.
+                if (null === $isNew) {
+                    if ('fa' === $forApproval) {
+                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                        $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
+                    } else {
+                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
                     }
-
-                    $travelRequestService->handleAccessRights(
-                        $travelRequest,
-                        array(
-                            array(
-                                'user' => $travelRequest->getGeneralManager(),
-                                'mask' => MaskBuilder::MASK_EDIT
-                            ),
-                            array(
-                                'user' => $travelRequest->getTeamManager(),
-                                'mask' => MaskBuilder::MASK_EDIT
-                            ),
-                            array(
-                                'user' => $securityContext->getToken()->getUser(),
-                                'mask' => MaskBuilder::MASK_OWNER
-                            ),
-                        ),
-                        $generalManager,
-                        $teamManager
-                    );
                 }
+
+                $travelRequestService->handleAccessRights(
+                    $travelRequest,
+                    array(
+                        array(
+                            'user' => $travelRequest->getGeneralManager(),
+                            'mask' => MaskBuilder::MASK_EDIT
+                        ),
+                        array(
+                            'user' => $travelRequest->getTeamManager(),
+                            'mask' => MaskBuilder::MASK_EDIT
+                        ),
+                        array(
+                            'user' => $securityContext->getToken()->getUser(),
+                            'mask' => MaskBuilder::MASK_OWNER
+                        ),
+                    ),
+                    $generalManager,
+                    $teamManager
+                );
+
                 return true;
             }
         }

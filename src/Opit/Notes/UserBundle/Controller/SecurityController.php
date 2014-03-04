@@ -30,9 +30,7 @@ class SecurityController extends Controller
      * @Template()
      */
     public function loginAction(Request $request)
-    {     
-        $msg = "invalid";
-        
+    {
         $form = $this->createForm(new UserType());
         
         $request = $this->getRequest();

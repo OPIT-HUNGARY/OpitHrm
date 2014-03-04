@@ -253,26 +253,6 @@ class TravelRequestService
     }
     
     /**
-     * Method to add new status to travel request
-     * 
-     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     */
-    public function addStatus(TravelRequest $travelRequest)
-    {
-        // Get current status of travel request
-        $currentStatus = $this->statusManager->getCurrentStatus($travelRequest);
-        // Get initial status if travel request current status is null
-        if (null === $currentStatus) {
-            $status = $this->entityManager
-                ->getRepository('OpitNotesTravelBundle:Status')
-                ->findStatusCreate();
-            
-            //add status to travel request
-            $this->statusManager->addStatus($travelRequest, $status->getId());
-        }
-    }
-    
-    /**
      * Method to set edit rights for travel request
      * 
      * @param \Opit\Notes\UserBundle\Entity\User $user

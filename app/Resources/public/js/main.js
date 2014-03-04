@@ -211,6 +211,34 @@
           return $parent.append($toggleIcon);
         });
       },
+      changeDeleteButton: function(disableInputCheck) {
+        var $deleteButton;
+        if (disableInputCheck == null) {
+          disableInputCheck = false;
+        }
+        $deleteButton = $('#delete');
+        $deleteButton.attr('disabled', 'disabled');
+        $deleteButton.addClass('button-disabled');
+        if (disableInputCheck === false) {
+          return $('#list-table tr td input[type=checkbox]').each(function() {
+            if ($(this).prop('checked')) {
+              $deleteButton.removeClass('button-disabled');
+              $deleteButton.removeAttr('disabled');
+              return false;
+            }
+          });
+        }
+      },
+      initDeleteMultipleListener: function() {
+        var $deleteButton;
+        $deleteButton = $('#delete');
+        $deleteButton.attr('disabled', 'disabled');
+        $deleteButton.addClass('button-disabled');
+        $deleteButton.removeClass('delete');
+        return $('#list-table input[type="checkbox"]').on('change', function() {
+          return $(document).data('notes').funcs.changeDeleteButton();
+        });
+      },
       initListPageListeners: function() {
         $('.status-history').click(function(event) {
           event.preventDefault();
@@ -286,7 +314,7 @@
           $('.deleteMultipleTravelRequest').checkAll();
           return $('.deleteMultipleTravelExpense').checkAll();
         });
-        $('.deleteSingeTravelRequest').click(function(event) {
+        $('#list-table .deleteSingeTravelRequest').click(function(event) {
           event.preventDefault();
           return $(document).data('notes').funcs.deleteSingleRequest('request', $(this));
         });
@@ -426,7 +454,7 @@
               }
               if (self.hasClass('fa-caret-left')) {
                 if (offset < $('#pager').first().data('offset')) {
-                  console.log('');
+                  return false;
                 } else {
                   $('#pager').html($pager.html());
                 }

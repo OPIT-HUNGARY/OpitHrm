@@ -10,6 +10,7 @@ $('#searchButton').click (event) ->
         data: $form.serialize()
     .done (response) ->
         $('#list-table').parent().html response
+        $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
         return
@@ -22,6 +23,7 @@ $('#resetButton').click ->
         data: 'resetForm': true, 'showList' : 1
     .done (response) ->
         $('#list-table').parent().html response
+        $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
         return
     return

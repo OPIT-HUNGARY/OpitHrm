@@ -184,6 +184,26 @@ $.extend true, $(document).data('notes'),
                             $parent.next().slideToggle()
                 $parent.append $toggleIcon
                 
+        changeDeleteButton: (disableInputCheck = false) ->
+            $deleteButton = $('#delete')
+            $deleteButton.attr 'disabled', 'disabled'
+            $deleteButton.addClass 'button-disabled'
+            if disableInputCheck is false
+                $('#list-table tr td input[type=checkbox]').each ->
+                    if $(@).prop 'checked'
+                        $deleteButton.removeClass 'button-disabled'
+                        $deleteButton.removeAttr 'disabled'
+                        return false
+                
+        initDeleteMultipleListener: () ->
+            $deleteButton = $('#delete')
+            $deleteButton.attr 'disabled', 'disabled'
+            $deleteButton.addClass 'button-disabled'
+            $deleteButton.removeClass 'delete'
+            
+            $('#list-table input[type="checkbox"]').on 'change', ->
+                $(document).data('notes').funcs.changeDeleteButton()
+                
         initListPageListeners: () ->
             $('.status-history').click (event) ->
                 event.preventDefault()
@@ -227,7 +247,7 @@ $.extend true, $(document).data('notes'),
                         buttons:
                           'Send for approval': ->
                              $changeState.addClass 'dropdown-disabled'
-                             $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId)
+                             $(document).data('notes').funcs.changeTravelStatus 2, travelRequestId
                              $('#dialog-show-details-tr').dialog 'destroy'
                           Close: ->
                              $('#dialog-show-details-tr').dialog 'destroy'
@@ -247,10 +267,9 @@ $.extend true, $(document).data('notes'),
                 $('.deleteMultipleTravelRequest').checkAll()
                 $('.deleteMultipleTravelExpense').checkAll()
 
-            $('.deleteSingeTravelRequest').click (event) ->
+            $('#list-table .deleteSingeTravelRequest').click (event) ->
                 event.preventDefault()
                 $(document).data('notes').funcs.deleteSingleRequest 'request', $(@)
-
 
             $('#delete').click ->
                 if $('#userlistWrapper').length is 1
@@ -379,7 +398,7 @@ $.extend true, $(document).data('notes'),
                                 
                         if self.hasClass 'fa-caret-left'
                             if offset < $('#pager').first().data 'offset'
-                                console.log ''
+                                return false
                             else
                                 $('#pager').html $pager.html()
                         

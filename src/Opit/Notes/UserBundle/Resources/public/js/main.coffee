@@ -60,17 +60,6 @@ cloneSubmenu = ->
     $subMenuClone = $('.active').children('.subMenu').clone()
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
-
-changeDeleteButton = (disableInputCheck = false) ->
-    $deleteButton = $('#delete')
-    $deleteButton.attr 'disabled', 'disabled'
-    $deleteButton.addClass 'button-disabled'
-    if disableInputCheck is false
-        $('#list-table tr td input[type=checkbox]').each ->
-            if $(@).prop 'checked'
-                $deleteButton.removeClass 'button-disabled'
-                $deleteButton.removeAttr 'disabled'
-                return false
                
 getAllNotifications = ($notificationsWrapper) ->
     changeStatus = (el, callback) ->
@@ -177,10 +166,11 @@ $.fn.extend
         checkAll = if $el.filter(':checked').length is $el.length then false else true
         $el.each ->
             $(@).prop 'checked', checkAll
-        changeDeleteButton()
+        $(document).data('notes').funcs.changeDeleteButton()
 
 $(document)
     .ready ->
+        $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
 
@@ -221,17 +211,10 @@ $(document)
         $('#loggedInUser').click ->
             $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('OpitNotesUserBundle').funcs?.showAlert
             
-        $deleteButton = $('#delete')
-        $deleteButton.attr 'disabled', 'disabled'
-        $deleteButton.addClass 'button-disabled'
-        $deleteButton.removeClass 'delete'
-        $('#list-table tr td').on 'change', 'input[type=checkbox]', ->
-            changeDeleteButton()
-            
         $(document).on 'click', '.ui-button-text', ->
             buttonText = $(@).html()
             if buttonText == 'Yes' or buttonText == 'Continue'
-                changeDeleteButton(true)
+                $(document).data('notes').funcs.changeDeleteButton true
             
     
         cloneSubmenu()
