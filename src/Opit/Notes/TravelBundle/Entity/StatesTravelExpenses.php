@@ -14,6 +14,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
+use Opit\Notes\UserBundle\Entity\User;
 
 /**
  * This class is a container for the Travel Expense Status model
@@ -47,10 +48,16 @@ class StatesTravelExpenses extends AbstractBase
      */
     protected $status;
 
-    public function __construct(Status $status = null, TravelExpense $travelExpense = null)
-    {
+    public function __construct(
+        Status $status = null,
+        TravelExpense $travelExpense = null,
+        User $createdUser = null,
+        User $updatedUser = null
+    ) {
         $this->setStatus($status);
         $this->setTravelExpense($travelExpense);
+        $this->setCreatedUser($createdUser);
+        $this->setUpdatedUser($updatedUser);
     }
 
     /**

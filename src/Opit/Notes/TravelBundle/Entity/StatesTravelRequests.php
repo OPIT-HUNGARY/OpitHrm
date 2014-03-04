@@ -14,6 +14,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
+use Opit\Notes\UserBundle\Entity\User;
 
 /**
  * This class is a container for the Travel Request Status model
@@ -47,10 +48,16 @@ class StatesTravelRequests extends AbstractBase
      */
     protected $status;
 
-    public function __construct(Status $status = null, TravelRequest $travelRequest = null)
-    {
+    public function __construct(
+        Status $status = null,
+        TravelRequest $travelRequest = null,
+        User $createdUser = null,
+        User $updatedUser = null
+    ) {
         $this->setStatus($status);
         $this->setTravelRequest($travelRequest);
+        $this->setCreatedUser($createdUser);
+        $this->setUpdatedUser($updatedUser);
     }
 
     /**

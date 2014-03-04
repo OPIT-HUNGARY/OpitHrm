@@ -7,13 +7,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Opit\Notes\TravelBundle\Entity\Token;
-use Opit\Notes\TravelBundle\Entity\StatesTravelExpenses;
-use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\TravelBundle\Entity\TRNotification;
 use Opit\Notes\TravelBundle\Entity\TENotification;
 use Opit\Notes\TravelBundle\Entity\NotificationStatus;
+use Opit\Notes\TravelBundle\Helper\Utils;
 
 class DefaultController extends Controller
 {
@@ -22,6 +21,7 @@ class DefaultController extends Controller
      *
      * @Route("/changestatus/{gmId}/{travelType}/{status}/{token}", name="OpitNotesTravelBundle_change_status", requirements={ "status" = "\d+", "gmId" = "\d+" })
      * @Template()
+     * @throws CreateNotFoundException
      */
     public function changeStatusAction(Request $request)
     {
@@ -34,7 +34,7 @@ class DefaultController extends Controller
             ->find($request->attributes->get('status'));
         //get travel type (te=Travel expense, tr=Travel request)
         $travelType = $request->attributes->get('travelType');
-        $travelTypeName = ('te' === $travelType) ? 'travel epxense' : 'travel request';
+        $travelTypeName = 'te' == $travelType ? 'expense': 'request';
         //get token and Token entity
         $token = $entityManager->getRepository('OpitNotesTravelBundle:Token')
             ->findOneBy(array('token' => $request->attributes->get('token')));
@@ -43,25 +43,28 @@ class DefaultController extends Controller
         if (false === ($token instanceof Token)) {
             throw $this->createNotFoundException('Security token is not valid. Status cannot be updated.');
         }
+
+        $travel = $entityManager
+            ->getRepository('OpitNotesTravelBundle:Travel' . ucfirst($travelTypeName))
+            ->find($token->getTravelId());
+        if (null === $travel) {
+            throw $this->createNotFoundException('Missing travel ' . $travelTypeName . '.');
+        }
         
         if ($request->isMethod('POST')) {
             $method = 'post';
-            //get the travel id from the token
-            $travelId = $token->getTravelId();
-
-            if ('te' === $travelType) {
-                $travel = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelId);
-                $travelStatus = new StatesTravelExpenses();
-                $travelStatus->setTravelExpense($travel);
-            } elseif ('tr' === $travelType) {
-                $travel = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelId);
-                $travelStatus = new StatesTravelRequests();
-                $travelStatus->setTravelRequest($travel);
+            $travelStatus =
+                new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($travel) . 's');
+            
+            if (null === $travel) {
+                throw $this->createNotFoundException('Missing travel ' . $travelTypeName . '.');
             }
-            $travelStatus->setCreatedUser($generalManager);
-            $travelStatus->setUpdatedUser($generalManager);
-            $travelStatus->setStatus($status);
-            $entityManager->persist($travelStatus);
+            
+            $entityManager->persist(
+                $travelStatus->newInstanceArgs(
+                    array($status, $travel, $generalManager, $generalManager)
+                )
+            );
             $entityManager->remove($token);
             $entityManager->flush();
         }
