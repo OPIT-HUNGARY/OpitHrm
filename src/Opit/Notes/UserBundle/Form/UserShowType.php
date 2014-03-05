@@ -62,52 +62,30 @@ class UserShowType extends AbstractType
         $dataArr = $builder->getData();
         $config = $this->container->getParameter('opit_notes_user');
         $userId = null;
+        $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
 
         // If we modify an existed user.
         if (null !== $dataArr) {
             $userId = $dataArr->getId();
         }
-
-        $builder->add('username', 'text', array('attr' => array(
-            'placeholder' => 'Username'
-        )));
+        
+        // If the current user has admin role then the field will be changeable
+        if (true === $isAdmin) {
+            $builder->add('username', 'text', array('attr' => array(
+                'placeholder' => 'Username'
+            )));
+        }
+        
         $builder->add('email', 'text', array('attr' => array(
             'placeholder' => 'Email'
         )));
         $builder->add('employeeName', 'text', array('attr' => array(
             'placeholder' => 'Employee Name'
         )));
-        // If the current user has admin role then the field will be changeable
-        if (true === $this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
-            $builder->add('isActive', 'choice', array(
-                'choices' => $this->container->getParameter('notes_user_status')
-            ));
-        }
-        $builder->add('jobTitle', 'entity', array(
-            'class' => 'OpitNotesUserBundle:JobTitle',
-            'property' => 'title',
-            'multiple' => false,
-            'data' => $dataArr->getJobTitle()
-        ));
-        // If the current user has admin role then the field will be changeable
-        if (true === $this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
-            $builder->add('groups', 'entity', array(
-                'class' => 'OpitNotesUserBundle:Groups',
-                'property' => 'name',
-                'multiple' => true,
-                'expanded' => true
-            ));
-        }
-        $builder->add('bankAccountNumber', 'text', array('attr' => array(
-            'placeholder' => 'Bank account number'
-        )));
-        $builder->add('bankName', 'text', array('attr' => array(
-            'placeholder' => 'Bank Name'
-        )));
+        
         $tax = $builder->create('taxIdentification', 'integer', array('attr' => array(
             'placeholder' => 'Tax number'
         )));
-        
         // If the php's version is less than the required min php version then load the data transformet class.
         if ($config['min_php_version'] > phpversion()) {
             $tax->resetViewTransformers();
@@ -115,7 +93,34 @@ class UserShowType extends AbstractType
         }
         $builder->add($tax);
         
+        $builder->add('bankAccountNumber', 'text', array('attr' => array(
+            'placeholder' => 'Bank account number'
+        )));
+        $builder->add('bankName', 'text', array('attr' => array(
+            'placeholder' => 'Bank Name'
+        )));
+        
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
+        
+        if (true === $isAdmin) {
+            $builder->add('groups', 'entity', array(
+                'class' => 'OpitNotesUserBundle:Groups',
+                'property' => 'name',
+                'multiple' => true,
+                'expanded' => true
+            ));
+            
+            $builder->add('jobTitle', 'entity', array(
+                'class' => 'OpitNotesUserBundle:JobTitle',
+                'property' => 'title',
+                'multiple' => false,
+                'data' => $dataArr->getJobTitle()
+            ));
+            
+            $builder->add('isActive', 'choice', array(
+                'choices' => $this->container->getParameter('notes_user_status')
+            ));
+        }
     }
     /**
      * Sets the default form options
