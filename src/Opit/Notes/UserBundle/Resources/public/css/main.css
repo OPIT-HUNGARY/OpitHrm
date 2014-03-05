@@ -166,7 +166,7 @@ input[type="text"], input[type="date"], input[type="number"], input[type="passwo
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus { border: solid 1px #f28c38; }
 
 .formFieldset { background-color: #ebebeb; padding: 0 0 5px 0; margin: 20px 0 20px 0; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
-.formFieldset .formFieldsetChild { background-color: #d2d2d2; padding: 10px; margin-left: 1em; display: inline-block; vertical-align: top; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+.formFieldset .formFieldsetChild { background-color: #d2d2d2; padding: 10px; margin-left: 1em; margin-bottom: 1em; display: inline-block; vertical-align: top; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
 .formFieldset h3 { -webkit-margin-before: 0; padding: 2px 0 2px 0; padding-left: 1em; background-color: #f28c38; color: white; -webkit-border-top-left-radius: 5px; -moz-border-top-left-radius: 5px; -ms-border-top-left-radius: 5px; -o-border-top-left-radius: 5px; border-top-left-radius: 5px; -webkit-border-top-right-radius: 5px; -moz-border-top-right-radius: 5px; -ms-border-top-right-radius: 5px; -o-border-top-right-radius: 5px; border-top-right-radius: 5px; }
 .formFieldset .formFieldsetButton { text-decoration: underline; margin-top: 5px; vertical-align: bottom; padding: 2px; }
 .formFieldset .formFieldsetButton i { margin: 0 2px 0 0; }
