@@ -40,22 +40,22 @@ class TravelType extends AbstractType
         $entityManager = $options['em'];
         $transformer = new UserIdToObjectTransformer($entityManager);
         
-        $employeeAttributes = array('placeholder' => 'Employee name');
+        $userAcOptions = array();
         
         // if travel request user exists
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
             if (false === $this->isGranted) {
-                $employeeAttributes['disabled'] = 'disabled';
+                $userAcOptions['disabled'] = true;
             }
         }
         
         $builder->add($builder->create('user', 'hidden')->addModelTransformer($transformer));
-        $builder->add('user_ac', 'text', array(
+        $builder->add('user_ac', 'text', array_merge(array(
             'label' => 'Employee name',
             'data' => ($user = $options['data']->getUser()) ? $user->getEmployeeName() : null,
             'mapped' => false,
-            'attr' => $employeeAttributes
-        ));
+            'attr' => array('placeholder' => 'Employee name')
+        ), $userAcOptions));
         $builder->add('departure_date', 'date', array(
             'widget' => 'single_text',
             'label'=>'Departure date',
@@ -67,7 +67,8 @@ class TravelType extends AbstractType
             'attr' => array('placeholder' => 'Arrival date')
         ));
         $builder->add('customer_related', 'choice', array(
-            'required' => true,
+            'required' => false,
+            'empty_value' => false,
             'data' => 'No',
             'label'=>'Customer related',
             'choices' => array('1'=>'No', '0'=>'Yes')

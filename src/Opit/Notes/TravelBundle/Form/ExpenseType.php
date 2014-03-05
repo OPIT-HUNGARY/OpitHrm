@@ -35,7 +35,7 @@ class ExpenseType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $userAttributes = array('placeholder' => 'Name', 'class' => 'te-claim');
+        $userAcOptions = array();
         $entityManager = $options['em'];
         $user = $options['data']->getUser();
         $taxId = null;
@@ -54,16 +54,16 @@ class ExpenseType extends AbstractType
         
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
             if (false === $this->isGranted) {
-                $userAttributes['disabled'] = 'disabled';
+                $userAcOptions['disabled'] = true;
             }
         }
         
-        $builder->add('user_name', 'text', array(
+        $builder->add('user_name', 'text', array_merge(array(
             'label' => 'Employee name',
             'mapped' => false,
             'data' => $employeeName,
-            'attr' => $userAttributes
-        ));
+            'attr' => array('placeholder' => 'Name', 'class' => 'te-claim')
+        ), $userAcOptions));
         
         $builder->add('taxIdentification', 'text', array(
             'label' => 'Tax id',
