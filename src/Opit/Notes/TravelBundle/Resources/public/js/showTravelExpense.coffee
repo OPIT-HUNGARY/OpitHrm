@@ -626,4 +626,23 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                             return  
             .fail () ->
                 $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
-                    title: 'Error'                        
+                    title: 'Error'
+
+$('#travelRequestPreview').on 'click', ->
+    $.ajax
+        method: 'POST'
+        url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
+        data: 'id': $(@).attr 'data-tr-id'
+    .done (data) ->
+        $previewTr = $('<div id="dialog-show-details-tr"></div>');
+        $previewTr.html(data)
+            .dialog
+                open: ->
+                    $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Details')
+                close: ->
+                    $previewTr.dialog "destroy"
+                width: 550
+                maxHeight: $(window).outerHeight()-100
+                modal: on
+        return
+    return

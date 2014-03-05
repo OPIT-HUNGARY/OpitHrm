@@ -31,7 +31,7 @@
     {#{% if hideTravelRequest[i] == 0 %}#}
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
-        <td class="clickable" data-tr-id='{{ travelRequest.id }}'>{{ travelRequest.travelRequestId }}</td>
+        <td class="clickable" data-tr-id="{{ travelRequest.id }}">{{ travelRequest.travelRequestId }}</td>
         <td>{{ travelRequest.user.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>

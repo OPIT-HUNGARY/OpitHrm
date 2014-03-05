@@ -679,4 +679,28 @@
     }
   });
 
+  $('#travelRequestPreview').on('click', function() {
+    $.ajax({
+      method: 'POST',
+      url: Routing.generate('OpitNotesTravelBundle_travel_show_details'),
+      data: {
+        'id': $(this).attr('data-tr-id')
+      }
+    }).done(function(data) {
+      var $previewTr;
+      $previewTr = $('<div id="dialog-show-details-tr"></div>');
+      $previewTr.html(data).dialog({
+        open: function() {
+          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
+        },
+        close: function() {
+          return $previewTr.dialog("destroy");
+        },
+        width: 550,
+        maxHeight: $(window).outerHeight() - 100,
+        modal: true
+      });
+    });
+  });
+
 }).call(this);
