@@ -24,15 +24,16 @@ compareDays = () ->
     #get days between arrival and departure
     diffDays = (arrivalDate.getTime() - departureDate.getTime())/(24*60*60*1000)#one day
     accomodationDays = '0'
-    
     # get all days from all accomodations
     $('#travelRequest_accomodations').find('.number-of-nights').each ->
         accomodationDays = parseInt($(@).val()) + parseInt(accomodationDays)
-
     $accomodationWrapper = $('#travelRequest_accomodations')
     
     # check if trip is longer than accomodations
-    if accomodationDays > diffDays
+    # and check if the diffDays is a positive value becasue to prevent that case
+    # when the difference day between the departure and arrival dates is negative value
+    # and there are no any filled up accommodations then this validation will not run.
+    if diffDays > 0 and accomodationDays > diffDays
         if $accomodationWrapper.children('label.custom-error').length is 0
             $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'custom-error'
             $accomodationWrapper.prepend '<br />'

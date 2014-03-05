@@ -36,7 +36,7 @@
       return accomodationDays = parseInt($(this).val()) + parseInt(accomodationDays);
     });
     $accomodationWrapper = $('#travelRequest_accomodations');
-    if (accomodationDays > diffDays) {
+    if (diffDays > 0 && accomodationDays > diffDays) {
       if ($accomodationWrapper.children('label.custom-error').length === 0) {
         $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass('custom-error');
         $accomodationWrapper.prepend('<br />');
