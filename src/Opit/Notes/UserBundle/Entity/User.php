@@ -72,8 +72,8 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @Assert\Length(
      *      min = "6",
      *      max = "50",
-     *      minMessage = "The password must be greater equal {{ limit }} characters",
-     *      maxMessage = "The password must be less equal {{ limit }} characters",
+     *      minMessage = "The password must be greater or equal to {{ limit }} characters",
+     *      maxMessage = "The password must be less or equal to {{ limit }} characters",
      *      groups={"password"}
      * )
      */

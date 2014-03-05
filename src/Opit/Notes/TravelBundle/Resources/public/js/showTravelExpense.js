@@ -619,7 +619,7 @@
       border: 'solid 1px rgb(170, 170, 170)'
     });
     return departure < arrival;
-  }, 'Arrival date should not be smaller than departure date.');
+  }, 'Arrival date should not be earlier than departure date.');
 
   $form.validate({
     ignore: [],
