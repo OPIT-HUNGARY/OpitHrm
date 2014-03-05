@@ -212,9 +212,9 @@ class TravelExpenseService
             $children->add($userPaidExpenses);
         }
         
-        $travelExpenseAdvancesReceived = $travelExpense->getTeAdvancesReceived();
+        $travelExpenseAdvancesReceived = $travelExpense->getAdvancesReceived();
         if (null !== $travelExpenseAdvancesReceived) {
-            foreach ($travelExpense->getTeAdvancesReceived() as $teAdvancesReceived) {
+            foreach ($travelExpense->getAdvancesReceived() as $teAdvancesReceived) {
                 $children->add($teAdvancesReceived);
             }
         }
@@ -242,7 +242,7 @@ class TravelExpenseService
                     $getter = 'getCompanyPaidExpenses';
                     break;
                 case 'TEAdvancesReceived':
-                    $getter = 'getTeAdvancesReceived';
+                    $getter = 'getAdvancesReceived';
                     break;
             }
             

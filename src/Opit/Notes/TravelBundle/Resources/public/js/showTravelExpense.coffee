@@ -36,7 +36,7 @@ allCurrencies = []
 availableCurrencies = []
   
 setCurrenciesArray = (arrayToPushTo) ->
-    $($('#travelExpense_teAdvancesReceived').data('prototype')).find('option').each ->
+    $($('#travelExpense_advancesReceived').data('prototype')).find('option').each ->
         arrayToPushTo.push $(@).val()
   
 setAvailableCurrencies = (fillAllCurrenciesArray) ->
@@ -161,7 +161,7 @@ createCustomField = (className, labelText, content) ->
 
 reCreateAdvances = () ->
     collectionIndex = 0
-    $teAdvancesReceived = $('#travelExpense_teAdvancesReceived')
+    $teAdvancesReceived = $('#travelExpense_advancesReceived')
     $generalFormFieldset = $('.generalFormFieldset')
     $teAdvancesReceived.parent().children('label').remove()
     $teAdvancesReceived.children().each ->
@@ -183,7 +183,7 @@ reCreateAdvances = () ->
         
         collectionIndex++
         
-        $teAdvances = $('#travelExpense_teAdvancesReceived_' + index)
+        $teAdvances = $('#travelExpense_advancesReceived_' + index)
         $advancesReceived = $('<div>')
         $advancesReceived.addClass 'advances-received'
         $advancesReceived.append $teAdvances
@@ -471,7 +471,7 @@ $(document).ready ->
         calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal)
 
     reCreateAdvances()
-    $advancesReceived = $('#travelExpense_teAdvancesReceived')
+    $advancesReceived = $('#travelExpense_advancesReceived')
 
     $addNewAdvance = $('<div>')
     $addNewAdvance.addClass 'addFormFieldsetChild formFieldsetButton margin-left-0'

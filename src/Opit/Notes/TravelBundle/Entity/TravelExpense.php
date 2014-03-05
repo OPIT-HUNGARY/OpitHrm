@@ -23,7 +23,6 @@ class TravelExpense implements TravelResourceInterface
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\OneToMany(targetEntity="TENotification", mappedBy="travelExpense", cascade={"persist", "remove"})
      */
     private $id;
 
@@ -127,13 +126,20 @@ class TravelExpense implements TravelResourceInterface
     protected $advancesReceived;
     
     /**
+     * @ORM\OneToMany(targetEntity="TENotification", mappedBy="travelExpense", cascade={"remove"})
+     */
+    protected $notifications;
+    
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->userPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->companyPaidExpenses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->userPaidExpenses = new ArrayCollection();
+        $this->companyPaidExpenses = new ArrayCollection();
         $this->states = new ArrayCollection();
+        $this->advancesReceived = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
     
     /**
@@ -502,61 +508,6 @@ class TravelExpense implements TravelResourceInterface
     }
     
     /**
-     * 
-     * @param Entity $notifications
-     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
-     */
-    public function setNotifications($notifications)
-    {
-        $this->notifications = $notifications;
-        
-        return $this;
-    }
-    
-    /**
-     * 
-     * @return Entitiy
-     */
-    public function getNotification()
-    {
-        return $this->notifications;
-    }
-    
-    /**
-     * Add teAdvancesReceived
-     *
-     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived teAdvancesReceived
-     * @return TravelExpense
-     */
-    public function addTeAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
-    {
-        $this->advancesReceived[] = $advancesReceived;
-        $advancesReceived->setTravelExpense($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove teAdvancesReceived
-     *
-     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived teAdvancesReceived
-     */
-    public function removeTeAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
-    {
-        $this->advancesReceived->removeElement($advancesReceived);
-    }
-
-    /**
-     * Get teAdvancesReceived
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTeAdvancesReceived()
-    {
-        return $this->advancesReceived;
-    }
-    
-    /**
      * Returns the travel type constant
      * 
      * @return string The travel entity type
@@ -564,5 +515,73 @@ class TravelExpense implements TravelResourceInterface
     public static function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * Add advancesReceived
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived
+     * @return TravelExpense
+     */
+    public function addAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
+    {
+        $this->advancesReceived[] = $advancesReceived;
+        $advancesReceived->setTravelExpense($this);
+    
+        return $this;
+    }
+
+    /**
+     * Remove advancesReceived
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived
+     */
+    public function removeAdvancesReceived(\Opit\Notes\TravelBundle\Entity\TEAdvancesReceived $advancesReceived)
+    {
+        $this->advancesReceived->removeElement($advancesReceived);
+    }
+
+    /**
+     * Get advancesReceived
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAdvancesReceived()
+    {
+        return $this->advancesReceived;
+    }
+
+    /**
+     * Add notifications
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TENotification $notifications
+     * @return TravelExpense
+     */
+    public function addNotification(\Opit\Notes\TravelBundle\Entity\TENotification $notifications)
+    {
+        $this->notifications[] = $notifications;
+        $notifications->setTravelExpense($this);
+    
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TENotification $notifications
+     */
+    public function removeNotification(\Opit\Notes\TravelBundle\Entity\TENotification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }

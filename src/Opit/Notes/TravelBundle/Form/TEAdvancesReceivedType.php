@@ -39,7 +39,7 @@ class TEAdvancesReceivedType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'teAdvancesReceived',
+            'advancesReceived',
             'integer',
             array(
                 'label' => 'Advances received',

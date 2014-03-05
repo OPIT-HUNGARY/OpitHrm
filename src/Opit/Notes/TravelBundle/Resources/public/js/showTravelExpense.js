@@ -43,7 +43,7 @@
   availableCurrencies = [];
 
   setCurrenciesArray = function(arrayToPushTo) {
-    return $($('#travelExpense_teAdvancesReceived').data('prototype')).find('option').each(function() {
+    return $($('#travelExpense_advancesReceived').data('prototype')).find('option').each(function() {
       return arrayToPushTo.push($(this).val());
     });
   };
@@ -186,7 +186,7 @@
   reCreateAdvances = function() {
     var $generalFormFieldset, $teAdvancesReceived, collectionIndex;
     collectionIndex = 0;
-    $teAdvancesReceived = $('#travelExpense_teAdvancesReceived');
+    $teAdvancesReceived = $('#travelExpense_advancesReceived');
     $generalFormFieldset = $('.generalFormFieldset');
     $teAdvancesReceived.parent().children('label').remove();
     $teAdvancesReceived.children().each(function() {
@@ -204,7 +204,7 @@
       $selfParent.after($advancesSpent);
       $advancesSpent.after($advancesPayback);
       collectionIndex++;
-      $teAdvances = $('#travelExpense_teAdvancesReceived_' + index);
+      $teAdvances = $('#travelExpense_advancesReceived_' + index);
       $advancesReceived = $('<div>');
       $advancesReceived.addClass('advances-received');
       $advancesReceived.append($teAdvances);
@@ -486,7 +486,7 @@
       return calculatePerDiem(departureDateVal, departureHourVal, departureMinuteVal, arrivalDateVal, arrivalHourVal, arrivalMinuteVal);
     });
     reCreateAdvances();
-    $advancesReceived = $('#travelExpense_teAdvancesReceived');
+    $advancesReceived = $('#travelExpense_advancesReceived');
     $addNewAdvance = $('<div>');
     $addNewAdvance.addClass('addFormFieldsetChild formFieldsetButton margin-left-0');
     $addNewAdvance.html('<i class="fa fa-plus-square"></i>Add advances received');

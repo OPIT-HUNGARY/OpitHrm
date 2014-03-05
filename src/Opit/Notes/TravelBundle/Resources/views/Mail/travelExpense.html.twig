@@ -61,9 +61,9 @@
         <td style="border-bottom: solid 1px;padding-top:4px;">{{ attribute(travelExpense, 'arrivalDateTime')|date('Y-m-d H:i:s') }}</td>
     </tr>
     
-    {% for teAdvancesReceived in travelExpense.teAdvancesReceived %}
+    {% for teAdvancesReceived in travelExpense.advancesReceived %}
         {% set currencyCode = teAdvancesReceived.currency.code %}
-        {% set advancesReceived = teAdvancesReceived.teAdvancesReceived %}
+        {% set advancesReceived = teAdvancesReceived.advancesReceived %}
         {% if '0' == loop.index0 %}
             <tr>
                 <td style="border-bottom: solid 1px;padding-top:4px;">Advances recieved</td>

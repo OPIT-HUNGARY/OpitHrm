@@ -28,7 +28,6 @@ class TravelRequest implements TravelResourceInterface
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\OneToMany(targetEntity="TRNotification", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     private $id;
 
@@ -119,12 +118,18 @@ class TravelRequest implements TravelResourceInterface
      * @ORM\OneToMany(targetEntity="StatesTravelRequests", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     protected $states;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="TRNotification", mappedBy="travelRequest", cascade={"remove"})
+     */
+    protected $notifications;
 
     public function __construct()
     {
         $this->destinations = new ArrayCollection();
         $this->accomodations = new ArrayCollection();
         $this->states = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -480,27 +485,6 @@ class TravelRequest implements TravelResourceInterface
     }
     
     /**
-     * 
-     * @param Entity $notifications
-     * @return \Opit\Notes\TravelBundle\Entity\TravelRequest
-     */
-    public function setNotifications($notifications)
-    {
-        $this->notifications = $notifications;
-        
-        return $this;
-    }
-    
-    /**
-     * 
-     * @return Entitiy
-     */
-    public function getNotification()
-    {
-        return $this->notifications;
-    }
-    
-    /**
      * Returns the travel type constant
      * 
      * @return string The travel entity type
@@ -508,5 +492,39 @@ class TravelRequest implements TravelResourceInterface
     public static function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * Add notifications
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TRNotification $notifications
+     * @return TravelRequest
+     */
+    public function addNotification(\Opit\Notes\TravelBundle\Entity\TRNotification $notifications)
+    {
+        $this->notifications[] = $notifications;
+        $notifications->setTravelRequest($this);
+    
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TRNotification $notifications
+     */
+    public function removeNotification(\Opit\Notes\TravelBundle\Entity\TRNotification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }

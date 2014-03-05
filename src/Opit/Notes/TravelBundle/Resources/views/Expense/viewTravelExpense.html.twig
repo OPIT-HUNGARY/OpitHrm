@@ -91,14 +91,14 @@
             Summarization
         </td>
     </tr>
-    {% for advancesReceived in travelExpense.teAdvancesReceived %}
+    {% for advancesReceived in travelExpense.advancesReceived %}
     <tr>
         {% if '0' == loop.index0%}
         <td class="bgGrey bold">Advances received</td>
         {% else %}
         <td class="bgGrey bold"></td>
         {% endif %}
-        <td class="align-right">{{ advancesReceived.teAdvancesReceived }}</td>
+        <td class="align-right">{{ advancesReceived.advancesReceived }}</td>
         <td class="width-15-percent align-right">{{ advancesReceived.currency.code }}</td>
     </tr>
     {% endfor %}

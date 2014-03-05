@@ -55,29 +55,6 @@ class TEAdvancesReceived
     }
     
     /**
-     * Set advancesReceived
-     *
-     * @param float $advancesReceived
-     * @return TEAdvancesReceived
-     */
-    public function setTeAdvancesReceived($advancesReceived)
-    {
-        $this->advancesReceived = $advancesReceived;
-    
-        return $this;
-    }
-
-    /**
-     * Get advancesReceived
-     *
-     * @return float 
-     */
-    public function getTeAdvancesReceived()
-    {
-        return $this->advancesReceived;
-    }
-
-    /**
      * Set travelExpense
      *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
@@ -121,5 +98,28 @@ class TEAdvancesReceived
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set advancesReceived
+     *
+     * @param float $advancesReceived
+     * @return TEAdvancesReceived
+     */
+    public function setAdvancesReceived($advancesReceived)
+    {
+        $this->advancesReceived = $advancesReceived;
+    
+        return $this;
+    }
+
+    /**
+     * Get advancesReceived
+     *
+     * @return float 
+     */
+    public function getAdvancesReceived()
+    {
+        return $this->advancesReceived;
     }
 }

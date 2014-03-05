@@ -48,14 +48,14 @@
                 <td class="bgGrey bold">Arrival date time</td>
                 <td>{{ travelExpense.arrivalDateTime|date('Y-m-d H:i') }}</td>
             </tr>
-            {% for advancesReceived in travelExpense.teAdvancesReceived %}
+            {% for advancesReceived in travelExpense.advancesReceived %}
             <tr>
                 {% if '0' == loop.index0%}
                 <td class="bgGrey bold">Advances received</td>
                 {% else %}
                 <td class="bgGrey bold"></td>
                 {% endif %}
-                <td>{{ advancesReceived.teAdvancesReceived }} {{ advancesReceived.currency.code }}</td>
+                <td>{{ advancesReceived.advancesReceived }} {{ advancesReceived.currency.code }}</td>
             </tr>
             {% endfor %}
         </table>

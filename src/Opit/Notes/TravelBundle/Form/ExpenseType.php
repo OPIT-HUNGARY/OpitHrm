@@ -116,7 +116,7 @@ class ExpenseType extends AbstractType
             'attr' => array('placeholder' => 'Arrival date time', 'class' => 'te-claim')
         ));
         
-        $builder->add('teAdvancesReceived', 'collection', array(
+        $builder->add('advancesReceived', 'collection', array(
             'type' => new TEAdvancesReceivedType($entityManager),
             'allow_add' => true,
             'allow_delete' => true,
