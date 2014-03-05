@@ -83,9 +83,12 @@ class UserShowType extends AbstractType
             'placeholder' => 'Employee Name'
         )));
         
-        $tax = $builder->create('taxIdentification', 'integer', array('attr' => array(
-            'placeholder' => 'Tax number'
-        )));
+        $tax = $builder->create('taxIdentification', 'integer', array(
+            'attr' => array(
+                'placeholder' => 'Tax number'
+            ),
+            'invalid_message' => 'You entered an invalid value - it should be an integer'
+        ));
         // If the php's version is less than the required min php version then load the data transformet class.
         if ($config['min_php_version'] > phpversion()) {
             $tax->resetViewTransformers();

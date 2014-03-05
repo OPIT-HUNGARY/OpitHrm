@@ -129,13 +129,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @var integer
      *
      * @ORM\Column(name="tax_identification", type="bigint", unique=true, nullable=true)
-     * @Assert\NotBlank(message="The tax number may not be blank.", groups={"user"})
-     * @Assert\Type(type="integer", message="The tax number {{ value }} may only contain numbers.", groups={"user"})
+     * @Assert\NotBlank(message="The tax identification can not be blank.", groups={"user"})
      * @Assert\Range(
      *      min = "1000000000",
      *      max = "9999999999",
-     *      minMessage = "The tax number should be greater than 1000000000.",
-     *      maxMessage = "The tax number should be less than 9999999999.",
+     *      minMessage = "The tax identification should be greater than 1000000000.",
+     *      maxMessage = "The tax identification should be less than 9999999999.",
      *      groups={"user"}
      * )
      */

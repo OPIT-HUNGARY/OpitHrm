@@ -233,7 +233,7 @@
     }
     $('#loggedInUser').click(function() {
       var _ref;
-      return $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).children('span').data('user-id'), (_ref = $(document).data('OpitNotesUserBundle').funcs) != null ? _ref.showAlert : void 0);
+      return $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).children('span').data('user-id'), (_ref = $(document).data('notes').funcs) != null ? _ref.showAlert : void 0);
     });
     $(document).on('click', '.ui-button-text', function() {
       var buttonText;
