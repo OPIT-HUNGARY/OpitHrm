@@ -423,7 +423,7 @@ $.fn.datepicker = (options) ->
 
     options = options or {}
     defaultOptions =
-        wrapper: '<span class="relative"></span>'
+        wrapper: '<div class="relative"></div>'
         indicatorIcon: $('<i>')
     # Merge passed options
     $.extend true, defaultOptions, options

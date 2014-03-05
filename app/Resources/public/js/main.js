@@ -488,7 +488,7 @@
     $self = this;
     options = options || {};
     defaultOptions = {
-      wrapper: '<span class="relative"></span>',
+      wrapper: '<div class="relative"></div>',
       indicatorIcon: $('<i>')
     };
     $.extend(true, defaultOptions, options);
