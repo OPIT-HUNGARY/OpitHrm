@@ -26,27 +26,21 @@ use Opit\Notes\TravelBundle\Entity\Status;
  * @subpackage TravelBundle
  */
 class StatusRepository extends EntityRepository
-{
+{    
     /**
-     * Finds the latest status of a travel request.
-     *
-     * @param integer $trId
-     * @return mixed A status object or null
+     * Returns array with status name as key and id as value.
+     * 
+     * @return array
      */
-    public function findLastByTravelRequest($trId)
+    public function getStatusNameId()
     {
-
-    }
-
-    /**
-     * Finds the latest status of a travel expense.
-     *
-     * @param integer $teId
-     * @return mixed A status object or null
-     */
-    public function findLastByTravelExpense($teId)
-    {
-
+        $allStates = $this->findAll();
+        $states = array();
+        foreach ($allStates as $status) {
+            $states[$status->getName()] = $status->getId();
+        }
+        
+        return $states;
     }
     
     public function findStatusCreate()

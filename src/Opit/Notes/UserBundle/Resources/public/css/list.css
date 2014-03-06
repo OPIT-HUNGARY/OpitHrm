@@ -144,7 +144,7 @@ table .clickable:hover { cursor: pointer; text-decoration: underline; }
 #list-table tr:nth-child(even) { background-color: rgba(220, 220, 220, 0.8); }
 #list-table th i:hover { cursor: pointer; }
 #list-table a { float: left; }
-#list-table tr td:last-child { font-size: 1.3em; }
+#list-table tr td:nth-child(8) { font-size: 1.3em; }
 
 .ui-dialog-content h2 { margin: 0 0 5px 0; font-size: 1.1em; }
 .ui-dialog-content #user { margin-top: 15px; }

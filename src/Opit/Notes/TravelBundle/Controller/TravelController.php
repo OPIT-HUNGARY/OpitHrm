@@ -79,7 +79,8 @@ class TravelController extends Controller
             'numberOfPages' => $numberOfPages,
             'maxPages' => $config['max_pager_pages'],
             'offset' => ($offset + 1),
-            'isFirstLogin' => $user->getIsFirstLogin()
+            'isFirstLogin' => $user->getIsFirstLogin(),
+            'states' => $entityManager->getRepository('OpitNotesTravelBundle:Status')->getStatusNameId()
         );
 
         if (null === $showList && (null === $offset && !$isSearch)) {

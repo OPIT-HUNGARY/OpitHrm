@@ -46,91 +46,82 @@ class TravelRequestService
         $this->statusManager = $statusManager;
     }
 
+
     /**
      * 
-     * @param boolean $isAdmin
+     * @param Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer $travelRequestGM
      * @param integer $currentUser
      * @param integer $currentStatusId
-     * @param \Opit\Notes\TravelBundle\Entity\Status $travelRequestStatus
-     * @return type
+     * @return array
      */
     public function setTravelRequestAccessRights(
-        $isAdmin,
+        $travelRequest,
         $travelRequestGM = null,
         $currentUser = null,
-        $currentStatusId = null,
-        $travelRequestStatus = null
+        $currentStatusId = null
     ) {
-        $isTravelExpenseLocked = false;
-        $isEditLocked = false;
-        $allActionsLocked = false;
-        $isAddTravelExpenseLocked = false;
-        $doNotListTravelRequest = false;
-        $isStatusLocked = false;
-        
-        if (true === $isAdmin) {
-            if (null !== $travelRequestStatus) {
-                $isTravelExpenseLocked = true;
-            }
-        } else {
-            if ($travelRequestGM === $currentUser) {
-                // travel request cannot be edited
-                $isEditLocked = false;
-                // travel request cannot be edited or deleted
-                $allActionsLocked = false;
-                // travel expense cannot be added to travel request
-                $isAddTravelExpenseLocked = true;
+        $isTREditLocked = false;// travel request can be edited
+        $allActionsLocked = false;// travel request can be edited or deleted
+        $isAddTravelExpenseLocked = true;// travel expense can not be added
+        $isStatusLocked = false;// status can be changed
 
-                if (null !== $travelRequestStatus) {
-                    // if the status of the travel request not created do not show the option to view the travel expense
-                    if (Status::CREATED === $travelRequestStatus->getId()) {
-                        $isTravelExpenseLocked = true;
-                    }
-                }
-
-                // if travel request has state created do not show it until it has been sent for approval
-                if (Status::CREATED === $currentStatusId) {
-                    $doNotListTravelRequest = true;
+        if ($travelRequestGM === $currentUser) {
+            // travel request cannot be edited
+            if ($travelRequest->getUser()->getId() === $currentUser) {
+//                $isTREditLocked = false;
+                // Show add travel expense in case travel expense is approved.
+                if (Status::APPROVED === $currentStatusId) {
+                    $isAddTravelExpenseLocked = false;
+                    $isStatusLocked = true;
                 }
                 
-                // if travel request has status for approval enable the modification of its status
-                if (Status::FOR_APPROVAL !== $currentStatusId) {
-                    $isStatusLocked = true;
-                    $isEditLocked = true;
+                if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
+                    $isTREditLocked = true;
                 }
             } else {
-                // if travel request has been approved allow the option to add a travel expense to it
-                if (Status::APPROVED !== $currentStatusId) {
-                    $isAddTravelExpenseLocked = true;
-                }
-                
-                // if travel expense has status created or revise allow the modification of it
-                if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
-                    $isEditLocked = true;
-                }
-                
-                // if travel request has been sent for approval lock all action(edit, delete)
-                if (Status::FOR_APPROVAL === $currentStatusId) {
-                    $allActionsLocked = true;
-                }
-                
-                // if travel request has any of the below statuses disable the option to change its status
+                // if current user is not the owner
                 if (Status::APPROVED === $currentStatusId ||
                     Status::REJECTED === $currentStatusId ||
-                    Status::FOR_APPROVAL === $currentStatusId) {
+                    Status::REVISE === $currentStatusId) {
                     $isStatusLocked = true;
                 }
+                
+                if ($travelRequest->getGeneralManager()->getId() !== $currentUser) {
+                    $isStatusLocked = true;
+                }
+                
+                $isTREditLocked = true;
+            }
+        } else {
+            // if travel request has been approved allow the option to add a travel expense to it
+            if (Status::APPROVED === $currentStatusId) {
+                $isAddTravelExpenseLocked = false;
+            }
+
+            // if travel expense has status created or revise allow the modification of it
+            if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
+                $isTREditLocked = true;
+            }
+
+            // if travel request has been sent for approval lock all action(edit, delete)
+            if (Status::FOR_APPROVAL === $currentStatusId) {
+                $allActionsLocked = true;
+            }
+
+            // if travel request has any of the below statuses disable the option to change its status
+            if (Status::APPROVED === $currentStatusId ||
+                Status::REJECTED === $currentStatusId ||
+                Status::FOR_APPROVAL === $currentStatusId) {
+                $isStatusLocked = true;
             }
         }
-        
+
         return array(
-            'isEditLocked' => $isEditLocked,
+            'isTREditLocked' => $isTREditLocked,
             'allActionsLocked' => $allActionsLocked,
             'isAddTravelExpenseLocked' => $isAddTravelExpenseLocked,
-            'doNotListTravelRequest' => $doNotListTravelRequest,
-            'isStatusLocked' => $isStatusLocked,
-            'isTravelExpenseLocked' => $isTravelExpenseLocked
+            'isStatusLocked' => $isStatusLocked
         );
     }
     
@@ -150,33 +141,31 @@ class TravelRequestService
                 if (true === $this->securityContext->isGranted('VIEW', $travelRequest)) {
                     $currentStatus = $statusManager->getCurrentStatus($travelRequest);
                     $travelRequestAccessRights = $this->setTravelRequestAccessRights(
-                        false,
+                        $travelRequest,
                         $travelRequest->getGeneralManager()->getId(),
                         $user->getId(),
-                        $currentStatus->getId(),
-                        $statusManager->getCurrentStatus($travelRequest)
+                        $currentStatus->getId()
                     );
                     
                     // add travel request to allowed travel requests to show
-                    if (false === $travelRequestAccessRights['doNotListTravelRequest']) {
-                        $travelExpense = $travelRequest->getTravelExpense();
-                        $teStatus = $statusManager->getCurrentStatus($travelExpense);
-                        $teIds[] = array(
-                            'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
-                            'status' => null !== $teStatus ? $teStatus->getId() : 0
-                        );
-                        $currentStatusNames[] = $currentStatus->getName();
-                        $allowedTRs[] = $travelRequest;
-                        $isTRLocked = $travelRequestAccessRights;
-                        $travelRequestStates[] =
-                            $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                    $travelExpense = $travelRequest->getTravelExpense();
+                    $teStatus = $statusManager->getCurrentStatus($travelExpense);
+                    $teIds[] = array(
+                        'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
+                        'status' => null !== $teStatus ? $teStatus->getId() : 0,
+                        'statusName' => null !== $teStatus ? $teStatus->getName() : '',
+                    );
+                    $currentStatusNames[] = $currentStatus->getName();
+                    $allowedTRs[] = $travelRequest;
+                    $isTRLocked = $travelRequestAccessRights;
+                    $travelRequestStates[] =
+                        $this->getTravelRequestNextStates($travelRequest, $statusManager);
 
-                        if (Status::PAID === $currentStatus->getId()) {
-                            $isTRLocked['isStatusLocked'] = true;
-                        }
-                        
-                        $isLocked[] = $isTRLocked;
+                    if (Status::PAID === $currentStatus->getId()) {
+                        $isTRLocked['isStatusLocked'] = true;
                     }
+
+                    $isLocked[] = $isTRLocked;
                 }
             }
         } else {
@@ -188,13 +177,13 @@ class TravelRequestService
                     'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
                     'status' => null !== $teStatus ? $teStatus->getId() : 0
                 );
-                $isTRLocked = $this->setTravelRequestAccessRights(true);
+                $isTRLocked = $this->setTravelRequestAccessRights(true, $travelRequest);
                 $travelRequestStates[] =
                     $this->getTravelRequestNextStates($travelRequest, $statusManager);
                 
                 $trStatusCurrent = $this->statusManager->getCurrentStatus($travelRequest)->getId();
                 if (Status::APPROVED === $trStatusCurrent || Status::PAID == $trStatusCurrent) {
-                    $isTRLocked['isEditLocked'] = true;
+                    $isTRLocked['isTREditLocked'] = true;
                     $isTRLocked['isStatusLocked'] = true;
                 }
                 $currentStatusNames[] = $currentStatus->getName();

@@ -184,6 +184,8 @@ class TravelExpenseService
             if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
                 $isEditLocked = false;
                 $isStatusLocked = false;
+            } elseif ($travelRequest->getGeneralManager()->getId() === $travelRequest->getUser()->getId()) {
+                $isStatusLocked = false;
             }
         } elseif ($travelRequest->getGeneralManager()->getId() === $currentUser->getId()) {
             if (!in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {

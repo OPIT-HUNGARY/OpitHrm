@@ -67,7 +67,7 @@ class TravelRequestRepository extends EntityRepository
         }
         
         $params['user'] = $pagnationParameters['currentUser'];
-        // If general manager filter created travel requests unless current user is the owner
+        // If general manager, filter created travel requests unless current user is the owner
         if ($pagnationParameters['isGeneralManager']) {
             $params['status'] = Status::CREATED;
             $status_expr = $qb->expr()->orX(
