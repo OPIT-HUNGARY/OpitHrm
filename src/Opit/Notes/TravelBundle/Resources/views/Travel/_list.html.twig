@@ -89,9 +89,9 @@
             {% if teIds is defined %}
                 {% if teIds[i].id == 'new' %}
                     {# if all actions are not locked #}
-                    {% if isLocked[i]['allActionsLocked'] %}
+                    {% if isLocked[i]['allActionsLocked'] == 0 %}
                         {# if add travel expense action is not locked #}
-                        {% if isLocked[i]['isAddTravelExpenseLocked'] %}
+                        {% if isLocked[i]['isAddTravelExpenseLocked'] == 0 %}
                         <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'trId': travelRequest.id}) }}" class="small-button">
                             <i class="fa fa-plus-square fa-1x"></i>
                             <span>Add travel expense</span>
