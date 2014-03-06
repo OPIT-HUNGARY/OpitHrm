@@ -71,7 +71,7 @@ class StatusManager
                 $nextStates[$key] = $value;
             }
         }
-        
+
         $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
         $this->entityManager->flush();
         
@@ -243,65 +243,66 @@ class StatusManager
         $subjectTravelType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
         $stateChangeLinks = array();
         
-        if (Status::CREATED !== $statusId) {
-            if (Status::FOR_APPROVAL === $statusId) {
-                $travelToken = $this->setTravelToken($resource->getId());
+        if (Status::FOR_APPROVAL === $statusId) {
+            $travelToken = $this->setTravelToken($resource->getId());
 
-                foreach ($nextStates as $key => $value) {
-                    if ($key !== $requiredStatus) {
-                        // Generate links that can be used to change the status of the travel request
-                        $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
-                            'gmId' => $generalManager->getId(),
-                            'travelType' => $resource::getType(),
-                            'status' => $key,
-                            'token' => $travelToken
-                        ), true);
-                    }
-                }
-
-                $recipient = $generalManager->getEmail();
-                $templateVariables = array(
-                    'nextStates' => $nextStates,
-                    'stateChangeLinks' => $stateChangeLinks
-                );
-            } else {
-                $recipient = $travelRequest->getUser()->getEmail();
-                $templateVariables = array(
-                    'currentState' => $statusName,
-                    'url' => $router->generate('OpitNotesUserBundle_security_login', array(), true)
-                );
-                
-                switch ($statusId) {
-                    case Status::APPROVED:
-                        $templateVariables['isApproved'] = true;
-                        break;
-                    case Status::REVISE:
-                        $templateVariables['isRevised'] = true;
-                        break;
-                    case Status::REJECTED:
-                        $templateVariables['isRejected'] = true;
-                        break;
+            foreach ($nextStates as $key => $value) {
+                if ($key !== $requiredStatus) {
+                    // Generate links that can be used to change the status of the travel request
+                    $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
+                        'gmId' => $generalManager->getId(),
+                        'travelType' => $resource::getType(),
+                        'status' => $key,
+                        'token' => $travelToken
+                    ), true);
                 }
             }
 
-            // set estimated in HUF and EUR for template
-            $templateVariables['estimatedCostsEUR'] = ceil($estimatedCosts['EUR']);
-            $templateVariables['estimatedCostsHUF'] = ceil($estimatedCosts['HUF']);
-            $templateVariables[$template] = $resource;
+            $recipient = $generalManager->getEmail();
+            $templateVariables = array(
+                'nextStates' => $nextStates,
+                'stateChangeLinks' => $stateChangeLinks
+            );
+        } else {
+            $recipient = $travelRequest->getUser()->getEmail();
+            $templateVariables = array(
+                'currentState' => $statusName,
+                'url' => $router->generate('OpitNotesUserBundle_security_login', array(), true)
+            );
 
-            $this->mail->setRecipient($recipient);
-            $this->mail->setSubject(
-                $subjectTravelType .
-                ' (' . $travelRequest->getTravelRequestId() . ') status changed to ' .
-                strtolower($statusName)
-            );
-            
-            $this->mail->setBaseTemplate(
-                'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
-                $templateVariables
-            );
-            
-            $this->mail->sendMail();
+            switch ($statusId) {
+                case Status::APPROVED:
+                    $templateVariables['isApproved'] = true;
+                    break;
+                case Status::REVISE:
+                    $templateVariables['isRevised'] = true;
+                    break;
+                case Status::REJECTED:
+                    $templateVariables['isRejected'] = true;
+                    break;
+                case Status::CREATED:
+                    $templateVariables['isCreated'] = true;
+                    break;
+            }
         }
+
+        // set estimated in HUF and EUR for template
+        $templateVariables['estimatedCostsEUR'] = ceil($estimatedCosts['EUR']);
+        $templateVariables['estimatedCostsHUF'] = ceil($estimatedCosts['HUF']);
+        $templateVariables[$template] = $resource;
+
+        $this->mail->setRecipient($recipient);
+        $this->mail->setSubject(
+            $subjectTravelType .
+            ' (' . $travelRequest->getTravelRequestId() . ') status changed to ' .
+            strtolower($statusName)
+        );
+
+        $this->mail->setBaseTemplate(
+            'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
+            $templateVariables
+        );
+
+        $this->mail->sendMail();
     }
 }

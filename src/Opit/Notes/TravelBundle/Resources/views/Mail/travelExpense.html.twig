@@ -27,6 +27,8 @@
             You need to edit your travel expense
         {% elseif templateVars['isRejected'] is defined %}
             Your travel expense has been rejected, you can create a new travel request
+        {% elseif templateVars['isCreated'] is defined %}
+            Your travel expense has been created, you can send it for approval
         {% endif %}
          by logging into 
         <a href="{{ templateVars['url'] }}">

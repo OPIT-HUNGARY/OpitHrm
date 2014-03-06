@@ -440,6 +440,7 @@ class ExpenseController extends Controller
                 // Create initial state for new travel expense.
                 if (null === $isNew) {
                     $statusManager->forceStatus(Status::CREATED, $travelExpense, $this->getUser());
+                    $statusManager->addStatus($travelExpense, Status::CREATED);
                 }
                 
                 return true;

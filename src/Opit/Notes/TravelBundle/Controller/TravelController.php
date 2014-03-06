@@ -377,11 +377,12 @@ class TravelController extends Controller
 
                 // Create initial states for new travel request.
                 if (null === $isNew) {
+                    // Add created status for the new travel request and then send an email.
+                    $statusManager->addStatus($travelRequest, Status::CREATED);
+                    $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                    // If the TR marked for approval too then modify its status
                     if ('fa' === $forApproval) {
-                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
                         $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
-                    } else {
-                        $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
                     }
                 }
 
