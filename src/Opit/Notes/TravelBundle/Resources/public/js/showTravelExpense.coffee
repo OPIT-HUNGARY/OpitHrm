@@ -7,14 +7,15 @@ calculateAdvancesPayback = () ->
     spent = []
     amount = 0
     $('.elementContainer .currency').each ->
-        amount = parseInt $(@).closest('.formFieldsetChild').find('.amount').val()
+        $amountEl = $(@).closest('.formFieldsetChild').find '.amount'
+        amount = parseInt $amountEl.val()
         if spent[$(@).val()] is undefined
             spent[$(@).val()] = amount
         else
             spent[$(@).val()] += amount
             
         if isNaN(spent[$(@).val()])
-            console.warn 'is not number'
+            console.warn "Value is not a number (#{$amountEl.attr('id')})"
         
     $('.generalFormFieldset .te-advances-received-currency').each ->
         $closestAdvancesReceived = $(@).closest '.advances-received'
@@ -39,24 +40,23 @@ setCurrenciesArray = (arrayToPushTo) ->
     $($('#travelExpense_advancesReceived').data('prototype')).find('option').each ->
         arrayToPushTo.push $(@).val()
   
-setAvailableCurrencies = (fillAllCurrenciesArray) ->
+setAvailableCurrencies = () ->
     excludedCurrencies = []
     availableCurrencies = []
-    # go through all advances received currency selectors
-    $('.te-advances-received-currency').each ->
-        # go through all options
-        $(@).find('option').each ->
-            # if option is selected exclude it from the available options that can be selected from other selectors
-            if $(@).prop 'selected'
-                excludedCurrencies.push $(@).val()
-            # if option is not selected remove it
-            else
-                $(@).remove()
-            # if fillAllCurrenciesArray is set that means that all the currencies need to be added to the
-            # allCurrencies array to later be used
-            if fillAllCurrenciesArray
-                # only add currency to array if it has not yet been added to it
-                if $.inArray( $(@).val(), allCurrencies ) <= -1 then allCurrencies.push $(@).val()
+    
+    if $('.te-advances-received-currency').length is 0
+        setCurrenciesArray availableCurrencies
+    else
+        # go through all advances received currency selectors
+        $('.te-advances-received-currency').each ->
+            # go through all options
+            $(@).find('option').each ->
+                # if option is selected exclude it from the available options that can be selected from other selectors
+                if $(@).prop 'selected'
+                    excludedCurrencies.push $(@).val()
+                # if option is not selected remove it
+                else
+                    $(@).remove()
                 
     # loop through all currencies
     for currency in allCurrencies
@@ -64,11 +64,7 @@ setAvailableCurrencies = (fillAllCurrenciesArray) ->
         if $.inArray( currency, excludedCurrencies ) <= -1
             availableCurrencies.push(currency)
             # add this specific currency to all the selectors
-            $('.te-advances-received-currency').each ->
-                $option = $('<option>')
-                $option.html currency
-                $option.attr 'value', currency
-                $(@).append $option
+            $('.te-advances-received-currency').append $('<option>').html(currency).attr 'value', currency
                 
     calculateAdvancesPayback()
 
@@ -87,7 +83,7 @@ createDeleteExpenseButton = ($parent) ->
 
     $deleteButton = $('<i>')
     $deleteButton.addClass 'fa fa-minus-square color-red hover-cursor-pointer margin-top-24'
-    $deleteButton.on 'mousedown', ->
+    $deleteButton.on 'click', ->
         $(@).closest('.advances-received').remove()
         setAvailableCurrencies()
         calculateAdvancesPayback()
@@ -223,7 +219,7 @@ addNewAdvanceReceived = (collectionHolder) ->
 
         collectionHolder.data 'index', index + 1
 
-        if allCurrencies.length is 0 then setCurrenciesArray(allCurrencies)
+        setCurrenciesArray(allCurrencies)if allCurrencies.length is 0
 
         $newAdvancesReceived.find('.te-advances-received-currency').find('option').remove()
         $defaultOption = $('<option>')
@@ -350,6 +346,10 @@ convertCurrency = (originCode, destinationCode, value) ->
     curConverter.convertCurrency originCode, destinationCode, value
 
 $(document).ready ->
+    # Initialize all and available currencies
+    setCurrenciesArray allCurrencies
+    setAvailableCurrencies()
+    
     $buttonParent = $('#travelExpense_add_travel_expense').parent()
     $(document).data('notes').funcs.createButton 'Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list'
     $(document).data('notes').funcs.makeElementToggleAble 'h3', $('.formFieldset'), '.elementContainer'
@@ -477,10 +477,9 @@ $(document).ready ->
     $addNewAdvance.addClass 'addFormFieldsetChild formFieldsetButton margin-left-0'
     $addNewAdvance.html '<i class="fa fa-plus-square"></i>Add advances received'
     $('.generalFormFieldset').append $addNewAdvance
-    $addNewAdvance.on 'mousedown', ->
+    $addNewAdvance.on 'click', ->
         addNewAdvanceReceived($advancesReceived) 
         
-    setAvailableCurrencies(true)
     $('.generalFormFieldset').on 'change', '.te-advances-received-currency', ->
         setAvailableCurrencies()
         

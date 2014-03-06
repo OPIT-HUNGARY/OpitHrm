@@ -14,14 +14,16 @@
     spent = [];
     amount = 0;
     $('.elementContainer .currency').each(function() {
-      amount = parseInt($(this).closest('.formFieldsetChild').find('.amount').val());
+      var $amountEl;
+      $amountEl = $(this).closest('.formFieldsetChild').find('.amount');
+      amount = parseInt($amountEl.val());
       if (spent[$(this).val()] === void 0) {
         spent[$(this).val()] = amount;
       } else {
         spent[$(this).val()] += amount;
       }
       if (isNaN(spent[$(this).val()])) {
-        return console.warn('is not number');
+        return console.warn("Value is not a number (" + ($amountEl.attr('id')) + ")");
       }
     });
     return $('.generalFormFieldset .te-advances-received-currency').each(function() {
@@ -48,35 +50,28 @@
     });
   };
 
-  setAvailableCurrencies = function(fillAllCurrenciesArray) {
+  setAvailableCurrencies = function() {
     var currency, _i, _len;
     excludedCurrencies = [];
     availableCurrencies = [];
-    $('.te-advances-received-currency').each(function() {
-      return $(this).find('option').each(function() {
-        if ($(this).prop('selected')) {
-          excludedCurrencies.push($(this).val());
-        } else {
-          $(this).remove();
-        }
-        if (fillAllCurrenciesArray) {
-          if ($.inArray($(this).val(), allCurrencies) <= -1) {
-            return allCurrencies.push($(this).val());
+    if ($('.te-advances-received-currency').length === 0) {
+      setCurrenciesArray(availableCurrencies);
+    } else {
+      $('.te-advances-received-currency').each(function() {
+        return $(this).find('option').each(function() {
+          if ($(this).prop('selected')) {
+            return excludedCurrencies.push($(this).val());
+          } else {
+            return $(this).remove();
           }
-        }
+        });
       });
-    });
+    }
     for (_i = 0, _len = allCurrencies.length; _i < _len; _i++) {
       currency = allCurrencies[_i];
       if ($.inArray(currency, excludedCurrencies) <= -1) {
         availableCurrencies.push(currency);
-        $('.te-advances-received-currency').each(function() {
-          var $option;
-          $option = $('<option>');
-          $option.html(currency);
-          $option.attr('value', currency);
-          return $(this).append($option);
-        });
+        $('.te-advances-received-currency').append($('<option>').html(currency).attr('value', currency));
       }
     }
     return calculateAdvancesPayback();
@@ -99,7 +94,7 @@
     $inlineElement.addClass('inlineElements');
     $deleteButton = $('<i>');
     $deleteButton.addClass('fa fa-minus-square color-red hover-cursor-pointer margin-top-24');
-    $deleteButton.on('mousedown', function() {
+    $deleteButton.on('click', function() {
       $(this).closest('.advances-received').remove();
       setAvailableCurrencies();
       return calculateAdvancesPayback();
@@ -358,6 +353,8 @@
 
   $(document).ready(function() {
     var $addNewAdvance, $advancesReceived, $arrivalHour, $arrivalMinute, $buttonParent, $departureHour, $departureMinute, $perDiemAmountsTable, $secondFormFieldset, $td, $thirdFormFieldset, $tr, arrivalDate, arrivalDateVal, arrivalHourVal, arrivalMinuteVal, arrivalTime, companyPaidExpensesIndex, departureDate, departureDateVal, departureHourVal, departureMinuteVal, departureTime, userPaidExpensesIndex;
+    setCurrenciesArray(allCurrencies);
+    setAvailableCurrencies();
     $buttonParent = $('#travelExpense_add_travel_expense').parent();
     $(document).data('notes').funcs.createButton('Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list');
     $(document).data('notes').funcs.makeElementToggleAble('h3', $('.formFieldset'), '.elementContainer');
@@ -491,10 +488,9 @@
     $addNewAdvance.addClass('addFormFieldsetChild formFieldsetButton margin-left-0');
     $addNewAdvance.html('<i class="fa fa-plus-square"></i>Add advances received');
     $('.generalFormFieldset').append($addNewAdvance);
-    $addNewAdvance.on('mousedown', function() {
+    $addNewAdvance.on('click', function() {
       return addNewAdvanceReceived($advancesReceived);
     });
-    setAvailableCurrencies(true);
     $('.generalFormFieldset').on('change', '.te-advances-received-currency', function() {
       return setAvailableCurrencies();
     });
