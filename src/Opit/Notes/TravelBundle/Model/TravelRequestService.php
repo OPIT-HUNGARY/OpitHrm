@@ -175,7 +175,8 @@ class TravelRequestService
                 $teStatus = $statusManager->getCurrentStatus($travelExpense);
                 $teIds[] = array(
                     'id' => ($travelExpense) ? $travelExpense->getId() : 'new',
-                    'status' => null !== $teStatus ? $teStatus->getId() : 0
+                    'status' => null !== $teStatus ? $teStatus->getId() : 0,
+                    'statusName' => null !== $teStatus ? $teStatus->getName() : '',
                 );
                 $isTRLocked = $this->setTravelRequestAccessRights(true, $travelRequest);
                 $travelRequestStates[] =
