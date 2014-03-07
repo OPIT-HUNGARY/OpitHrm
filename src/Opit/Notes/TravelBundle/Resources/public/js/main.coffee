@@ -1,6 +1,60 @@
 $.extend true, $(document).data('notes'),
     funcs:
-        changeTravelStatus: (statusId, travelRequestId, $spinner) ->
+        disableStatusDropdown: ($self) ->
+            $spinner = $('<i>')
+            $spinner.addClass 'fa fa-spinner fa-spin'
+            $self.parent().append $spinner
+            $self.addClass 'dropdown-disabled'
+            
+            return $spinner
+            
+        enableStatusDropdown: ($self) ->
+            $self.parent().find('.fa-spinner').remove()
+            $self.prop 'selectedIndex', 0
+            $self.removeClass 'dropdown-disabled'
+    
+        changeStateDialog: ($dropdown, callback, travelId) ->
+            dialogWidth = 550
+            $spinner = $(document).data('notes').funcs.disableStatusDropdown $dropdown
+            $('<div></div>').html("Change the status of travel from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
+                open: ->
+                    $('.ui-dialog-title').append '<i class="fa fa-exclamation-triangle"></i> Travel status change'
+                buttons:
+                    Yes: ->
+                        $(@).dialog 'destroy'
+                        callback $dropdown.val(), travelId, $spinner
+                    No: ->
+                        $(@).dialog 'destroy'
+                        $(document).data('notes').funcs.enableStatusDropdown $dropdown
+                close: ->
+                    $(@).dialog 'destroy'
+                    $(document).data('notes').funcs.enableStatusDropdown $dropdown
+    
+        changeTravelExpenseStatus: (statusId, travelExpenseId, $spinner) ->
+            $.ajax
+                method: 'POST'
+                url: Routing.generate 'OpitNotesTravelBundle_expense_state'
+                data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
+            .done (data) ->
+                location.reload()
+            .complete () ->
+                $spinner.remove()
+            .fail (data) ->
+                $spinner.remove()
+                $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]')
+                $changeState.removeClass 'dropdown-disabled'
+                $changeState.prop 'selectedIndex', 0
+                $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'
+                    .dialog
+                        open: ->
+                            $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> An error occurred')
+                        width: dialogWidth
+                        buttons:
+                            Close: ->
+                                $(@).dialog 'destroy'
+                                return
+    
+        changeTravelRequestStatus: (statusId, travelRequestId, $spinner) ->
             reloadPage = false
             dialogWidth = 550
             $.ajax

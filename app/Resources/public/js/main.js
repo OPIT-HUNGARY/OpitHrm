@@ -123,14 +123,6 @@
           });
         }
       },
-      disableStatusDropdown: function($self) {
-        var $spinner;
-        $spinner = $('<i>');
-        $spinner.addClass('fa fa-spinner fa-spin');
-        $self.parent().append($spinner);
-        $self.addClass('dropdown-disabled');
-        return $spinner;
-      },
       showAlert: function(response, actionType, message, forceClass) {
         var errorString, i, returnVal, _i, _len, _ref;
         $('#reply-message').addClass("alert-message");

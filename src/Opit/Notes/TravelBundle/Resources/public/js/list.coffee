@@ -7,10 +7,8 @@ $(document).ready ->
 
     $('#travel_list').on 'change.tr_status', '.changeState', ->
         statusId = $(@).val()
-        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
-        
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
-        $(document).data('notes').funcs.changeTravelStatus statusId, travelRequestId, $spinner
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId
             
     $('#travel_list').on 'click', '.order-text', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'

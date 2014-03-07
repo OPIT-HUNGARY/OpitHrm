@@ -122,10 +122,7 @@ class TravelRequestService
             $currentStatusNames[$travelRequest->getId()] = $currentStatus->getName();
             $isTRLocked = $this->setTravelRequestAccessRights($travelRequest, $currentStatus);
             $travelRequestStates[$travelRequest->getId()] =
-                $this->getTravelRequestNextStates($travelRequest);
-                        $this->getNextAvailableStates($travelRequest);
-
-                    $this->getNextAvailableStates($travelRequest);
+                $this->getNextAvailableStates($travelRequest);
 
             if (!$this->securityContext->isGranted('ROLE_ADMIN') && Status::PAID === $currentStatus->getId()) {
                 $isTRLocked['isStatusLocked'] = true;

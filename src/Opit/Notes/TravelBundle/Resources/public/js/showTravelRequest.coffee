@@ -68,8 +68,7 @@ $(document).ready ->
     $('.changeState').on 'change', ->
         statusId = $(@).val()
         travelRequestId = $(@).data 'tr'
-        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
-        $(document).data('notes').funcs.changeTravelStatus statusId, travelRequestId, $spinner
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId
             
     if not Modernizr.inputtypes.date
         $arrivalDate = $('#travelRequest_arrival_date')

@@ -506,24 +506,10 @@
       });
     }
     return $('.changeState').on('change', function() {
-      var $spinner, statusId, travelExpenseId;
+      var statusId, travelExpenseId;
       statusId = $(this).val();
       travelExpenseId = $(this).data('te');
-      $spinner = $(document).data('notes').funcs.disableStatusDropdown($(this));
-      return $.ajax({
-        method: 'POST',
-        url: Routing.generate('OpitNotesTravelBundle_expense_state'),
-        data: {
-          'statusId': statusId,
-          'travelExpenseId': travelExpenseId
-        }
-      }).done(function(data) {
-        return location.reload();
-      }).complete(function() {
-        return $spinner.remove();
-      }).fail(function(data) {
-        return console.warn('Error occured while saving state for travel expense.');
-      });
+      return $(document).data('notes').funcs.changeStateDialog($(this), $(document).data('notes').funcs.changeTravelExpenseStatus, travelExpenseId);
     });
   });
 

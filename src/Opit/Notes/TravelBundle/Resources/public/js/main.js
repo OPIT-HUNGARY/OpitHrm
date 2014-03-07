@@ -2,7 +2,76 @@
 (function() {
   $.extend(true, $(document).data('notes'), {
     funcs: {
-      changeTravelStatus: function(statusId, travelRequestId, $spinner) {
+      disableStatusDropdown: function($self) {
+        var $spinner;
+        $spinner = $('<i>');
+        $spinner.addClass('fa fa-spinner fa-spin');
+        $self.parent().append($spinner);
+        $self.addClass('dropdown-disabled');
+        return $spinner;
+      },
+      enableStatusDropdown: function($self) {
+        $self.parent().find('.fa-spinner').remove();
+        $self.prop('selectedIndex', 0);
+        return $self.removeClass('dropdown-disabled');
+      },
+      changeStateDialog: function($dropdown, callback, travelId) {
+        var $spinner, dialogWidth;
+        dialogWidth = 550;
+        $spinner = $(document).data('notes').funcs.disableStatusDropdown($dropdown);
+        return $('<div></div>').html("Change the status of travel from '" + ($dropdown.find('option:nth-child(1)').text().toLowerCase()) + "' to '" + ($dropdown.find('option:selected').text().toLowerCase()) + "' ?").dialog({
+          open: function() {
+            return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Travel status change');
+          },
+          buttons: {
+            Yes: function() {
+              $(this).dialog('destroy');
+              return callback($dropdown.val(), travelId, $spinner);
+            },
+            No: function() {
+              $(this).dialog('destroy');
+              return $(document).data('notes').funcs.enableStatusDropdown($dropdown);
+            }
+          },
+          close: function() {
+            $(this).dialog('destroy');
+            return $(document).data('notes').funcs.enableStatusDropdown($dropdown);
+          }
+        });
+      },
+      changeTravelExpenseStatus: function(statusId, travelExpenseId, $spinner) {
+        return $.ajax({
+          method: 'POST',
+          url: Routing.generate('OpitNotesTravelBundle_expense_state'),
+          data: {
+            'statusId': statusId,
+            'travelExpenseId': travelExpenseId
+          }
+        }).done(function(data) {
+          return location.reload();
+        }).complete(function() {
+          return $spinner.remove();
+        }).fail(function(data) {
+          var $changeState;
+          console.log(travelExpenseId);
+          $spinner.remove();
+          $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]');
+          $changeState.removeClass('dropdown-disabled');
+          $changeState.prop('selectedIndex', 0);
+          return $('<div id="dialog-tr-error"></div>').html('Status could not be changed due to an error.').dialog({
+            open: function() {
+              return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
+            },
+            width: dialogWidth,
+            buttons: {
+              Close: function() {
+                $(this).dialog('destroy');
+              }
+            }
+          });
+        });
+      },
+      changeTravelRequestStatus: function(statusId, travelRequestId, $spinner) {
         var dialogWidth, reloadPage;
         reloadPage = false;
         dialogWidth = 550;

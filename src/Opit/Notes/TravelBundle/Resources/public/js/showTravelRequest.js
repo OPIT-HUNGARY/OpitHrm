@@ -77,11 +77,10 @@
       });
     }
     $('.changeState').on('change', function() {
-      var $spinner, statusId, travelRequestId;
+      var statusId, travelRequestId;
       statusId = $(this).val();
       travelRequestId = $(this).data('tr');
-      $spinner = $(document).data('notes').funcs.disableStatusDropdown($(this));
-      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, $spinner);
+      return $(document).data('notes').funcs.changeStateDialog($(this), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId);
     });
     if (!Modernizr.inputtypes.date) {
       $arrivalDate = $('#travelRequest_arrival_date');

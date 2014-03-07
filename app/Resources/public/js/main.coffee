@@ -100,14 +100,6 @@ $.extend true, $(document).data('notes'),
                   $(@).dialog 'destroy'
                   return
                 
-        disableStatusDropdown: ($self) ->
-            $spinner = $('<i>')
-            $spinner.addClass 'fa fa-spinner fa-spin'
-            $self.parent().append $spinner
-            $self.addClass 'dropdown-disabled'
-            
-            return $spinner
-                
         showAlert: (response, actionType, message, forceClass) ->
             $('#reply-message').addClass "alert-message"
             

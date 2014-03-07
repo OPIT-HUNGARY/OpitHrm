@@ -494,17 +494,7 @@ $(document).ready ->
     $('.changeState').on 'change', ->
         statusId = $(@).val()
         travelExpenseId = $(@).data 'te'
-        $spinner = $(document).data('notes').funcs.disableStatusDropdown $(@)
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_expense_state'
-            data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
-        .done (data) ->
-            location.reload()
-        .complete () ->
-            $spinner.remove()
-        .fail (data) ->
-            console.warn 'Error occured while saving state for travel expense.'
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelExpenseStatus, travelExpenseId
 
 
 $formFieldset = $('<div>')

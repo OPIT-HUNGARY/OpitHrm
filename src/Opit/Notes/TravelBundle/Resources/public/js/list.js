@@ -9,11 +9,10 @@
       return win.focus();
     });
     $('#travel_list').on('change.tr_status', '.changeState', function() {
-      var $spinner, statusId, travelRequestId;
+      var statusId, travelRequestId;
       statusId = $(this).val();
-      $spinner = $(document).data('notes').funcs.disableStatusDropdown($(this));
       travelRequestId = $(this).closest('tr').find('.clickable').data('tr-id');
-      return $(document).data('notes').funcs.changeTravelStatus(statusId, travelRequestId, $spinner);
+      return $(document).data('notes').funcs.changeStateDialog($(this), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId);
     });
     $('#travel_list').on('click', '.order-text', function() {
       return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list');
