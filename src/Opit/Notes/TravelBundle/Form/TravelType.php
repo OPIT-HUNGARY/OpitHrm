@@ -73,10 +73,10 @@ class TravelType extends AbstractType
             'label'=>'Customer related',
             'choices' => array('1'=>'No', '0'=>'Yes')
         ));
-        $builder->add('opportunity_name', 'text', array(
-            'label'=>'Opportunity name',
+        $builder->add('customer_name', 'text', array(
+            'label'=>'Customer name',
             'required' => false,
-            'attr' => array('placeholder' => 'Opportunity name')
+            'attr' => array('placeholder' => 'Customer name')
         ));
         $builder->add('trip_purpose', 'text', array(
             'label'=>'Trip purpose',

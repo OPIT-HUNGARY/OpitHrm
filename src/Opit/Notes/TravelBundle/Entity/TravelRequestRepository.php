@@ -40,9 +40,9 @@ class TravelRequestRepository extends EntityRepository
             $qb->innerJoin('tr.user', 'u', 'WITH')
                 ->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
         }
-        if (isset($whereParams['opportunityName']) && $whereParams['opportunityName'] != "") {
-            $params['opportunityName'] = '%' . $whereParams['opportunityName'] . '%';
-            $qb->andWhere($qb->expr()->like('tr.opportunityName', ':opportunityName'));
+        if (isset($whereParams['customerName']) && $whereParams['customerName'] != "") {
+            $params['customerName'] = '%' . $whereParams['customerName'] . '%';
+            $qb->andWhere($qb->expr()->like('tr.customerName', ':customerName'));
         }
         if (isset($whereParams['destinationName']) && $whereParams['destinationName'] != "") {
             $params['destinationName'] = '%' . $whereParams['destinationName'] . '%';

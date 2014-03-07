@@ -86,9 +86,9 @@ class TravelRequest implements TravelResourceInterface
 
     /**
      * @var string
-     * @ORM\Column(name="opportunity_name", type="string", nullable=true)
+     * @ORM\Column(name="customer_name", type="string", nullable=true)
      */
-    private $opportunityName;
+    private $customerName;
     
     /**
      * @ORM\OneToMany(targetEntity="TRDestination", mappedBy="travelRequest", cascade={"persist", "remove"})
@@ -235,26 +235,26 @@ class TravelRequest implements TravelResourceInterface
     }
 
     /**
-     * Set opportunityName
+     * Set customerName
      *
-     * @param string $opportunityName
+     * @param string $customerName
      * @return travel_request
      */
-    public function setOpportunityName($opportunityName)
+    public function setCustomerName($customerName)
     {
-        $this->opportunityName = $opportunityName;
+        $this->customerName = $customerName;
     
         return $this;
     }
 
     /**
-     * Get opportunityName
+     * Get customerName
      *
      * @return string
      */
-    public function getOpportunityName()
+    public function getCustomerName()
     {
-        return $this->opportunityName;
+        return $this->customerName;
     }
 
     /**

@@ -87,7 +87,7 @@ generalData.append($('#travelRequest_user_ac,
                       #travelRequest_departure_date,
                       #travelRequest_arrival_date,
                       #travelRequest_customer_related,
-                      #travelRequest_opportunity_name,
+                      #travelRequest_customer_name,
                       #travelRequest_trip_purpose').parent())
 $('#travelRequest').prepend generalData
 
@@ -106,7 +106,7 @@ $('#travelRequest_accomodations').parent().addClass 'formFieldset'
 
 #set elements to be inlined
 $('#travelRequest_departure_date, #travelRequest_arrival_date,
-   #travelRequest_customer_related, #travelRequest_opportunity_name,
+   #travelRequest_customer_related, #travelRequest_customer_name,
    #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass 'inlineElements'
 
 #add br tag to break inline
@@ -153,19 +153,19 @@ else
         travelRequestAccomodations0.parent().append addFormDeleteButton
 
 #check customer related value
-travelOpportunity = $('#travelRequest_opportunity_name')
-if travelOpportunity.val() is ''
-    travelOpportunity.parent().css {visibility: 'hidden'}
+travelCustomer = $('#travelRequest_customer_name')
+if travelCustomer.val() is ''
+    travelCustomer.parent().css {visibility: 'hidden'}
 else
     $('#travelRequest_customer_related').val('0')
 
 $('#travelRequest_customer_related').change ->
     if $(@).val() is "0"
-        travelOpportunity.parent().css {visibility: 'visible'}
-        travelOpportunity.attr('required', 'required')
+        travelCustomer.parent().css {visibility: 'visible'}
+        travelCustomer.attr('required', 'required')
     else 
-        travelOpportunity.parent().css {visibility: 'hidden'}
-        travelOpportunity.removeAttr 'required'
+        travelCustomer.parent().css {visibility: 'hidden'}
+        travelCustomer.removeAttr 'required'
 
 $form = $('#travelRequestForm')
 

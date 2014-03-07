@@ -19,8 +19,8 @@
             <span class="order-text">Arrival date</span>
         </th>
         <th>
-            <i class="fa fa-sort default-right" data-field="opportunityName"></i>
-            <span class="order-text">Opportunity name</span>
+            <i class="fa fa-sort default-right" data-field="customerName"></i>
+            <span class="order-text">Customer name</span>
         </th>
         <th>Travel request status</th>
         <th>Actions</th>
@@ -34,7 +34,7 @@
         <td>{{ travelRequest.user.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
-        <td>{{ travelRequest.opportunityName }}</td>
+        <td>{{ travelRequest.customerName }}</td>
         <td>
             {# loop through all statuses and display them in a dropdown #}
             <select class="changeState{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} dropdown-disabled{% endif %}" data-tr="{{ travelRequest.id }}"{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} disabled="disabled"{% endif %}>
