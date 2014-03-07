@@ -158,7 +158,7 @@ class TravelRequestService
                     $allowedTRs[] = $travelRequest;
                     $isTRLocked = $travelRequestAccessRights;
                     $travelRequestStates[] =
-                        $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                        $this->getNextAvailableStates($travelRequest);
 
                     if (Status::PAID === $currentStatus->getId()) {
                         $isTRLocked['isStatusLocked'] = true;
@@ -184,7 +184,7 @@ class TravelRequestService
                     $currentStatus->getId()
                 );
                 $travelRequestStates[] =
-                    $this->getTravelRequestNextStates($travelRequest, $statusManager);
+                    $this->getNextAvailableStates($travelRequest);
                 
                 $trStatusCurrent = $this->statusManager->getCurrentStatus($travelRequest)->getId();
                 if (Status::APPROVED === $trStatusCurrent || Status::PAID == $trStatusCurrent) {
@@ -396,26 +396,26 @@ class TravelRequestService
      * @param type $statusManager
      * @return array
      */
-    public function getTravelRequestNextStates(TravelRequest $travelRequest, $statusManager)
+    public function getNextAvailableStates(TravelRequest $travelRequest)
     {
-        $currentStatus = $statusManager->getCurrentStatus($travelRequest);
+        $currentStatus = $this->statusManager->getCurrentStatus($travelRequest);
         $currentStatusName = $currentStatus->getName();
         $currentStatusId = $currentStatus->getId();
         
         // handle "paid" status
         $excludeStatusIds = array();
-        $relExpenseStatus = $statusManager->getCurrentStatus($travelRequest->getTravelExpense());
+        $relExpenseStatus = $this->statusManager->getCurrentStatus($travelRequest->getTravelExpense());
         if (!$relExpenseStatus || $relExpenseStatus->getId() != Status::APPROVED) {
             array_push($excludeStatusIds, Status::PAID);
         }
         
-        // If the current user has admin role then
+        // If the current user is not the general manager then
         // add the approved, rejected, revise statuses to the excludeStatusIds.
-        if ($this->securityContext->isGranted('ROLE_ADMIN', $travelRequest)) {
+        if ($this->securityContext->getToken()->getUser()->getId() !== $travelRequest->getGeneralManager()->getId()) {
             array_push($excludeStatusIds, Status::APPROVED, Status::REJECTED, Status::REVISE);
         }
         
-        $trSelectableStates = $statusManager->getNextStates($currentStatus, $excludeStatusIds);
+        $trSelectableStates = $this->statusManager->getNextStates($currentStatus, $excludeStatusIds);
         $trSelectableStates[$currentStatusId] = $currentStatusName;
         
         return $trSelectableStates;
