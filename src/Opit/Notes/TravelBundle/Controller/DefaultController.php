@@ -27,8 +27,6 @@ class DefaultController extends Controller
     {
         $method = 'get';
         $entityManager = $this->getDoctrine()->getManager();
-        $generalManager = $entityManager->getRepository('OpitNotesUserBundle:User')
-            ->find($request->attributes->get('gmId'));
         //get status and Status entity
         $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')
             ->find($request->attributes->get('status'));
@@ -51,20 +49,14 @@ class DefaultController extends Controller
         
         if ($request->isMethod('POST')) {
             $method = 'post';
-            $travelStatus =
-                new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($travel) . 's');
 
             if (null === $travel) {
                 throw $this->createNotFoundException('Missing travel ' . $travelTypeName . '.');
             }
-   
-            $entityManager->persist(
-                $travelStatus->newInstanceArgs(
-                    array($status, $travel, $generalManager, $generalManager)
-                )
-            );
+
             $entityManager->remove($token);
             $entityManager->flush();
+            $this->get('opit.manager.status_manager')->addStatus($travel, $status->getId());
         }
         
         return $this->render(

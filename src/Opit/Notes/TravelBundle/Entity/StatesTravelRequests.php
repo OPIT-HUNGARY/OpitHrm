@@ -48,16 +48,10 @@ class StatesTravelRequests extends AbstractBase
      */
     protected $status;
 
-    public function __construct(
-        Status $status = null,
-        TravelRequest $travelRequest = null,
-        User $createdUser = null,
-        User $updatedUser = null
-    ) {
+    public function __construct(Status $status = null, TravelRequest $travelRequest = null)
+    {
         $this->setStatus($status);
         $this->setTravelRequest($travelRequest);
-        $this->setCreatedUser($createdUser);
-        $this->setUpdatedUser($updatedUser);
     }
 
     /**

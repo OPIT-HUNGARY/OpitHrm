@@ -307,8 +307,7 @@ class ExpenseController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
          
-        $statusManager = $this->get('opit.manager.status_manager');
-        $statusManager->addStatus($travelExpense, $statusId);
+        $this->get('opit.manager.status_manager')->addStatus($travelExpense, $statusId);
         
         return new JsonResponse();
     }

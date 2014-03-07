@@ -48,16 +48,10 @@ class StatesTravelExpenses extends AbstractBase
      */
     protected $status;
 
-    public function __construct(
-        Status $status = null,
-        TravelExpense $travelExpense = null,
-        User $createdUser = null,
-        User $updatedUser = null
-    ) {
+    public function __construct(Status $status = null, TravelExpense $travelExpense = null)
+    {
         $this->setStatus($status);
         $this->setTravelExpense($travelExpense);
-        $this->setCreatedUser($createdUser);
-        $this->setUpdatedUser($updatedUser);
     }
 
     /**

@@ -56,8 +56,8 @@ class EmailManager
     }
     
     public function sendMail() {
-        $user = $this->securityContext->getToken()->getUser();
         if (!$this->baseTemplate) {
+            $user = $this->securityContext->getToken()->getUser();
             $this->setBaseTemplate('OpitNotesTravelBundle:Mail:default.txt.twig', array('user' => $user));
         }
         
