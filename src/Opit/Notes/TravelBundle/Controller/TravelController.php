@@ -18,8 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\Status;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormError;
 
 /**
  * Description of TravelController
@@ -41,7 +41,6 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
         $user = $this->getUser();
-        $isAdmin = $securityContext->isGranted('ROLE_ADMIN');
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
@@ -49,7 +48,7 @@ class TravelController extends Controller
             'firstResult' => ($offset * $config['max_results']),
             'maxResults' => $config['max_results'],
             'currentUser' => $user,
-            'isAdmin' => $isAdmin,
+            'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
             'isGeneralManager' => $isGeneralManager,
         );
         
@@ -61,17 +60,16 @@ class TravelController extends Controller
         $travelRequests = $entityManager
             ->getRepository('OpitNotesTravelBundle:TravelRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $allRequests);
+        
         $listingRights = $this->get('opit.model.travel_request')
-            ->setTravelRequestListingRights($travelRequests, $isAdmin, $this->getUser());
+            ->setTravelRequestListingRights($travelRequests);
         $teIds = $listingRights['teIds'];
-        $allowedTRs = $listingRights['allowedTRs'];
         $travelRequestStates = $listingRights['travelRequestStates'];
         $currentStatusNames = $listingRights['currentStatusNames'];
         $isLocked = $listingRights['isLocked'];
-        $numberOfPages = ceil(count($allowedTRs) / $config['max_results']);
-        
+        $numberOfPages = ceil(count($travelRequests) / $config['max_results']);
         $templateVars = array(
-            'travelRequests' => $allowedTRs,
+            'travelRequests' => $travelRequests,
             'teIds' => $teIds,
             'travelRequestStates' => $travelRequestStates,
             'isLocked' => $isLocked,
@@ -171,10 +169,6 @@ class TravelController extends Controller
         $form = $this->handleForm(
             $this->setTravelRequestForm($travelRequest, $entityManager, $isNewTravelRequest),
             $request,
-            $isNewTravelRequest,
-            $generalManager,
-            $teamManager,
-            $user->getId(),
             $travelRequest,
             $children,
             $forApproval
@@ -273,7 +267,7 @@ class TravelController extends Controller
         $travelRequestId = $request->request->get('travelRequestId');
         $entityManager = $this->getDoctrine()->getManager();
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
-
+        
         return $this->get('opit.model.travel_request')
             ->changeStatus($travelRequest, $statusId);
     }
@@ -317,6 +311,12 @@ class TravelController extends Controller
             throw $this->createNotFoundException('Missing travel request for id "' . $travelRequestId . '"');
         }
         
+        if (true !== $this->get('security.context')->isGranted('VIEW', $travelRequest)) {
+                throw new AccessDeniedException(
+                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+                );
+        }
+        
         return $travelRequest;
     }
     
@@ -331,7 +331,7 @@ class TravelController extends Controller
         $securityContext = $this->get('security.context');
         if ($isNewTravelRequest) {
             if (true !== $securityContext->isGranted('ROLE_ADMIN') &&
-                true !== $securityContext->isGranted('EDIT', $travelRequest)) {
+                true !== $securityContext->isGranted('VIEW', $travelRequest)) {
                 throw new AccessDeniedException(
                     'Access denied for travel request ' . $travelRequest->getTravelRequestId()
                 );
@@ -339,37 +339,18 @@ class TravelController extends Controller
         }
     }
     
-    protected function handleForm(
-        $form,
-        $request,
-        $isNewTravelRequest,
-        $generalManager,
-        $teamManager,
-        $userId,
-        $travelRequest,
-        $children,
-        $forApproval = null
-    ) {
-        $oldUser = $travelRequest->getUser();
+    protected function handleForm($form, $request, $travelRequest, $children, $forApproval = null)
+    {
         $entityManager = $this->getDoctrine()->getManager();
-        $securityContext = $this->get('security.context');
         $travelRequestService = $this->get('opit.model.travel_request');
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
-            $isModificationAllowedForUser = $travelRequestService->isModificationAllowedForUser(
-                $isNewTravelRequest,
-                $travelRequest,
-                $userId,
-                $oldUser,
-                $form
-            );
-            if (true !== $isModificationAllowedForUser) {
-                $form = $isModificationAllowedForUser['form'];
-                $travelRequest = $isModificationAllowedForUser['travelRequest'];
+            // Ensure the correct user is processing the travel request
+            if (!$travelRequestService->validateTROwner($travelRequest)) {
+                $form->addError(new FormError('Invalid employee name.'));
             }
 
             if ($form->isValid()) {
-                $statusManager = $this->get('opit.manager.status_manager');
                 $isNew = $travelRequest->getId();
                 // Persist deleted destinations/accomodations
                 $travelRequestService->removeChildNodes($entityManager, $travelRequest, $children);
@@ -379,33 +360,12 @@ class TravelController extends Controller
                 // Create initial states for new travel request.
                 if (null === $isNew) {
                     // Add created status for the new travel request and then send an email.
-                    $statusManager->addStatus($travelRequest, Status::CREATED);
-                    $statusManager->forceStatus(Status::CREATED, $travelRequest, $this->getUser());
+                    $travelRequestService->changeStatus($travelRequest, Status::CREATED, true);
                     // If the TR marked for approval too then modify its status
                     if ('fa' === $forApproval) {
                         $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
                     }
                 }
-
-                $travelRequestService->handleAccessRights(
-                    $travelRequest,
-                    array(
-                        array(
-                            'user' => $travelRequest->getGeneralManager(),
-                            'mask' => MaskBuilder::MASK_EDIT
-                        ),
-                        array(
-                            'user' => $travelRequest->getTeamManager(),
-                            'mask' => MaskBuilder::MASK_EDIT
-                        ),
-                        array(
-                            'user' => $securityContext->getToken()->getUser(),
-                            'mask' => MaskBuilder::MASK_OWNER
-                        ),
-                    ),
-                    $generalManager,
-                    $teamManager
-                );
 
                 return true;
             }

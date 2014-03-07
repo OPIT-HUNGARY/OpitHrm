@@ -12,6 +12,7 @@
         <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
         <parameter key="opit.manager.notification_manager.class">Opit\Notes\TravelBundle\Manager\NotificationManager</parameter>
         <parameter key="opit.manager.pdf_manager.class">Opit\Notes\TravelBundle\Manager\PDFManager</parameter>
+        <parameter key="opit.security.acl.voter.class">Opit\Notes\TravelBundle\Manager\AclManager</parameter>
     </parameters>
     <services>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
@@ -23,8 +24,8 @@
         <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="security.acl.dbal.provider" />
             <argument type="service" id="opit.manager.status_manager" />
+            <argument type="service" id="opit.security.acl.manager" />
         </service>
         <service id="opit.manager.status_manager" class="%opit.manager.status_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
@@ -45,6 +46,10 @@
         <service id="rate.exchange_service" alias="opit.service.exchange_rates" />
         <service id="opit.manager.notification_manager" class="%opit.manager.notification_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.security.acl.manager" class="%opit.security.acl.voter.class%">
+            <argument type="service" id="security.acl.dbal.provider" />
+            <argument type="service" id="logger" on-invalid="null" />
         </service>
     </services>
 </container>

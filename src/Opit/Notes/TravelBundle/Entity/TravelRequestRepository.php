@@ -70,12 +70,15 @@ class TravelRequestRepository extends EntityRepository
         // If general manager, filter created travel requests unless current user is the owner
         if ($pagnationParameters['isGeneralManager']) {
             $params['status'] = Status::CREATED;
-            $status_expr = $qb->expr()->orX(
-                $qb->expr()->notIn('s.status', ':status'),
+            $statusExpr = $qb->expr()->orX(
+                $qb->expr()->andX(
+                    $qb->expr()->notIn('s.status', ':status'),
+                    $qb->expr()->eq('tr.generalManager', ':user')
+                ),
                 $qb->expr()->eq('tr.user', ':user')
             );
             $qb->leftJoin('tr.states', 's', 'WITH')
-                ->andWhere($status_expr);
+                ->andWhere($statusExpr);
         } else {
             $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
         }
@@ -116,5 +119,5 @@ class TravelRequestRepository extends EntityRepository
         $q = $qb->getQuery();
         
         return $q->getResult();
-    }    
+    }
 }

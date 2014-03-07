@@ -32,9 +32,7 @@ class DefaultController extends Controller
         //get status and Status entity
         $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')
             ->find($request->attributes->get('status'));
-        //get travel type (te=Travel expense, tr=Travel request)
-        $travelType = $request->attributes->get('travelType');
-        $travelTypeName = 'te' == $travelType ? 'expense': 'request';
+        $travelTypeName = 'te' == $request->attributes->get('travelType') ? 'expense': 'request';
         //get token and Token entity
         $token = $entityManager->getRepository('OpitNotesTravelBundle:Token')
             ->findOneBy(array('token' => $request->attributes->get('token')));
@@ -55,11 +53,11 @@ class DefaultController extends Controller
             $method = 'post';
             $travelStatus =
                 new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($travel) . 's');
-            
+
             if (null === $travel) {
                 throw $this->createNotFoundException('Missing travel ' . $travelTypeName . '.');
             }
-            
+   
             $entityManager->persist(
                 $travelStatus->newInstanceArgs(
                     array($status, $travel, $generalManager, $generalManager)
@@ -123,8 +121,8 @@ class DefaultController extends Controller
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
         $notificationManager = $this->get('opit.manager.notification_manager');
-        $unreadNotificationCount = count($notificationManager->getUnreadNotifications($currentUser));
-        return new JsonResponse($unreadNotificationCount);
+        $unreadCount = count($notificationManager->getUnreadNotifications($currentUser));
+        return new JsonResponse($unreadCount);
     }
     
     /**

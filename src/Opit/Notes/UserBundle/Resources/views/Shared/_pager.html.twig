@@ -1,4 +1,4 @@
-<section id="pager" data-pages="{{ numberOfPages - 1 }}" data-url="{{ url }}" data-max="{{ maxPages }}" data-offset="{{ offset }}">
+<section id="pager" data-pages="{{ numberOfPages }}" data-url="{{ url }}" data-max="{{ maxPages }}" data-offset="{{ offset }}">
     <i class="fa fa-caret-left"></i>
     {% for pageNumber in 1..numberOfPages %}
         {% if loop.index < maxPages+1 %}
