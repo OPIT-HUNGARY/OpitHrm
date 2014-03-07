@@ -69,7 +69,6 @@ class TravelRequestService
         if ($travelRequestGM === $currentUser) {
             // travel request cannot be edited
             if ($travelRequest->getUser()->getId() === $currentUser) {
-//                $isTREditLocked = false;
                 // Show add travel expense in case travel expense is approved.
                 if (Status::APPROVED === $currentStatusId) {
                     $isAddTravelExpenseLocked = false;
@@ -178,7 +177,12 @@ class TravelRequestService
                     'status' => null !== $teStatus ? $teStatus->getId() : 0,
                     'statusName' => null !== $teStatus ? $teStatus->getName() : '',
                 );
-                $isTRLocked = $this->setTravelRequestAccessRights(true, $travelRequest);
+                $isTRLocked = $this->setTravelRequestAccessRights(
+                    true,
+                    $travelRequest,
+                    $user->getId(),
+                    $currentStatus->getId()
+                );
                 $travelRequestStates[] =
                     $this->getTravelRequestNextStates($travelRequest, $statusManager);
                 
@@ -403,6 +407,12 @@ class TravelRequestService
         $relExpenseStatus = $statusManager->getCurrentStatus($travelRequest->getTravelExpense());
         if (!$relExpenseStatus || $relExpenseStatus->getId() != Status::APPROVED) {
             array_push($excludeStatusIds, Status::PAID);
+        }
+        
+        // If the current user has admin role then
+        // add the approved, rejected, revise statuses to the excludeStatusIds.
+        if ($this->securityContext->isGranted('ROLE_ADMIN', $travelRequest)) {
+            array_push($excludeStatusIds, Status::APPROVED, Status::REJECTED, Status::REVISE);
         }
         
         $trSelectableStates = $statusManager->getNextStates($currentStatus, $excludeStatusIds);
