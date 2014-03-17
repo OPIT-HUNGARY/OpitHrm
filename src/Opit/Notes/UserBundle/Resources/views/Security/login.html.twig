@@ -1,8 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
-    {{ parent() }}
     {% stylesheets 
-        '@OpitNotesUserBundle/Resources/public/css/main.css'
         '@OpitNotesUserBundle/Resources/public/css/login.css'
     output='css/notes_login.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
@@ -14,21 +12,21 @@
 {% endblock %}            
             
 {% block body %}
-    <div id="mainWrapper">
-        <div id="welcomeWrapper">
-            <div id="welcomeText">NOTES</div>
-            <div id="welcomeUnderText">New OPIT Travel Expense System</div>
+    <div id="mainWrapper" class="margin-center">
+        <div id="welcomeWrapper" class="width-100 margin-center background-color-lighter-grey">
+            <div id="welcomeText" class="color-black align-center">NOTES</div>
+            <div id="welcomeUnderText" class="color-orange align-center">New OPIT Travel Expense System</div>
         </div>
-        <div id="loginForm">
+        <div id="loginForm" class="float-left background-color-lighter-grey width-30 margin-top-10">
             <div>
-            <h2>Login</h2>
+            <h2 class="margin-bottom-5">Login</h2>
             {% if error %}
-                    <div class="error">{{ error.message }}</div>
+                    <div class="error color-red margin-bottom-10">{{ error.message }}</div>
             {% endif %}
             {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'attr': {'id':'login'} }) }}
             </div>
         </div>
-        <div id="featuresForm">
+        <div id="featuresForm" class="float-left margin-top-10 margin-left-10 background-color-lighter-grey">
             <h2>The New OPIT Travel Expense System (NOTES) features:</h2>
 
             <ol>

@@ -1,8 +1,7 @@
 <div id="dialog-details-travel">
-    <h2>Travel Request Details</h2>
-   
+    <h2 class="dialog-h2">Travel Request Details</h2>
     <div class="modalwindow">
-        <table class="bordered">
+        <table class="bordered width-100 table-layout-fixed">
             <caption class="dialog-table-title">General</caption>
             {% if travelRequest.travelRequestId is defined %}
                 <tr>
@@ -26,7 +25,7 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Trip purpose</td>
-                <td>{{ travelRequest.tripPurpose }}</td>
+                <td class="text-show-all">{{ travelRequest.tripPurpose }}</td>
             </tr>
             <tr>
                 <td class="bgGrey bold">Customer related</td>
@@ -66,7 +65,7 @@
         {% if travelRequest.destinations is defined %}
         {% if travelRequest.destinations|length > 0 %}  
         <table class="bordered">
-            <caption class="dialog-table-title">Destination</caption>
+            <caption class="dialog-table-title padding-5 color-white background-color-orange margin-top-5">Destination</caption>
             {% for dest in travelRequest.destinations %}
             <tr>
                 <td class="bgGrey bold width-40">Name</td>

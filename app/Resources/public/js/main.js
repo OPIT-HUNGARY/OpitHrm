@@ -184,7 +184,8 @@
           $parent = $(this).find(parent);
           self = $(this);
           $toggleIcon = $('<i>');
-          $toggleIcon.addClass('fa fa-chevron-up default-right toggle-icon');
+          $toggleIcon.addClass('fa fa-chevron-up toggle-icon');
+          $toggleIcon.addClass('color-white background-color-orange border-radius-5 cursor-pointer float-right');
           $toggleIcon.on('click', function() {
             var $elementToToggle;
             if ('' !== elementToToggle) {
@@ -480,7 +481,7 @@
     $self = this;
     options = options || {};
     defaultOptions = {
-      wrapper: '<div class="relative"></div>',
+      wrapper: '<div></div>',
       indicatorIcon: $('<i>')
     };
     $.extend(true, defaultOptions, options);
@@ -488,7 +489,7 @@
       $self.attr({
         readonly: 'readonly'
       }).addClass('icon-prefix-indent');
-      defaultOptions.indicatorIcon.addClass('fa fa-calendar absolute input-prefix-position pointer');
+      defaultOptions.indicatorIcon.addClass('fa fa-calendar position-absolute input-prefix-position cursor-pointer');
       defaultOptions.indicatorIcon.click(function() {
         return $(this).parent().parent().children('input').focus();
       });

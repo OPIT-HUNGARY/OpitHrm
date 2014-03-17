@@ -1,0 +1,46 @@
+/* 
+    Created on : Mar 11, 2014, 11:50:14 AM
+    Author     : OPIT\NOTES
+*/
+/* 
+    Created on : Mar 10, 2014, 10:16:52 AM
+    Author     : OPIT\NOTES
+*/
+#list-table tr:nth-child(even) {
+  background-color: rgba(220, 220, 220, 0.8); }
+#list-table th i:hover {
+  cursor: pointer; }
+#list-table a {
+  float: left; }
+#list-table tr td .fa-pencil-square-o, #list-table tr td .fa-trash-o, #list-table tr td .fa-book {
+  font-size: 1.3em; }
+
+#searchFormWrapper {
+  background-color: #ebebeb; }
+  #searchFormWrapper h3 {
+    font-size: 1.4em; }
+    #searchFormWrapper h3 i {
+      font-size: 12px;
+      border: solid 1px #b4b4b4; }
+  #searchFormWrapper #searchFormProperties .searchProperty {
+    width: 15%;
+    margin: 5px;
+    display: inline-block; }
+    #searchFormWrapper #searchFormProperties .searchProperty input[type="text"], #searchFormWrapper #searchFormProperties .searchProperty input[type="date"] {
+      width: 100%; }
+    #searchFormWrapper #searchFormProperties .searchProperty label {
+      display: block; }
+  #searchFormWrapper #searchFormButtons {
+    margin: 10px 0 10px 15px; }
+
+#pager i:hover {
+  color: #f28c38; }
+#pager span {
+  padding: 0 5px; }
+#pager span:hover {
+  color: #f28c38; }
+#pager .selected-page {
+  color: #f28c38;
+  text-decoration: underline; }
+#pager .selected-page:hover {
+  text-decoration: underline; }

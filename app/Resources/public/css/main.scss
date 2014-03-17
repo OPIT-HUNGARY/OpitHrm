@@ -1,0 +1,586 @@
+/* 
+    Created on : Mar 10, 2014, 9:55:44 AM
+    Author     : OPIT\NOTES
+*/
+
+@import '_defaults';
+
+/* Display properties */
+
+.display-block {
+    display: block;
+}
+
+.display-none {
+    display: none;
+}
+
+.display-inline-block{
+    display: inline-block;
+}
+
+.display-inline-block-important{
+    display: inline-block !important;
+}
+
+.display-table{
+    display: table;
+}
+
+.display-table-important{
+    display: table !important;
+}
+
+/* Float properties */
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+/* Color properties */
+
+.red-text{
+    color: $defaultRed;
+}
+
+.color-red{
+    color: $defaultRed;
+}
+
+.darker-gray-color {
+    color: $darkerGrayColor;
+}
+
+.color-white{
+    color: white;
+}
+
+.color-orange{
+    color: $orangeColor;
+}
+
+.color-light-grey{
+    color: $lightGrayHover;
+}
+
+.color-grey{
+    color: $defaultDarkColor;
+}
+
+.color-green{
+    color: $defaultGreen;
+}
+
+.color-black{
+    color: black;
+}
+
+/* Background color properties */
+
+.background-color-orange{
+    background-color: $orangeColor;
+}
+
+.background-color-light-orange{
+    background-color: $lightOrangeColor;
+}
+
+.background-color-dark-grey{
+    background-color: $darkerGrayColor;
+}
+
+.background-color-light-grey{
+    background-color: $lightGrayHover;
+}
+
+.background-color-lighter-grey{
+    background-color: $lightGrayColor;
+}
+
+.background-color-grey{
+    background-color: $formDarkColor;
+}
+
+.background-color-black{
+    background-color: $darkBlack;
+}
+
+/* Align properties */
+
+.align-right{
+    text-align: right;
+}
+
+.align-center{
+    text-align: center;
+}
+
+.vertical-align-top {
+    vertical-align: top;
+}
+
+.vertical-align-bottom {
+    vertical-align: bottom;
+}
+
+/* Padding properties */
+
+.padding-top-20 {
+    padding-top: 20px;
+}
+
+.padding-10{
+    padding: 10px;
+}
+
+.padding-5{
+    padding: 5px;
+}
+
+.padding-3{
+    padding: 3px;
+}
+.padding-4{
+    padding: 4px;
+}
+
+.padding-2{
+    padding: 2px;
+}
+
+.padding-top-2{
+    padding-top: 2px;
+}
+
+.padding-bottom-2{
+    padding-bottom: 2px;
+}
+
+.padding-bottom-5{
+    padding-bottom: 5px;
+}
+
+.padding-left-1-em{
+    padding-left: 1em;
+}
+
+/* Margin properties */
+
+.margin-0{
+    margin: 0;
+}
+
+/**/
+.no-margin {
+    margin: 0;
+}
+
+.margin-center{
+    margin: 0 auto;
+}
+
+.margin-top-0{
+    margin-top: 0;
+}
+
+.margin-top-2 {
+    margin-top: 2px;
+}
+
+.margin-top-5{
+    margin-top: 5px;
+}
+
+.margin-top-10{
+    margin-top: 10px;
+}
+
+.margin-top-12{
+    margin-top: 12px;
+}
+
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.margin-top-24 {
+    margin-top: 24px;
+}
+
+.margin-right-0{
+    margin-right: 0;
+}
+
+.margin-right-1-em{
+    margin-right: 1em;
+}
+
+.margin-bottom-0{
+    margin-bottom: 0;
+}
+
+.margin-bottom-5{
+    margin-bottom: 5px;
+}
+
+.margin-bottom-10{
+    margin-bottom: 10px;
+}
+
+.margin-bottom-20{
+    margin-bottom: 20px;
+}
+
+.margin-bottom-1-em{
+    margin-bottom: 1em;
+}
+
+.margin-left-0-important{
+    margin-left: 0 !important;
+}
+
+.margin-left-5 {
+    margin-left: 5px;
+}
+
+.margin-left-10 {
+    margin-left: 10px;
+}
+
+.margin-left-1-em{
+    margin-left: 1em;
+}
+
+/* Width properties */
+
+.width-420{
+    width: 420px;
+}
+
+.width-80{
+    width: 80px;
+}
+
+.width-50{
+    width: 50px;
+}
+
+.max-width-150{
+    max-width: 150px;
+}
+
+.width-24 {
+    width: 24%;
+}
+
+.width-30 {
+    width: 30%;
+}
+
+.width-32 {
+    width: 32%;
+}
+
+.width-40 {
+    width: 40%;
+}
+
+.width-55 {
+    width: 55%;
+}
+
+.width-96 {
+    width: 96%;
+}
+
+.width-98 {
+    width: 98%;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.width-15-fix {
+    width: 15px;
+}
+
+.width-24-fix {
+    width: 24px;
+}
+
+.width-80-fix {
+    width: 80px;
+}
+
+.width-small{
+    width: 100px;
+}
+
+.wdith-medium{
+    width: 200px;
+}
+
+.width-300{
+    width: 300px;
+}
+
+.width-large{
+    width: 500px;
+}
+
+/* Height properties */
+
+.height-20{
+    height: 20px;
+}
+
+.height-auto {
+    height: auto;
+}
+
+.height-50{
+    height: 50px;
+}
+
+.height-60{
+    height: 60px;
+}
+
+/* Right properties */
+
+.right-0{
+    right: 0;
+}
+
+.right-300{
+    right: 300px !important;
+}
+
+/* Font weight properties */
+
+.bold {
+    font-weight: bold;
+}
+
+.font-weight-normal{
+    font-weight: normal;
+}
+
+/* Visibility properties */
+
+.visibility-hidden{
+    visibility: hidden;
+}
+
+.text-overflow-ellipsis{
+    text-overflow: ellipsis;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.white-space-nowrap{
+    white-space: nowrap;
+}
+
+/* Position properties */
+
+.position-absolute{
+    position: absolute;
+}
+
+.position-fixed{
+    position: fixed;
+}
+
+/* Border r. property*/
+
+.border-radius-5{
+    @include border-radius(5px);
+}
+
+.round-border{
+    @include border-radius(100%);
+}
+
+/* ? properties*/
+
+.deleteFormFieldsetChild{
+    display:inline-block;
+}
+
+.default-border {
+    border: 1px solid $darkGrey;
+}
+
+.text-decoration-none{
+    text-decoration: none;
+}
+
+.text-decoration-underline{
+    text-decoration: underline;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.cursor-default{
+    cursor: default;
+}
+
+.tipsy{
+    font-size: 0.85em;
+}
+
+/* Element classes */
+
+.button{
+    border: 0;
+    margin: 0 10px 10px 0;
+    padding: 8px 24px 8px 24px;
+    color: black;
+    text-decoration: none;
+    @include border-radius(10px);
+    @include gradient($defaultLightColor, $defaultLightColor, $defaultDarkColor);
+    @include box-shadow(2px, 2px, 2px, 1px, rgba(150, 150, 150, 1));
+
+    i{
+        margin: 0 5px 0 0;
+    }
+}
+
+.button:hover{
+    background: $defaultDarkColor;
+    box-shadow: 0 0 0 0 black;
+    cursor: pointer;
+}
+
+.delete{
+    background: $snowColor;
+    color: $lightGrayColor;
+    @include box-shadow-disabled();
+}
+
+.button-disabled{
+    background: $snowColor;
+    color: $lightGrayHover;
+    @include box-shadow-disabled();
+}
+
+.button-disabled:hover{
+    background: $snowColor;
+    color: $lightGrayHover;
+    @include box-shadow-disabled();
+}
+
+.small-button {
+    padding: 3px 10px 3px 10px;
+    margin: 2px;
+    background-color: $darkGrey;
+    color: white;
+    @include border-radius(5px);
+    
+    i{
+        float: left;
+        margin: 3px 5px 0 0;
+    }
+    
+    span{
+        display: inline-block;
+    }
+}
+
+.required:after{
+    content: '*';
+    color: $defaultRed;
+}
+
+.dropdown-disabled{
+    background: $snowColor;
+    color:$lightGrayHover;
+    border:solid 1px $defaultLightColor;
+}
+
+.formFieldset{
+    background-color: $defaultLightColor;
+    @include border-radius(5px);
+
+    .formFieldsetChild{
+        background-color: $formDarkColor;
+        @include border-radius(5px);
+    }
+
+    h3{
+        @include border-top-left-radius(5px);
+        @include border-top-right-radius(5px);
+    }
+
+    .formFieldsetButton{
+        i{
+            margin:0 2px 0 0;
+        }            
+    }
+}
+
+.alert-message {
+    border: 1px solid transparent;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    @include border-radius(5px);
+
+    ul {
+        margin: 3px;
+    }
+}
+
+.error-message {
+    color: $dangerRed;
+    background-color: $alertRed;
+    border-color: $dangerRed;
+}
+
+.success-message {
+    color: $successGreen;
+    background-color: $alertGreen;
+    border-color: $successGreen;
+}
+
+.dialog-h2{
+    font-size: 1.2em;
+    margin: 0.4em 0;
+}
+
+.icon-disabled{
+    color:$lightGrayHover;
+}
+
+.modalwindow {
+    border: 1px solid $darkGrey;
+    background-color: $defaultLightColor;
+    font-size: $defaultFontSize;
+    padding: 5px;
+    @include border-radius(5px);
+}
+
+.dialog-description {
+    background-color: $orangeColor;
+    color: white;
+    margin-bottom:5px;
+    padding:5px;
+    @include border-radius(5px);
+}
+
+.custom-field{
+    background-color:$formDarkColor;
+    width:110px;
+    padding:3px;
+    @include border-radius(5px);
+}

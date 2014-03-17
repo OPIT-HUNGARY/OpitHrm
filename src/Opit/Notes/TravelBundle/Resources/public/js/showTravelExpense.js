@@ -81,6 +81,7 @@
     var $deleteButton;
     $deleteButton = $('<div>');
     $deleteButton.addClass('deleteFormFieldsetChild formFieldsetButton').html('<i class="fa fa-minus-square"></i>Delete');
+    $deleteButton.addClass('form-fieldset-delete-button');
     $deleteButton.on('click', function() {
       $(this).parent().remove();
       return calculateAdvancesPayback();
@@ -91,7 +92,7 @@
   createDeleteExpenseButton = function($parent) {
     var $deleteButton, $inlineElement;
     $inlineElement = $('<div>');
-    $inlineElement.addClass('inlineElements');
+    $inlineElement.addClass('display-inline-block vertical-align-top margin-right-1-em');
     $deleteButton = $('<i>');
     $deleteButton.addClass('fa fa-minus-square color-red hover-cursor-pointer margin-top-24');
     $deleteButton.on('click', function() {
@@ -111,7 +112,7 @@
       var expenseDateField;
       expenseDateField = $(this).find('input[type=date]');
       validateExpenseDate(expenseDateField);
-      if (expenseDateField.parent().children('.custom-error').length > 0) {
+      if (expenseDateField.parent().children('.error-label').length > 0) {
         isDateValid = false;
       }
     });
@@ -126,14 +127,14 @@
     departureDate = $('#travelExpense_departureDateTime_date').val();
     arrivalDate = $('#travelExpense_arrivalDateTime_date').val();
     if (date > arrivalDate || date < departureDate) {
-      if (self.parent().children('.custom-error').length < 1) {
+      if (self.parent().children('.error-label').length < 1) {
         $errorLabel = $('<label>');
-        $errorLabel.addClass('custom-error');
+        $errorLabel.addClass('error-label');
         $errorLabel.text('Invalid expense date.');
         return self.parent().append($errorLabel);
       }
     } else {
-      return self.parent().children().remove('.custom-error');
+      return self.parent().children().remove('.error-label');
     }
   };
 
@@ -148,14 +149,18 @@
   };
 
   reCreateExpenses = function(self) {
-    var $container, $selectedExpense;
+    var $amount, $container, $currency, $selectedExpense;
     $selectedExpense = $('<span>').addClass('selected-expense');
+    $selectedExpense.addClass('margin-0 color-white display-block align-center background-color-dark-grey');
     $selectedExpense.html(self.find('.te-expense-type').find(':selected').text());
-    $container = $('<div>').addClass('formFieldsetChild');
+    $container = $('<div>').addClass('formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top');
     self.children('label:first').remove();
     $container.append(self);
     $container.append(createDeleteButton());
     $container.prepend($selectedExpense);
+    $amount = $container.find('.amount');
+    $currency = $container.find('.currency');
+    $amount.parent().append($currency);
     $container.find('.amount').on('change', function() {
       return calculateAdvancesPayback();
     });
@@ -169,7 +174,7 @@
   createCustomField = function(className, labelText, content) {
     var $customField, $customFieldInline;
     $customFieldInline = $('<div>');
-    $customFieldInline.addClass('inlineElements');
+    $customFieldInline.addClass('display-inline-block vertical-align-top margin-right-1-em');
     $customField = $('<div>');
     $customField.html(content);
     $customField.addClass(className);
@@ -187,8 +192,8 @@
     $teAdvancesReceived.children().each(function() {
       return $(this).find('label').remove();
     });
-    $('.te-advances-received').parent().addClass('inlineElements');
-    $('.te-advances-received-currency').parent().addClass('inlineElements');
+    $('.te-advances-received').parent().addClass('display-inline-block vertical-align-top margin-right-1-em');
+    $('.te-advances-received-currency').parent().addClass('display-inline-block vertical-align-top margin-right-1-em');
     $('.te-advances-received-currency').parent().prepend($('<label>').html('Currency'));
     $('.te-advances-received').each(function(index) {
       var $advancesPayback, $advancesReceived, $advancesSpent, $selfParent, $teAdvances;
@@ -202,6 +207,7 @@
       $teAdvances = $('#travelExpense_advancesReceived_' + index);
       $advancesReceived = $('<div>');
       $advancesReceived.addClass('advances-received');
+      $advancesReceived.addClass('margin-top-5 margin-bottom-5');
       $advancesReceived.append($teAdvances);
       $generalFormFieldset.append($advancesReceived);
       return createDeleteExpenseButton($teAdvances);
@@ -225,8 +231,9 @@
       newAdvancesReceived = prototype.replace(/__name__/g, index);
       $newAdvancesReceived = $(newAdvancesReceived);
       $newAdvancesReceived.addClass('advances-received');
+      $newAdvancesReceived.addClass('margin-top-5 margin-bottom-5');
       $newAdvancesReceived.children('div').children('div').each(function() {
-        return $(this).addClass('inlineElements');
+        return $(this).addClass('display-inline-block vertical-align-top margin-right-1-em');
       });
       $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0');
       $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0');
@@ -257,20 +264,25 @@
   };
 
   addNewForm = function(collectionHolder, parent) {
-    var $datePicker, $formFieldsetChild, $selectedExpense, id, index, name, newForm, prototype;
+    var $amount, $currency, $datePicker, $formFieldsetChild, $selectedExpense, id, index, name, newForm, prototype;
     prototype = collectionHolder.data('prototype');
     index = collectionHolder.data('index');
     prototype = prototype.replace('<label class="required">__name__label__</label>', '');
     newForm = prototype.replace(/__name__/g, index);
     $selectedExpense = $('<span>').addClass('selected-expense');
+    $selectedExpense.addClass('margin-0 color-white display-block align-center background-color-dark-grey');
     $selectedExpense.html('Expense type');
     $formFieldsetChild = $('<div>').addClass('formFieldsetChild');
+    $formFieldsetChild.addClass('padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top');
     $formFieldsetChild.append(newForm);
     $formFieldsetChild.append(createDeleteButton());
     $formFieldsetChild.prepend($selectedExpense);
     expenseDateChange($($formFieldsetChild));
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected', 'selected');
     collectionHolder.data('index', index + 1);
+    $amount = $formFieldsetChild.find('.amount');
+    $currency = $formFieldsetChild.find('.currency');
+    $amount.parent().append($currency);
     $formFieldsetChild.find('.amount').on('change', function() {
       return calculateAdvancesPayback();
     });
@@ -307,7 +319,9 @@
     return $row;
   };
 
-  $perDiem = $('<div>').addClass('display-inline-block vertical-align-top per-diem-details-wrapper');
+  $perDiem = $('<div>').addClass('per-diem-details-wrapper');
+
+  $perDiem.addClass('display-inline-block vertical-align-top float-right margin-top-5 margin-bottom-10');
 
   convertCurrency = function(originCode, destinationCode, value) {
     if (originCode === destinationCode) {
@@ -333,7 +347,7 @@
         var $perDiemTable;
         $('.perDiemTable').remove();
         $perDiemTable = $('<table>');
-        $perDiemTable.addClass('perDiemTable bordered');
+        $perDiemTable.addClass('perDiemTable bordered margin-top-10');
         if (data['totalTravelHoursOnSameDay'] > 0) {
           $perDiemTable.append(createTableRow('One day trip', data['totalPerDiem'], "Hours traveled " + data['totalTravelHoursOnSameDay'] + "."));
         } else {
@@ -374,8 +388,8 @@
       arrivalDate.attr('readonly', 'readonly');
       departureDate.attr('readonly', 'readonly');
     }
-    arrivalTime.addClass('inlineElements time-picker');
-    departureTime.addClass('inlineElements time-picker');
+    arrivalTime.addClass('display-inline-block vertical-align-top margin-right-1-em time-picker');
+    departureTime.addClass('display-inline-block vertical-align-top margin-right-1-em time-picker');
     arrivalDate.css({
       display: 'inline-block'
     });
@@ -414,7 +428,7 @@
       display: 'block'
     });
     $perDiemAmountsTable = $('<table>');
-    $perDiemAmountsTable.addClass('per-diem-amounts-slab bordered');
+    $perDiemAmountsTable.addClass('per-diem-amounts-slab bordered width-100');
     $.ajax({
       method: 'POST',
       url: Routing.generate('OpitNotesTravelBundle_expense_perdiemvalues')
@@ -485,7 +499,8 @@
     reCreateAdvances();
     $advancesReceived = $('#travelExpense_advancesReceived');
     $addNewAdvance = $('<div>');
-    $addNewAdvance.addClass('addFormFieldsetChild formFieldsetButton margin-left-0');
+    $addNewAdvance.addClass('addFormFieldsetChild formFieldsetButton');
+    $addNewAdvance.addClass('form-fieldset-add-button margin-left-0-important');
     $addNewAdvance.html('<i class="fa fa-plus-square"></i>Add advances received');
     $('.generalFormFieldset').append($addNewAdvance);
     $addNewAdvance.on('click', function() {
@@ -517,11 +532,13 @@
 
   $formFieldset.addClass('formFieldset');
 
-  $generalFormFieldset = $formFieldset.clone().addClass('generalFormFieldset clearfix');
+  $formFieldset.addClass('padding-bottom-5 margin-top-20 margin-bottom-20');
 
-  $expensesPaidByMe = $formFieldset.clone().append($('<h3>').html('Expenses paid by me <i class="fa fa-question-circle"></i>'));
+  $generalFormFieldset = $formFieldset.clone().addClass('generalFormFieldset clearfix padding-10');
 
-  $expensesPaidByOpit = $formFieldset.clone().append($('<h3>').html('Expenses paid by opit <i class="fa fa-question-circle"></i>'));
+  $expensesPaidByMe = $formFieldset.clone().append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by me <i class="fa fa-question-circle"></i>'));
+
+  $expensesPaidByOpit = $formFieldset.clone().append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by opit <i class="fa fa-question-circle"></i>'));
 
   $('#travelExpense').prepend($expensesPaidByOpit);
 
@@ -539,13 +556,17 @@
 
   $expensesPaidByOpitDesc.html('Expenses paid by OPIT (already paid by OPIT).');
 
-  $expensesPaidByOpitDesc.addClass('formFieldsetDescription short-description display-none');
+  $expensesPaidByOpitDesc.addClass('formFieldsetDescription');
+
+  $expensesPaidByOpitDesc.addClass('short-description display-none position-absolute padding-5');
 
   $expensesPaidByMeDesc = $('<div>');
 
   $expensesPaidByMeDesc.html('Expenses paid by employee (payable to your own bank account).');
 
-  $expensesPaidByMeDesc.addClass('formFieldsetDescription short-description display-none');
+  $expensesPaidByMeDesc.addClass('formFieldsetDescription');
+
+  $expensesPaidByMeDesc.addClass('short-description display-none position-absolute padding-5');
 
   $expensesPaidByOpit.append($expensesPaidByOpitDesc);
 
@@ -556,7 +577,7 @@
   });
 
   $('.te-claim').each(function(index) {
-    $(this).parent().addClass('inlineElements');
+    $(this).parent().addClass('display-inline-block vertical-align-top margin-right-1-em');
     $generalFormFields.append($(this).parent());
     if ($(this).hasClass('display-none')) {
       $(this).removeClass('display-none');
@@ -567,13 +588,21 @@
     }
   });
 
-  $addCompanyTagLink = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add company expense</div>');
+  $addCompanyTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add company expense</div>');
+
+  $addCompanyTagLink.addClass('formFieldsetButton');
+
+  $addCompanyTagLink.addClass('form-fieldset-add-button');
 
   $addCompanyTagLink.on('click', function() {
     return addNewForm($('#travelExpense_companyPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(3)'));
   });
 
-  $addUserTagLink = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add user expense</div>');
+  $addUserTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add user expense</div>');
+
+  $addUserTagLink.addClass('formFieldsetButton');
+
+  $addUserTagLink.addClass('form-fieldset-add-button');
 
   $addUserTagLink.on('click', function() {
     return addNewForm($('#travelExpense_userPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(2)'));
@@ -643,11 +672,11 @@
             maxHeight: $(window).outerHeight() - 100,
             modal: true,
             buttons: {
-              Cancel: function() {
-                $preview.dialog("destroy");
-              },
               Save: function() {
                 $form.submit();
+                $preview.dialog("destroy");
+              },
+              Cancel: function() {
                 $preview.dialog("destroy");
               }
             }
@@ -656,6 +685,12 @@
           return $('<div></div>').html('The travel expense could not be saved due to an error.').dialog({
             title: 'Error'
           });
+        });
+      } else {
+        return $('.hasDatepicker').each(function() {
+          if ($(this).hasClass('error')) {
+            return $(this).parent().find('.fa-calendar').addClass('margin-top-12');
+          }
         });
       }
     }

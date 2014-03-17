@@ -2,22 +2,23 @@
 {% block title %}
 Per Diem list - {{ parent() }}
 {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+{% endblock %}
 {% block body %}
 <h1>Per diem configuration</h1>
-<div class="modal-description default-border-radius">Per diem can be configured from here.</div>
+<div class="dialog-description">Per diem can be configured from here.</div>
 <div  id="list">
     <div id="list-reply-message"></div>
     <div id="reply-message"></div>
-    <form class="formFieldset">
-        <div class="container  padding-top-20">
+    <form class="formFieldset margin-bottom-20 padding-10">
+        <div class="container">
         {% include 'OpitNotesTravelBundle:Admin:_listPerDiem.html.twig' %}
         </div>
-        <div class="addFormFieldsetChild formFieldsetButton no-pointer">
-            <span id="addPerDiem" class="pointer">
-                <i class="fa fa-plus-square"></i>
-                Add Per diem
-            </span>
-        </div>
+        <span id="addPerDiem" class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button margin-left-0-important">
+            <i class="fa fa-plus-square"></i>
+            Add Per diem
+        </span>
     </form>
     <a href="{{ path('OpitNotesUserBundle_admin_save_perdiem') }}"><button id="save" class="button">Save</button></a>
 </div>
@@ -27,7 +28,7 @@ Per Diem list - {{ parent() }}
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/Admin/PerDiem/admin.js'
     output='js/notes_admin.js' filter='?yui_js' %}
-<script type="text/javascript" src="{{ asset_url }}" ></script>
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
 

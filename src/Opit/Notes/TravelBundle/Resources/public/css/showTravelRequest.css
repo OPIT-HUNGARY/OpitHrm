@@ -1,62 +1,8 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /*  Created on : Nov 28, 2013, 4:00:11 PM Author     : OPIT\Notes
 */
-/* Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT\Notes
+/*  Created on : Mar 10, 2014, 10:16:52 AM Author     : OPIT\NOTES
 */
-.vertical-align-top { vertical-align: top; }
-
-.align-right { text-align: right; }
-
-.display-none { display: none !important; }
-
-.red-text { color: #aa0000; }
-
-.bold { font-weight: bold; }
-
-.deleteFormFieldsetChild { display: inline-block; }
-
-.height-20 { height: 20px; }
-
-.width-420 { width: 420px; }
-
-.width-80 { width: 80px; }
-
-.width-50 { width: 50px; }
-
-.display-inline-block { display: inline-block !important; }
-
-#changeStateWrapper { display: block; }
-#changeStateWrapper .changeState { display: inline-block; }
-#changeStateWrapper h3 { display: inline-block; margin-top: 0; margin-right: 5px; }
-
-.visibility-hidden { visibility: hidden; }
-
-.toggle-icon { font-size: .5em; padding: 4px; color: white; border: solid 1px white; background-color: #f28c38; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; margin: 2px 4px 0 0; }
-
-.toggle-icon:hover { cursor: pointer; background-color: #d46e1a; }
-
-/*  Created on : Mar 4, 2014, 9:27:23 AM Author     : OPIT\Notes
-*/
-.travel-status-history { font-size: 0.65em; margin-top: 10px; margin-right: 10px; }
-
-h1:hover i.travel-status-history { visibility: visible; }
-
-i.travel-status-history { visibility: hidden; }
-
-#travelRequest { display: none; }
-
-#travelRequest label, .travelForm label { display: block; }
-#travelRequest .formFieldset, .travelForm .formFieldset { margin: 20px 0 20px 0; }
-#travelRequest .formFieldset > div, .travelForm .formFieldset > div { margin-top: 5px; margin-bottom: 5px; }
-#travelRequest .marginLeft .inlineElements, .travelForm .marginLeft .inlineElements { margin-left: 1em; margin-right: 0; }
 #travelRequest .generalFormFieldset, .travelForm .generalFormFieldset { padding: 10px; }
-#travelRequest input.error, #travelRequest select.error, .travelForm input.error, .travelForm select.error { border: solid 2px #aa0000; display: inline-block; }
-#travelRequest label.error, #travelRequest label.custom-error, .travelForm label.error, .travelForm label.custom-error { color: #aa0000; background-color: #c8c8c8; padding: 2px; border: solid 2px #aa0000; margin-top: 5px; display: inline-block; z-index: 4; margin: 0 0 0 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
-#travelRequest label.custom-error, .travelForm label.custom-error { display: inline-block; margin-bottom: 10px; margin-left: 1em; }
-#travelRequest label.valid, .travelForm label.valid { display: none !important; }
-
-h1 { margin-top: 0; }
+#travelRequest .error-label, .travelForm .error-label { margin-top: 5px; display: inline-block; z-index: 4; }
+#travelRequest .formFieldset, .travelForm .formFieldset { margin: 20px 0 20px 0; }
+#travelRequest .formFieldset > div, .travelForm .formFieldset > div { margin-top: 2px; margin-bottom: 2px; }

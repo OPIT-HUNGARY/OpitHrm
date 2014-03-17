@@ -80,7 +80,7 @@ class TravelType extends AbstractType
         ));
         $builder->add('trip_purpose', 'text', array(
             'label'=>'Trip purpose',
-            'attr' => array('placeholder' => 'Trip purpose', 'class' => 'width-big')
+            'attr' => array('placeholder' => 'Trip purpose', 'class' => 'width-300')
         ));
         $builder->add('destinations', 'collection', array(
             'type' => new DestinationType(),

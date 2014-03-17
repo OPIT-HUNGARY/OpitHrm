@@ -1,9 +1,9 @@
-<section id="pager" data-pages="{{ numberOfPages }}" data-url="{{ url }}" data-max="{{ maxPages }}" data-offset="{{ offset }}">
-    <i class="fa fa-caret-left"></i>
+<section id="pager" class="align-center margin-top-20 margin-bottom-20" data-pages="{{ numberOfPages }}" data-url="{{ url }}" data-max="{{ maxPages }}" data-offset="{{ offset }}">
+    <i class="fa fa-caret-left cursor-pointer"></i>
     {% for pageNumber in 1..numberOfPages %}
         {% if loop.index < maxPages+1 %}
-        <span data-offset="{{ loop.index }}">{{ loop.index }}</span>
+        <span class="cursor-pointer" data-offset="{{ loop.index }}">{{ loop.index }}</span>
         {% endif %}
     {% endfor %}
-    <i class="fa fa-caret-right"></i>
+    <i class="fa fa-caret-right cursor-pointer"></i>
 </section>

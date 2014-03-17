@@ -160,14 +160,14 @@
       if (unreadNotificationCount !== data) {
         if ('0' !== data) {
           $unreadNotificationsCount.removeClass('display-none');
-          $notificationsIcon.addClass('active-text');
+          $notificationsIcon.addClass('color-orange');
           $unreadNotificationsCount.html(data);
           $('#notifications').addClass('right-0');
         }
       }
       if ('0' === $unreadNotificationsCount.html()) {
         $unreadNotificationsCount.addClass('display-none');
-        $notificationsIcon.removeClass('active-text');
+        $notificationsIcon.removeClass('color-orange');
         $('#notifications').removeClass('right-0');
       }
       return setTimeout(getUnreadNotifications, 10000);
@@ -211,7 +211,7 @@
       $container = $(this).parent();
       if (!$container.hasClass('right-300')) {
         $container.addClass('right-300');
-        $(this).removeClass('active-text');
+        $(this).removeClass('color-orange');
         $('#unread-notifications-count').addClass('display-none');
         getAllNotifications($notificationsWrapper);
         $('#notifications-wrapper').on('click.notifications', function(event) {

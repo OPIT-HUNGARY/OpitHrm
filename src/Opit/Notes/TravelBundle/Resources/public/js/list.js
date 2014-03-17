@@ -17,8 +17,11 @@
     $('#travel_list').on('click', '.order-text', function() {
       return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list');
     });
-    return $('#travel_list').on('click', '.fa-sort', function() {
+    $('#travel_list').on('click', '.fa-sort', function() {
       return $(document).data('notes').funcs.serverSideListOrdering($(this), $(this).data('field'), 'OpitNotesTravelBundle_travel_list', 'travel_list');
+    });
+    return $('#travel_list').on('click', '.trip-purpose', function() {
+      return $(this).toggleClass('text-show-all');
     });
   });
 

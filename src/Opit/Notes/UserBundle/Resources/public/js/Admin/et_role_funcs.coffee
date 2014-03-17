@@ -2,7 +2,8 @@ $('#reply-message').css display:'none'
 
 showRoleDialog = (id, name, description, url, title, flashMessage) ->
     $('#dialog-edititem h2').html title
-    $('.description').html description
+    $('#dialog-edititem h2').addClass 'dialog-h2'
+    $('.dialog-description').html description
     selfDialog = $('<div>')
     selfDialog.html $("##{ valueForm }").html()
     selfDialog.find("##{ valueField }").val name

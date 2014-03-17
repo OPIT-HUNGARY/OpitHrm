@@ -1,59 +1,58 @@
 <div id="dialog-details-travel">
-        <h2>Travel Expense Details</h2>
-   
+    <h2 class="dialog-h2">Travel Expense Details</h2>
     <div class="modalwindow">
         <table class="bordered">
             <caption class="dialog-table-title">General</caption>
             {% if travelExpense.travelExpenseId is defined %}
                 <tr>
-                    <td class="bgGrey width-40 bold">Id</td>
+                    <td class="background-color-dark-grey width-40 bold">Id</td>
                     <td>{{ travelExpense.travelExpenseId }}</td>
                 </tr>
             {% endif %}
             <tr>
-                <td class="bgGrey bold">Employee Name</td>
+                <td class="background-color-dark-grey bold">Employee Name</td>
                 {% if travelExpense.user.employeeName is defined %}
                 <td>{{ travelExpense.user.employeeName }}</td>
                 {% endif %}
             </tr>
             <tr>
-                <td class="bgGrey bold">Tax id</td>
+                <td class="background-color-dark-grey bold">Tax id</td>
                 <td>{{ travelExpense.taxIdentification }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Expense is rechargeable</td>
+                <td class="background-color-dark-grey bold">Expense is rechargeable</td>
                 <td>{% if travelExpense.rechargeable == 0 %}Yes{% else %}No{% endif %}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Pay in euro</td>
+                <td class="background-color-dark-grey bold">Pay in euro</td>
                 <td>{% if travelExpense.payInEuro == 0 %}Yes{% else %}No{% endif %}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Bank account number</td>
+                <td class="background-color-dark-grey bold">Bank account number</td>
                 <td>{{ travelExpense.bankAccountNumber }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Departure country</td>
+                <td class="background-color-dark-grey bold">Departure country</td>
                 <td>{{ travelExpense.departureCountry }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Departure date time</td>
+                <td class="background-color-dark-grey bold">Departure date time</td>
                 <td>{{ travelExpense.departureDateTime|date('Y-m-d H:i') }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Arrival country</td>
+                <td class="background-color-dark-grey bold">Arrival country</td>
                 <td>{{ travelExpense.arrivalCountry }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Arrival date time</td>
+                <td class="background-color-dark-grey bold">Arrival date time</td>
                 <td>{{ travelExpense.arrivalDateTime|date('Y-m-d H:i') }}</td>
             </tr>
             {% for advancesReceived in travelExpense.advancesReceived %}
             <tr>
                 {% if '0' == loop.index0%}
-                <td class="bgGrey bold">Advances received</td>
+                <td class="background-color-dark-grey bold">Advances received</td>
                 {% else %}
-                <td class="bgGrey bold"></td>
+                <td class="background-color-dark-grey bold"></td>
                 {% endif %}
                 <td>{{ advancesReceived.advancesReceived }} {{ advancesReceived.currency.code }}</td>
             </tr>
@@ -65,24 +64,24 @@
             <caption class="dialog-table-title">User paid expenses</caption>
             {% for userPaidExpenses in travelExpense.userPaidExpenses %}
             <tr>
-                <td class="bgGrey bold width-40">Destination</td>
+                <td class="background-color-dark-grey bold width-40">Destination</td>
                 <td>{{ userPaidExpenses.destination }}</td>
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Description</td>
+                <td class="background-color-dark-grey bold">Description</td>
                 <td>{{ userPaidExpenses.description }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Expense type</td>
+                <td class="background-color-dark-grey bold">Expense type</td>
                 <td>{{ userPaidExpenses.expenseType.name }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Amount</td>
+                <td class="background-color-dark-grey bold">Amount</td>
                 <td>{{ userPaidExpenses.amount ~ ' ' ~ userPaidExpenses.currency.code }}</td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
-                <td class="bgGrey bold">Date</td>
+                <td class="background-color-dark-grey bold">Date</td>
                 <td>{{ userPaidExpenses.date|date('Y-m-d') }}</td>
             </tr>
             {% endfor %}
@@ -96,24 +95,24 @@
             <caption class="dialog-table-title">Company paid expenses</caption>
             {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
             <tr>
-                <td class="bgGrey bold width-40">Destination</td>
+                <td class="background-color-dark-grey bold width-40">Destination</td>
                 <td>{{ companyPaidExpenses.destination }}</td>
                 <td class="width-24-fix align-center" rowspan="5">{{ loop.index }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Description</td>
+                <td class="background-color-dark-grey bold">Description</td>
                 <td>{{ companyPaidExpenses.description }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Expense type</td>
+                <td class="background-color-dark-grey bold">Expense type</td>
                 <td>{{ companyPaidExpenses.expenseType.name }}</td>
             </tr>
             <tr>
-                <td class="bgGrey bold">Amount</td>
+                <td class="background-color-dark-grey bold">Amount</td>
                 <td>{{ companyPaidExpenses.amount ~ ' ' ~ companyPaidExpenses.currency.code }}</td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
-                <td class="bgGrey bold">Date</td>
+                <td class="background-color-dark-grey bold">Date</td>
                 <td>{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
             </tr>
             {% endfor %}

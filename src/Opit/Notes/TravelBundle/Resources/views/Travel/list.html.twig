@@ -1,4 +1,12 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+        '@OpitNotesTravelBundle/Resources/public/css/module.css'
+    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
 {% block title %}
         Travel request list - {{ parent() }}
 {% endblock %}
@@ -7,7 +15,7 @@
 {% include 'OpitNotesTravelBundle:Travel:_searchForm.html.twig' with { 'order_field': 'id' } %}
 <table>
     <tr>
-        <td class="no-padding">
+        <td class="padding-0">
             <a href="{{ path('OpitNotesTravelBundle_travel_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
             <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
         </td>

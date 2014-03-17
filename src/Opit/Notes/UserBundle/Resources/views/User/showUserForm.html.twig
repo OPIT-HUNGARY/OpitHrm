@@ -7,8 +7,8 @@
     {% set title = "Create User"  %}
     {% set desc = "Create a new user." %}
 {% endif %}
-<h2>{{ title|trans }}</h2>
-<div class="description default-border-radius">{{desc|trans}}</div>
+<h2 class="dialog-h2">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
 <div id="reply-message"></div>
 <div class="error-message">
     {{ form_errors(form) }}

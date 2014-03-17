@@ -137,14 +137,14 @@ getUnreadNotifications = () ->
                 # show number of unread notifications indicator
                 $unreadNotificationsCount.removeClass 'display-none'
                 # set globe to active
-                $notificationsIcon.addClass 'active-text'
+                $notificationsIcon.addClass 'color-orange'
                 # replace the number in the indicator
                 $unreadNotificationsCount.html data
                 $('#notifications').addClass 'right-0'
             
         if '0' == $unreadNotificationsCount.html()
             $unreadNotificationsCount.addClass 'display-none'
-            $notificationsIcon.removeClass 'active-text'
+            $notificationsIcon.removeClass 'color-orange'
             $('#notifications').removeClass 'right-0'
             
         # check for new notifications every 10 seconds
@@ -183,7 +183,7 @@ $(document)
             if !$container.hasClass 'right-300'
                 $container.addClass 'right-300'
                 # remove classes that make the notifications tab active
-                $(@).removeClass 'active-text'
+                $(@).removeClass 'color-orange'
                 $('#unread-notifications-count').addClass 'display-none'
                 # call get all notifications function
                 getAllNotifications($notificationsWrapper)

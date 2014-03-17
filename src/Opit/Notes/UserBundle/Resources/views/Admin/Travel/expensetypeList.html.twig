@@ -2,9 +2,12 @@
 {% block title %}
     Expense type list - {{ parent() }}
 {% endblock %}
-    {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotesuser/css/list.css')  }}" />
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -26,7 +29,7 @@
 <h1>Expense Type List</h1>
 <table>
     <tr>
-        <td class="no-padding">
+        <td class="padding-0">
             <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
             <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
         </td>

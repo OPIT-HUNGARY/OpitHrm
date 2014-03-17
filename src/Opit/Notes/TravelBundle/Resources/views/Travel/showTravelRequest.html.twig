@@ -12,8 +12,8 @@
     <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
 {% endblock %}        
         
 {% block body %}
@@ -21,15 +21,15 @@
         {% if travelRequest.id is empty or travelRequest.id == 'new' %}
             New Travel Request
         {% else %}
-            <i class="fa fa-book pointer float-right travel-status-history" data-id="{{ travelRequest.id }}"></i>
+            <i class="fa fa-book pointer float-right travel-status-history margin-top-10 margin-right-10 visibility-hidden cursor-pointer" data-id="{{ travelRequest.id }}"></i>
             Edit Travel Request ({{ travelRequest.travelRequestId }})
         {% endif %}
     </h1>
 
-    <div id="changeStateWrapper">
-        <h3>Change status:</h3>
+    <div id="changeStateWrapper" class="display-block">
+        <h3 class="display-inline-block margin-top-0">Change status:</h3>
         {% if isStatusLocked == '0' %}
-        <select data-tr="{{ travelRequest.id }}" class="changeState">
+        <select data-tr="{{ travelRequest.id }}" class="changeState display-inline-block">
             {% for key, value in travelRequestStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}
@@ -40,7 +40,7 @@
         </select>
         {% endif %}
     </div>
-    <div class="modal-description default-border-radius">
+    <div class="dialog-description default-border-radius">
         Travel request can be added or edited from here.
     </div>
     

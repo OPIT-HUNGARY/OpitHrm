@@ -1,0 +1,109 @@
+/* 
+    Created on : Mar 10, 2014, 10:16:52 AM
+    Author     : OPIT\NOTES
+*/
+
+$snowColor: rgb(250, 250, 250);
+$darkSnowColor: rgb(244, 244, 244);
+$defaultLightColor: rgba(235, 235, 235, 1);
+$darkerSnowColor: rgba(230, 230, 230, 1);
+$lightGrayColor: rgba(220, 220, 220, 0.8);
+$lightGrayColorFull: rgb(220, 220, 220);
+$bgGrey: rgb(219, 219, 219);
+$formDarkColor: rgba(210, 210, 210, 1);
+$lightGrayHover: rgba(200, 200, 200, 1);
+$defaultDarkColor: rgba(180, 180, 180, 1);
+$boxShadowColor: rgba(160, 160, 160, 1);
+$darkGrey: rgb(146, 146, 146);
+$greyColor: rgba(140, 140, 140, 1);
+$darkGrey: rgba(100, 100, 100, 1);
+$darkerGrayColor: rgba(80, 80, 80, 1);
+$darkBlack: #000;
+
+$defaultRed: rgb(170, 0, 0);
+$dangerRed: rgb(169, 68, 66);
+$alertRed: rgb(242, 222, 222);
+
+$defaultGreen: rgb(0, 100, 0);
+$successGreen: rgb(60, 118, 61);
+$alertGreen: rgb(223, 240, 216);
+
+$orangeColor: rgb(242, 140, 56);
+$lightOrangeColor: rgb(212, 110, 26);
+
+$buttonDeleteLightColor: rgba(220, 10, 10, 1);
+$buttonDeleteDarkColor: rgba(140, 10, 10, 1);
+$buttonAddLightColor: rgba(10, 200, 10, 1);
+$buttonAddDarkColor: rgba(10, 140, 10, 1);
+
+$defaultFontSize: 13px;
+$defaultFontSize: .9em;
+
+@mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+
+@mixin border-top-left-radius($radius) {
+    -webkit-border-top-left-radius: $radius;
+    -moz-border-top-left-radius: $radius;
+    -ms-border-top-left-radius: $radius;
+    -o-border-top-left-radius: $radius;
+    border-top-left-radius: $radius;
+}
+@mixin border-top-right-radius($radius) {
+    -webkit-border-top-right-radius: $radius;
+    -moz-border-top-right-radius: $radius;
+    -ms-border-top-right-radius: $radius;
+    -o-border-top-right-radius: $radius;
+    border-top-right-radius: $radius;
+}
+@mixin border-bottom-left-radius($radius) {
+    -webkit-border-bottom-left-radius: $radius;
+    -moz-border-bottom-left-radius: $radius;
+    -ms-border-bottom-left-radius: $radius;
+    -o-border-bottom-left-radius: $radius;
+    border-bottom-left-radius: $radius;
+}
+@mixin border-bottom-right-radius($radius) {
+    -webkit-border-bottom-right-radius: $radius;
+    -moz-border-bottom-right-radius: $radius;
+    -ms-border-bottom-right-radius: $radius;
+    -o-border-bottom-right-radius: $radius;
+    border-bottom-right-radius: $radius;
+}
+
+@mixin gradient($color1, $color2, $color3){
+    background: linear-gradient($color1, $color2, $color3);
+    background: -webkit-linear-gradient($color1, $color2, $color3);
+    background: -o-linear-gradient($color1, $color2, $color3);
+    background: -moz-linear-gradient($color1, $color2, $color3);
+}
+@mixin gradient-with-percent($color1, $color2, $color3, $percent){
+    background-image: -webkit-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -moz-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -ms-linear-gradient($color1, $color2 $percent, $color3);
+    background-image: -o-linear-gradient($color1, $color2 $percent, $color3);    
+}
+@mixin box-shadow($left, $top, $scatter, $size, $color){
+    -moz-box-shadow: $left $top $scatter $size $color;
+    -webkit-box-shadow: $left $top $scatter $size $color;
+    -o-box-shadow: $left $top $scatter $size $color;
+    box-shadow: $left $top $scatter $size $color;
+}
+
+@mixin box-shadow-disabled(){
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    -o-box-shadow: none;
+    box-shadow: none;
+}
+
+@mixin transition($property, $time) {
+    -webkit-transition: $property $time;
+    -moz-transition: $property $time;
+    transition: $property $time;
+}

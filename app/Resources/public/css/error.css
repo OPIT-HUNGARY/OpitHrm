@@ -1,0 +1,8 @@
+/*  Created on : Jan 23, 2014, 1:03:45 PM Author     : OPIT\NOTES
+*/
+/*  Created on : Nov 27, 2013, 4:37:04 PM Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+*/
+#content { width: 500px; margin: 4em auto; }
+#content .block-exception { background-color: #ebebeb; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -ms-border-radius: 5px; -o-border-radius: 5px; border-radius: 5px; }
+#content .header { margin-bottom: 2em; }
+#content .header #siteLogo { float: none; margin: 0; }

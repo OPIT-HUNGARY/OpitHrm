@@ -53,7 +53,6 @@
           return $spinner.remove();
         }).fail(function(data) {
           var $changeState;
-          console.log(travelExpenseId);
           $spinner.remove();
           $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]');
           $changeState.removeClass('dropdown-disabled');

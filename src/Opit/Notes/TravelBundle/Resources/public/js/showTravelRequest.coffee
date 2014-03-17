@@ -1,6 +1,9 @@
+# Where addClass called twice first addClass contains selector(s) and second the actual styles
+
 addFormDeleteButton = ->
     $deleteButton = $('<div>').html '<i class="fa fa-minus-square"></i>Delete'
     $deleteButton.addClass 'deleteFormFieldsetChild formFieldsetButton'
+    $deleteButton.addClass 'form-fieldset-delete-button'
     $deleteButton.click ->
         $(@).parent().remove()
     return $deleteButton
@@ -34,13 +37,13 @@ compareDays = () ->
     # when the difference day between the departure and arrival dates is negative value
     # and there are no any filled up accommodations then this validation will not run.
     if diffDays > 0 and accomodationDays > diffDays
-        if $accomodationWrapper.children('label.custom-error').length is 0
-            $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'custom-error'
+        if $accomodationWrapper.children('label.error-label').length is 0
+            $errorMessage = $('<label>').html('Total accomodation duration can not exceed travel request duration.').addClass 'error'
             $accomodationWrapper.prepend '<br />'
             $accomodationWrapper.prepend $errorMessage
         return false
     else
-        $accomodationWrapper.children('label.custom-error').remove()
+        $accomodationWrapper.children('label.error-label').remove()
         $accomodationWrapper.children('br').remove()
         return true
 
@@ -83,6 +86,7 @@ $('label.required').each ->
     return
     
 generalData = $('<div>').addClass 'formFieldset generalFormFieldset'
+generalData.addClass 'padding-bottom-5 margin-top-20 margin-bottom-20'
 generalData.append($('#travelRequest_user_ac,
                       #travelRequest_departure_date,
                       #travelRequest_arrival_date,
@@ -92,32 +96,39 @@ generalData.append($('#travelRequest_user_ac,
 $('#travelRequest').prepend generalData
 
 #add team manager and general manager to formFieldset
-requiredApprovals = $('<div>').addClass 'formFieldset marginLeft'
-requiredApprovals.append $('<h3>').html('Required approvals')
+requiredApprovals = $('<div>').addClass 'formFieldset'
+requiredApprovals.addClass 'padding-bottom-5 margin-top-20 margin-bottom-20'
+requiredApprovals.append $('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em').html 'Required approvals'
 $div = $('<div>')
+$div.addClass 'margin-left-1-em'
 $div.append $('#travelRequest_team_manager_ac').parent()
 $div.append $('#travelRequest_general_manager_ac').parent()
 requiredApprovals.append $div
 $('#travelRequest_general_manager').after requiredApprovals
 
 #add form fieldset class to travelRequest_destinations and travelRequest_accomodations for easier formatting
-$('#travelRequest_destinations').parent().addClass 'formFieldset'
-$('#travelRequest_accomodations').parent().addClass 'formFieldset'
+$destinationParent = $('#travelRequest_destinations').parent()
+$destinationParent.addClass 'formFieldset'
+$destinationParent.addClass 'padding-bottom-5 margin-top-20 margin-bottom-20'
+
+$accomodationParent = $('#travelRequest_accomodations').parent()
+$accomodationParent.addClass 'formFieldset'
+$accomodationParent.addClass 'padding-bottom-5 margin-top-20 margin-bottom-20'
 
 #set elements to be inlined
 $('#travelRequest_departure_date, #travelRequest_arrival_date,
    #travelRequest_customer_related, #travelRequest_customer_name,
-   #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass 'inlineElements'
+   #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
 
 #add br tag to break inline
 $('#travelRequest_arrival_date').parent().after('<br />')
 
 #change label tags to h3 tags
 accomodationsLabel = $('#travelRequest_accomodations').parent().children 'label'
-accomodationsLabel.replaceWith('<h3>'+accomodationsLabel.html()+'</h3>')
+accomodationsLabel.replaceWith('<h3 class="background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em">'+accomodationsLabel.html()+'</h3>')
 
 destinationsLabel = $('#travelRequest_destinations').parent().children 'label'
-destinationsLabel.replaceWith('<h3>'+destinationsLabel.html()+'</h3>')
+destinationsLabel.replaceWith('<h3 class="background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em">'+destinationsLabel.html()+'</h3>')
 
 #check if accomodation or destination was set
 #if there are more input type text fields than one some data was sent
@@ -125,15 +136,26 @@ travelRequestDestinations0 = $('#travelRequest_destinations_0')
 if $('#travelRequest_destinations :input[type=text]').length > 1
     $('#travelRequest_destinations').children().each ->
         $(@).addClass 'formFieldsetChild'
+        $(@).addClass 'padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
         $(@).children().remove 'label'
         $(@).append addFormDeleteButton
+        
+        $currency = $(@).find('.currency')
+        $cost = $(@).find('.cost')
+        $cost.parent().append $currency       
+        
 #if there is only one input type text field check if it has got any value
 else
     if $('#travelRequest_destinations :input[type=text]').val() is ""
         travelRequestDestinations0.parent().remove()
     else
         travelRequestDestinations0.parent().addClass 'formFieldsetChild'
+        travelRequestDestinations0.parent().addClass 'padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
         travelRequestDestinations0.parent().append addFormDeleteButton
+        
+        $currency = travelRequestDestinations0.find('.currency')
+        $cost = travelRequestDestinations0.find('.cost')
+        $cost.parent().append $currency        
 
 travelRequestAccomodations0 = $('#travelRequest_accomodations_0')
 if $('#travelRequest_accomodations :input[type=text]').length > 2
@@ -141,8 +163,13 @@ if $('#travelRequest_accomodations :input[type=text]').length > 2
         numberOfNightsListener($(@))
         
         $(@).addClass 'formFieldsetChild'
+        $(@).addClass 'padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
         $(@).children().remove 'label'
         $(@).append addFormDeleteButton
+        
+        $currency = $(@).find('.currency')
+        $cost = $(@).find('.cost')
+        $cost.parent().append $currency       
 else
     if $('#travelRequest_accomodations :input[type=text]').val() is ""
         travelRequestAccomodations0.parent().remove()
@@ -150,7 +177,12 @@ else
         numberOfNightsListener(travelRequestAccomodations0.parent())
         
         travelRequestAccomodations0.parent().addClass 'formFieldsetChild'
+        travelRequestAccomodations0.parent().addClass 'padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
         travelRequestAccomodations0.parent().append addFormDeleteButton
+        
+        $currency = travelRequestAccomodations0.find('.currency')
+        $cost = travelRequestAccomodations0.find('.cost')
+        $cost.parent().append $currency       
 
 #check customer related value
 travelCustomer = $('#travelRequest_customer_name')
@@ -193,7 +225,11 @@ $('#travelRequest_general_manager_ac').autocomplete
         return
 
 #for adding new destination form
-$addDestination = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add destination</div>')
+$addDestination = $('<div>')
+$addDestination.html '<i class="fa fa-plus-square"></i>Add destination'
+$addDestination.addClass 'addFormFieldsetChild formFieldsetButton'
+$addDestination.addClass 'form-fieldset-add-button'
+
 $destinationCollection = $('#travelRequest_destinations').append $addDestination
 $destinationCollection.data 'index', $destinationCollection.find(':input').length
 $addDestination.click (e) ->
@@ -202,7 +238,11 @@ $addDestination.click (e) ->
     return
  
 #for adding new accomodation form 
-$addAccomodation = $('<div class="addFormFieldsetChild formFieldsetButton"><i class="fa fa-plus-square"></i>Add accomodation</div>')
+$addAccomodation = $('<div>')
+$addAccomodation.html '<i class="fa fa-plus-square"></i>Add accomodation'
+$addAccomodation.addClass 'addFormFieldsetChild formFieldsetButton'
+$addAccomodation.addClass 'form-fieldset-add-button'
+
 $accomodationCollection = $('#travelRequest_accomodations').append $addAccomodation
 $accomodationCollection.data 'index', $accomodationCollection.find(':input').length
 $addAccomodation.click (e) ->
@@ -219,12 +259,19 @@ addForm = ($collectionHolder, $addButton, addListener) ->
     $newForm = $(newForm)
     $newForm = $newForm.append addFormDeleteButton
     $newForm.addClass 'formFieldsetChild'
+    $newForm.addClass 'padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
 
     # add change event listener to number of nights on newly created accomodation
     if addListener
         numberOfNightsListener($newForm)
 
+    $currency = $newForm.find('.currency')
+    $cost = $newForm.find('.cost')
+
     $newForm.find('.currency option[value=EUR]').attr('selected','selected')
+    
+    $cost.parent().append $currency
+    
     $collectionHolder.data 'index', index+1
     $addButton.before $newForm
 
@@ -305,4 +352,8 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
         .fail () ->
             $('<div></div>').html('The travel request could not be saved due to an error.').dialog
                 title: 'Error'
+    else
+        $('.hasDatepicker').each ->
+            if $(@).hasClass 'error'
+                $(@).parent().find('.fa-calendar').addClass 'margin-top-12'
     return

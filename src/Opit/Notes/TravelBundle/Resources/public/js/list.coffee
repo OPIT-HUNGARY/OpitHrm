@@ -14,3 +14,6 @@ $(document).ready ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'
     $('#travel_list').on 'click', '.fa-sort', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'
+        
+    $('#travel_list').on 'click', '.trip-purpose', ->
+        $(@).toggleClass 'text-show-all'

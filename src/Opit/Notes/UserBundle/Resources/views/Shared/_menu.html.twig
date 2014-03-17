@@ -1,6 +1,6 @@
 {# must return the controller name #}
 {% set module = splitText(app.request.attributes.get('_route'), '_', 1) %}
-<nav class="menu">
+<nav class="menu float-left">
     <div>
     {% if is_granted('ROLE_ADMIN') %}
     <div class="mainMenu{{ (module == 'admin') ? ' active' : '' }}">
@@ -45,4 +45,4 @@
         </div>
     </div>
 </nav>
-<nav class="menu"></nav>
+<nav class="menu float-left"></nav>

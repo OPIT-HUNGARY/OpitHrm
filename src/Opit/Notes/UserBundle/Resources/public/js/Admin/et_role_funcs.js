@@ -9,7 +9,8 @@
   showRoleDialog = function(id, name, description, url, title, flashMessage) {
     var selfDialog;
     $('#dialog-edititem h2').html(title);
-    $('.description').html(description);
+    $('#dialog-edititem h2').addClass('dialog-h2');
+    $('.dialog-description').html(description);
     selfDialog = $('<div>');
     selfDialog.html($("#" + valueForm).html());
     selfDialog.find("#" + valueField).val(name);

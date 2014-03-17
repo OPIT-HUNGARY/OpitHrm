@@ -1,26 +1,26 @@
 <form class="delete-checkbox-form">
-<table id="list-table">
+<table id="list-table" class="width-100">
     <tr>
         <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
         <th>
             <i class="fa fa-sort default-right" data-field="id"></i>
-            <span class="order-text">ID</span>
+            <span class="order-text cursor-pointer">ID</span>
         </th>
         <th>
             <i class="fa fa-sort default-right" data-field="user"></i>
-            <span class="order-text">Employee Name</span>
+            <span class="order-text cursor-pointer">Employee Name</span>
         </th>
         <th>
             <i class="fa fa-sort default-right" data-field="departureDate"></i>
-            <span class="order-text">Departure date</span>
+            <span class="order-text cursor-pointer">Departure date</span>
         </th>
         <th>
             <i class="fa fa-sort default-right" data-field="arrivalDate"></i>
-            <span class="order-text">Arrival date</span>
+            <span class="order-text cursor-pointer">Arrival date</span>
         </th>
         <th>
             <i class="fa fa-sort default-right" data-field="customerName"></i>
-            <span class="order-text">Customer name</span>
+            <span class="order-text cursor-pointer">Trip purpose</span>
         </th>
         <th>Travel request status</th>
         <th>Actions</th>
@@ -30,11 +30,11 @@
     {# check if travel request needs to be shown #}
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
-        <td class="clickable" data-tr-id="{{ travelRequest.id }}">{{ travelRequest.travelRequestId }}</td>
+        <td class="clickable text-decoration-underline cursor-pointer" data-tr-id="{{ travelRequest.id }}">{{ travelRequest.travelRequestId }}</td>
         <td>{{ travelRequest.user.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
-        <td>{{ travelRequest.customerName }}</td>
+        <td class="text-overflow-ellipsis overflow-hidden white-space-nowrap max-width-150 pointer trip-purpose cursor-pointer">{{ travelRequest.tripPurpose }}</td>
         <td>
             {# loop through all statuses and display them in a dropdown #}
             <select class="changeState{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} dropdown-disabled{% endif %}" data-tr="{{ travelRequest.id }}"{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} disabled="disabled"{% endif %}>

@@ -1,73 +1,27 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
     Created on : Nov 28, 2013, 4:00:11 PM
     Author     : OPIT\Notes
 */
 
-@import '_defaults';
-@import '_travelForm';
-
-#travelRequest{
-    display:none;
-}
+@import './app/Resources/public/css/_defaults.scss';
 
 #travelRequest, .travelForm{
-    label{
-        display:block;
-    }
-    
-    .formFieldset{
-        margin:20px 0 20px 0;
-        
-        >div{
-            margin-top:5px;
-            margin-bottom:5px;
-        }
-    }
-    
-    .marginLeft{
-        .inlineElements{
-            margin-left:1em;
-            margin-right:0;
-        }
-    }    
-    
     .generalFormFieldset{
         padding:10px;
     }
     
-    input.error, select.error{
-        border:solid 2px $defaultRed;
-        display:inline-block;
-    }
-    
-    label.error, label.custom-error{
-        color:$defaultRed;
-        background-color:$lightGrayHover;
-        padding:2px;
-        border:solid 2px $defaultRed;
+    .error-label{
         margin-top:5px;
         display:inline-block;
         z-index:4;
-        margin: 0 0 0 4px;
-        @include border-radius(5px);
     }
     
-    label.custom-error{
-        display:inline-block;
-        margin-bottom:10px;
-        margin-left: 1em;
-    }
-    
-    label.valid{
-        display:none !important;
-    }
-}
+    .formFieldset{
+        margin:20px 0 20px 0;
 
-h1{
-    margin-top:0;
+        >div{
+            margin-top:2px;
+            margin-bottom:2px;
+        }
+    }    
 }

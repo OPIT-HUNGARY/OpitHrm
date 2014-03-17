@@ -1,11 +1,11 @@
-<section id="searchFormWrapper">
-    <h3 id="searchFormTitle">
-        <i class="fa fa-chevron-up default-right"></i>
+<section id="searchFormWrapper" class="margin-bottom-20 padding-10 border-radius-5">
+    <h3 id="searchFormTitle" class="margin-0">
+        <i class="fa fa-chevron-up default-right cursor-pointer float-right color-grey border-radius-5 padding-4 font-weight-normal"></i>
         Search Options
     </h3>
     
     <form id="searchForm" method="post" action="{{ path('OpitNotesUserBundle_user_list') }}">
-        <div id="searchFormProperties">
+        <div id="searchFormProperties" class="padding-10">
             <div class="searchProperty">
                 <label for="search_username">Username</label>
                 <input type="text" name="search[username]" id="search_username" />

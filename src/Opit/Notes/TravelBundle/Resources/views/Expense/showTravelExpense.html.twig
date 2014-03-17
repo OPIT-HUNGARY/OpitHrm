@@ -31,9 +31,8 @@
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelExpense.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
 {% endblock %}        
         
 {% block body %}
@@ -41,16 +40,16 @@
     <h1>Add travel expense</h1>
     {% else %}
     <h1>
-        <i class="fa fa-book pointer float-right travel-status-history" data-id="{{ travelExpense.travelRequest.id }}"></i>
+        <i class="fa fa-book pointer float-right travel-status-history margin-top-10 margin-right-10 visibility-hidden cursor-pointer" data-id="{{ travelExpense.travelRequest.id }}"></i>
         Edit travel expense
     </h1>
     {% endif %}
     
     {% set dropdownIsDisabled = (travelExpenseStates|length == 1) %}
-    <div id="changeStateWrapper">
-        <h3>Change status:</h3>
-        {% if isStatusLocked == 0 %}
-        <select data-te="{{ travelExpense.id }}" class="changeState {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}>
+    <div id="changeStateWrapper" class="display-block">
+        <h3 class="display-inline-block margin-top-0">Change status:</h3>
+        {% if isStatusLocked == '0' %}
+        <select data-tr="{{ travelExpense.id }}" class="changeState display-inline-block {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}">
             {% for key, value in travelExpenseStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}
@@ -60,12 +59,12 @@
             <option>{{ travelExpenseStates|first }}</option>
         </select>
         {% endif %}
-    </div>
+    </div>    
 
     <h3>
         Travel request [<span id="travelRequestPreview" class="red-text pointer" title="Show travel request details" data-tr-id='{{ app.request.get('trId') }}'>{{ trId }}</span>], Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
     </h3>
-    <div class="modal-description default-border-radius">
+    <div class="dialog-description default-border-radius">
         Travel expense can be added or edited from here.
     </div>
     

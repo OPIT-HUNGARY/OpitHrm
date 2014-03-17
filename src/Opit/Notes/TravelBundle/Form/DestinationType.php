@@ -48,13 +48,13 @@ class DestinationType extends AbstractType
         
         $builder->add('cost', 'integer', array(
             'attr' => array(
-                'class' => 'width-55 float-left',
+                'class' => 'cost display-inline-block-important width-80',
                 'placeholder' => 'Cost',
                 'min' => '1'
             )
         ));
         $builder->add('currency', 'entity', array('attr' => array(
-                'class' => 'currency width-40 float-right'
+                'class' => 'currency display-inline-block margin-left-5'
             ),
             'label' => false,
             'class' => 'OpitNotesCurrencyRateBundle:Currency',

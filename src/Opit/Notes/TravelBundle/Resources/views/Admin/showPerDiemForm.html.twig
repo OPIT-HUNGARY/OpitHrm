@@ -1,7 +1,7 @@
 {% if index is null %}
     {% set index = '__index__' %}
 {% endif %}
-<div class='formFieldsetChild'>
+<div class='formFieldsetChild padding-10 margin-right-1-em margin-bottom-1-em display-inline-block vertical-align-top'>
     {{ form_row(form.id, {'id': 'perdiem'~index~'id', 'full_name': 'perdiem['~index~'][id]'}) }}
     {{ form_row(form.hours, {'id': 'perdiem'~index~'hours', 'full_name': 'perdiem['~index~'][hours]' }) }}
     {{ form_row(form.amount, { 'id': 'perdiem'~index~'amount', 'full_name': 'perdiem['~index~'][amount]'}) }}
@@ -12,7 +12,7 @@
                                }
                 ) }}
     <div class='deleteFormFieldsetChild formFieldsetButton no-pointer'>
-        <span class='deletePerDiem pointer'>
+        <span class='deletePerDiem deleteFormFieldsetChild formFieldsetButton form-fieldset-delete-button'>
             <i class='fa fa-minus-square'></i>
             Delete
         </span>

@@ -6,14 +6,14 @@
         </ul>
     </div>
     <div id="dialog-edititem">
-        <h2></h2>
-        <div class="description default-border-radius"></div>
-        <div class="modalwindow">
+        <h2 class="dialog-h2"></h2>
+        <div class="dialog-description"></div>
+        <div class="modalwindow width-98 default-border height-auto overflow-hidden">
             <div class="wdith-medium">
-                <div class="vertical-align-top item-input-box-header height-20">
+                <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-orange bold padding-4">
                     <label class="margin-top-2 inlineElements" for="expenseType">{{ fieldLabel }}: </label>
                 </div>
-                <div class="vertical-align-top item-input-box height-60">
+                <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
                     <input class="inlineElements {{ fieldName }}Field" type="text" id="{{ fieldName }}" name="{{ fieldName }}" placeholder="{{ fieldLabel }}" />
                 </div>
             </div>

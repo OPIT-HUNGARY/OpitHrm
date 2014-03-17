@@ -1,0 +1,84 @@
+/* 
+    Created on : Mar 11, 2014, 11:50:14 AM
+    Author     : OPIT\NOTES
+*/
+
+@import '_defaults';
+
+#list-table{
+    tr:nth-child(even){
+        background-color: $lightGrayColor;
+    }
+    th{
+        i:hover{
+            cursor:pointer;
+        }
+    }
+    a{
+        float:left;
+    }
+    tr {
+        td{
+            .fa-pencil-square-o, .fa-trash-o, .fa-book {
+                font-size:1.3em;
+            }
+        }
+    }
+}
+
+#searchFormWrapper{
+    background-color: $defaultLightColor;
+   
+    h3{
+        font-size: 1.4em;
+        
+        i{
+            font-size: 12px;
+            border: solid 1px $defaultDarkColor;
+        }
+    }
+    
+    #searchFormProperties{
+        
+        .searchProperty{
+            width:15%;
+            margin:5px;
+            display:inline-block;
+
+            input[type="text"], input[type="date"]{
+                width:100%;
+            }
+            
+            label{
+                display:block;
+            }
+        }
+    }
+    
+    #searchFormButtons{
+        margin:10px 0 10px 15px;
+    }
+}
+
+#pager{
+    i:hover{
+        color:$orangeColor;
+    }
+    
+    span{
+        padding:0 5px;
+    }
+    
+    span:hover{
+        color:$orangeColor;
+    }
+    
+    .selected-page{
+        color:$orangeColor;
+        text-decoration:underline;
+    }
+    
+    .selected-page:hover{
+        text-decoration:underline;
+    }
+}

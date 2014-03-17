@@ -11,19 +11,18 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
-        {% block stylesheets %}
         {% stylesheets 
             'css/html5-boilerplate/normalize.css'
-            'css/html5-boilerplate/main.css' 
+            'css/html5-boilerplate/main.css'
+            '../app/Resources/public/css/main.css'
+            '../app/Resources/public/css/general.css'
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
             'libs/tipsy/css/tipsy.css'
             '//code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css'
            output='css/base.css' filter='?yui_css, cssrewrite'%}
             <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
-        {% endblock %}
+        {% block stylesheets %}{% endblock %}
         <script src="{{ asset('js/modernizr/modernizr.2.7.0.js') }}"></script>
     </head>
     <body>
@@ -47,7 +46,8 @@
                 'bundles/fosjsrouting/js/router.js'
                 'libs/tipsy/js/jquery.tipsy.js'
                 'libs/sortElement/js/jquery.sort.js'
-                '../app/Resources/public/js/*.js'
+                '../app/Resources/public/js/main.js'
+                '../app/Resources/public/js/list.js'
                 '@OpitNotesUserBundle/Resources/public/js/main.js'
                 '@OpitNotesTravelBundle/Resources/public/js/main.js'
             output='js/base.js' filter='?yui_js' %}

@@ -1,11 +1,6 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
 /* 
-    Created on : Nov 19, 2013, 12:01:54 PM
-    Author     : OPIT\Notes
+    Created on : Mar 10, 2014, 3:58:27 PM
+    Author     : OPIT\NOTES
 */
 
 @import '_defaults';
@@ -15,78 +10,36 @@ html, body{
     font-size: 13px;
 }
 
-a{
-    text-decoration:underline;
-    color:black;
-    &:visited{
-        color:black;
+table {
+    th {
+        background-color: $orangeColor;
+        padding: 10px 10px 10px 10px;
+        text-align: left;
+        color: white; 
     }
-    &:hover, &:active{
-        color:$orangeColor;
+    td { 
+        padding: 5px 10px 5px 10px;
+    }
+}
+
+table.bordered{
+    width:100%;
+    
+    tr, td, th{
+        border: solid 1px $greyColor;
     }
     
-    > i{
-        text-decoration: none !important;
-        float:right;
-        margin:0 5px 0 0;
+    td:first-child{
+        font-weight: bold;
+        background-color: $formDarkColor;
     }
-}
-
-#main-wrapper {
-    margin: 1.5em;
-}
-
-.no-padding{
-    padding:0;
-}
-
-.button{
-    border:0;
-    margin:0 10px 10px 0;
-    padding:8px 24px 8px 24px;
-    color:black;
-    text-decoration:none;
-    @include border-radius(10px);
-    @include gradient($defaultLightColor, $defaultLightColor, $defaultDarkColor);
-    @include box-shadow(2px, 2px, 2px, 1px, rgba(150, 150, 150, 1));
-
-    i{
-        margin:0 5px 0 0;
+    
+    th, caption{
+        background-color: $orangeColor;
+        color: white;
+        padding: 5px;
+        margin-top: 5px;
     }
-}
-
-.button:hover{
-    background: $defaultDarkColor;
-    box-shadow:0 0 0 0 black;
-    cursor:pointer;
-}
-
-.delete{
-    background: $snowColor;
-    color:$lightGrayColor;
-    @include box-shadow-disabled();
-}
-
-.button-disabled{
-    background: $snowColor;
-    color:$lightGrayHover;
-    @include box-shadow-disabled();
-}
-
-.button-disabled:hover{
-    background: $snowColor;
-    color:$lightGrayHover;
-    @include box-shadow-disabled();
-}
-
-.changeState{
-    width:120px;
-}
-
-.dropdown-disabled{
-    background: $snowColor;
-    color:$lightGrayHover;
-    border:solid 1px $defaultLightColor;
 }
 
 input[type="text"], input[type="date"], input[type="number"], input[type="password"]{
@@ -102,122 +55,65 @@ input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, 
     border:solid 1px $orangeColor;
 }
 
-.formFieldset{
-    background-color: $defaultLightColor;
-    padding:0 0 5px 0;
-    margin:20px 0 20px 0;
-    @include border-radius(5px);
-
-    .formFieldsetChild{
-        background-color: $formDarkColor;
-        padding:10px;
-        margin-left:1em;
-        margin-bottom:1em;
-        display:inline-block;
-        vertical-align: top;            
-        @include border-radius(5px);
-    }
-
-    h3{
-        -webkit-margin-before:0;
-        padding:2px 0 2px 0;
-        padding-left:1em;
-        background-color:$orangeColor;
-        color:white;
-        @include border-top-left-radius(5px);
-        @include border-top-right-radius(5px);
-    }
-
-    .formFieldsetButton{
-        text-decoration:underline;
-        margin-top:5px;
-        vertical-align:bottom;
-        padding:2px;
-
-        i{
-            margin:0 2px 0 0;
-        }            
-    }
-    .formFieldsetButton:hover{
-        cursor:pointer;
-    }        
-
-    .deleteFormFieldsetChild{
-        color:$defaultRed;
-    }
-
-    .addFormFieldsetChild{
-        color:$defaultGreen;
-        margin-left:1em;
-        display:table;
-    }
+select {
+    background-repeat: no-repeat;
+    color: rgb(51, 3, 0);
+    font-size: inherit;
+    padding: 3px;
+    margin: 0;
+    outline: none;
+    border: solid 1px rgb(180, 180, 180);
+    @include gradient-with-percent($snowColor, $darkSnowColor, $darkerSnowColor, 40%);
 }
 
-.inlineElements{
-    display:inline-block !important;
-    vertical-align: top;
-    margin-right: 1em;
-}
-
-.default-right{
-    float: right;
-}
-
-.required:after{
-    content:'*';
-    color:$defaultRed;
+a{
+    text-decoration:underline;
+    color:black;
+    
+    > i{
+        text-decoration: none;
+        float:right;
+        margin:0 5px 0 0;
+    }
 }
 
 #siteLogo{
-    float:left;
-    margin: 0 0 20px 10px;
-    text-decoration:none;
-    color:black;
-
     span:first-child{
         font-size:3.6em;
-        display:block;
         line-height:.8em;
     }
     span:last-of-type{
         font-size:0.8em;
-        color: $orangeColor;
         margin:-10px 0 0 0;
     }
+}
+
+#main-wrapper {
+    margin: 1.5em;
 }
 
 header{
     margin-bottom:100px;
     
     #logoutButton{
-        float:right;
-        color:white;
-        text-decoration:none;
-        background-color:$orangeColor;
         padding:4px 10px 4px 10px;
-        font-weight: bold;
         margin:-20px 10px 0 0;
         @include border-bottom-left-radius(10px);
         @include border-bottom-right-radius(10px);
         
         > i{
-            margin:0;
             float:none;
         }
     }
     
     .header-tab{
-        float:right;
-        text-decoration:none;
         background-color:$lightGrayColor;
         padding:4px 10px 4px 10px;
-        font-weight: bold;
         margin:-20px 10px 0 0;
         @include border-bottom-left-radius(10px);
         @include border-bottom-right-radius(10px);
 
         > i{
-            margin:0;
             float:none;
         }
     }
@@ -230,7 +126,6 @@ header{
          .menu{
             height:40px;
             width:100%; 
-            float:left;
         }
         
          nav:first-child{
@@ -393,10 +288,6 @@ header{
     }
 }
 
-.round-border{
-    @include border-radius(100%);
-}
-
 #notifications{
     position:fixed;
     z-index:100;
@@ -499,51 +390,56 @@ header{
     }
 }
 
-#pager{
-    text-align:center;
-    margin:20px 0;
+input.error, select.error{
+    border:solid 2px $defaultRed;
+    display:inline-block;
+}
+
+label{
+    display:block;
+}
+
+label.error, label.custom-label-error{
+    color:$defaultRed;
+    background-color:$lightGrayHover;
+    padding:2px;
+    border:solid 2px $defaultRed;
+    display:inline-block;
+    z-index:4;
+    margin-top: 5px;
+    margin-left: 5px;
+    @include border-radius(5px);
+}
+
+.input-prefix-position{
+    margin-top: 7px;
+    margin-left: 7px;
+}
+
+.icon-prefix-indent{
+    text-indent: 22px !important;
+}
+
+.item-input-box-header {
+    font-size: $defaultFontSize;
+    width: 92%;
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
+    @include border-top-right-radius(5px);
+    @include border-top-left-radius(5px);
+}
+
+.item-input-box {
+    width: 92%;
+    overflow: auto;
+    background-repeat: no-repeat;
+    color: rgb(51, 3, 0);
+    font-size: inherit;
+    @include gradient-with-percent($snowColor, $darkSnowColor, $darkerSnowColor, 40%);
+    @include box-shadow(0px, 0px, 1px, 3px, rgba(0, 0, 0, 0.1));
+    @include border-bottom-right-radius(5px);
+    @include border-bottom-left-radius(5px);
     
-    i:hover{
-        cursor:pointer;
-        color:$orangeColor;
+    input[type=text], input[type=password] {
+        width: 96%;
     }
-    
-    span{
-        padding:0 5px;
-    }
-    
-    span:hover{
-        cursor:pointer;
-        color:$orangeColor;
-        text-decoration:underline;
-    }
-    
-    .selected-page{
-        color:$orangeColor;
-        text-decoration:underline;
-    }
-}
-
-.color-red{
-    color:rgb(170, 0, 0);
-}
-
-.hover-cursor-pointer:hover{
-    cursor:pointer;
-}
-
-.margin-top-24{
-    margin-top:24px;
-}
-
-.margin-left-0{
-    margin-left:0 !important;
-}
-
-.order-text:hover{
-    cursor:pointer;
-}
-
-.underline{
-    text-decoration: underline;
 }
