@@ -49,7 +49,7 @@
     <div id="changeStateWrapper" class="display-block">
         <h3 class="display-inline-block margin-top-0">Change status:</h3>
         {% if isStatusLocked == '0' %}
-        <select data-tr="{{ travelExpense.id }}" class="changeState display-inline-block {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}">
+        <select data-te="{{ travelExpense.id }}" class="changeState display-inline-block {% if dropdownIsDisabled %}dropdown-disabled{% endif %}" {% if dropdownIsDisabled %}disabled="disabled"{% endif %}">
             {% for key, value in travelExpenseStates %}
             <option value="{{ key }}">{{ value }}</option>
             {% endfor %}

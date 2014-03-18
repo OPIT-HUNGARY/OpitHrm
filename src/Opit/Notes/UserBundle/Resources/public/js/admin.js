@@ -118,11 +118,9 @@
   });
 
   deleteJobTitle = function() {
-    var message, title, url;
-    title = 'Job title delete';
-    message = 'job title(s)';
+    var url;
     url = Routing.generate('OpitNotesUserBundle_admin_delete_jobtitle');
-    return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-jobtitle');
+    return $(document).data('notes').funcs.deleteAction('Job title delete', 'job title(s)', url, '.list-delete-jobtitle');
   };
 
   $('#list-table').on("click", "th .fa-trash-o", function() {

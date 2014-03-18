@@ -23,6 +23,7 @@ $('#resetButton').click ->
         data: 'resetForm': true, 'showList' : 1
     .done (response) ->
         $('#list-table').parent().html response
+        $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
         return
@@ -30,7 +31,8 @@ $('#resetButton').click ->
 
 # method to make search form toggleable
 $('#searchFormTitle').click ->
+    $nextElement = $(@).next()
     # check if toogle animation is running to prevent a new animation
-    if not $(@).next().is(':animated')
+    if not $nextElement.is(':animated')
         $(@).children('i').toggleClass 'fa-chevron-down'
-        $(@).next().slideToggle()
+        $nextElement.slideToggle()

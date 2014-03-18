@@ -1,8 +1,7 @@
 $.extend true, $(document).data('notes'),
     funcs:
         disableStatusDropdown: ($self) ->
-            $spinner = $('<i>')
-            $spinner.addClass 'fa fa-spinner fa-spin'
+            $spinner = $('<i>').addClass 'fa fa-spinner fa-spin'
             $self.parent().append $spinner
             $self.addClass 'dropdown-disabled'
             
@@ -14,15 +13,13 @@ $.extend true, $(document).data('notes'),
             $self.removeClass 'dropdown-disabled'
     
         changeStateDialog: ($dropdown, callback, travelId) ->
-            dialogWidth = 550
-            $spinner = $(document).data('notes').funcs.disableStatusDropdown $dropdown
             $('<div></div>').html("Change the status of travel from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
                 open: ->
                     $('.ui-dialog-title').append '<i class="fa fa-exclamation-triangle"></i> Travel status change'
                 buttons:
                     Yes: ->
                         $(@).dialog 'destroy'
-                        callback $dropdown.val(), travelId, $spinner
+                        callback $dropdown.val(), travelId, $(document).data('notes').funcs.disableStatusDropdown($dropdown)
                     No: ->
                         $(@).dialog 'destroy'
                         $(document).data('notes').funcs.enableStatusDropdown $dropdown
@@ -42,13 +39,13 @@ $.extend true, $(document).data('notes'),
             .fail (data) ->
                 $spinner.remove()
                 $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]')
-                $changeState.removeClass 'dropdown-disabled'
-                $changeState.prop 'selectedIndex', 0
+                                .removeClass('dropdown-disabled')
+                                .prop 'selectedIndex', 0
                 $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'
                     .dialog
                         open: ->
                             $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> An error occurred')
-                        width: dialogWidth
+                        width: 550
                         buttons:
                             Close: ->
                                 $(@).dialog 'destroy'
@@ -56,7 +53,6 @@ $.extend true, $(document).data('notes'),
     
         changeTravelRequestStatus: (statusId, travelRequestId, $spinner) ->
             reloadPage = false
-            dialogWidth = 550
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_request_state'
@@ -67,7 +63,7 @@ $.extend true, $(document).data('notes'),
                         .dialog
                             open: ->
                                 $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
-                            width: dialogWidth
+                            width: 550
                             buttons:
                                 Reload: ->
                                     location.reload()
@@ -81,8 +77,8 @@ $.extend true, $(document).data('notes'),
             .fail (data) ->
                 $spinner.remove()
                 $changeState = $('.changeState[data-tr="' + travelRequestId + '"]')
-                $changeState.removeClass 'dropdown-disabled'
-                $changeState.prop 'selectedIndex', 0
+                                .removeClass('dropdown-disabled')
+                                .prop 'selectedIndex', 0
                 $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'
                     .dialog
                         open: ->
@@ -99,12 +95,11 @@ $.extend true, $(document).data('notes'),
                 url: Routing.generate 'OpitNotesTravelBundle_travel_states_history', mode: mode
                 data: {'id': id}
             .done (data) ->
-                dialogWidth = 550
                 $('<div id="dialog-show-details-tr"></div>').html(data)
                     .dialog
                         open: ->
                             $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
-                        width: dialogWidth
+                        width: 550
                         maxHeight: $(window).outerHeight()-100
                         modal: on
                         buttons:

@@ -4,8 +4,7 @@
     funcs: {
       disableStatusDropdown: function($self) {
         var $spinner;
-        $spinner = $('<i>');
-        $spinner.addClass('fa fa-spinner fa-spin');
+        $spinner = $('<i>').addClass('fa fa-spinner fa-spin');
         $self.parent().append($spinner);
         $self.addClass('dropdown-disabled');
         return $spinner;
@@ -16,9 +15,6 @@
         return $self.removeClass('dropdown-disabled');
       },
       changeStateDialog: function($dropdown, callback, travelId) {
-        var $spinner, dialogWidth;
-        dialogWidth = 550;
-        $spinner = $(document).data('notes').funcs.disableStatusDropdown($dropdown);
         return $('<div></div>').html("Change the status of travel from '" + ($dropdown.find('option:nth-child(1)').text().toLowerCase()) + "' to '" + ($dropdown.find('option:selected').text().toLowerCase()) + "' ?").dialog({
           open: function() {
             return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Travel status change');
@@ -26,7 +22,7 @@
           buttons: {
             Yes: function() {
               $(this).dialog('destroy');
-              return callback($dropdown.val(), travelId, $spinner);
+              return callback($dropdown.val(), travelId, $(document).data('notes').funcs.disableStatusDropdown($dropdown));
             },
             No: function() {
               $(this).dialog('destroy');
@@ -54,14 +50,12 @@
         }).fail(function(data) {
           var $changeState;
           $spinner.remove();
-          $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]');
-          $changeState.removeClass('dropdown-disabled');
-          $changeState.prop('selectedIndex', 0);
+          $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]').removeClass('dropdown-disabled').prop('selectedIndex', 0);
           return $('<div id="dialog-tr-error"></div>').html('Status could not be changed due to an error.').dialog({
             open: function() {
               return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
             },
-            width: dialogWidth,
+            width: 550,
             buttons: {
               Close: function() {
                 $(this).dialog('destroy');
@@ -71,9 +65,8 @@
         });
       },
       changeTravelRequestStatus: function(statusId, travelRequestId, $spinner) {
-        var dialogWidth, reloadPage;
+        var reloadPage;
         reloadPage = false;
-        dialogWidth = 550;
         return $.ajax({
           method: 'POST',
           url: Routing.generate('OpitNotesTravelBundle_request_state'),
@@ -87,7 +80,7 @@
               open: function() {
                 return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed');
               },
-              width: dialogWidth,
+              width: 550,
               buttons: {
                 Reload: function() {
                   location.reload();
@@ -105,9 +98,7 @@
         }).fail(function(data) {
           var $changeState;
           $spinner.remove();
-          $changeState = $('.changeState[data-tr="' + travelRequestId + '"]');
-          $changeState.removeClass('dropdown-disabled');
-          $changeState.prop('selectedIndex', 0);
+          $changeState = $('.changeState[data-tr="' + travelRequestId + '"]').removeClass('dropdown-disabled').prop('selectedIndex', 0);
           return $('<div id="dialog-tr-error"></div>').html('Status could not be changed due to an error.').dialog({
             open: function() {
               return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
@@ -131,13 +122,11 @@
             'id': id
           }
         }).done(function(data) {
-          var dialogWidth;
-          dialogWidth = 550;
           $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
             open: function() {
               return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
             },
-            width: dialogWidth,
+            width: 550,
             maxHeight: $(window).outerHeight() - 100,
             modal: true,
             buttons: {

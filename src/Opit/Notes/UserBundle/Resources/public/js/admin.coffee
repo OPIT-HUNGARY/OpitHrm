@@ -83,10 +83,8 @@ $('#list-table').on "click", ".delete-single-jobtitle", ->
 
 # Call the deleteAction from the app main.js
 deleteJobTitle = () ->  
-    title = 'Job title delete'
-    message = 'job title(s)'
     url = Routing.generate 'OpitNotesUserBundle_admin_delete_jobtitle'
-    $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-jobtitle')
+    $(document).data('notes').funcs.deleteAction('Job title delete', 'job title(s)', url, '.list-delete-jobtitle')
 
 $('#list-table').on "click", "th .fa-trash-o", ->
       $('.list-delete-jobtitle').filter(() -> return not @.disabled).checkAll()

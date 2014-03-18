@@ -33,15 +33,18 @@
       }
     }).done(function(response) {
       $('#list-table').parent().html(response);
+      $(document).data('notes').funcs.initDeleteMultipleListener();
       $(document).data('notes').funcs.initListPageListeners();
       $(document).data('notes').funcs.initPager();
     });
   });
 
   $('#searchFormTitle').click(function() {
-    if (!$(this).next().is(':animated')) {
+    var $nextElement;
+    $nextElement = $(this).next();
+    if (!$nextElement.is(':animated')) {
       $(this).children('i').toggleClass('fa-chevron-down');
-      return $(this).next().slideToggle();
+      return $nextElement.slideToggle();
     }
   });
 

@@ -12,8 +12,8 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
               .dialog
                   open: ->
                     $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Edit User')
-                  width: 750
                   modal: on
+                  width: 600
                   buttons:
                     Save: ->
                       $.ajax
@@ -21,8 +21,8 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                         url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
                         data: $('#adduser_frm').serialize()
                       .done (data)->
-                          offset = $('.selected-page').data('offset')
                           url = Routing.generate 'OpitNotesUserBundle_user_list'
+                          offset = $('.selected-page').data('offset')
                           if url is window.location.pathname
                             response = data
                             $.ajax
@@ -71,7 +71,6 @@ getAllNotifications = ($notificationsWrapper) ->
             .complete ->
                 # if ajax request is completed, remove unread class
                 el.closest('.notification').removeClass 'unread'
-                console.log callback
                 callback() if callback?
                 return
         else
@@ -86,23 +85,21 @@ getAllNotifications = ($notificationsWrapper) ->
         $notificationsWrapper.html data
         # add listener to trash icon
         $('.notification-header-delete i').on 'click', ->
-            self = $(@)
-            notificationId = $(self).data 'id'
+            $self = $(@)
             # if delete icon clicked send an AJAX request to delete notification
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_notification_delete'
-                data: "id" : notificationId
+                data: "id" : $self.data('id')
             .done (data) ->
                 # if item was deleted remove row from wrapper
-                self.closest('.notification').remove()
+                $self.closest('.notification').remove()
         # add listener to message container
         $('.notification-message').on 'click', (event) ->
             # if clicked prevent propagation
             event.stopPropagation()
-            self = $(@)
             # Change notification status
-            changeStatus self
+            changeStatus $(@)
             return
       
         # prevent propagation for details links
@@ -110,10 +107,10 @@ getAllNotifications = ($notificationsWrapper) ->
             # stop event bubbling
             event.preventDefault()
             event.stopPropagation()
-            self = $(@)
+            $self = $(@)
             # Change notification status
-            changeStatus self.parent(), ->
-                window.location.href = self.attr 'href'
+            changeStatus $self.parent(), ->
+                window.location.href = $self.attr 'href'
                 return
             return
                 
@@ -129,9 +126,8 @@ getUnreadNotifications = () ->
     .done (data) ->
         $unreadNotificationsCount = $('#unread-notifications-count')
         $notificationsIcon = $('#notifications i')
-        unreadNotificationCount = $('#unread-notifications').html()
         # if number of unread notifications and data returned from the server are not the same
-        if unreadNotificationCount !=  data
+        if $('#unread-notifications').html() !=  data
             # if returned number of notifications is not zero
             if '0' != data
                 # show number of unread notifications indicator
@@ -168,8 +164,7 @@ $.fn.extend
             $(@).prop 'checked', checkAll
         $(document).data('notes').funcs.changeDeleteButton()
 
-$(document)
-    .ready ->
+$(document).ready ->
         $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()

@@ -17,8 +17,8 @@
             open: function() {
               return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit User');
             },
-            width: 750,
             modal: true,
+            width: 600,
             buttons: {
               Save: function() {
                 return $.ajax({
@@ -29,8 +29,8 @@
                   data: $('#adduser_frm').serialize()
                 }).done(function(data) {
                   var offset, response, url;
-                  offset = $('.selected-page').data('offset');
                   url = Routing.generate('OpitNotesUserBundle_user_list');
+                  offset = $('.selected-page').data('offset');
                   if (url === window.location.pathname) {
                     response = data;
                     $.ajax({
@@ -99,7 +99,6 @@
           }
         }).complete(function() {
           el.closest('.notification').removeClass('unread');
-          console.log(callback);
           if (callback != null) {
             callback();
           }
@@ -116,32 +115,29 @@
     }).done(function(data) {
       $notificationsWrapper.html(data);
       $('.notification-header-delete i').on('click', function() {
-        var notificationId, self;
-        self = $(this);
-        notificationId = $(self).data('id');
+        var $self;
+        $self = $(this);
         return $.ajax({
           method: 'POST',
           url: Routing.generate('OpitNotesTravelBundle_notification_delete'),
           data: {
-            "id": notificationId
+            "id": $self.data('id')
           }
         }).done(function(data) {
-          return self.closest('.notification').remove();
+          return $self.closest('.notification').remove();
         });
       });
       $('.notification-message').on('click', function(event) {
-        var self;
         event.stopPropagation();
-        self = $(this);
-        changeStatus(self);
+        changeStatus($(this));
       });
       $('.notification-details').on('click.notifications', function(event) {
-        var self;
+        var $self;
         event.preventDefault();
         event.stopPropagation();
-        self = $(this);
-        changeStatus(self.parent(), function() {
-          window.location.href = self.attr('href');
+        $self = $(this);
+        changeStatus($self.parent(), function() {
+          window.location.href = $self.attr('href');
         });
       });
       return $notificationsWrapper.removeClass('display-none');
@@ -153,11 +149,10 @@
       method: 'POST',
       url: Routing.generate('OpitNotesTravelBundle_notifications_unread_count')
     }).done(function(data) {
-      var $notificationsIcon, $unreadNotificationsCount, unreadNotificationCount;
+      var $notificationsIcon, $unreadNotificationsCount;
       $unreadNotificationsCount = $('#unread-notifications-count');
       $notificationsIcon = $('#notifications i');
-      unreadNotificationCount = $('#unread-notifications').html();
-      if (unreadNotificationCount !== data) {
+      if ($('#unread-notifications').html() !== data) {
         if ('0' !== data) {
           $unreadNotificationsCount.removeClass('display-none');
           $notificationsIcon.addClass('color-orange');

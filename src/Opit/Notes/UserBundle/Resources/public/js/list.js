@@ -57,28 +57,19 @@
       });
     });
     $('#userlistWrapper').on('click', '.list-username', function() {
-      var id;
-      id = $(this).attr('data-user-id');
-      $(document).data('OpitNotesUserBundle').funcs.userEdit(id, $(document).data('notes').funcs.showAlert);
+      $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).attr('data-user-id'), $(document).data('notes').funcs.showAlert());
     });
     deleteUser = function() {
-      var message, title, url;
-      title = 'User delete';
-      message = 'user(s)';
+      var url;
       url = Routing.generate('OpitNotesUserBundle_user_delete');
-      return $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
+      return $(document).data('notes').funcs.deleteAction('User delete', 'user(s)', url, '.list-delete-user');
     };
     $('#userlistWrapper').on('click', '.delete-single-user', function() {
-      var $checkbox;
-      $checkbox = $(this).closest('tr').find(':checkbox').not('disabled');
-      $checkbox.prop('checked', true);
+      $(this).closest('tr').find(':checkbox').not('disabled').prop('checked', true);
       return deleteUser();
     });
     $('#userlistWrapper').on('click', '.reset-password', function() {
-      var employeeName, userId;
-      employeeName = $(this).closest('tr').find('td:nth-child(4)').html();
-      userId = $(this).data('user-id');
-      return $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + employeeName + "'s</b> password ? The user will be informed about new password via email.").dialog({
+      return $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + ($(this).closest('tr').find('td:nth-child(4)').html()) + "'s</b> password ? The user will be informed about new password via email.").dialog({
         open: function() {
           return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Reset user password');
         },
@@ -92,7 +83,7 @@
               type: 'POST',
               url: Routing.generate('OpitNotesUserBundle_user_password_reset'),
               data: {
-                'id': userId
+                'id': $(this).data('user-id')
               }
             }).done(function(data) {
               return $('#reset-password-dialog').dialog('destroy');

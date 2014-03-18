@@ -7,22 +7,20 @@
   });
 
   showRoleDialog = function(id, name, description, url, title, flashMessage) {
-    var selfDialog;
-    $('#dialog-edititem h2').html(title);
-    $('#dialog-edititem h2').addClass('dialog-h2');
+    var $selfDialog;
+    $('#dialog-edititem h2').html(title).addClass('dialog-h2');
     $('.dialog-description').html(description);
-    selfDialog = $('<div>');
-    selfDialog.html($("#" + valueForm).html());
-    selfDialog.find("#" + valueField).val(name);
-    selfDialog.dialog({
+    $selfDialog = $('<div>').html($("#" + valueForm).html());
+    $selfDialog.find("#" + valueField).val(name);
+    $selfDialog.dialog({
       width: 400,
       modal: true,
       title: title,
       buttons: {
         Create: function() {
           var value;
-          if (selfDialog.find("#" + valueField).val()) {
-            value = selfDialog.find("#" + valueField).val();
+          if ($selfDialog.find("#" + valueField).val()) {
+            value = $selfDialog.find("#" + valueField).val();
             return $.ajax({
               type: 'POST',
               url: Routing.generate(url, {
@@ -38,16 +36,16 @@
                 $('#list-table').replaceWith(data);
                 $(document).data('notes').funcs.showAlert(data, 'create', flashMessage);
               }
-              return selfDialog.dialog('destroy');
+              return $selfDialog.dialog('destroy');
             });
           } else {
-            return selfDialog.find('#reply-message').css({
+            return $selfDialog.find('#reply-message').css({
               display: 'block'
             });
           }
         },
         Close: function() {
-          return selfDialog.dialog('destroy');
+          return $selfDialog.dialog('destroy');
         }
       }
     });
@@ -57,11 +55,10 @@
   };
 
   deleteGroup = function(id, name) {
-    var selfDialog;
+    var $selfDialog;
     if (!!name) {
-      selfDialog = $('<div>');
-      selfDialog.html("Are you sure you want to delete " + propertyName + "(s) \"" + name + "\"?");
-      return selfDialog.dialog({
+      $selfDialog = $('<div>').html("Are you sure you want to delete " + propertyName + "(s) \"" + name + "\"?");
+      return $selfDialog.dialog({
         width: 400,
         modal: true,
         title: "Delete " + propertyName,
@@ -81,13 +78,13 @@
                 return $(document).data('notes').funcs.showAlert(data, 'create', "" + propertyNameCapital + "(s) successfully deleted!");
               }
             });
-            return selfDialog.dialog('destroy');
+            return $selfDialog.dialog('destroy');
           },
           Cancel: function() {
             $('#list-table').find('input:checkbox').each(function() {
               return $(this).attr('checked', false);
             });
-            return selfDialog.dialog('destroy');
+            return $selfDialog.dialog('destroy');
           }
         }
       });
@@ -106,12 +103,10 @@
   });
 
   $('#main-wrapper').on('click', '.remove-group', function() {
-    var id, name, parentTr;
+    var parentTr;
     parentTr = $(this).closest('tr');
-    name = parentTr.children('td:nth-child(3)').html();
-    id = parentTr.children('td:nth-child(2)').html();
     parentTr.find('input').attr('checked', true);
-    return deleteGroup(id, name);
+    return deleteGroup(parentTr.children('td:nth-child(2)').html(), parentTr.children('td:nth-child(3)').html());
   });
 
   $('#delete').on('click', function() {

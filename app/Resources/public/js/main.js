@@ -6,54 +6,6 @@
 
   $.extend(true, $(document).data('notes'), {
     funcs: {
-      clientSideListOrdering: function($self, inverse) {
-        var header, index;
-        header = $self.parent();
-        index = header.index();
-        header.closest('table').find('td').filter(function() {
-          return $(this).index() === index;
-        }).sort(function(a, b) {
-          a = $(a).text();
-          b = $(b).text();
-          if ((isNaN(a) || isNaN(b) ? a > b : +a > +b)) {
-            if (inverse) {
-              return -1;
-            } else {
-              return 1;
-            }
-          } else {
-            if (inverse) {
-              return 1;
-            } else {
-              return -1;
-            }
-          }
-        }, function() {
-          return this.parentNode;
-        });
-        inverse = !inverse;
-        $('#list-table').find('.fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc');
-        $self.removeClass('fa-sort-asc').addClass(inverse ? 'fa-sort-desc' : 'fa-sort-asc');
-        return inverse;
-      },
-      serverSideListOrdering: function($self, dataField, url, toRelplace) {
-        var $form, index, order;
-        index = $self.parent().index();
-        $form = $('#searchFormWrapper').find('form');
-        order = $form.find('#order_dir').val();
-        order = order === 'desc' ? 'asc' : 'desc';
-        $form.find('#order_field').val(dataField);
-        $form.find('#order_dir').val(order);
-        return $.ajax({
-          method: 'POST',
-          url: Routing.generate(url),
-          data: 'showList=1&' + $form.serialize()
-        }).done(function(data) {
-          $('#' + toRelplace).html(data);
-          $(document).data('notes').funcs.initPager();
-          return $('#' + toRelplace).find('th').eq(index).find('i').addClass(order === 'desc' ? 'fa-sort-desc' : 'fa-sort-asc');
-        });
-      },
       deleteSingleRequest: function(type, self) {
         var $checkbox;
         $checkbox = self.closest('tr').find(':checkbox');
@@ -77,6 +29,8 @@
                   title: 'Error'
                 });
               });
+              $(document).data('notes').funcs.initListPageListeners();
+              $(document).data('notes').funcs.initPager();
               $(this).dialog('close');
             },
             No: function() {
@@ -110,6 +64,8 @@
                     title: 'Error'
                   });
                 });
+                $(document).data('notes').funcs.initListPageListeners();
+                $(document).data('notes').funcs.initPager();
                 $(this).dialog('close');
               },
               No: function() {
@@ -161,10 +117,7 @@
         if (redirectAction == null) {
           redirectAction = '';
         }
-        $button = $('<div>');
-        $button.html(text);
-        $button.addClass(classes);
-        $button.attr('id', id);
+        $button = $('<div>').html(text).addClass(classes).attr('id', id);
         if ('' !== redirectAction) {
           $button.on('click', function() {
             return window.location.href = Routing.generate(redirectAction);
@@ -183,9 +136,7 @@
           var $parent, $toggleIcon, self;
           $parent = $(this).find(parent);
           self = $(this);
-          $toggleIcon = $('<i>');
-          $toggleIcon.addClass('fa fa-chevron-up toggle-icon');
-          $toggleIcon.addClass('color-white background-color-orange border-radius-5 cursor-pointer float-right');
+          $toggleIcon = $('<i>').addClass('fa fa-chevron-up toggle-icon').addClass('color-white background-color-orange border-radius-5 cursor-pointer float-right');
           $toggleIcon.on('click', function() {
             var $elementToToggle;
             if ('' !== elementToToggle) {
@@ -202,260 +153,6 @@
             }
           });
           return $parent.append($toggleIcon);
-        });
-      },
-      changeDeleteButton: function(disableInputCheck) {
-        var $deleteButton;
-        if (disableInputCheck == null) {
-          disableInputCheck = false;
-        }
-        $deleteButton = $('#delete');
-        $deleteButton.attr('disabled', 'disabled');
-        $deleteButton.addClass('button-disabled');
-        if (disableInputCheck === false) {
-          return $('#list-table tr td input[type=checkbox]').each(function() {
-            if ($(this).prop('checked')) {
-              $deleteButton.removeClass('button-disabled');
-              $deleteButton.removeAttr('disabled');
-              return false;
-            }
-          });
-        }
-      },
-      initDeleteMultipleListener: function() {
-        var $deleteButton;
-        $deleteButton = $('#delete');
-        $deleteButton.attr('disabled', 'disabled');
-        $deleteButton.addClass('button-disabled');
-        $deleteButton.removeClass('delete');
-        return $('#list-table input[type="checkbox"]').on('change', function() {
-          return $(document).data('notes').funcs.changeDeleteButton();
-        });
-      },
-      initListPageListeners: function() {
-        $('.status-history').click(function(event) {
-          event.preventDefault();
-          return $.ajax({
-            method: 'POST',
-            url: Routing.generate('OpitNotesTravelBundle_travel_states_history'),
-            data: {
-              'id': $(this).find('.fa-book').data('id')
-            }
-          }).done(function(data) {
-            var dialogWidth;
-            dialogWidth = 550;
-            $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
-              open: function() {
-                return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
-              },
-              width: dialogWidth,
-              maxHeight: $(window).outerHeight() - 100,
-              modal: true,
-              buttons: {
-                Close: function() {
-                  $('#dialog-show-details-tr').dialog('destroy');
-                }
-              }
-            });
-          });
-        });
-        $('#travel_list #list-table').on('click', '.clickable', function() {
-          var $changeState, firstStatusId, travelRequestId;
-          $changeState = $(this).closest('tr').find('.changeState');
-          travelRequestId = $(this).attr('data-tr-id');
-          firstStatusId = $(this).parent().find('option:first-child').val();
-          $.ajax({
-            method: 'POST',
-            url: Routing.generate('OpitNotesTravelBundle_travel_show_details'),
-            data: {
-              'id': travelRequestId
-            }
-          }).done(function(data) {
-            var dialogWidth;
-            dialogWidth = 550;
-            $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
-              open: function() {
-                return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
-              },
-              width: dialogWidth,
-              maxHeight: $(window).outerHeight() - 100,
-              modal: true
-            }, firstStatusId === '1' || firstStatusId === '3' ? {
-              buttons: {
-                'Send for approval': function() {
-                  $changeState.addClass('dropdown-disabled');
-                  $(document).data('notes').funcs.changeTravelStatus(2, travelRequestId);
-                  return $('#dialog-show-details-tr').dialog('destroy');
-                },
-                Close: function() {
-                  $('#dialog-show-details-tr').dialog('destroy');
-                }
-              }
-            } : {
-              buttons: {
-                Close: function() {
-                  $('#dialog-show-details-tr').dialog('destroy');
-                }
-              }
-            });
-          });
-        });
-        $('.icon-disabled').on('click', function(event) {
-          return event.preventDefault();
-        });
-        $('#list-table th .fa-trash-o').click(function() {
-          $('.deleteMultipleTravelRequest').checkAll();
-          return $('.deleteMultipleTravelExpense').checkAll();
-        });
-        $('#list-table .deleteSingeTravelRequest').click(function(event) {
-          event.preventDefault();
-          return $(document).data('notes').funcs.deleteSingleRequest('request', $(this));
-        });
-        return $('#delete').click(function() {
-          var checkBoxClass, errorText, message, selectedTravelRequestRow, title, travelRequests, url, warningMessage;
-          if ($('#userlistWrapper').length === 1) {
-            title = 'User delete';
-            message = 'user(s)';
-            url = Routing.generate('OpitNotesUserBundle_user_delete');
-            $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user');
-            return false;
-          } else if ($('#travel_list').length === 1) {
-            warningMessage = 'Are you sure you want to delete the selected travel requests?';
-            checkBoxClass = '.deleteMultipleTravelRequest';
-            url = Routing.generate('OpitNotesTravelBundle_travel_delete');
-            title = 'Travel request removal';
-            errorText = 'The travel request could not be deleted due to an error.';
-          } else {
-            return false;
-          }
-          travelRequests = [];
-          selectedTravelRequestRow = [];
-          $(checkBoxClass).each(function() {
-            if ($(this).is(':checked')) {
-              travelRequests.push($(this).val());
-              return selectedTravelRequestRow.push($(this).parent().parent());
-            }
-          });
-          $('<div></div>').html(warningMessage).dialog({
-            title: title,
-            buttons: {
-              Yes: function() {
-                $.ajax({
-                  method: 'POST',
-                  url: url,
-                  data: {
-                    'id': travelRequests
-                  }
-                }).done(function(data) {
-                  $(selectedTravelRequestRow).each(function() {
-                    return $(this).remove();
-                  });
-                }).fail(function() {
-                  return $('<div></div>').html(errorText).dialog({
-                    title: 'Error'
-                  });
-                });
-                $(this).dialog('close');
-              },
-              No: function() {
-                $(this).dialog('close');
-              }
-            },
-            close: function() {
-              $(this).dialog('destroy');
-            }
-          });
-        });
-      },
-      initPager: function() {
-        var maxVisiblepages, newSelectedPage, requestUrl, selectedPageOffset, totalNumberOfPages;
-        selectedPageOffset = $('#pager').data('offset');
-        maxVisiblepages = $('#pager').data('max');
-        newSelectedPage = $('#pager').find('[data-offset="' + selectedPageOffset + '"]');
-        newSelectedPage.addClass('selected-page');
-        totalNumberOfPages = $('#pager').data('pages');
-        requestUrl = $('#pager').data('url');
-        if (selectedPageOffset === totalNumberOfPages) {
-          $('.fa-caret-right').addClass('visibility-hidden');
-        }
-        if (selectedPageOffset === 1) {
-          $('.fa-caret-left').addClass('visibility-hidden');
-        }
-        if (totalNumberOfPages < maxVisiblepages) {
-          $('.fa-caret-left').addClass('visibility-hidden');
-          $('.fa-caret-right').addClass('visibility-hidden');
-        }
-        $('#pager').on('mousedown', 'span', function(event) {
-          var $form, offset, requestData, self;
-          self = $(this);
-          offset = $(this).data('offset');
-          $form = $('#searchFormWrapper').find('form');
-          requestData = "offset=" + (offset - 1);
-          if ($form.formIsEmpty() === true) {
-            requestData = requestData + '&' + $form.serialize();
-          }
-          return $.ajax({
-            method: 'POST',
-            url: requestUrl,
-            data: requestData
-          }).done(function(data) {
-            if (data.indexOf('error') < 0) {
-              $('#list-table').parent().replaceWith(data);
-              $(document).data('notes').funcs.initListPageListeners();
-              return $(document).data('notes').funcs.initPager();
-            }
-          });
-        });
-        return $('#pager i').on('mousedown', function(event) {
-          var $form, $selectedPage, offset, requestData, self;
-          self = $(this);
-          $selectedPage = $('.selected-page');
-          if ($(this).hasClass('fa-caret-left')) {
-            offset = selectedPageOffset - 1;
-          } else if ($(this).hasClass('fa-caret-right')) {
-            offset = selectedPageOffset + 1;
-          }
-          $form = $('#searchFormWrapper').find('form');
-          requestData = "offset=" + (offset - 1);
-          if ($form.formIsEmpty() === true) {
-            requestData = requestData + '&' + $form.serialize();
-          }
-          return $.ajax({
-            method: 'POST',
-            url: requestUrl,
-            data: requestData
-          }).done(function(data) {
-            var $newPagerItem, $pager, max, num, pages, _i, _ref;
-            $selectedPage.removeClass('selected-page');
-            $('#pager span').each(function() {
-              return $(this).removeClass('selected-page');
-            });
-            $pager = $('#pager');
-            $('#list-table').parent().replaceWith(data);
-            offset = $('#pager').data('offset');
-            pages = $('#pager').data('pages');
-            max = $('#pager').data('max');
-            if (offset > max) {
-              if (self.hasClass('fa-caret-right')) {
-                $('#pager span').remove();
-                for (num = _i = 0, _ref = max - 1; 0 <= _ref ? _i <= _ref : _i >= _ref; num = 0 <= _ref ? ++_i : --_i) {
-                  $newPagerItem = $('<span>');
-                  $newPagerItem.html(offset - num);
-                  $newPagerItem.attr('data-offset', offset - num);
-                  $newPagerItem.insertAfter($('#pager .fa-caret-left'));
-                }
-              }
-              if (self.hasClass('fa-caret-left')) {
-                if (offset < $('#pager').first().data('offset')) {
-                  return false;
-                } else {
-                  $('#pager').html($pager.html());
-                }
-              }
-            }
-            $(document).data('notes').funcs.initListPageListeners();
-            return $(document).data('notes').funcs.initPager();
-          });
         });
       }
     }

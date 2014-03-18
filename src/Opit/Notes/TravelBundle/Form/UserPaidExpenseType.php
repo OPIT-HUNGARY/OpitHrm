@@ -44,13 +44,13 @@ class UserPaidExpenseType extends AbstractType
         $builder->add('amount', 'integer', array(
             'label' => 'Amount',
             'attr' => array(
-                'class' => 'amount display-inline-block-important width-80',
+                'class' => 'amount amount-listen display-inline-block-important width-80',
                 'placeholder' => 'Amount',
                 'min' => '1',
                 )
         ));
         $builder->add('currency', 'entity', array('attr' => array(
-                'class' => 'currency display-inline-block margin-left-5'
+                'class' => 'currency currency-listen display-inline-block margin-left-5'
             ),
             'label' => false,
             'class' => 'OpitNotesCurrencyRateBundle:Currency',

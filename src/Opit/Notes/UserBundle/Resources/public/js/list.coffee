@@ -40,27 +40,21 @@ $(document).ready ->
         return
 
     $('#userlistWrapper').on 'click', '.list-username', ->
-        id = $(@).attr 'data-user-id'
-        $(document).data('OpitNotesUserBundle').funcs.userEdit id, $(document).data('notes').funcs.showAlert
+        $(document).data('OpitNotesUserBundle').funcs.userEdit($(@).attr('data-user-id'), $(document).data('notes').funcs.showAlert())
         return
 
     deleteUser = () ->
-      title = 'User delete'
-      message = 'user(s)'
       url = Routing.generate 'OpitNotesUserBundle_user_delete'
-      return $(document).data('notes').funcs.deleteAction title, message, url, '.list-delete-user'
+      return $(document).data('notes').funcs.deleteAction 'User delete', 'user(s)', url, '.list-delete-user'
 
     # Delete icon in the table row
     $('#userlistWrapper').on 'click', '.delete-single-user', ->
-        $checkbox = $(@).closest('tr').find(':checkbox').not('disabled')
-        $checkbox.prop 'checked', true
+        $(@).closest('tr').find(':checkbox').not('disabled').prop 'checked', true
         deleteUser()
 
     $('#userlistWrapper').on 'click', '.reset-password', ->
-        employeeName = $(@).closest('tr').find('td:nth-child(4)').html()
-        userId = $(@).data 'user-id'
         $('<div id="reset-password-dialog"></div>').html(
-            "Are you sure you want to reset <b class='underline'>#{ employeeName }'s</b> password ?
+            "Are you sure you want to reset <b class='underline'>#{ $(@).closest('tr').find('td:nth-child(4)').html() }'s</b> password ?
             The user will be informed about new password via email."
         )
             .dialog
@@ -75,7 +69,7 @@ $(document).ready ->
                         global: false
                         type: 'POST'
                         url: Routing.generate 'OpitNotesUserBundle_user_password_reset'
-                        data: 'id': userId
+                        data: 'id': $(@).data('user-id')
                     .done (data)->
                         $('#reset-password-dialog').dialog 'destroy'
                     .fail (data) ->
