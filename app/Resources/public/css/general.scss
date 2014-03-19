@@ -350,6 +350,13 @@ header{
     margin:inherit;
     overflow-y:auto;
     
+    .notification-type-title{
+        color: white;
+        font-weight: bold;
+        background-color: $boxShadowColor;
+        padding: 2px 3px;
+    }
+    
     .notification{
         width:100%;
         color:black;
@@ -364,12 +371,12 @@ header{
                 float:right;
                 margin:0 10px 0 0;
                 
-                i{
+                .fa-trash-o{
                     font-size:1.1em;
                     color:black;
                 }
                 
-                i:hover{
+                .fa-trash-o:hover{
                     cursor:pointer;
                     color:$orangeColor;
                 }
@@ -378,6 +385,10 @@ header{
 
         .notification-message{
             padding:3px 0 3px 3px;
+            
+            .notification-details:hover{
+                color: $orangeColor;
+            }
         }  
     }
     

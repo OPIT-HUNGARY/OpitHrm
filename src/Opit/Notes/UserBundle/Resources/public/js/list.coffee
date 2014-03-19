@@ -40,7 +40,7 @@ $(document).ready ->
         return
 
     $('#userlistWrapper').on 'click', '.list-username', ->
-        $(document).data('OpitNotesUserBundle').funcs.userEdit($(@).attr('data-user-id'), $(document).data('notes').funcs.showAlert())
+        $(document).data('OpitNotesUserBundle').funcs.userEdit($(@).attr('data-user-id'), $(document).data('notes').funcs.showAlert)
         return
 
     deleteUser = () ->

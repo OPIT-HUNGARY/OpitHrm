@@ -12,7 +12,7 @@
   cursor: pointer; }
 #list-table a {
   float: left; }
-#list-table tr td .fa-pencil-square-o, #list-table tr td .fa-trash-o, #list-table tr td .fa-book {
+#list-table tr td .fa-pencil-square-o, #list-table tr td .fa-trash-o, #list-table tr td .fa-book, #list-table tr td .fa-list-alt {
   font-size: 1.3em; }
 
 #searchFormWrapper {

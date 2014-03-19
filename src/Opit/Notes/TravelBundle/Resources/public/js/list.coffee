@@ -40,7 +40,6 @@ $(document).ready ->
             if firstStatusId is '1' or firstStatusId is '3'
                 buttons:
                   'Send for approval': ->
-                     $changeState.addClass 'dropdown-disabled'
                      $(document).data('notes').funcs.changeTravelRequestStatus 2, travelRequestId
                      $('#dialog-show-details-tr').dialog 'destroy'
                   Close: ->

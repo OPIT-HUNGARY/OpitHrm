@@ -1,5 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/updateStatus.css'
     output='css/notes_status.css' filter='?yui_css,cssrewrite' %}
@@ -7,13 +8,11 @@
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-<div class="align-center">
-    <a href="{{ path('OpitNotesTravelBundle_travel_list') }}" id="siteLogo" class="clearfix">
-        <span>NOTES</span>
-        <span>New OPIT Travel Expense System</span>
-        <div class="clear"></div>
+<div class="align-center margin-bottom-10">
+    <a href="{{ path('OpitNotesTravelBundle_travel_list') }}" id="siteLogo" class="clearfix text-decoration-none">
+        <span class="color-black align-center display-block">NOTES</span>
+        <span class="color-orange align-center">New OPIT Travel Expense System</span>
     </a>
-    <div class="clear"></div>
 </div>
 <div id="travelStatus">
 {% if 'post' == method %}

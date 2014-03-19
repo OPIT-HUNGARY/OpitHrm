@@ -13,7 +13,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                   open: ->
                     $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Edit User')
                   modal: on
-                  width: 600
+                  width: 710
                   buttons:
                     Save: ->
                       $.ajax

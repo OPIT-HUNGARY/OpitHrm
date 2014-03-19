@@ -348,6 +348,11 @@ header {
   z-index: 100;
   margin: inherit;
   overflow-y: auto; }
+  #notifications-wrapper .notification-type-title {
+    color: white;
+    font-weight: bold;
+    background-color: #a0a0a0;
+    padding: 2px 3px; }
   #notifications-wrapper .notification {
     width: 100%;
     color: black;
@@ -359,14 +364,16 @@ header {
       #notifications-wrapper .notification .notification-header .notification-header-delete {
         float: right;
         margin: 0 10px 0 0; }
-        #notifications-wrapper .notification .notification-header .notification-header-delete i {
+        #notifications-wrapper .notification .notification-header .notification-header-delete .fa-trash-o {
           font-size: 1.1em;
           color: black; }
-        #notifications-wrapper .notification .notification-header .notification-header-delete i:hover {
+        #notifications-wrapper .notification .notification-header .notification-header-delete .fa-trash-o:hover {
           cursor: pointer;
           color: #f28c38; }
     #notifications-wrapper .notification .notification-message {
       padding: 3px 0 3px 3px; }
+      #notifications-wrapper .notification .notification-message .notification-details:hover {
+        color: #f28c38; }
   #notifications-wrapper .notification:last-child {
     border-bottom: none; }
   #notifications-wrapper .unread {

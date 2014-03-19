@@ -52,7 +52,6 @@
         }, firstStatusId === '1' || firstStatusId === '3' ? {
           buttons: {
             'Send for approval': function() {
-              $changeState.addClass('dropdown-disabled');
               $(document).data('notes').funcs.changeTravelRequestStatus(2, travelRequestId);
               return $('#dialog-show-details-tr').dialog('destroy');
             },
@@ -69,7 +68,7 @@
         });
       });
     });
-    $('.print-view').on('click', function(event) {
+    $('#main-wrapper').on('click', '.print-view', function(event) {
       var win;
       event.preventDefault();
       win = window.open($(this).attr('href'), '_blank');

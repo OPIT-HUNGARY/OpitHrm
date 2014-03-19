@@ -79,10 +79,10 @@
                         {% endif %}
                     {% endset %}
                     {% set actionIcons %}
-                        <span class="list-username clickable text-decoration-none edit-group" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
+                        <span class="list-username clickable text-decoration-none edit-group cursor-pointer" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
                            <i class="fa fa-pencil-square-o"></i>
                         </span>
-                        <span class="delete-single-user clickable text-decoration-none remove-group" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
+                        <span class="delete-single-user clickable text-decoration-none remove-group cursor-pointer" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
                            <i class="fa fa-trash-o"></i>
                         </span>
                     {% endset %}
@@ -99,14 +99,14 @@
                             {{ actionIcons }}
                         {% endif %}
                     {% elseif  attribute(value, 'username') is defined %}
-                        <span class="reset-password clickable text-decoration-none" data-user-id="{{ key }}" title="Reset password">
+                        <span class="reset-password clickable text-decoration-none cursor-pointer" data-user-id="{{ key }}" title="Reset password">
                             <i class="fa fa-undo"></i>
                         </span>
-                        <span class="list-username clickable text-decoration-none edit-group" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
+                        <span class="list-username clickable text-decoration-none edit-group cursor-pointer" data-user-id="{{ key }}" title="Edit {{ title|trim }}">
                             <i class="fa fa-pencil-square-o"></i>
                         </span>
                         {% if key != app.user.id %}
-                            <span class="delete-single-user clickable text-decoration-none remove-group" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
+                            <span class="delete-single-user clickable text-decoration-none remove-group cursor-pointer" data-user-id="{{ key }}" title="Delete {{ title|trim }}">
                                 <i class="fa fa-trash-o"></i>
                              </span>
                         {% endif %}

@@ -39,13 +39,11 @@
             {% endif %}
             </td>
             <td>
-                {% if is_granted('ROLE_ADMIN')%}
-                    {% if 'false' == disabledJobTitle %}
-                    <a href="#" data-id="{{ jobTitle.id }}" class="delete-single-jobtitle" title="Delete job title"><i class="fa fa-trash-o"></i></a>
-                    {% else %}
-                        <span class="float-left width-15-fix">&nbsp;</span>
-                    {% endif %}
-                    <a href="#" class="list-jobtitle" data-id="{{ jobTitle.id }}" title="Edit job title"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" class="list-jobtitle" data-id="{{ jobTitle.id }}" title="Edit job title"><i class="fa fa-pencil-square-o"></i></a>
+                {% if 'false' == disabledJobTitle %}
+                <a href="#" data-id="{{ jobTitle.id }}" class="delete-single-jobtitle" title="Delete job title"><i class="fa fa-trash-o"></i></a>
+                {% else %}
+                    <span class="float-left width-15-fix">&nbsp;</span>
                 {% endif %}
             </td>
         </tr>

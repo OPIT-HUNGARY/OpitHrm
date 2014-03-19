@@ -65,7 +65,12 @@
         });
       },
       changeTravelRequestStatus: function(statusId, travelRequestId, $spinner) {
-        var reloadPage;
+        var $dropDown, $row, reloadPage;
+        if ($spinner === void 0) {
+          $row = $('tr').find("[data-tr-id=" + travelRequestId + "]");
+          $dropDown = $row.closest('tr').find('.changeState');
+          $spinner = $(document).data('notes').funcs.disableStatusDropdown($dropDown);
+        }
         reloadPage = false;
         return $.ajax({
           method: 'POST',

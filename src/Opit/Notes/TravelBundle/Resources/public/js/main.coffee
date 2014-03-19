@@ -52,6 +52,10 @@ $.extend true, $(document).data('notes'),
                                 return
     
         changeTravelRequestStatus: (statusId, travelRequestId, $spinner) ->
+            if $spinner is undefined
+                $row = $('tr').find("[data-tr-id=#{ travelRequestId }]")
+                $dropDown = $row.closest('tr').find '.changeState'
+                $spinner = $(document).data('notes').funcs.disableStatusDropdown($dropDown)
             reloadPage = false
             $.ajax
                 method: 'POST'

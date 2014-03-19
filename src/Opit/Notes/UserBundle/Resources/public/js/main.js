@@ -18,7 +18,7 @@
               return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit User');
             },
             modal: true,
-            width: 600,
+            width: 710,
             buttons: {
               Save: function() {
                 return $.ajax({

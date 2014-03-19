@@ -57,7 +57,7 @@
       });
     });
     $('#userlistWrapper').on('click', '.list-username', function() {
-      $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).attr('data-user-id'), $(document).data('notes').funcs.showAlert());
+      $(document).data('OpitNotesUserBundle').funcs.userEdit($(this).attr('data-user-id'), $(document).data('notes').funcs.showAlert);
     });
     deleteUser = function() {
       var url;
