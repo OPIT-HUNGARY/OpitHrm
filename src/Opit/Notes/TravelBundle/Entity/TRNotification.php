@@ -39,12 +39,12 @@ class TRNotification extends Notification
     protected $read;
     
    /**
-    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User",inversedBy="notifications")
+    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User", inversedBy="notifications")
     */
     protected $receiver;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelRequest")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelRequest", inversedBy="notifications")
      * @ORM\JoinColumn(name="tr_id", referencedColumnName="id")
      */
     protected $travelRequest;

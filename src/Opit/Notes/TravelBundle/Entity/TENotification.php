@@ -39,12 +39,12 @@ class TENotification extends Notification
     protected $read;
     
    /**
-    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User",inversedBy="notifications")
+    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User", inversedBy="notifications")
     */
     protected $receiver;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelExpense", inversedBy="notifications")
      * @ORM\JoinColumn(name="te_id", referencedColumnName="id")
      */
     protected $travelExpense;
