@@ -8,11 +8,7 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts
-        '@OpitNotesUserBundle/Resources/public/js/login.js'
-    output='js/login.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>
-    {% endjavascripts %}
+    <script type="text/javascript" src="/bundles/opitnotesuser/js/login.js" ></script>
 {% endblock %}            
             
 {% block body %}
