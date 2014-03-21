@@ -55,6 +55,6 @@ class CurrencyFixtures extends AbstractDataFixture
      */
     protected function getEnvironments()
     {
-        return array('dev', 'prod');
+        return array('dev', 'prod', 'test');
     }
 }

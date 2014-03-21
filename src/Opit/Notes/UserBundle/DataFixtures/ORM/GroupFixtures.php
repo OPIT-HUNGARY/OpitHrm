@@ -91,6 +91,6 @@ class GroupFixtures extends AbstractDataFixture
      */    
     protected function getEnvironments()
     {
-        return array('prod', 'dev');
+        return array('prod', 'dev', 'test');
     }    
 }

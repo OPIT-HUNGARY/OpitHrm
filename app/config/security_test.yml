@@ -1,0 +1,5 @@
+security:
+    firewalls:
+        secured_area:
+            http_basic: true
+            stateless: false

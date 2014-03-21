@@ -95,10 +95,10 @@ class ExchangeRateService implements ExchangeRateInterface
         if ($originCode === $destinationCode) {
             return $value;
         }
-        
+
         // If destinationCode is HUF then the rate will be 1
         if ('HUF' === strtoupper($destinationCode)) {
-            $destinationRate = $this->hufRate;
+            $destinationRate = $this->getHufRate();
         } else {
             $destinationRate = $this->getRateOfCurrency($destinationCode, $datetime);
         }
@@ -152,7 +152,7 @@ class ExchangeRateService implements ExchangeRateInterface
      * Set the currency rates
      * 
      * <code>
-     * $exhcangeRates = array(
+     * $exchangeRates = array(
      *     'CHF' => array(
      *         '2014-01-20' => 244.46,
      *         '2014-01-21' => 245.14,
@@ -163,15 +163,15 @@ class ExchangeRateService implements ExchangeRateInterface
      *     ),
      *   );
      * </code>
-     * @param array $exhcangeRates
+     * @param array $exchangeRates
      */
-    public function setExchangeRates(array $exhcangeRates)
+    public function setExchangeRates(array $exchangeRates)
     {
         $this->logger->info(sprintf('[|%s] Starting set exchange rates by manually.', Utils::getClassBasename($this)));
         $currencyRates = array();
         // get the exist currency codes.
         $currencyCodes = $this->em->getRepository('OpitNotesCurrencyRateBundle:Currency')->getAllCurrencyCodes();
-        foreach ($exhcangeRates as $currencyCode => $dates) {
+        foreach ($exchangeRates as $currencyCode => $dates) {
             
             // if the currency code exist then go forward else skip out it.
             if (in_array($currencyCode, $currencyCodes)) {
@@ -288,7 +288,7 @@ class ExchangeRateService implements ExchangeRateInterface
         );
         
         $this->setExchangeRates($currencyRates);
-        
+
         return $this->currencyRates;
     }
     
@@ -381,7 +381,7 @@ class ExchangeRateService implements ExchangeRateInterface
     }
     
     /**
-     *  Save exchange rates.
+     * Save exchange rates.
      * 
      * @return false if saving didn't happen because of the rates are empty
      */
@@ -528,16 +528,6 @@ class ExchangeRateService implements ExchangeRateInterface
      */
     private function validateOptions($options)
     {
-        // if the paramter is missing in the argument list.
-        if (!isset($options)) {
-            $this->logger->error(
-                sprintf('[|%s] Parameter is missing in the argument list.', Utils::getClassBasename($this))
-            );
-            throw new MissingMandatoryParametersException(
-                'The parameter is missing in the argument list!'
-            );
-        }
-        
         // if the startDate is not setted or it is empty then throw exception
         if (!isset($options['startDate']) || empty($options['startDate'])) {
             $this->logger->error(

@@ -1,5 +1,6 @@
 imports:
     - { resource: config_dev.yml }
+    - { resource: security_test.yml }
 
 framework:
     test: ~
@@ -14,3 +15,16 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+parameters:
+    auth_username: admin
+    auth_password: admin
+    
+doctrine:
+    dbal:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   'notes_test'
+        user:     %database_user%
+        password: %database_password%

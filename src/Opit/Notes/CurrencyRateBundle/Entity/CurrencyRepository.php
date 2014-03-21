@@ -22,11 +22,10 @@ class CurrencyRepository extends EntityRepository
     {
         $result = array();
         
-        $qb = $this->createQueryBuilder('c')->select('c.code');
-        $q = $qb->getQuery();
+        $currencies = $this->findAll();
         
-        foreach ($q->getArrayResult() as $arr) {
-            $result[] = $arr['code'];
+        foreach ($currencies as $currency) {
+            $result[] = $currency->getCode();
         }
         
         return $result;
