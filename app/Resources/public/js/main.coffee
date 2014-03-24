@@ -180,8 +180,8 @@ if not Modernizr.inputtypes.date
     $('input[type=date]').each ->
         name = $(@).attr 'name'
         id = $(@).attr('id')
-        $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
-        $(@).datepicker {altField:'#altDate'+id, altFormat: 'yy-mm-dd'}
+        $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val())) + '" />'
+        $(@).datepicker {altField:'#altDate'+id, altFormat: $.datepicker.ISO_8601}
         
 $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)

@@ -240,7 +240,7 @@
   };
 
   addNewForm = function(collectionHolder, parent) {
-    var $datePicker, $formFieldsetChild, $selectedExpense, id, index, newForm, prototype;
+    var $formFieldsetChild, $selectedExpense, index, newForm, prototype;
     index = collectionHolder.data('index');
     prototype = collectionHolder.data('prototype');
     prototype = prototype.replace('<label class="required">__name__label__</label>', '');
@@ -258,15 +258,6 @@
     $formFieldsetChild.find('.amount-listen, .currency-listen').on('change', function() {
       return calculateAdvancesPayback();
     });
-    if (!Modernizr.inputtypes.date) {
-      $datePicker = $formFieldsetChild.find('input[type=date]');
-      id = $datePicker.attr('id');
-      $datePicker.after('<input type="hidden" name="' + $datePicker.attr('name') + '" id="altDate' + id + '" />');
-      $datePicker.datepicker({
-        altField: '#altDate' + id,
-        altFormat: 'yy-mm-dd'
-      });
-    }
     return parent.find('.addFormFieldsetChild').before($formFieldsetChild);
   };
 
@@ -297,14 +288,14 @@
   };
 
   calculatePerDiem = function(departureDate, arrivalDate) {
-    var arrival, arrivalHour, arrivalMinute, departure, departureHour, departureMinute;
-    departureHour = $('#travelExpense_departureDateTime_time_hour').val();
-    departureMinute = $('#travelExpense_departureDateTime_time_minute').val();
-    arrivalHour = $('#travelExpense_arrivalDateTime_time_hour').val();
-    arrivalMinute = $('#travelExpense_arrivalDateTime_time_minute').val();
-    departure = new Date("" + departureDate + " " + departureHour + ":" + departureMinute);
-    arrival = new Date("" + arrivalDate + " " + arrivalHour + ":" + arrivalMinute);
-    if (arrival > departure) {
+    var arrival, arrivalObj, arrivalPrefix, departure, departureObj, departurePrefix;
+    departurePrefix = '#travelExpense_departureDateTime_time_';
+    arrivalPrefix = '#travelExpense_arrivalDateTime_time_';
+    departure = "" + departureDate + " " + ($(departurePrefix + 'hour').val()) + ":" + ($(departurePrefix + 'minute').val());
+    departureObj = new Date(departure);
+    arrival = "" + arrivalDate + " " + ($(arrivalPrefix + 'hour').val()) + ":" + ($(arrivalPrefix + 'minute').val());
+    arrivalObj = new Date(arrival);
+    if (arrivalObj > departureObj) {
       return $.ajax({
         method: 'POST',
         url: Routing.generate('OpitNotesTravelBundle_expense_perdiem'),

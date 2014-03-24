@@ -260,13 +260,6 @@ addNewForm = (collectionHolder, parent) ->
     
     $formFieldsetChild.find('.amount-listen, .currency-listen').on 'change', ->
         calculateAdvancesPayback()
-    
-    # for browsers that do not support input type date
-    if not Modernizr.inputtypes.date
-        $datePicker = $formFieldsetChild.find 'input[type=date]'
-        id = $datePicker.attr 'id'
-        $datePicker.after '<input type="hidden" name="' + $datePicker.attr('name') + '" id="altDate'+id+'" />'
-        $datePicker.datepicker {altField:'#altDate'+id, altFormat: 'yy-mm-dd'}
 
     parent.find('.addFormFieldsetChild').before $formFieldsetChild
     
@@ -296,13 +289,13 @@ convertCurrency = (originCode, destinationCode, value) ->
         return curConverter.convertCurrency(originCode, destinationCode, value).toFixed(2)
     
 calculatePerDiem = (departureDate, arrivalDate) ->
-    departureHour = $('#travelExpense_departureDateTime_time_hour').val()
-    departureMinute = $('#travelExpense_departureDateTime_time_minute').val()
-    arrivalHour = $('#travelExpense_arrivalDateTime_time_hour').val()
-    arrivalMinute = $('#travelExpense_arrivalDateTime_time_minute').val()
-    departure = new Date "#{ departureDate } #{ departureHour }:#{ departureMinute }"
-    arrival = new Date "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
-    if arrival > departure
+    departurePrefix = '#travelExpense_departureDateTime_time_'
+    arrivalPrefix = '#travelExpense_arrivalDateTime_time_'
+    departure = "#{ departureDate } #{ $(departurePrefix + 'hour').val() }:#{ $(departurePrefix + 'minute').val() }"
+    departureObj = new Date departure
+    arrival = "#{ arrivalDate } #{ $(arrivalPrefix + 'hour').val() }:#{ $(arrivalPrefix + 'minute').val() }"
+    arrivalObj = new Date arrival
+    if arrivalObj > departureObj
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitNotesTravelBundle_expense_perdiem'

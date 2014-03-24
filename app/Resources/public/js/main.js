@@ -201,10 +201,10 @@
       var id, name;
       name = $(this).attr('name');
       id = $(this).attr('id');
-      $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" />');
+      $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(this).val())) + '" />');
       return $(this).datepicker({
         altField: '#altDate' + id,
-        altFormat: 'yy-mm-dd'
+        altFormat: $.datepicker.ISO_8601
       });
     });
   }

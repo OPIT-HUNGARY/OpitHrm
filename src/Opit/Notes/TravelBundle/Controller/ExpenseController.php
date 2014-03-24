@@ -292,6 +292,8 @@ class ExpenseController extends Controller
                 array()
             );
         }
+        
+        return new JsonResponse();
     }
     
     /**
