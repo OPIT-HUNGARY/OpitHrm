@@ -15,5 +15,14 @@ class DefaultController extends Controller
     public function indexAction()
     {
         return $this->forward('OpitNotesUserBundle:Security:login');
-    }   
+    }
+    
+    /**
+     * @Route("/secured/notes/versions", name="OpitNotesUserBundle_default_versions")
+     * @Template()
+     */
+    public function versionsAction()
+    {
+        return array();
+    }
 }
