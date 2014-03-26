@@ -42,10 +42,10 @@ createDeleteButton = ->
     return $deleteButton
 
 createDeleteExpenseButton = ($parent) ->
-    $deleteButton = $('<i>').addClass 'fa fa-minus-square color-red hover-cursor-pointer margin-top-24'
+    $deleteButton = $('<i>').addClass 'fa fa-minus-square color-red cursor-pointer margin-top-24'
     $deleteButton.on 'click', ->
         $(@).closest('.advances-received').remove()
-        setAvailableCurrencies()
+        setAvailableCurrencies(true)
         calculateAdvancesPayback()
         
     $parent.append($('<div>').addClass('display-inline-block vertical-align-top margin-right-1-em').append($deleteButton))
@@ -161,7 +161,7 @@ setAvailableCurrencies = (doSplice) ->
     
     if $('.te-advances-received-currency').length > 0
         $('.te-advances-received-currency').each ->
-            selectedCurrencies.push($(@).find('option:selected').val())
+            selectedCurrencies.push $(@).find('option:selected').val()
 
         # loop though selected currencies
         selectedCurrencies.forEach (selectedCurrency) ->

@@ -64,7 +64,7 @@ class PDFManager
         $pdf->SetMargins($this->marginLeft, $this->marginTop, $this->marginRight);
         $pdf->SetAutoPageBreak($autoPageBreak, $this->marginBottom);
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetFont('', '', $fontSize);
+        $pdf->SetFont('freeserif', '', $fontSize);
         $pdf->setPrintHeader($setHeader);
         $pdf->setPrintFooter($setFooter);
         $pdf->AddPage();

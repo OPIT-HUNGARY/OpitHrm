@@ -1,39 +1,81 @@
-/*  Created on : Jan 9, 2014, 3:14:17 PM Author     : OPIT\kaufmann
+/* 
+    Created on : Jan 9, 2014, 3:14:17 PM
+    Author     : OPIT\kaufmann
 */
-/*  Created on : Mar 10, 2014, 10:16:52 AM Author     : OPIT\NOTES
-*/
-.fa-print { float: right; }
+.fa-print {
+  float: right; }
 
-h3 { margin: 0.4em 0 0.4em 0; }
+.bold {
+  font-weight: bold; }
 
-.bordered td { padding: 3.5px; }
+h3 {
+  margin: 0.4em 0 0.4em 0; }
 
-.signiture { display: none; margin: 0 20px 0 0; }
+.bordered td {
+  padding: 3.5px; }
 
-.position-fixed { position: fixed; }
+.signiture {
+  display: none;
+  margin: 0 20px 0 0; }
 
-.fix-right-10 { right: 10px; }
+.position-fixed {
+  position: fixed; }
 
-.fix-right-50 { right: 50px; }
+.fix-right-10 {
+  right: 10px; }
 
-.width-15-percent { width: 15%; }
+.fix-right-50 {
+  right: 50px; }
 
-.icons:hover { cursor: pointer; }
+.width-15-percent {
+  width: 15%; }
 
-.icons { float: right; width: 36px; height: 36px; margin: 0 0 0 5px; }
+.icons:hover {
+  cursor: pointer; }
 
-#opitLogo { width: 100px; height: 23px; display: none; }
+.icons {
+  float: right;
+  width: 36px;
+  height: 36px;
+  margin: 0 0 0 5px; }
 
-.width-265 { width: 265px; }
+#opitLogo {
+  width: 100px;
+  height: 23px;
+  display: none; }
 
-table { width: 550px; border-collapse: collapse; border-spacing: 0; border-color: black; }
-table tr td { border: solid 1px black; }
-table tr .incrementation { width: 20px; min-width: 20px; text-align: center; }
-table .table-title { background-color: lightgrey; padding: 0 0 0 5px; font-weight: bold; text-align: left; }
+.width-265 {
+  width: 265px; }
 
-.page-break-after { page-break-after: always; }
+table {
+  width: 550px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-color: black; }
+  table tr td {
+    border: solid 1px black; }
+  table tr .incrementation {
+    width: 20px;
+    min-width: 20px;
+    text-align: center; }
+  table .table-title {
+    background-color: lightgrey;
+    padding: 0 0 0 5px;
+    font-weight: bold;
+    text-align: left; }
 
-@media print { .icons { display: none; }
-  .signiture { display: inline-block; }
-  #opitLogo { display: block; }
-  a { display: none; } }
+.page-break-after {
+  page-break-after: always; }
+
+@media print {
+  .icons {
+    display: none; }
+
+  .signiture {
+    display: inline-block; }
+
+  #opitLogo {
+    display: block; }
+
+  a {
+    display: none; } }

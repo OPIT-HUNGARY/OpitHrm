@@ -51,10 +51,10 @@
 
   createDeleteExpenseButton = function($parent) {
     var $deleteButton;
-    $deleteButton = $('<i>').addClass('fa fa-minus-square color-red hover-cursor-pointer margin-top-24');
+    $deleteButton = $('<i>').addClass('fa fa-minus-square color-red cursor-pointer margin-top-24');
     $deleteButton.on('click', function() {
       $(this).closest('.advances-received').remove();
-      setAvailableCurrencies();
+      setAvailableCurrencies(true);
       return calculateAdvancesPayback();
     });
     return $parent.append($('<div>').addClass('display-inline-block vertical-align-top margin-right-1-em').append($deleteButton));
