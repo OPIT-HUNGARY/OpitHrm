@@ -54,7 +54,7 @@
                 {% else %}
                 <td class="background-color-dark-grey bold"></td>
                 {% endif %}
-                <td>{{ advancesReceived.advancesReceived }} {{ advancesReceived.currency.code }}</td>
+                <td>{{ advancesReceived.advancesReceived|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} {{ advancesReceived.currency.code }}</td>
             </tr>
             {% endfor %}
         </table>
@@ -78,7 +78,13 @@
             </tr>
             <tr>
                 <td class="background-color-dark-grey bold">Amount</td>
-                <td>{{ userPaidExpenses.amount ~ ' ' ~ userPaidExpenses.currency.code }}</td>
+                <td>
+                    {% if 'HUF' == userPaidExpenses.currency.code %}
+                        {{ userPaidExpenses.amount|round|number_format(0, '', currencyFormat.thousands_sep) ~ ' ' ~ userPaidExpenses.currency.code }}
+                    {% else %}
+                        {{ userPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) ~ ' ' ~ userPaidExpenses.currency.code }}
+                    {% endif %}
+                </td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="background-color-dark-grey bold">Date</td>
@@ -109,7 +115,13 @@
             </tr>
             <tr>
                 <td class="background-color-dark-grey bold">Amount</td>
-                <td>{{ companyPaidExpenses.amount ~ ' ' ~ companyPaidExpenses.currency.code }}</td>
+                <td>
+                    {% if 'HUF' == companyPaidExpenses.currency.code %}
+                        {{ companyPaidExpenses.amount|round|number_format(0, '', currencyFormat.thousands_sep) ~ ' ' ~ companyPaidExpenses.currency.code }}
+                    {% else %}
+                        {{ companyPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) ~ ' ' ~ companyPaidExpenses.currency.code }}
+                    {% endif %}                    
+                </td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="background-color-dark-grey bold">Date</td>

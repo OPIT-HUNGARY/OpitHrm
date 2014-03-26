@@ -182,7 +182,12 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense();
         }
         
-        return array('travelExpense' => $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense));
+        $currencyCongif = $this->container->getParameter('exchange_rate');
+        
+        return array(
+            'travelExpense' => $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense),
+            'currencyFormat' => $currencyCongif['currency_format']
+        );
     }
     
     /**
@@ -279,11 +284,12 @@ class ExpenseController extends Controller
     {
         $travelExpenseId = $request->attributes->get('id');
         if ('new' !== $travelExpenseId) {
-            $pdfContent = $this->getTravelExpensePage($travelExpenseId);
+            $pdfFileName = 'travel_expense_report.pdf';
+            $pdfContent = $this->getTravelExpensePage($travelExpenseId)->getContent();
             $pdf = $this->get('opit.manager.pdf_manager');
             $pdf->exportToPdf(
                 $pdfContent,
-                'test.pdf',
+                $pdfFileName,
                 'NOTES',
                 'Travel Expense',
                 'Travel Expense details',

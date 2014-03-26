@@ -40,7 +40,7 @@ class TEAdvancesReceivedType extends AbstractType
     {
         $builder->add(
             'advancesReceived',
-            'integer',
+            'number',
             array(
                 'label' => 'Advances received',
                 'attr' => array(

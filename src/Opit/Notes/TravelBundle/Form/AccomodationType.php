@@ -44,10 +44,9 @@ class AccomodationType extends AbstractType
                 'class' => 'number-of-nights'
             )
         ));
-        $builder->add('cost', 'integer', array('attr' => array(
+        $builder->add('cost', 'number', array('attr' => array(
             'class' => 'cost display-inline-block-important width-80',
-            'placeholder' => 'Cost',
-            'min' => '1'
+            'placeholder' => 'Cost'
         )));
         $builder->add('currency', 'entity', array('attr' => array(
                 'class' => 'currency display-inline-block margin-left-5'

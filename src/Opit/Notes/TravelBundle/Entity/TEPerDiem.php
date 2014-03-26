@@ -41,7 +41,7 @@ class TEPerDiem
     /**
      * @var float
      *
-     * @ORM\Column(name="amount", type="float")
+     * @ORM\Column(name="amount", type="decimal", scale=2)
      * @Assert\NotBlank(message="The amount should not be blank.")
      * @Assert\Range(
      *      min = 1,

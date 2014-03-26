@@ -218,24 +218,23 @@
   });
 
   $(document).ajaxError(function(event, request, settings) {
-    var $sessionTimeout;
-    if (window.location.href.indexOf('login') < -1) {
-      if (settings.url.indexOf('unread') > -1) {
-        $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html('Your session has timed out please login again.');
-        return $sessionTimeout.dialog({
-          open: function() {
-            return $('.ui-dialog-title').append('<i class="fa fa-exclamation-circle"></i> Session timeout');
-          },
-          width: 550,
-          maxHeight: $(window).outerHeight() - 100,
-          modal: true,
-          buttons: {
-            Login: function() {
-              return window.location.href = Routing.generate('OpitNotesUserBundle_security_login');
-            }
+    var $sessionTimeout, loginUrl;
+    if (window.location.href.indexOf('login') <= -1 && '403' === request.status) {
+      loginUrl = Routing.generate('OpitNotesUserBundle_security_login');
+      $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html("Your session has timed out please <a href='" + loginUrl + "'>login</a> again.");
+      return $sessionTimeout.dialog({
+        open: function() {
+          return $('.ui-dialog-title').append('<i class="fa fa-exclamation-circle"></i> Session timeout');
+        },
+        width: 550,
+        maxHeight: $(window).outerHeight() - 100,
+        modal: true,
+        buttons: {
+          Login: function() {
+            return window.location.href = loginUrl;
           }
-        });
-      }
+        }
+      });
     }
   });
 

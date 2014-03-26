@@ -13,6 +13,7 @@
         <parameter key="opit.manager.notification_manager.class">Opit\Notes\TravelBundle\Manager\NotificationManager</parameter>
         <parameter key="opit.manager.pdf_manager.class">Opit\Notes\TravelBundle\Manager\PDFManager</parameter>
         <parameter key="opit.security.acl.voter.class">Opit\Notes\TravelBundle\Manager\AclManager</parameter>
+        <parameter key="opit.listener.xml_http_session_expired_listener.class">Opit\Notes\TravelBundle\EventListener\XMLHttpSessionExpiredListener</parameter>
     </parameters>
     <services>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
@@ -50,6 +51,9 @@
         <service id="opit.security.acl.manager" class="%opit.security.acl.voter.class%">
             <argument type="service" id="security.acl.dbal.provider" />
             <argument type="service" id="logger" on-invalid="null" />
+        </service>
+        <service id="opit.listener.xml_http_session_expired_listener" class="%opit.listener.xml_http_session_expired_listener.class%">
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
         </service>
     </services>
 </container>

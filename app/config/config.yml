@@ -96,11 +96,5 @@ opit_notes_currency_rate:
     currency_format:
         decimals:       2
         dec_point:      ','
-        thousands_sep:  '.'
-            
-services:
-    kernel.listener.kernel_response:
-        class: Opit\Notes\TravelBundle\EventListener\NotificationListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+        thousands_sep:  ' '
                 

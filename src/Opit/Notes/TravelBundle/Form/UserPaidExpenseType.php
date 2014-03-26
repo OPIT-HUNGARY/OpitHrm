@@ -41,12 +41,11 @@ class UserPaidExpenseType extends AbstractType
                  return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
             }
         ));
-        $builder->add('amount', 'integer', array(
+        $builder->add('amount', 'number', array(
             'label' => 'Amount',
             'attr' => array(
                 'class' => 'amount amount-listen display-inline-block-important width-80',
-                'placeholder' => 'Amount',
-                'min' => '1',
+                'placeholder' => 'Amount'
                 )
         ));
         $builder->add('currency', 'entity', array('attr' => array(

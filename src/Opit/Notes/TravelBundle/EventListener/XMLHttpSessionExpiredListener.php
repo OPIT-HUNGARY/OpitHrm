@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\HttpKernel;
  *
  * @author OPIT\kaufmann
  */
-class NotificationListener
+class XMLHttpSessionExpiredListener
 {
     public function onKernelResponse(FilterResponseEvent $event)
     {

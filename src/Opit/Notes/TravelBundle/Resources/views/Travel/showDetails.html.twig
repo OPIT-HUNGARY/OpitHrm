@@ -74,7 +74,13 @@
             </tr>
             <tr>
                 <td class="bgGrey bold">Cost</td>
-                <td>{{ dest.cost ~ ' ' ~ dest.currency.code }}</td>
+                <td>
+                    {% if 'HUF' == dest.currency.code %}
+                        {{ dest.cost|round|number_format(0, '', currencyFormat.thousands_sep) ~ ' ' ~ dest.currency.code }}
+                    {% else %}
+                        {{ dest.cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) ~ ' ' ~ dest.currency.code }}
+                    {% endif %}
+                </td>
             </tr>
             <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                 <td class="bgGrey bold">Transportation type</td>
@@ -105,7 +111,13 @@
                 </tr>
                 <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
                     <td class="bgGrey bold">Cost</td>
-                    <td>{{ accom.cost ~ ' ' ~ accom.currency.code }}</td>
+                    <td>
+                        {% if 'HUF' == accom.currency.code %}
+                            {{ accom.cost|round|number_format(0, '', currencyFormat.thousands_sep) ~ ' ' ~ accom.currency.code }}
+                        {% else %}
+                            {{ accom.cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) ~ ' ' ~ accom.currency.code }}
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}            
             </table>
@@ -116,11 +128,11 @@
             <caption class="dialog-table-title">Estimated total costs</caption>
             <tr>
                 <td class="bgGrey bold width-40">HUF</td>
-                <td>{{ estimatedCostsHUF }}</td>
+                <td>{{ estimatedCostsHUF|round|number_format(0, '', currencyFormat.thousands_sep) }}</td>
             </tr>
             <tr>
                 <td class="bgGrey bold width-40">EUR</td>
-                <td>{{ estimatedCostsEUR }}</td>
+                <td>{{ estimatedCostsEUR|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
             </tr>
         </table>
     </div>

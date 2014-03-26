@@ -46,11 +46,10 @@ class DestinationType extends AbstractType
             )
         ));
         
-        $builder->add('cost', 'integer', array(
+        $builder->add('cost', 'number', array(
             'attr' => array(
                 'class' => 'cost display-inline-block-important width-80',
-                'placeholder' => 'Cost',
-                'min' => '1'
+                'placeholder' => 'Cost'
             )
         ));
         $builder->add('currency', 'entity', array('attr' => array(

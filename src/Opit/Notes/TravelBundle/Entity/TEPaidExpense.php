@@ -36,7 +36,7 @@ abstract class TEPaidExpense
     /**
      * @var integer
      *
-     * @ORM\Column(name="amount", type="float")
+     * @ORM\Column(name="amount", type="decimal", scale=2)
      */
     protected $amount;
 

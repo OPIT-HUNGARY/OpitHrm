@@ -116,10 +116,13 @@ class TravelController extends Controller
         $estimatedCosts = $this->get('opit.model.travel_expense')
             ->getTRCosts($travelRequest);
         
+        $currencyCongif = $this->container->getParameter('exchange_rate');
+        
         return array(
             'travelRequest' => $travelRequest,
-            'estimatedCostsEUR' => ceil($estimatedCosts['EUR']),
-            'estimatedCostsHUF' => ceil($estimatedCosts['HUF'])
+            'estimatedCostsEUR' => $estimatedCosts['EUR'],
+            'estimatedCostsHUF' => ceil($estimatedCosts['HUF']),
+            'currencyFormat' => $currencyCongif['currency_format']
         );
     }
     

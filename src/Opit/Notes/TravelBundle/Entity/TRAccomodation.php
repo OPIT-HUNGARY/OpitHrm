@@ -29,9 +29,9 @@ class TRAccomodation
     private $numberOfNights;
 
     /**
-     * @var integer
+     * @var decimal
      *
-     * @ORM\Column(name="cost", type="integer")
+     * @ORM\Column(name="cost", type="decimal", scale=2)
      */
     private $cost;
 

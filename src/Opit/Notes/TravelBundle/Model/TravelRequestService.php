@@ -234,9 +234,9 @@ class TravelRequestService
     public function removeChildNodes(EntityManager $entityManager, TravelRequest $travelRequest, $children)
     {
         foreach ($children as $child) {
-            $getter = ($child instanceof TRDestination) ? 'getDestinations' : 'getAccomodations';
+            $getter = ($child instanceof \Opit\Notes\TravelBundle\Entity\TRDestination) ? 'getDestinations' : 'getAccomodations';
             if (false === $travelRequest->$getter()->contains($child)) {
-                $child->setTravelRequest(null);
+                $child->setTravelRequest();
                 $entityManager->remove($child);
             }
         }

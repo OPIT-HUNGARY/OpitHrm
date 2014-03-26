@@ -249,7 +249,7 @@ class TravelExpenseService
             }
             
             if (null !== $getter && false === $travelExpense->$getter()->contains($child)) {
-                $child->setTravelExpense(null);
+                $child->setTravelExpense();
                 $entityManager->remove($child);
             }
         }

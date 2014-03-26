@@ -34,7 +34,7 @@ class TEAdvancesReceived
     /**
      * @var float
      *
-     * @ORM\Column(name="advances_received", type="float")
+     * @ORM\Column(name="advances_received", type="decimal", scale=2)
      */
     protected $advancesReceived;
     
