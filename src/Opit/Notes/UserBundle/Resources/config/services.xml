@@ -9,6 +9,7 @@
         <parameter key="opit.twig.opit_extension.class">Opit\Notes\UserBundle\Twig\OpitExtension</parameter>
         <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
         <parameter key="opit.model.user.class">Opit\Notes\UserBundle\Model\UserService</parameter>
+        <parameter key="opit.listener.first_login.class">Opit\Notes\UserBundle\EventListener\FirstLoginListener</parameter>
     </parameters>
     <services>
         <service id="opit.twig.opit_extension" class="%opit.twig.opit_extension.class%">
@@ -17,6 +18,11 @@
         <service id="opit.model.user" class="%opit.model.user.class%">
             <argument type="service" id="opit.manager.email_manager" />
             <argument type="service" id="security.encoder_factory" />
+        </service>
+        <service id="opit.listener.first_login" class="%opit.listener.first_login.class%">
+            <argument type="service" id="security.context" />
+            <argument type="service" id="router" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
         </service>
     </services>
 </container>

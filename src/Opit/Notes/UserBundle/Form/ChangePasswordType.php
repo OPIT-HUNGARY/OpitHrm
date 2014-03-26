@@ -25,6 +25,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ChangePasswordType extends AbstractType
 {
+    private $addSubmit;
+    
+    /**
+     * 
+     * @param boolean $addSubmit
+     */
+    public function __construct($addSubmit = false)
+    {
+        $this->addSubmit = $addSubmit;
+    }
+    
     /**
      * Builds a form with given fields.
      *
@@ -35,10 +46,14 @@ class ChangePasswordType extends AbstractType
     {
         $builder->add('password', 'repeated', array(
         'type' => 'password',
-        'first_options' => array('label' => 'New password'),
-        'second_options' => array('label' => 'Confirm'),
+        'first_options' => array('label' => 'New password', 'attr' => array('class' => 'margin-center margin-bottom-10')),
+        'second_options' => array('label' => 'Confirm', 'attr' => array('class' => 'margin-center margin-bottom-10')),
         'invalid_message' => 'Passwords do not match.'
         ));
+        
+        if (true === $this->addSubmit) {
+            $builder->add('change_password', 'submit', array('attr' => array('class' => 'button')));
+        }
     }
     /**
      * Sets the default form options

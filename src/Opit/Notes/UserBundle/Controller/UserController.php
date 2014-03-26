@@ -259,6 +259,40 @@ class UserController extends Controller
             array('form' => $form->createView())
         );
     }
+    
+    /**
+     * Change password on first login action
+     *
+     * @Route("/secured/user/changepassword", name="OpitNotesUserBundle_user_change_password")
+     * @Secure(roles="ROLE_USER")
+     * @Template()
+     */
+    public function changePasswordAction()
+    {
+        $request = $this->getRequest();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        
+        if (!$user->getIsFirstLogin()) {
+            return $this->redirect($this->generateUrl('OpitNotesUserBundle_security_login'));
+        }
+        
+        $form = $this->createForm(new ChangePasswordType(true), $user);
+        
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $user->setIsFirstLogin(0);
+                $this->setUserPassword($user);
+                
+                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+            }
+        }
+        
+        return $this->render(
+            'OpitNotesUserBundle:User:changePasswordForm.html.twig',
+            array('form' => $form->createView())
+        );
+    }
 
     /**
      * Change the password of an exist user.
@@ -271,7 +305,6 @@ class UserController extends Controller
     {
         $result = array('response' => 'error');
         $request = $this->getRequest();
-        $em = $this->getDoctrine()->getManager();
         $statusCode = 200;
 
         $user = $this->getUserObject($request->attributes->get('id'));
@@ -281,21 +314,13 @@ class UserController extends Controller
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
-                $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                $user->setPassword($newPassword);
-                
-                // Save the user.
-                $em->persist($user);
-                $em->flush();
+                $this->setUserPassword($user);
                 $result['response'] = 'success';
             } else {
                 $statusCode = 500;
                 $errors = Utils::getErrorMessages($form);
                 $result['errorMessage'] = $errors;
             }
-            
-            
         }
         
         return new JsonResponse(array($result), $statusCode);
@@ -322,5 +347,22 @@ class UserController extends Controller
         }
        
         return $user;
+    }
+    
+    /**
+     * Set password for the user
+     * 
+     * @param Opit\Notes\UserBundle\Entity\User $user
+     */
+    protected function setUserPassword($user)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $encoder = $this->container->get('security.encoder_factory')->getEncoder($user);
+        $newPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
+        $user->setPassword($newPassword);
+
+        // Save the user.
+        $entityManager->persist($user);
+        $entityManager->flush();
     }
 }
