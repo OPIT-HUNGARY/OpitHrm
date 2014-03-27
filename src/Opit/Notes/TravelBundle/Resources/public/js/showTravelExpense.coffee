@@ -54,10 +54,11 @@ validateAllExpenseDates = ->
     isDateValid = true
     $('.formFieldsetChild').each ->
         expenseDateField = $(@).find('input[type=date]')
-        validateExpenseDate(expenseDateField)
-        if expenseDateField.parent().children('.custom-label-error').length > 0
-            isDateValid = false
-            return
+        if expenseDateField.attr('id').indexOf('userPaidExpenses') > -1
+            validateExpenseDate(expenseDateField)
+            if expenseDateField.parent().children('.custom-label-error').length > 0
+                isDateValid = false
+                return
 
     return isDateValid
 
@@ -260,8 +261,12 @@ addNewForm = (collectionHolder, parent) ->
     
     $formFieldsetChild.find('.amount-listen, .currency-listen').on 'change', ->
         calculateAdvancesPayback()
-
+    
     parent.find('.addFormFieldsetChild').before $formFieldsetChild
+
+    # init datepicker plugin
+    $(document).data('notes').funcs.initDateInputs $formFieldsetChild
+    return
     
 createTableRow = (text, value, rowTitle) ->
     $row = $('<tr>')

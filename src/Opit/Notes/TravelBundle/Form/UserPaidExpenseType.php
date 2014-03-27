@@ -28,7 +28,7 @@ class UserPaidExpenseType extends AbstractType
         $builder->add('date', 'date', array(
             'widget' => 'single_text',
             'label' => 'Date',
-            'attr' => array('placeholder' => 'Date')
+            'attr' => array('placeholder' => 'Date', 'class' => 'display-inline-block-important')
         ));
         $builder->add('expense_type', 'entity', array(
             'class'  => 'OpitNotesTravelBundle:TEExpenseType',

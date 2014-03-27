@@ -66,9 +66,11 @@
     $('.formFieldsetChild').each(function() {
       var expenseDateField;
       expenseDateField = $(this).find('input[type=date]');
-      validateExpenseDate(expenseDateField);
-      if (expenseDateField.parent().children('.custom-label-error').length > 0) {
-        isDateValid = false;
+      if (expenseDateField.attr('id').indexOf('userPaidExpenses') > -1) {
+        validateExpenseDate(expenseDateField);
+        if (expenseDateField.parent().children('.custom-label-error').length > 0) {
+          isDateValid = false;
+        }
       }
     });
     return isDateValid;
@@ -258,7 +260,8 @@
     $formFieldsetChild.find('.amount-listen, .currency-listen').on('change', function() {
       return calculateAdvancesPayback();
     });
-    return parent.find('.addFormFieldsetChild').before($formFieldsetChild);
+    parent.find('.addFormFieldsetChild').before($formFieldsetChild);
+    $(document).data('notes').funcs.initDateInputs($formFieldsetChild);
   };
 
   createTableRow = function(text, value, rowTitle) {

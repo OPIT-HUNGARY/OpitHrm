@@ -6,6 +6,22 @@
 
   $.extend(true, $(document).data('notes'), {
     funcs: {
+      initDateInputs: function($container) {
+        var $dateInputs;
+        $dateInputs = $container ? $container.find('input[type=date]') : $('input[type=date]');
+        if (!Modernizr.inputtypes.date) {
+          return $dateInputs.each(function() {
+            var id, name;
+            name = $(this).attr('name');
+            id = $(this).attr('id');
+            $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(this).val())) + '" />');
+            return $(this).datepicker({
+              altField: '#altDate' + id,
+              altFormat: $.datepicker.ISO_8601
+            });
+          });
+        }
+      },
       deleteSingleRequest: function(type, self) {
         var $checkbox;
         $checkbox = self.closest('tr').find(':checkbox');
@@ -196,19 +212,6 @@
     return $self;
   };
 
-  if (!Modernizr.inputtypes.date) {
-    $('input[type=date]').each(function() {
-      var id, name;
-      name = $(this).attr('name');
-      id = $(this).attr('id');
-      $(this).after('<input type="hidden" name="' + name + '" id="altDate' + id + '" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(this).val())) + '" />');
-      return $(this).datepicker({
-        altField: '#altDate' + id,
-        altFormat: $.datepicker.ISO_8601
-      });
-    });
-  }
-
   $(document).ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
     var id;
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/);
@@ -239,6 +242,7 @@
   });
 
   $(document).ready(function() {
+    $(document).data('notes').funcs.initDateInputs();
     return $('[title]').each(function() {
       return $(this).tipsy();
     });

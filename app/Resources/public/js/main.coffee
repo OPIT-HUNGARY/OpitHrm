@@ -1,6 +1,15 @@
 $(document).data 'notes', {}
 $.extend true, $(document).data('notes'),
     funcs:
+        initDateInputs: ($container) ->
+            $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
+            if not Modernizr.inputtypes.date
+                $dateInputs.each ->
+                    name = $(@).attr 'name'
+                    id = $(@).attr('id')
+                    $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val())) + '" />'
+                    $(@).datepicker {altField:'#altDate'+id, altFormat: $.datepicker.ISO_8601}
+    
         deleteSingleRequest: (type, self) ->
             $checkbox = self.closest('tr').find(':checkbox')
             $checkbox.prop 'checked', true
@@ -174,14 +183,6 @@ $.fn.datepicker = (options) ->
         $self.before defaultOptions.wrapper
         $self.prev().append defaultOptions.indicatorIcon
     return $self
-
-
-if not Modernizr.inputtypes.date
-    $('input[type=date]').each ->
-        name = $(@).attr 'name'
-        id = $(@).attr('id')
-        $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val())) + '" />'
-        $(@).datepicker {altField:'#altDate'+id, altFormat: $.datepicker.ISO_8601}
         
 $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)
@@ -202,5 +203,8 @@ $(document).ajaxError (event, request, settings) ->
                     window.location.href = loginUrl
     
 $(document).ready ->
+    # init date picker plugin
+    $(document).data('notes').funcs.initDateInputs()
+    # init tooltips
     $('[title]').each ->
         $(@).tipsy()
