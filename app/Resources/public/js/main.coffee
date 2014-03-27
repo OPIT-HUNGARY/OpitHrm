@@ -201,7 +201,64 @@ $(document).ajaxError (event, request, settings) ->
             buttons:
                 Login: ->
                     window.location.href = loginUrl
-    
+
+# Secret weather app feature ;)
+$(document).keydown (e) ->
+    # Load weather app on CTRL + w
+    if(e.ctrlKey and e.altKey and e.keyCode == 87)
+        return if $('#weather-dialog').length > 0
+
+        if not $.fn.simpleWeather
+            $.getScript '/libs/simpleWeather/js/jquery.simpleWeather.min.js', (data, textStatus, jqxhr) ->
+                $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', '/libs/simpleWeather/css/simpleWeather.css') );
+
+                loadWeather 'Budapest'
+
+loadWeather = (location, woeid, reinit = false) ->
+    if not reinit
+        $weatherContainer = $('<div id="weather-dialog" />')
+    else
+        $weatherContainer = $('#weather-dialog')
+
+    $.simpleWeather
+        location: location,
+        woeid: woeid,
+        unit: 'c',
+        success: (weather) ->
+            html = "<h2><i class=\"icon-#{weather.code}\"></i>#{weather.temp}&deg;#{weather.units.temp}</h2>
+                <ul>
+                    <li>#{weather.city}, #{weather.region}</li>
+                    <li class=\"currently\">#{weather.currently}</li>
+                    <li>#{weather.wind.direction} #{weather.wind.speed} #{weather.units.speed}</li>
+                </ul>
+                <button class=\"js-geolocation\" style=\"display: none;\">Use Your Location</button>"
+
+            # Create the dialog
+            $weatherContainer.html(html)
+
+            if not reinit
+                $weatherContainer.dialog
+                    width: 550
+                    height: 350
+                    close: ->
+                        $(@).dialog('destroy')
+
+            # Enable geolocation option if available
+            if Modernizr.geolocation
+                # Register location button event
+                $('.js-geolocation').on 'click.weather', ->
+                    navigator.geolocation.getCurrentPosition (position) ->
+                        loadWeather "#{position.coords.latitude},#{position.coords.longitude}", '', true
+                $('.js-geolocation').show()
+            else
+                $('.js-geolocation').off 'click.weather'
+                $('.js-geolocation').hide()
+
+            return
+        error: (error) ->
+            console.log "<p>#{error}</p>"
+            return
+
 $(document).ready ->
     # init date picker plugin
     $(document).data('notes').funcs.initDateInputs()
