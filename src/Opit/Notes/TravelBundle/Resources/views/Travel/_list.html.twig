@@ -93,7 +93,7 @@
                             <i class="fa {% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName) %} fa-pencil-square-o {% else %} fa-list-alt {% endif %}"></i>
                             <span>{% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName) %} Edit {% else %} Preview {% endif %} - {{ teIds[travelRequest.id].statusName }}</span>
                         </a>
-                        {% if teStatus == states['Approved'] %}
+                        {% if teStatus == states['Approved'] or teStatus == states['For Approval'] %}
                         <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[travelRequest.id].id }) }}" class="small-button print-view">
                             <i class="fa fa-print"></i>
                             <span>Print</span>
