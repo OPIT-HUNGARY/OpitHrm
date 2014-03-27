@@ -41,7 +41,7 @@
         <td>{{ travelExpense.bankName }}</td>
     </tr>
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 
 {# Reason for travel #}
 <table>
@@ -54,7 +54,7 @@
         <td colspan="2">{{ travelExpense.travelRequest.tripPurpose }}</td>
     </tr>
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 
 {# Travel dates #}
 <table class="bordered" >
@@ -82,7 +82,7 @@
         <td>{{ travelExpense.arrivalCountry }}</td>
     </tr>
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 
 {# Summarization #}
 <table>
@@ -98,17 +98,17 @@
         {% else %}
         <td class="bgGrey bold"></td>
         {% endif %}
-        <td class="align-right">{{ advancesReceived.advancesReceived }}</td>
-        <td class=" align-right">{{ advancesReceived.currency.code }}</td>
+        <td>{{ advancesReceived.advancesReceived }}</td>
+        <td>{{ advancesReceived.currency.code }}</td>
     </tr>
     {% endfor %}
     <tr>
         <td class="bold">Per Diem in EUR  /  Napidíj EUR-ban</td>
-        <td class="align-right">{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td class=" align-right">EUR</td>
+        <td>{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        <td>EUR</td>
     </tr>
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 
 {# Total amount of expenses #}
 <table class="bordered">
@@ -123,7 +123,7 @@
         {% if '0' != cost %}
             <tr>
             {% if '0' == companyPaidExpensesHasTitle %}
-                <td class="bold width-420">
+                <td class="bold">
                     Expenses paid by company (already paid by OPIT) /<br />
                     Cég által kifizetett költségek (OPIT által kifizetve)
                 </td>
@@ -131,25 +131,25 @@
             {% else %}
             <td></td>
             {% endif %}
-            <td class="width-80 align-right">
+            <td class="white-space-nowrap">
                 {% if 'HUF' == currency %}
                     {{ cost|round|number_format(0, '', currencyFormat.thousands_sep) }}
                 {% else %}
                     {{ cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
                 {% endif %}
             </td>
-            <td class="align-right">{{ currency }}</td>
+            <td>{{ currency }}</td>
             </tr>
         {% endif %}
     {% endfor %}
     {% if '0' == companyPaidExpensesHasTitle %}
         <tr>
-            <td class="bold width-420">
+            <td class="bold">
                 Expenses paid by company (already paid by OPIT)  /<br />
                 Cég által fizetett költségek (OPIT által kifizetve)
             </td>
-            <td class="width-80 align-right">0</td>
-            <td class="align-right"></td>
+            <td>0</td>
+            <td></td>
         </tr>
     {% endif %}
     
@@ -157,7 +157,7 @@
         {% if '0' != cost %}
             <tr>
             {% if '0' == employeePaidExpensesHasTitle %}
-            <td class="bold width-420">
+            <td class="bold">
                 Expenses paid by employee (payable to your own bank account)  /<br />
                 Dolgozó által kifizetett költségek (dolgozó bankszámlájára fizetendő)
             </td>
@@ -165,25 +165,25 @@
             {% else %}
             <td></td>
             {% endif %}
-            <td class="width-80 align-right">
+            <td class="white-space-nowrap">
                 {% if 'HUF' == currency %}
                     {{ cost|round|number_format(0, '', currencyFormat.thousands_sep) }}
                 {% else %}
                     {{ cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
                 {% endif %}
             </td>
-            <td class="align-right">{{ currency }}</td>
+            <td>{{ currency }}</td>
             </tr>
         {% endif %}
     {% endfor %}
     {% if '0' == employeePaidExpenses %}
         <tr>
-            <td class="bold width-420">
+            <td class="bold">
                 Expenses paid by employee (payable to your own bank account)  /<br />
                 Dolgozó által kifizetett költségek (dolgozó bankszámlájára visszafizetendő)
             </td>
-            <td class="width-80 align-right">0</td>
-            <td class="align-right"></td>
+            <td>0</td>
+            <td></td>
         </tr>
     {% endif %}
    
@@ -192,23 +192,23 @@
         <td>
             Total expenses in HUF  /  Összes költség HUF-ban
         </td>
-        <td class="align-right">
+        <td class="white-space-nowrap">
             {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|round|number_format(0, '', currencyFormat.thousands_sep) }}
         </td>
-        <td class=" align-right">HUF</td>
+        <td>HUF</td>
     </tr>
     <tr class="bold">
         <td>
             Total expenses in EUR  /  
             Összes költség EUR-ban
         </td>
-        <td class="align-right">
+        <td class="white-space-nowrap">
             {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
         </td>
-        <td class=" align-right">EUR</td>
+        <td>EUR</td>
     </tr>
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -263,7 +263,7 @@
     
     {% endfor %}
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -320,7 +320,7 @@
 
     {% endfor %}
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 <div class="signiture" style="background-color:white;">
     ____________________<br />
     &nbsp;&nbsp;{{ employee }}
@@ -344,7 +344,7 @@
         </tr>
     {% endfor %}
 </table>
-<div class="height-20 visibility-hidden"></div>
+<div class="height-20"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="{{ asset('bundles/opitnotestravel/js/travelExpensePrintView.js') }}"></script>
