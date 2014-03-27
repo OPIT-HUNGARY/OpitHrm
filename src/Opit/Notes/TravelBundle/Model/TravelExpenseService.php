@@ -104,10 +104,12 @@ class TravelExpenseService
             
             $perDiemAmount += $arrivalDayPerDiem;
             
-            $daysBetweenArrivalDeparture = ($arrivalDay - $departureDay) - 1;
+            $daysBetweenArrivalDeparture = date_diff($departureDateTime, $arrivalDateTime);
+            $fullDays = $daysBetweenArrivalDeparture->days - 1;
+
             $daysBetweenPerDiem =
                 ($entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
-                ->findAmountToPay(24)*$daysBetweenArrivalDeparture);
+                ->findAmountToPay(24) * $fullDays);
             
             $perDiemAmount += $daysBetweenPerDiem;
         } else {
@@ -127,7 +129,7 @@ class TravelExpenseService
             'departurePerDiem' => $departureDayPerDiem,
             'arrivalHours' => $arrivalDayTravelHours,
             'arrivalPerDiem' => $arrivalDayPerDiem,
-            'daysBetween' => $daysBetweenArrivalDeparture,
+            'daysBetween' => $fullDays,
             'daysBetweenPerDiem' => $daysBetweenPerDiem,
             'totalPerDiem' => $perDiemAmount
         );
