@@ -259,7 +259,6 @@ $(document).ready ->
                                 data = $.parseJSON data.responseText
                                 $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
                         Close: ->
-                            console.log $('#password-dialog')
                             $('#password-dialog').dialog 'destroy'
                             return
                 

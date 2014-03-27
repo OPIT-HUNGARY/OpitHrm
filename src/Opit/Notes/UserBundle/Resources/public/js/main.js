@@ -297,7 +297,6 @@
               });
             },
             Close: function() {
-              console.log($('#password-dialog'));
               $('#password-dialog').dialog('destroy');
             }
           }
