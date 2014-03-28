@@ -222,7 +222,7 @@
 
   $(document).ajaxError(function(event, request, settings) {
     var $sessionTimeout, loginUrl;
-    if (window.location.href.indexOf('login') <= -1 && '403' === request.status) {
+    if (window.location.href.indexOf('login') <= -1 && 403 === request.status) {
       loginUrl = Routing.generate('OpitNotesUserBundle_security_login');
       $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html("Your session has timed out please <a href='" + loginUrl + "'>login</a> again.");
       return $sessionTimeout.dialog({

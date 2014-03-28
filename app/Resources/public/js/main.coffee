@@ -189,7 +189,7 @@ $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     $("##{id[1]} *[title]").tipsy() if id?[1]?
     
 $(document).ajaxError (event, request, settings) ->
-    if window.location.href.indexOf('login') <= -1 and '403' is request.status
+    if window.location.href.indexOf('login') <= -1 and 403 is request.status
         loginUrl = Routing.generate 'OpitNotesUserBundle_security_login'
         $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html "Your session has timed out please <a href='#{ loginUrl }'>login</a> again."
         $sessionTimeout.dialog
