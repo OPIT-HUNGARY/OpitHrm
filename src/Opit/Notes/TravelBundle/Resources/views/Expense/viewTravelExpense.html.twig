@@ -102,6 +102,14 @@
         <td>{{ advancesReceived.currency.code }}</td>
     </tr>
     {% endfor %}
+</table>
+<div class="height-20"></div>
+<table>
+    <tr>
+        <td colspan="3" class="table-title">
+            Per diem  /  Napidíj
+        </td>
+    </tr>
     <tr>
         <td class="bold">Per Diem in EUR  /  Napidíj EUR-ban</td>
         <td>{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
@@ -117,19 +125,21 @@
             Total amount of expenses  /  Összes költség
         </td>
     </tr>
-    {% set companyPaidExpensesHasTitle = 0 %}
-    {% set employeePaidExpensesHasTitle = 0 %}
+    {% set expensePaidByCompany = 0 %}
+    {% set companyPaidExpensesTitle %}
+        <td class="bold">
+            Expenses paid by company (already paid by OPIT)  /<br />
+            Cég által fizetett költségek (OPIT által kifizetve)
+        </td>
+    {% endset %}
     {% for currency, cost in companyPaidExpenses %}
         {% if '0' != cost %}
             <tr>
-            {% if '0' == companyPaidExpensesHasTitle %}
-                <td class="bold">
-                    Expenses paid by company (already paid by OPIT) /<br />
-                    Cég által kifizetett költségek (OPIT által kifizetve)
-                </td>
-            {% set companyPaidExpensesHasTitle = 1 %}
+            {% if '0' == expensePaidByCompany %}
+                {{ companyPaidExpensesTitle }}
+                {% set expensePaidByCompany = 1 %}
             {% else %}
-            <td></td>
+                <td></td>
             {% endif %}
             <td class="white-space-nowrap">
                 {% if 'HUF' == currency %}
@@ -142,26 +152,27 @@
             </tr>
         {% endif %}
     {% endfor %}
-    {% if '0' == companyPaidExpensesHasTitle %}
+    {% if '0' == expensePaidByCompany %}
         <tr>
-            <td class="bold">
-                Expenses paid by company (already paid by OPIT)  /<br />
-                Cég által fizetett költségek (OPIT által kifizetve)
-            </td>
+            {{ companyPaidExpensesTitle }}
             <td>0</td>
             <td></td>
         </tr>
     {% endif %}
     
+    {% set expensePaidByEmployee = 0 %}
+    {% set employeePaidExpenseTitle %}
+        <td class="bold">
+            Expenses paid by employee  /<br />
+            Dolgozó által fizetett költségek
+        </td>
+    {% endset %}
     {% for currency, cost in employeePaidExpenses %}
         {% if '0' != cost %}
             <tr>
-            {% if '0' == employeePaidExpensesHasTitle %}
-            <td class="bold">
-                Expenses paid by employee (payable to your own bank account)  /<br />
-                Dolgozó által kifizetett költségek (dolgozó bankszámlájára fizetendő)
-            </td>
-            {% set employeePaidExpensesHasTitle = 1 %}
+            {% if '0' == expensePaidByEmployee %}
+                {{ employeePaidExpenseTitle }}
+                {% set expensePaidByEmployee = 1 %}
             {% else %}
             <td></td>
             {% endif %}
@@ -176,12 +187,9 @@
             </tr>
         {% endif %}
     {% endfor %}
-    {% if '0' == employeePaidExpenses %}
+    {% if '0' == expensePaidByEmployee %}
         <tr>
-            <td class="bold">
-                Expenses paid by employee (payable to your own bank account)  /<br />
-                Dolgozó által kifizetett költségek (dolgozó bankszámlájára visszafizetendő)
-            </td>
+            {{ employeePaidExpenseTitle }}
             <td>0</td>
             <td></td>
         </tr>
