@@ -26,6 +26,7 @@ class TravelExpenseService
     protected $securityContext;
     protected $entityManager;
     protected $config;
+    protected $exchangeService;
     
     public function __construct($securityContext, EntityManager $entityManager, ExchangeRateInterface $exchangeService, $config = array())
     {
@@ -361,6 +362,64 @@ class TravelExpenseService
         return array(
             'employeePaidExpenses' => $sumOfEmployeePaidExpensesByCurrencies,
             'companyPaidExpenses' => $sumOfCompanyPaidExpensesByCurrencies
+        );
+    }
+    
+    public function getAdvanceAmounts($employeePaidExpenses, $travelExpense)
+    {
+        $advacesPayback = array();
+        
+        // loop through all available currencies
+        foreach ($employeePaidExpenses as $currency => $amount) {
+            $isAdvanceReceived = false;
+            // loop through all advances received
+            foreach ($travelExpense->getAdvancesReceived() as $advanceReceived) {
+                $advanceCurrencyCode = $advanceReceived->getCurrency()->getCode();
+                if ($advanceCurrencyCode == $currency) {
+                    
+                    // set flag that an advance was received in currency
+                    $isAdvanceReceived = true;
+                    $advanceAmount = $advanceReceived->getAdvancesReceived();
+                    
+                    // calculate which needs to be paid back in currency
+                    $advancePayback = $advanceAmount - $amount;
+                    $payableToEmployee = 0;
+                    
+                    // if advance payback smaller 0, company needs to pay employee
+                    if ($advancePayback < 0) {
+                        // convert minus to plus
+                        $payableToEmployee = abs($advancePayback);
+                        $advancePayback = 0;
+                    }
+                    $advacesPayback[] = $this->getAmountsArray($advanceAmount, $amount, $advancePayback, $payableToEmployee, $currency);
+                }
+            }
+            // if no amount was received in currency
+            if (!$isAdvanceReceived) {
+                if ($amount != 0) {
+                    $advacesPayback[] = $this->getAmountsArray('0', $amount, '0', $amount, $currency);
+                }
+            }
+        }
+        
+        return $advacesPayback;
+    }
+    
+    private function getAmountsArray($advanceReceived, $amountSpent, $advancePayback, $payableToEmployee, $currency)
+    {
+        $amountInHUF = 0;
+        if ('HUF' != $currency && 0 != $payableToEmployee) {
+            $amountInHUF = $this->exchangeService->convertCurrency($currency, 'HUF', $payableToEmployee, $this->getMidRate());
+        } elseif ('HUF' == $currency) {
+            $amountInHUF = $amountSpent;
+        }
+        return array(
+            'advanceReceived' => $advanceReceived,
+            'amountSpent' => $amountSpent,
+            'advancePayback' => $advancePayback,
+            'payableToEmployee' => $payableToEmployee,
+            'currency' => $currency,
+            'amountInHUF' => $amountInHUF
         );
     }
 }

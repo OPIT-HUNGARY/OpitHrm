@@ -84,36 +84,53 @@
 </table>
 <div class="height-20"></div>
 
-{# Summarization #}
 <table>
     <tr>
-        <td colspan="3" class="table-title">
-            Summarization  /  Összegzés
-        </td>
-    </tr>
-    {% for advancesReceived in travelExpense.advancesReceived %}
-    <tr>
-        {% if '0' == loop.index0%}
-        <td class="bgGrey bold">Advances received  /  Felvett előleg</td>
-        {% else %}
-        <td class="bgGrey bold"></td>
-        {% endif %}
-        <td>{{ advancesReceived.advancesReceived }}</td>
-        <td>{{ advancesReceived.currency.code }}</td>
-    </tr>
-    {% endfor %}
-</table>
-<div class="height-20"></div>
-<table>
-    <tr>
-        <td colspan="3" class="table-title">
+        <td colspan="2" class="table-title">
             Per diem  /  Napidíj
         </td>
     </tr>
     <tr>
         <td class="bold">Per Diem in EUR  /  Napidíj EUR-ban</td>
-        <td>{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
-        <td>EUR</td>
+        <td>{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} EUR</td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+<table class="bordered">
+    <tr>
+        <td colspan="5" class="table-title">Advances info  /  Előleg információ</td>
+    </tr>
+    <tr>
+        <td class="bold" style="width: 100px;">Advances received  /  Felvett előleg</td>
+        <td class="bold" style="width: 100px;">Amount spent  /  Elköltött előleg</td>
+        <td class="bold" style="width: 185px;">Advances payback (to OPIT)  /  Előleg visszafizetés</td>
+        <td class="bold" style="width: 185px;">Payable to employee (by OPIT in HUF)  /  Elszámolandó</td>
+        <td class="bold" style="width: 80px;">Currency  /  Pénznem</td>
+    </tr>
+    {% for advancePayback in advancesPayback %}
+    <tr>
+        <td>{{ formatAmount(advancePayback['advanceReceived'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency'])  }}</td>
+        <td>{{ formatAmount(advancePayback['amountSpent'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}</td>
+        <td>{{ formatAmount(advancePayback['advancePayback'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}</td>
+        <td>{{ formatAmount(advancePayback['payableToEmployee'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}
+            {% if advancePayback['currency'] != 'HUF' %}
+                {% if advancePayback['payableToEmployee'] != '0' %}
+                {% if advancePayback['amountInHUF'] != '0' %}
+                ({{ formatAmount(advancePayback['amountInHUF'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'HUF') }} HUF)
+                {% endif %}
+                {% endif %}
+            {% endif %}
+        </td>
+        <td>{{ advancePayback['currency'] }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{ formatAmount(totalAmountPayableInHUF, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'HUF') }} HUF</td>
+        <td></td>
     </tr>
 </table>
 <div class="height-20"></div>
@@ -121,19 +138,17 @@
 {# Total amount of expenses #}
 <table class="bordered">
     <tr>
-        <td colspan="3" class="table-title">
+        <td colspan="2" class="table-title">
             Total amount of expenses  /  Összes költség
         </td>
     </tr>
     {% set expensePaidByCompany = 0 %}
     {% set companyPaidExpensesTitle %}
-        <td class="bold">
+        <td class="bold" style="width:400px;">
             Expenses paid by company (already paid by OPIT)  /<br />
             Cég által fizetett költségek (OPIT által kifizetve)
         </td>
     {% endset %}
-    {% for currency, cost in companyPaidExpenses %}
-        {% if '0' != cost %}
             <tr>
             {% if '0' == expensePaidByCompany %}
                 {{ companyPaidExpensesTitle }}
@@ -141,17 +156,14 @@
             {% else %}
                 <td></td>
             {% endif %}
-            <td class="white-space-nowrap">
-                {% if 'HUF' == currency %}
-                    {{ cost|round|number_format(0, '', currencyFormat.thousands_sep) }}
-                {% else %}
-                    {{ cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
+            <td class="white-space-nowrap" style="width:250px;">
+            {% for currency, cost in companyPaidExpenses %}
+                {% if '0' != cost %}
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
                 {% endif %}
+            {% endfor %}                
             </td>
-            <td>{{ currency }}</td>
             </tr>
-        {% endif %}
-    {% endfor %}
     {% if '0' == expensePaidByCompany %}
         <tr>
             {{ companyPaidExpensesTitle }}
@@ -162,13 +174,11 @@
     
     {% set expensePaidByEmployee = 0 %}
     {% set employeePaidExpenseTitle %}
-        <td class="bold">
+        <td class="bold" style="width:400px;">
             Expenses paid by employee  /<br />
             Dolgozó által fizetett költségek
         </td>
     {% endset %}
-    {% for currency, cost in employeePaidExpenses %}
-        {% if '0' != cost %}
             <tr>
             {% if '0' == expensePaidByEmployee %}
                 {{ employeePaidExpenseTitle }}
@@ -176,17 +186,14 @@
             {% else %}
             <td></td>
             {% endif %}
-            <td class="white-space-nowrap">
-                {% if 'HUF' == currency %}
-                    {{ cost|round|number_format(0, '', currencyFormat.thousands_sep) }}
-                {% else %}
-                    {{ cost|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
+            <td class="white-space-nowrap" style="width:250px;">
+            {% for currency, cost in employeePaidExpenses %}
+                {% if '0' != cost %}
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
                 {% endif %}
+            {% endfor %}
             </td>
-            <td>{{ currency }}</td>
             </tr>
-        {% endif %}
-    {% endfor %}
     {% if '0' == expensePaidByEmployee %}
         <tr>
             {{ employeePaidExpenseTitle }}
@@ -201,9 +208,8 @@
             Total expenses in HUF  /  Összes költség HUF-ban
         </td>
         <td class="white-space-nowrap">
-            {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|round|number_format(0, '', currencyFormat.thousands_sep) }}
+            {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|round|number_format(0, '', currencyFormat.thousands_sep) }} HUF
         </td>
-        <td>HUF</td>
     </tr>
     <tr class="bold">
         <td>
@@ -211,9 +217,8 @@
             Összes költség EUR-ban
         </td>
         <td class="white-space-nowrap">
-            {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
+            {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} EUR
         </td>
-        <td>EUR</td>
     </tr>
 </table>
 <div class="height-20"></div>
@@ -238,32 +243,27 @@
     </tr>
     {% for userPaidExpenses in travelExpense.userPaidExpenses %}
     <tr>
-        <td class="bold width-265">Destination</td>
-        <td class="width-265">{{ userPaidExpenses.destination }}</td>
         <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold width-315">Destination</td>
+        <td class="width-315">{{ userPaidExpenses.destination }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Description</td>
-        <td class="width-265">{{ userPaidExpenses.description }}</td>
+        <td class="bold width-315">Description</td>
+        <td class="width-315">{{ userPaidExpenses.description }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Expense type</td>
-        <td class="width-265">{{ userPaidExpenses.expenseType.name }}</td>
+        <td class="bold width-315">Expense type</td>
+        <td class="width-315">{{ userPaidExpenses.expenseType.name }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Amount</td>
-        <td class="width-265">
-            {% if 'HUF' == userPaidExpenses.currency.code %}
-                {{ userPaidExpenses.amount|round|number_format(0, '', ' ') }}
-            {% else %}
-                {{ userPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
-            {% endif %}
+        <td class="bold width-315">Amount</td>
+        <td class="width-315">{{ formatAmount(userPaidExpenses.amount, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, userPaidExpenses.currency.code) }}
             {{ userPaidExpenses.currency.code }}
         </td>        
     </tr>
     <tr>
-        <td class="bold width-265">Date</td>
-        <td class="width-265">{{ userPaidExpenses.date|date('Y-m-d') }}</td>
+        <td class="bold width-315">Date</td>
+        <td class="width-315">{{ userPaidExpenses.date|date('Y-m-d') }}</td>
     </tr>
     <tr height="10px">
         <td style="border:none;"></td>
@@ -295,32 +295,27 @@
     </tr>
     {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
     <tr>
-        <td class="bold width-265">Destination</td>
-        <td class="width-265">{{ companyPaidExpenses.destination }}</td>
         <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold width-315">Destination</td>
+        <td class="width-315">{{ companyPaidExpenses.destination }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Description</td>
-        <td class="width-265">{{ companyPaidExpenses.description }}</td>
+        <td class="bold width-315">Description</td>
+        <td class="width-315">{{ companyPaidExpenses.description }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Expense type</td>
-        <td class="width-265">{{ companyPaidExpenses.expenseType.name }}</td>
+        <td class="bold width-315">Expense type</td>
+        <td class="width-315">{{ companyPaidExpenses.expenseType.name }}</td>
     </tr>
     <tr>
-        <td class="bold width-265">Amount</td>
-        <td class="width-265">
-            {% if 'HUF' == companyPaidExpenses.currency.code %}
-                {{ companyPaidExpenses.amount|round|number_format(0, '', ' ') }}
-            {% else %}
-                {{ companyPaidExpenses.amount|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}
-            {% endif %}
+        <td class="bold width-315">Amount</td>
+        <td class="width-315">{{ formatAmount(companyPaidExpenses.amount, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, companyPaidExpenses.currency.code) }}
             {{ companyPaidExpenses.currency.code }}
         </td>
     </tr>
     <tr>
-        <td class="bold width-265">Date</td>
-        <td class="width-265">{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
+        <td class="bold width-315">Date</td>
+        <td class="width-315">{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
     </tr>
     <tr height="10px">
         <td style="border:none;"></td>

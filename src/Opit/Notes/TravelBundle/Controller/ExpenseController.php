@@ -284,7 +284,9 @@ class ExpenseController extends Controller
     {
         $travelExpenseId = $request->attributes->get('id');
         if ('new' !== $travelExpenseId) {
-            $pdfFileName = 'travel_expense_report.pdf';
+            $travelExpense = $this->getTravelExpense($travelExpenseId);
+            $travelRequest = $travelExpense->getTravelRequest();
+            $pdfFileName = $travelRequest->getTravelRequestId() . '_Travel_Expense_Report.pdf';
             $pdfContent = $this->getTravelExpensePage($travelExpenseId)->getContent();
             $pdf = $this->get('opit.manager.pdf_manager');
             $pdf->exportToPdf(
@@ -345,15 +347,23 @@ class ExpenseController extends Controller
             $arrivalDateTime,
             $departureDateTime
         );
-
+        
         $travelExpenseExpenses = $travelExpenseService->sumExpenses($travelExpense);
         $sumOfCostsByCurrencies = $travelExpenseService->getCostsByCurrencies($travelExpense);
         $midRate = $travelExpenseService->getMidRate();
+        
+        $advanceAmounts = $travelExpenseService->getAdvanceAmounts($sumOfCostsByCurrencies['employeePaidExpenses'], $travelExpense);
+        $totalAmountPayableInHUF = 0;
+        foreach ($advanceAmounts as $amount) {
+            $totalAmountPayableInHUF += $amount['amountInHUF'];
+        }
         
         return $this->render(
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
                 'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
+                'advancesPayback' => $advanceAmounts,
+                'totalAmountPayableInHUF' => $totalAmountPayableInHUF,
                 'employee' => $employee, 'datetime' => $dateTimeNow,
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,

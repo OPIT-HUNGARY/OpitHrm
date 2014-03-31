@@ -44,14 +44,17 @@ h3 {
   height: 23px;
   display: none; }
 
-.width-265 {
-  width: 265px; }
+.width-315 {
+  width: 315px; }
 
 .white-space-nowrap {
   white-space: nowrap; }
 
+.width-100 {
+  width: 100px; }
+
 table {
-  width: 550px;
+  width: 650px;
   border-collapse: collapse;
   border-spacing: 0;
   border-color: black; }
@@ -65,10 +68,15 @@ table {
     background-color: lightgrey;
     padding: 0 0 0 5px;
     font-weight: bold;
+    height: 25px;
+    line-height: 25px;
     text-align: left; }
 
 .page-break-after {
   page-break-after: always; }
+
+.height-20 {
+  height: 20px; }
 
 @media print {
   .icons {
