@@ -587,7 +587,10 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                     buttons:
                         Save: ->
                             $form.submit()
-                            $preview.dialog "destroy"
+                            return
+                        'Save & send for approval': ->
+                            $form.attr('action', $form.attr('action') + '/1')
+                            $form.submit()
                             return
                         Cancel: ->
                             $preview.dialog "destroy"

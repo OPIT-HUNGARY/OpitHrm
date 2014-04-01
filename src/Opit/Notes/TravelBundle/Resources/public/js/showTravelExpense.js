@@ -593,7 +593,10 @@
             buttons: {
               Save: function() {
                 $form.submit();
-                $preview.dialog("destroy");
+              },
+              'Save & send for approval': function() {
+                $form.attr('action', $form.attr('action') + '/1');
+                $form.submit();
               },
               Cancel: function() {
                 $preview.dialog("destroy");

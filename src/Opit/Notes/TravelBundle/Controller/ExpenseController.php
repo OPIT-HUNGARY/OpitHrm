@@ -84,11 +84,11 @@ class ExpenseController extends Controller
     /**
      * Method to show and edit travel expense
      *
-     * @Route("/secured/expense/{id}/show/{trId}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+", "trId" = "\d+"})
+     * @Route("/secured/expense/{id}/show/{trId}/{forApproval}", name="OpitNotesTravelBundle_expense_show", defaults={"id" = "new", "forApproval" = "0"}, requirements={ "id" = "new|\d+", "trId" = "\d+", "forApproval" = "\d+"})
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function showTravelExpenseAction(Request $request, $trId, $id)
+    public function showTravelExpenseAction(Request $request, $trId, $id, $forApproval)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $isNewTravelExpense = "new" !== $id;
@@ -100,6 +100,7 @@ class ExpenseController extends Controller
         $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());
+        $forApproval = (bool) $forApproval;
         
         // te = Travel Expense
         $travelExpenseStates = array();
@@ -144,6 +145,13 @@ class ExpenseController extends Controller
 
         $form =
             $this->handleForm($isNewTravelExpense, $travelRequest, $travelExpense, $entityManager, $children, $request);
+        
+        if ($forApproval) {
+            $this->changeExpenseState(
+                $travelExpense->getId(),
+                Status::FOR_APPROVAL
+            );
+        }
         
         if (true === $form) {
             return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
@@ -312,12 +320,7 @@ class ExpenseController extends Controller
      */
     public function changeTravelExpenseStateAction(Request $request)
     {
-        $statusId = $request->request->get('statusId');
-        $travelExpenseId = $request->request->get('travelExpenseId');
-        $entityManager = $this->getDoctrine()->getManager();
-        $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
-         
-        $this->get('opit.manager.status_manager')->addStatus($travelExpense, $statusId);
+        $this->changeExpenseState($request->request->get('travelExpenseId'), $request->request->get('statusId'));
         
         return new JsonResponse();
     }
@@ -465,5 +468,18 @@ class ExpenseController extends Controller
         }
         
         return $form;
+    }
+    
+    /**
+     *
+     * @param integer $travelExpenseId
+     * @param integer $statusId
+     */
+    protected function changeExpenseState($travelExpenseId, $statusId)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
+         
+        $this->get('opit.manager.status_manager')->addStatus($travelExpense, $statusId);
     }
 }
