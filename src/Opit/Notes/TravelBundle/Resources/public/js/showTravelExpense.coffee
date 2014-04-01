@@ -10,28 +10,43 @@ calculateAdvancesPayback = () ->
     amount = 0
     $('.elementContainer .currency-listen').each ->
         $amountEl = $(@).closest('.formFieldsetChild').find '.amount'
-        amount = parseInt $amountEl.val()
+        amount = parseFloat($amountEl.val().replace ',', '.') # replace comma with dot so js can calculate with number
         amountSpent = $(@).val()
         if spent[amountSpent] is undefined then spent[amountSpent] = amount else spent[amountSpent] += amount
         if isNaN(spent[amountSpent])
-            console.warn "Value is not a number (#{$amountEl.attr('id')})"
+            $amountEl.after $('<label>').addClass('custom-label-error').text 'Amount must be a valid number.'
+            $amountEl.css 'border': 'solid 2px #aa0000'
+        else
+            $amountEl.css 'border': '0'
+            $amountEl.parent().find('.custom-label-error').remove()
         
     $('.generalFormFieldset .te-advances-received-currency').each ->
         $closestAdvancesReceived = $(@).closest '.advances-received'
-        advancesSpent = spent[$(@).val()]
-        advancesReceived = $closestAdvancesReceived.find('.te-advances-received').val()
-        advancePayBack = parseInt advancesReceived  - parseInt advancesSpent
+        amountSpent = spent[$(@).val()]
+        amountSpent = if amountSpent then amountSpent else 0
+        advancesReceived = $closestAdvancesReceived.find('.te-advances-received').val().replace ',', '.' # replace comma with dot so js can calculate with number
+        amount = advancesReceived - amountSpent
 
-        $advancesSpent = $closestAdvancesReceived.find '.te-advances-spent'
-        $advancesSpent.html(if advancesSpent is undefined then '0' else if isNaN(advancesSpent) then '0' else advancesSpent)
+        $amountSpent = $closestAdvancesReceived.find '.te-amount-spent'
+        $amountSpent.html(if amountSpent is undefined then '0' else if isNaN(amountSpent) then '0' else Number(amountSpent).toFixed(2))
         
-        $closestAdvancesReceived.find('.te-advances-payback').html(
-            if advancePayBack
-                if advancePayBack < 0 then '0' else advancePayBack
-            else if isNaN(advancePayBack)
-                if advancesReceived is '' then '0' else advancesReceived
-            else '0'
-        )
+        amountPayable = 0
+        
+        if amount
+            if amount < 0
+                advancesReceived = '0'
+                # get number absolute value and set to display 2 decimals
+                amountPayable = Number(Math.abs(amount)).toFixed 2
+            else
+                # set number to display 2 decimals
+                advancesReceived = Number(amount).toFixed 2
+                amountPayable = '0'
+        else
+            advancesReceived = '0'
+            amountPayable = '0'
+            
+        $closestAdvancesReceived.find('.te-advances-payback').html advancesReceived
+        $closestAdvancesReceived.find('.te-amount-payable').html amountPayable
 
 createDeleteButton = ->
     $deleteButton = $('<div>').addClass('form-fieldset-delete-button deleteFormFieldsetChild formFieldsetButton').html '<i class="fa fa-minus-square"></i>Delete'
@@ -119,13 +134,15 @@ reCreateAdvances = () ->
                                         .prepend($('<label>').html('Currency'))
     
     $('.te-advances-received').each (index) ->
-        $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
+        $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0')
         
         $selfParent = $(@).parent()
                         .prepend($('<label>').html('Advances received'))
-                        .after($advancesSpent)
+                        .after($amountSpent)
         
-        $advancesSpent.after(createCustomField('te-advances-payback custom-field', 'Advances payback', '0'))
+        $advancesPayback = createCustomField 'te-advances-payback custom-field', 'Advances to be returned', '0'
+        $amountSpent.after $advancesPayback
+        $advancesPayback.after(createCustomField('te-amount-payable custom-field', 'Amount payable', '0'))
         
         collectionIndex++
         
@@ -211,10 +228,12 @@ addNewAdvanceReceived = (collectionHolder) ->
         $newAdvancesReceived.children('div').children('div').each ->
             $(@).addClass 'display-inline-block vertical-align-top margin-right-1-em'
 
-        $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0')
-        $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0')
-        $newAdvancesReceived.find('.te-advances-received').parent().after $advancesSpent
-        $advancesSpent.after $advancesPayback
+        $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances to be returned', '0')
+        $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0')
+        $amountPayable = createCustomField('te-amount-payable custom-field', 'Amount payable', '0')
+        $newAdvancesReceived.find('.te-advances-received').parent().after $amountSpent
+        $amountSpent.after $advancesPayback
+        $advancesPayback.after $amountPayable
 
         createDeleteExpenseButton($newAdvancesReceived.children('div'))
 

@@ -16,7 +16,7 @@
     $('.elementContainer .currency-listen').each(function() {
       var $amountEl, amountSpent;
       $amountEl = $(this).closest('.formFieldsetChild').find('.amount');
-      amount = parseInt($amountEl.val());
+      amount = parseFloat($amountEl.val().replace(',', '.'));
       amountSpent = $(this).val();
       if (spent[amountSpent] === void 0) {
         spent[amountSpent] = amount;
@@ -24,18 +24,41 @@
         spent[amountSpent] += amount;
       }
       if (isNaN(spent[amountSpent])) {
-        return console.warn("Value is not a number (" + ($amountEl.attr('id')) + ")");
+        $amountEl.after($('<label>').addClass('custom-label-error').text('Amount must be a valid number.'));
+        return $amountEl.css({
+          'border': 'solid 2px #aa0000'
+        });
+      } else {
+        $amountEl.css({
+          'border': '0'
+        });
+        return $amountEl.parent().find('.custom-label-error').remove();
       }
     });
     return $('.generalFormFieldset .te-advances-received-currency').each(function() {
-      var $advancesSpent, $closestAdvancesReceived, advancePayBack, advancesReceived, advancesSpent;
+      var $amountSpent, $closestAdvancesReceived, advancesReceived, amountPayable, amountSpent;
       $closestAdvancesReceived = $(this).closest('.advances-received');
-      advancesSpent = spent[$(this).val()];
-      advancesReceived = $closestAdvancesReceived.find('.te-advances-received').val();
-      advancePayBack = parseInt(advancesReceived - parseInt(advancesSpent));
-      $advancesSpent = $closestAdvancesReceived.find('.te-advances-spent');
-      $advancesSpent.html(advancesSpent === void 0 ? '0' : isNaN(advancesSpent) ? '0' : advancesSpent);
-      return $closestAdvancesReceived.find('.te-advances-payback').html(advancePayBack ? advancePayBack < 0 ? '0' : advancePayBack : isNaN(advancePayBack) ? advancesReceived === '' ? '0' : advancesReceived : '0');
+      amountSpent = spent[$(this).val()];
+      amountSpent = amountSpent ? amountSpent : 0;
+      advancesReceived = $closestAdvancesReceived.find('.te-advances-received').val().replace(',', '.');
+      amount = advancesReceived - amountSpent;
+      $amountSpent = $closestAdvancesReceived.find('.te-amount-spent');
+      $amountSpent.html(amountSpent === void 0 ? '0' : isNaN(amountSpent) ? '0' : Number(amountSpent).toFixed(2));
+      amountPayable = 0;
+      if (amount) {
+        if (amount < 0) {
+          advancesReceived = '0';
+          amountPayable = Number(Math.abs(amount)).toFixed(2);
+        } else {
+          advancesReceived = Number(amount).toFixed(2);
+          amountPayable = '0';
+        }
+      } else {
+        advancesReceived = '0';
+        amountPayable = '0';
+      }
+      $closestAdvancesReceived.find('.te-advances-payback').html(advancesReceived);
+      return $closestAdvancesReceived.find('.te-amount-payable').html(amountPayable);
     });
   };
 
@@ -139,10 +162,12 @@
     $('.te-advances-received').parent().addClass('display-inline-block vertical-align-top margin-right-1-em');
     $advancesReceivedCurrencyParent = $('.te-advances-received-currency').parent().addClass('display-inline-block vertical-align-top margin-right-1-em').prepend($('<label>').html('Currency'));
     $('.te-advances-received').each(function(index) {
-      var $advancesReceived, $advancesSpent, $selfParent, $teAdvances;
-      $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0');
-      $selfParent = $(this).parent().prepend($('<label>').html('Advances received')).after($advancesSpent);
-      $advancesSpent.after(createCustomField('te-advances-payback custom-field', 'Advances payback', '0'));
+      var $advancesPayback, $advancesReceived, $amountSpent, $selfParent, $teAdvances;
+      $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0');
+      $selfParent = $(this).parent().prepend($('<label>').html('Advances received')).after($amountSpent);
+      $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances to be returned', '0');
+      $amountSpent.after($advancesPayback);
+      $advancesPayback.after(createCustomField('te-amount-payable custom-field', 'Amount payable', '0'));
       collectionIndex++;
       $teAdvances = $('#travelExpense_advancesReceived_' + index);
       $advancesReceived = $('<div>').addClass('advances-received').addClass('margin-top-5 margin-bottom-5').append($teAdvances);
@@ -208,7 +233,7 @@
   };
 
   addNewAdvanceReceived = function(collectionHolder) {
-    var $advancesPayback, $advancesSpent, $availableCurrencies, $newAdvancesReceived, availableCurrencies, index, prototype;
+    var $advancesPayback, $amountPayable, $amountSpent, $availableCurrencies, $newAdvancesReceived, availableCurrencies, index, prototype;
     availableCurrencies = setAvailableCurrencies();
     if (availableCurrencies.length > 0) {
       prototype = collectionHolder.data('prototype');
@@ -218,10 +243,12 @@
       $newAdvancesReceived.children('div').children('div').each(function() {
         return $(this).addClass('display-inline-block vertical-align-top margin-right-1-em');
       });
-      $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances payback', '0');
-      $advancesSpent = createCustomField('te-advances-spent custom-field', 'Advances spent', '0');
-      $newAdvancesReceived.find('.te-advances-received').parent().after($advancesSpent);
-      $advancesSpent.after($advancesPayback);
+      $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances to be returned', '0');
+      $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0');
+      $amountPayable = createCustomField('te-amount-payable custom-field', 'Amount payable', '0');
+      $newAdvancesReceived.find('.te-advances-received').parent().after($amountSpent);
+      $amountSpent.after($advancesPayback);
+      $advancesPayback.after($amountPayable);
       createDeleteExpenseButton($newAdvancesReceived.children('div'));
       $('.generalFormFieldset .addFormFieldsetChild').before($newAdvancesReceived);
       collectionHolder.data('index', index + 1);
