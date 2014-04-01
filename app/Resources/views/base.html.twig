@@ -31,11 +31,19 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-            {% block header %}{% endblock %}
         <div id="main-wrapper">
-            {% block body %}{% endblock %}
+            {% block header %}{% endblock %}
+            <div id="main-content">
+                {% block body %}{% endblock %}
+            </div>
         </div>
-        <footer></footer>
+        <footer class="background-color-dark-grey margin-top-10 align-center color-white">
+            <span>NOTES 2014 -</span>
+            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-white">
+                v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
+            </a>&nbsp;-&nbsp;
+            <span>An initiative of <a href="http://www.opit.hu" class="color-white">OPIT Consulting KFT</a>, Hungary</span>
+        </footer>
         {% block javascripts %}
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
             <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>

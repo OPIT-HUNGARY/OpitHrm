@@ -8,7 +8,8 @@
 */
 html, body {
   font-family: arial, helvetica, sans-serif;
-  font-size: 13px; }
+  font-size: 13px;
+  height: 100%; }
 
 table th {
   background-color: #f28c38;
@@ -75,7 +76,23 @@ a {
   margin: -10px 0 0 0; }
 
 #main-wrapper {
-  margin: 1.5em; }
+  min-height: 100%;
+  margin-bottom: -50px !important; }
+  #main-wrapper #main-content {
+    margin: 0 1.5em; }
+
+#main-wrapper:after {
+  content: "";
+  display: block; }
+
+footer, #main-wrapper:after {
+  height: 50px; }
+
+footer {
+  -moz-box-shadow: 0 -1px 6px 1px black;
+  -webkit-box-shadow: 0 -1px 6px 1px black;
+  -o-box-shadow: 0 -1px 6px 1px black;
+  box-shadow: 0 -1px 6px 1px black; }
 
 header {
   margin-bottom: 100px; }

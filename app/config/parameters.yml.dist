@@ -21,3 +21,5 @@ parameters:
 
     max_results: 25
     max_pager_pages: 3
+
+    version_number: '1.0.0-beta'

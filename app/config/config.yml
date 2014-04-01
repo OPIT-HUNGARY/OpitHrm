@@ -28,6 +28,8 @@ framework:
 twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
+    globals:
+        version_number: %version_number%
 
 # Assetic Configuration
 assetic:
@@ -90,7 +92,7 @@ stof_doctrine_extensions:
             softdeleteable: true
             timestampable: true
             blameable:     true
-
+    
 opit_notes_currency_rate:
     default_currency:   EUR
     currency_format:

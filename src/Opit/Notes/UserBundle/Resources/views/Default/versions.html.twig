@@ -4,7 +4,9 @@
 <h2>Version History</h2>
 <div class="background-color-lighter-grey padding-2">
     <article>
-        <h3 class="padding-left-1-em">v1.0</h3>
+        <h3 class="padding-left-1-em">
+            v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
+        </h3>
         <ul>
             <li>User Management</li>
             <li>Role Management</li>

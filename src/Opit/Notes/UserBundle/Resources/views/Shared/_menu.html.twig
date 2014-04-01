@@ -44,8 +44,17 @@
         </div>
         </div>
     </div>
+    <!--
     <div class="mainMenu {{ (module == 'default') ? 'active' : '' }}">
-        <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="text-decoration-none">Version History</a>
+        Version History
+        <div class="subMenu">
+        <div class="subMenuItem">
+            <a href='{{ path('OpitNotesUserBundle_default_versions') }}'>
+                v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
+            </a>
+        </div>
+        </div>
     </div>
+    -->
 </nav>
 <nav class="menu float-left"></nav>
