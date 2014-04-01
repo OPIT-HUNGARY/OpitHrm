@@ -37,12 +37,12 @@
                 {% block body %}{% endblock %}
             </div>
         </div>
-        <footer class="background-color-dark-grey margin-top-10 align-center color-white">
+        <footer class="background-color-dark-grey padding-10 margin-top-10 align-center color-white">
             <span>NOTES 2014 -</span>
-            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-white">
+            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-orange text-decoration-none">
                 v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
             </a>&nbsp;-&nbsp;
-            <span>An initiative of <a href="http://www.opit.hu" class="color-white">OPIT Consulting KFT</a>, Hungary</span>
+            <span>An initiative of <a href="http://www.opit.hu" class="color-orange text-decoration-none">OPIT Consulting KFT</a>, Hungary</span>
         </footer>
         {% block javascripts %}
             <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
