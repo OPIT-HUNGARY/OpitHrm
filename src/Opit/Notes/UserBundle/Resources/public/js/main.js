@@ -27,11 +27,11 @@
                     id: userId
                   }),
                   data: $('#adduser_frm').serialize()
-                }).done(function(data) {
+                }).done(function(data, textStatus, jqXHR) {
                   var offset, response, url;
                   url = Routing.generate('OpitNotesUserBundle_user_list');
                   offset = $('.selected-page').data('offset');
-                  if (url === window.location.pathname) {
+                  if (url === window.location.pathname && jqXHR.getResponseHeader("content-type").indexOf('html')) {
                     response = data;
                     $.ajax({
                       type: 'POST',

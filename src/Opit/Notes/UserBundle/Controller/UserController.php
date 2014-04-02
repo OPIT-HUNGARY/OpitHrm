@@ -38,7 +38,7 @@ class UserController extends Controller
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
         $config = $this->container->getParameter('opit_notes_user');
-        
+
         if ($isSearch) {
             $allRequests = $request->request->all();
 
@@ -135,7 +135,7 @@ class UserController extends Controller
         $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN') ? true : false;
         $userService = $this->get('opit.model.user');
         $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
-        
+
         $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
         
         $form = $this->createForm(
@@ -163,7 +163,7 @@ class UserController extends Controller
 
                 $result['response'] = 'success';
              
-                if ($isAdmin) {
+                if ($isAdmin && $request->headers->get('referer') === $this->generateUrl('OpitNotesUserBundle_user_list', array(), true)) {
                     return $this->listAction();
                 }
             } else {

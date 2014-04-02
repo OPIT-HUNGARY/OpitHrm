@@ -20,10 +20,10 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                         type: 'POST'
                         url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
                         data: $('#adduser_frm').serialize()
-                      .done (data)->
+                      .done (data, textStatus, jqXHR)->
                           url = Routing.generate 'OpitNotesUserBundle_user_list'
                           offset = $('.selected-page').data('offset')
-                          if url is window.location.pathname
+                          if url is window.location.pathname and jqXHR.getResponseHeader("content-type").indexOf('html')
                             response = data
                             $.ajax
                               type: 'POST'

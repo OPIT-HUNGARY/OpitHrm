@@ -92,9 +92,12 @@ stof_doctrine_extensions:
             softdeleteable: true
             timestampable: true
             blameable:     true
+            
+opit_notes_user:
+    default_currency:   %default_currency%
     
 opit_notes_currency_rate:
-    default_currency:   EUR
+    default_currency:   %default_currency%
     currency_format:
         decimals:       2
         dec_point:      ','

@@ -125,7 +125,7 @@ class AdminTravelController extends Controller
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
         $perDiemList = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
-        
+
         return $this->render(
             $showList ? 'OpitNotesTravelBundle:Admin:_listPerDiem.html.twig' : 'OpitNotesTravelBundle:Admin:listPerDiem.html.twig',
             array('perDiems' => $perDiemList)
@@ -135,14 +135,14 @@ class AdminTravelController extends Controller
     /**
      * To show per diem
      *
-     * @Route("/secured/admin/show/perdiem", name="OpitNotesUserBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
+     * @Route("/secured/admin/show/perdiem/{id}", name="OpitNotesUserBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
     public function showPerDiemAction(Request $request)
     {
         $id = $request->attributes->get('id');
-        
+
         if ($id == 'new') {
             $index = null;
             $perDiem = new TEPerDiem();
@@ -219,13 +219,19 @@ class AdminTravelController extends Controller
         $em = $this->getDoctrine()->getManager();
         $result = array();
         $result['status'] = 200;
+        $config = $this->container->getParameter('opit_notes_user');
+        $currencyCode = $config['default_currency'];
         
         //If it is a new per diem create, else modify it.
         if (false === $perDiem) {
             // Create a new per diem and save it.
             $perDiem = new TEPerDiem();
         }
-        $currency = $em->getRepository('OpitNotesCurrencyRateBundle:Currency')->findOneByCode($data['currency']);
+        
+        if (isset($data['currency'])) {
+            $currencyCode = $data['currency'];
+        }
+        $currency = $em->getRepository('OpitNotesCurrencyRateBundle:Currency')->findOneByCode($currencyCode);
         $perDiem->setHours($data['hours']);
         $perDiem->setAmount($data['amount']);
         $perDiem->setCurrency($currency);
@@ -274,18 +280,5 @@ class AdminTravelController extends Controller
             }
         }
         return $perDiem;
-    }
-
-    /**
-     *  Set the Per diem form
-     * @return Per diem object $form
-     */
-    protected function setPerDiemtForm()
-    {
-        $form = $this->createForm(
-            new PerDiemType()
-        );
-        
-        return $form;
     }
 }
