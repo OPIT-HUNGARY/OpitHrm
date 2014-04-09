@@ -46,7 +46,11 @@ class UserFixtures extends AbstractDataFixture
         $testAdmin->setEmail('admin@mail.com');
         $testAdmin->setEmployeeName('admin');
         $testAdmin->setIsActive(1);
-        $testAdmin->setIsFirstLogin(1);
+        if ('test' === $this->getCurrentEnvironment()) {
+            $testAdmin->setIsFirstLogin(0);
+        } else {
+            $testAdmin->setIsFirstLogin(1);
+        }
         $testAdmin->addGroup($this->getReference('admin-group'));
         $testAdmin->setBankAccountNumber('11112222-99999999-99999999');
         $testAdmin->setBankName('Fictive Bank');
