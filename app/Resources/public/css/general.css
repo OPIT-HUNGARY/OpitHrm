@@ -8,8 +8,7 @@
 */
 html, body {
   font-family: arial, helvetica, sans-serif;
-  font-size: 13px;
-  height: 100%; }
+  font-size: 13px; }
 
 table th {
   background-color: #f28c38;
@@ -75,24 +74,8 @@ a {
   font-size: 0.8em;
   margin: -10px 0 0 0; }
 
-#main-wrapper {
-  min-height: 100%;
-  margin-bottom: -20px !important; }
-  #main-wrapper #main-content {
-    margin: 0 1.5em; }
-
-#main-wrapper:after {
-  content: "";
-  display: block; }
-
-footer, #main-wrapper:after {
-  height: 20px; }
-
-footer {
-  -moz-box-shadow: 0 -1px 6px 1px black;
-  -webkit-box-shadow: 0 -1px 6px 1px black;
-  -o-box-shadow: 0 -1px 6px 1px black;
-  box-shadow: 0 -1px 6px 1px black; }
+#main-wrapper #main-content {
+  margin: 0 1.5em; }
 
 header {
   margin-bottom: 100px; }
@@ -469,3 +452,9 @@ label.error, label.custom-label-error {
   border-bottom-left-radius: 5px; }
   .item-input-box input[type=text], .item-input-box input[type=password] {
     width: 96%; }
+
+footer {
+  -moz-box-shadow: 0 -1px 4px 1px #b4b4b4;
+  -webkit-box-shadow: 0 -1px 4px 1px #b4b4b4;
+  -o-box-shadow: 0 -1px 4px 1px #b4b4b4;
+  box-shadow: 0 -1px 4px 1px #b4b4b4; }

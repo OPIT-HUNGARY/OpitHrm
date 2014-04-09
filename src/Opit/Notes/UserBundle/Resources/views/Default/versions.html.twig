@@ -2,25 +2,37 @@
 {% block title %}Version History - {{ parent() }}{% endblock %}
 {% block body %}
 <h2>Version History</h2>
-<div class="background-color-lighter-grey padding-2">
-    <article>
-        <h3 class="padding-left-1-em">
-            v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
-        </h3>
-        <ul>
-            <li>User Management</li>
-            <li>Role Management</li>
-            <li>Job Tittle Management</li>
-            <li>Travel Request Management</li>
-            <li>Travel Expenditure Management</li>
-            <li>Auto Currency Rate Conversion (Magyar Nemzeti Bank)</li>
-            <li>Per Diem Management</li>
-            <li>Travel Expense Type Management</li>
-            <li>Access Control Implementation</li>
-            <li>Status Workflow support</li>
-            <li>Application Internal/External Notifications</li>
-            <li>Bug fixes</li>
-        </ul>
-    </article>
-</div>
+
+<article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
+    <h3 class="padding-left-1-em">
+        v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
+    </h3>
+    <ul>
+        <li>Print view optimization</li>
+        <li>Travel expense advances updates</li>
+        <li>Travel expense approval process enhancements</li>
+        <li>Footer implementation</li>
+        <li>Bug fixes</li>
+    </ul>
+</article>
+
+<article class="background-color-lighter-grey padding-2 border-radius-5">
+    <h3 class="padding-left-1-em">
+        v1.0.0-beta
+    </h3>
+    <ul>
+        <li>User Management</li>
+        <li>Role Management</li>
+        <li>Job Tittle Management</li>
+        <li>Travel Request Management</li>
+        <li>Travel Expenditure Management</li>
+        <li>Auto Currency Rate Conversion (Magyar Nemzeti Bank)</li>
+        <li>Per Diem Management</li>
+        <li>Travel Expense Type Management</li>
+        <li>Access Control Implementation</li>
+        <li>Status Workflow support</li>
+        <li>Application Internal/External Notifications</li>
+        <li>Bug fixes</li>
+    </ul>
+</article>
 {% endblock %}

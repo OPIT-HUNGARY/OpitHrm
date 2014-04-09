@@ -23,4 +23,4 @@ parameters:
     max_pager_pages: 3
 
     default_currency:   EUR
-    version_number: '1.0.0-beta'
+    version_number: '1.0.1-beta'

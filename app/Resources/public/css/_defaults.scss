@@ -87,11 +87,11 @@ $defaultFontSize: .9em;
     background-image: -ms-linear-gradient($color1, $color2 $percent, $color3);
     background-image: -o-linear-gradient($color1, $color2 $percent, $color3);    
 }
-@mixin box-shadow($left, $top, $scatter, $size, $color){
-    -moz-box-shadow: $left $top $scatter $size $color;
-    -webkit-box-shadow: $left $top $scatter $size $color;
-    -o-box-shadow: $left $top $scatter $size $color;
-    box-shadow: $left $top $scatter $size $color;
+@mixin box-shadow($left, $top, $radius, $size, $color){
+    -moz-box-shadow: $left $top $radius $size $color;
+    -webkit-box-shadow: $left $top $radius $size $color;
+    -o-box-shadow: $left $top $radius $size $color;
+    box-shadow: $left $top $radius $size $color;
 }
 
 @mixin box-shadow-disabled(){

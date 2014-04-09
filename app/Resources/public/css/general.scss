@@ -8,7 +8,6 @@
 html, body{
     font-family: arial, helvetica, sans-serif;
     font-size: 13px;
-    height: 100%;
 }
 
 table {
@@ -90,24 +89,9 @@ a{
 }
 
 #main-wrapper{
-    min-height: 100%;
-    margin-bottom: -20px !important;
     #main-content{
         margin: 0 1.5em;
     }
-}
-
-#main-wrapper:after{
-  content: "";
-  display: block;
-}
-
-footer, #main-wrapper:after{
-    height: 20px;
-}
-
-footer{
-    @include box-shadow(0, -1px, 6px, 1px, black);
 }
 
 header{
@@ -471,4 +455,8 @@ label.error, label.custom-label-error{
     input[type=text], input[type=password] {
         width: 96%;
     }
+}
+
+footer{
+    @include box-shadow(0, -1px, 4px, 1px, $defaultDarkColor);
 }

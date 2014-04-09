@@ -71,6 +71,10 @@
     color: $defaultDarkColor;
 }
 
+.color-dark-grey{
+    color: $darkGrey;
+}
+
 .color-green{
     color: $defaultGreen;
 }
@@ -99,6 +103,10 @@
 
 .background-color-lighter-grey{
     background-color: $lightGrayColor;
+}
+
+.background-color-lightest-grey{
+    background-color: $defaultLightColor;
 }
 
 .background-color-grey{
@@ -233,6 +241,10 @@
 
 .margin-bottom-20{
     margin-bottom: 20px;
+}
+
+.margin-bottom-40{
+    margin-bottom: 40px;
 }
 
 .margin-bottom-1-em{
@@ -439,6 +451,10 @@
     font-size: 0.85em;
 }
 
+.font-size-d9-em{
+    font-size: 0.9em;
+}
+
 /* Element classes */
 
 .button{
@@ -583,4 +599,8 @@
     width:110px;
     padding:3px;
     @include border-radius(5px);
+}
+
+.bottom-0{
+    bottom: 0;
 }

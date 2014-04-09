@@ -31,19 +31,20 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-        <div id="main-wrapper">
+        <div id="main-wrapper" class="margin-bottom-40">
             {% block header %}{% endblock %}
             <div id="main-content">
                 {% block body %}{% endblock %}
             </div>
         </div>
         {% block footer %}
-        <footer class="background-color-dark-grey padding-10 margin-top-10 align-center color-white">
+        <footer class="background-color-lightest-grey padding-5 align-center position-fixed width-100 bottom-0 color-dark-grey font-size-d9-em">
             <span>NOTES 2014 -</span>
-            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-orange text-decoration-none">
+            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-dark-grey">{% if true -%}
                 v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
-            </a>&nbsp;-&nbsp;
-            <span>An initiative of <a href="http://www.opit.hu" class="color-orange text-decoration-none">OPIT Consulting KFT</a>, Hungary</span>
+            {%- endif %}</a>
+            &nbsp;-&nbsp;
+            <span>An initiative of <a href="http://www.opit.hu" class="color-dark-grey" target="_blank">OPIT Consulting KFT</a>, Hungary</span>
         </footer>
         {% endblock %}
         {% block javascripts %}
