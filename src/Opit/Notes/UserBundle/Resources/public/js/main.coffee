@@ -61,7 +61,7 @@ cloneSubmenu = ->
     $subMenuClone.addClass 'subMenuClone'
     $('body').append $subMenuClone
                
-getAllNotifications = ($notificationsWrapper) ->
+getAllNotifications = ($notificationsContent) ->
     changeStatus = (el, callback) ->
         if el.closest('.notification').hasClass 'unread'
             $.ajax
@@ -82,7 +82,7 @@ getAllNotifications = ($notificationsWrapper) ->
         url: Routing.generate 'OpitNotesTravelBundle_notifications_all'
     .done (data) ->
         # fill up wrapper with AJAX result
-        $notificationsWrapper.html data
+        $notificationsContent.html data
         # add listener to trash icon
         $('.notification-header-delete i').on 'click', ->
             $self = $(@)
@@ -94,6 +94,7 @@ getAllNotifications = ($notificationsWrapper) ->
             .done (data) ->
                 # if item was deleted remove row from wrapper
                 $self.closest('.notification').remove()
+                
         # add listener to message container
         $('.notification-message').on 'click', (event) ->
             # if clicked prevent propagation
@@ -115,7 +116,11 @@ getAllNotifications = ($notificationsWrapper) ->
             return
                 
         # show notifications wrapper
-        $notificationsWrapper.removeClass 'display-none'
+        $notificationsContent.removeClass 'display-none'
+        $('#notifications').removeClass 'right-m312-important'
+        
+        # update scrollbar for notifications wrapper
+        $('#notifications-wrapper').mCustomScrollbar 'update'
                
 # check for new notifications
 getUnreadNotifications = () ->
@@ -136,12 +141,12 @@ getUnreadNotifications = () ->
                 $notificationsIcon.addClass 'color-orange'
                 # replace the number in the indicator
                 $unreadNotificationsCount.html data
-                $('#notifications').addClass 'right-0'
+                $('#notifications').addClass 'right-m312-important'
             
         if '0' == $unreadNotificationsCount.html()
             $unreadNotificationsCount.addClass 'display-none'
             $notificationsIcon.removeClass 'color-orange'
-            $('#notifications').removeClass 'right-0'
+            $('#notifications').removeClass 'right-m312-important'
             
         # check for new notifications every 10 seconds
         setTimeout getUnreadNotifications, 10000
@@ -169,19 +174,20 @@ $(document).ready ->
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
 
-        $notificationsWrapper = $('#notifications-wrapper')
+        # add scrollbar to notifications
+        $('#notifications-wrapper').mCustomScrollbar()
         
         $('#notifications > i.fa-bell-o').on 'click.notifications', (event) ->
             # stop event bubbling
             event.stopPropagation()
             $container = $(@).parent()
-            if !$container.hasClass 'right-300'
-                $container.addClass 'right-300'
+            if !$container.hasClass 'right-m15-important'
+                $container.addClass 'right-m15-important'
                 # remove classes that make the notifications tab active
                 $(@).removeClass 'color-orange'
                 $('#unread-notifications-count').addClass 'display-none'
                 # call get all notifications function
-                getAllNotifications($notificationsWrapper)
+                getAllNotifications $('#notifications-content')
                 
                 # prevent event propagation for elements inside notifications container
                 $('#notifications-wrapper').on 'click.notifications', (event) ->
@@ -189,13 +195,13 @@ $(document).ready ->
                     
                 # register hide listener clicking outside of the notifications boundaries
                 $('body').on 'click.notifications', (event) ->
-                    if $('#notifications').hasClass 'right-300'
-                        $('#notifications').removeClass 'right-300'
+                    if $('#notifications').hasClass 'right-m15-important'
+                        $('#notifications').removeClass 'right-m15-important'
                         
                         # detach event listener if notifications are hidden
                         $('body, #notifications-wrapper').off 'click.notifications'
             else
-                $container.removeClass 'right-300'
+                $container.removeClass 'right-m15-important'
                 
                 # detach event listener if notifications are hidden
                 $('body, #notifications-wrapper').off 'click.notifications'
@@ -211,8 +217,8 @@ $(document).ready ->
             if buttonText == 'Yes' or buttonText == 'Continue'
                 $(document).data('notes').funcs.changeDeleteButton true
             
-    
         cloneSubmenu()
+        
         # function to make header menu tabs selectable
         $('.menu .mainMenu')
             .click ->

@@ -183,6 +183,15 @@ $.fn.datepicker = (options) ->
         $self.before defaultOptions.wrapper
         $self.prev().append defaultOptions.indicatorIcon
     return $self
+    
+__dialog = $.fn.dialog
+
+$.fn.dialog = (options) ->
+    __dialog.apply this, [options]
+    @.mCustomScrollbar()
+    # to update scrollbar if element is resized
+    $(@).on 'dialogresizestop', (event, ui) ->
+        $(@).mCustomScrollbar 'update'
         
 $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)

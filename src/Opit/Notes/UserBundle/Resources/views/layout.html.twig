@@ -40,7 +40,9 @@
         <div id="notifications">
             <i class="fa fa-bell-o"></i>
             <div class="round-border position-absolute display-none" id="unread-notifications-count"></div>
-            <div id="notifications-wrapper" class="display-none"></div>
+            <div id="notifications-wrapper">
+                <div id="notifications-content" class="display-none"></div>
+            </div>
         </div>
         <div id="menuWrapper">
             {% include 'OpitNotesUserBundle:Shared:_menu.html.twig' %}
