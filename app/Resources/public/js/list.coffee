@@ -142,6 +142,12 @@ $.extend true, $(document).data('notes'),
                                     .attr('data-offset', (num))
                 $newPagerItem.insertAfter $('#pager .fa-caret-left')        
         
+        reInitializeListTableListeners: () ->
+            $(document).data('notes').funcs.setPagerNumbering()
+            $(document).data('notes').funcs.initListPageListeners()
+            $(document).data('notes').funcs.initPager()
+            $(document).data('notes').funcs.initDeleteMultipleListener()
+        
         initPager: () ->
             $pager = $('#pager')
             selectedPageOffset = $pager.data 'offset'
@@ -176,9 +182,7 @@ $.extend true, $(document).data('notes'),
                 .done (data) ->
                     if data.indexOf('error') < 0
                         $('#list-table').parent().replaceWith data                                   
-                    $(document).data('notes').funcs.setPagerNumbering()
-                    $(document).data('notes').funcs.initListPageListeners()
-                    $(document).data('notes').funcs.initPager()
+                    $(document).data('notes').funcs.reInitializeListTableListeners()
 
             $('#pager i').on 'mousedown', (event) ->
                 self = $(@)
@@ -203,6 +207,4 @@ $.extend true, $(document).data('notes'),
                     data: requestData
                 .done (data) ->
                     $('#list-table').parent().replaceWith data
-                    $(document).data('notes').funcs.setPagerNumbering()
-                    $(document).data('notes').funcs.initListPageListeners()
-                    $(document).data('notes').funcs.initPager()
+                    $(document).data('notes').funcs.reInitializeListTableListeners()
