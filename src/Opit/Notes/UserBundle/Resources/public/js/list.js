@@ -69,6 +69,8 @@
       return deleteUser();
     });
     $('#userlistWrapper').on('click', '.reset-password', function() {
+      var userId;
+      userId = $(this).data('user-id');
       return $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + ($(this).closest('tr').find('td:nth-child(4)').html()) + "'s</b> password ? The user will be informed about new password via email.").dialog({
         open: function() {
           return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Reset user password');
@@ -83,7 +85,7 @@
               type: 'POST',
               url: Routing.generate('OpitNotesUserBundle_user_password_reset'),
               data: {
-                'id': $(this).data('user-id')
+                'id': userId
               }
             }).done(function(data) {
               return $('#reset-password-dialog').dialog('destroy');

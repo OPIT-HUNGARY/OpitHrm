@@ -53,6 +53,7 @@ $(document).ready ->
         deleteUser()
 
     $('#userlistWrapper').on 'click', '.reset-password', ->
+        userId = $(@).data('user-id');
         $('<div id="reset-password-dialog"></div>').html(
             "Are you sure you want to reset <b class='underline'>#{ $(@).closest('tr').find('td:nth-child(4)').html() }'s</b> password ?
             The user will be informed about new password via email."
@@ -69,7 +70,7 @@ $(document).ready ->
                         global: false
                         type: 'POST'
                         url: Routing.generate 'OpitNotesUserBundle_user_password_reset'
-                        data: 'id': $(@).data('user-id')
+                        data: 'id': userId
                     .done (data)->
                         $('#reset-password-dialog').dialog 'destroy'
                     .fail (data) ->
