@@ -398,23 +398,29 @@ class TravelRequest implements TravelResourceInterface
     /**
      * Set travelRequestId
      
-     * @ORM\PostPersist
      * @param string $travelRequestId
      * @return TravelRequest
      */
     public function setTravelRequestId($travelRequestId = null)
     {
         $this->travelRequestId = $travelRequestId;
-        #update travel request id on post persist event
-        if (null === $this->travelRequestId) {
-            $this->travelRequestId = str_replace(
-                array('{year}', '{id}'),
-                array(date('y'), sprintf('%05d', $this->id)),
-                $this->trIdPattern
-            );
-        }
         
         return $this;
+    }
+    
+    /**
+     * @ORM\PostPersist
+     */
+    public function setTravelRequestIdOnPostPersist()
+    {
+        $travelRequestId = str_replace(
+            array('{year}', '{id}'),
+            array(date('y'), sprintf('%05d', $this->id)),
+            $this->trIdPattern
+        );
+        
+        // update travel request id on post persist event
+        $this->travelRequestId = $travelRequestId;
     }
 
     /**

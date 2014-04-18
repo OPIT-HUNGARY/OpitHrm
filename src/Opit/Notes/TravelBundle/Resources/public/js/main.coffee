@@ -87,7 +87,7 @@ $.extend true, $(document).data('notes'),
                     .dialog
                         open: ->
                             $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> An error occurred')
-                        width: dialogWidth
+                        width: 550
                         buttons:
                             Close: ->
                                 $(@).dialog 'destroy'

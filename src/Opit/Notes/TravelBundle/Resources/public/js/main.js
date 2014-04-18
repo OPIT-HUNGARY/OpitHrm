@@ -108,7 +108,7 @@
             open: function() {
               return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
             },
-            width: dialogWidth,
+            width: 550,
             buttons: {
               Close: function() {
                 $(this).dialog('destroy');
