@@ -6,6 +6,12 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
+    "repositories": [
+    {
+        "type": "composer",
+        "url": "https://packages.zendframework.com/"
+    }
+    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "~2.4",
@@ -27,7 +33,8 @@
         "stof/doctrine-extensions-bundle": "~1.1",
         "jms/security-extra-bundle": "dev-master",
         "tecnick.com/tcpdf": "6.0.053",
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "3.7.*",
+        "zendframework/zend-ldap": "~2.3"
     },
     "scripts": {
         "post-install-cmd": [

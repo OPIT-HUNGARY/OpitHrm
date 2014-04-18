@@ -48,13 +48,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     private $deletedAt;
-    
+
     /**
      * @ORM\Column(type="string", length=25, unique=true)
      * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
      */
     protected $username;
-    
+
     /**
      * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
@@ -96,7 +96,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\ManyToOne(targetEntity="JobTitle")
      */
     protected $jobTitle;
-    
+
     /**
      * @var string
      *
@@ -145,7 +145,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\JoinTable(name="notes_users_groups")
      */
     protected $groups;
-    
+
     /**
      * User travel requests
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="user", cascade={"remove"})
@@ -163,23 +163,28 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmTravelRequests;
-    
+
     /**
      * Notifications sent by user
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
      */
     protected $notifications;
-    
+
     /**
      * User travel expenses
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelExpense", mappedBy="user", cascade={"remove"})
      */
     protected $userTravelExpenses;
-    
+
     /**
      * @ORM\Column(name="is_first_login", type="boolean")
      */
     protected $isFirstLogin;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $ldapEnabled;
 
     public function __construct()
     {
@@ -200,7 +205,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         return $this->username;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -208,7 +213,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         return $this->email;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -224,7 +229,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         return $this->employeeName;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -291,50 +296,50 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
             $this->id,
         ) = unserialize($serialized);
     }
-    
+
     /**
      * Set username
      *
-     * @param string $username
+     * @param  string $username
      * @return User
      */
     public function setUsername($username)
     {
         $this->username = $username;
-    
+
         return $this;
     }
-    
+
     /**
      * Set employee name
      *
-     * @param string $employeeName
+     * @param  string $employeeName
      * @return User
      */
     public function setEmployeeName($employeeName)
     {
         $this->employeeName = $employeeName;
-    
+
         return $this;
     }
 
     /**
      * Set salt
      *
-     * @param string $salt
+     * @param  string $salt
      * @return User
      */
     public function setSalt($salt)
     {
         $this->salt = $salt;
-    
+
         return $this;
     }
 
     /**
      * Set job
      *
-     * @param string $job
+     * @param  string $job
      * @return User
      */
     public function setJobTitle($jobTitle)
@@ -347,33 +352,33 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Set password
      *
-     * @param string $password
+     * @param  string $password
      * @return User
      */
     public function setPassword($password)
     {
         $this->password = $password;
-    
+
         return $this;
     }
-    
+
     /**
      * Set isActive
      *
-     * @param boolean $isActive
+     * @param  boolean $isActive
      * @return User
      */
     public function setIsActive($isActive)
     {
         $this->isActive = $isActive;
-    
+
         return $this;
     }
 
     /**
      * Set email
      *
-     * @param string $email
+     * @param  string $email
      * @return User
      */
     public function setEmail($email)
@@ -386,20 +391,20 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Set email
      *
-     * @param string $email
+     * @param  string $email
      * @return User
      */
     public function setRoles($role)
     {
         $this->groups[] = $role;
-    
+
         return $this;
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -409,13 +414,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Add groups
      *
-     * @param \Opit\Notes\UserBundle\Entity\Groups $groups
+     * @param  \Opit\Notes\UserBundle\Entity\Groups $groups
      * @return User
      */
     public function addGroup(\Opit\Notes\UserBundle\Entity\Groups $groups)
     {
         $this->groups[] = $groups;
-    
+
         return $this;
     }
 
@@ -432,13 +437,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Get groups
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGroups()
     {
         return $this->groups;
     }
-    
+
     /**
      * Get deletedAt
      *
@@ -462,13 +467,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Set bankAccountNumber
      *
-     * @param string $bankAccountNumber
+     * @param  string $bankAccountNumber
      * @return User
      */
     public function setBankAccountNumber($bankAccountNumber)
     {
         $this->bankAccountNumber = $bankAccountNumber;
-    
+
         return $this;
     }
 
@@ -485,13 +490,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Set bankName
      *
-     * @param string $bankName
+     * @param  string $bankName
      * @return User
      */
     public function setBankName($bankName)
     {
         $this->bankName = $bankName;
-    
+
         return $this;
     }
 
@@ -508,13 +513,13 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * Set taxIdentification
      *
-     * @param integer $taxIdentification
+     * @param  integer $taxIdentification
      * @return User
      */
     public function setTaxIdentification($taxIdentification)
     {
         $this->taxIdentification = $taxIdentification;
-    
+
         return $this;
     }
 
@@ -527,27 +532,50 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     {
         return $this->taxIdentification;
     }
-    
+
     /**
      * Set firstLogin
-     * 
-     * @param boolean $firstLogin
+     *
+     * @param  boolean $firstLogin
      * @return User
      */
     public function setIsFirstLogin($isFirstLogin)
     {
         $this->isFirstLogin = $isFirstLogin;
-        
+
         return $this;
     }
-    
+
     /**
      * Get firstLogin
-     * 
+     *
      * @return boolean
      */
     public function getIsFirstLogin()
     {
         return $this->isFirstLogin;
+    }
+
+    /**
+     * Set ldapEnabled
+     *
+     * @param  boolean $ldapEnabled
+     * @return User
+     */
+    public function setLdapEnabled($ldapEnabled)
+    {
+        $this->ldapEnabled = $ldapEnabled;
+
+        return $this;
+    }
+
+    /**
+     * Get ldapEnabled
+     *
+     * @return boolean
+     */
+    public function isLdapEnabled()
+    {
+        return $this->ldapEnabled;
     }
 }

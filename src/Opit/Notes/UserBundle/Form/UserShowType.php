@@ -54,8 +54,8 @@ class UserShowType extends AbstractType
     /**
      * Builds a form with given fields.
      *
-     * @param object  $builder A Formbuilder interface object
-     * @param array   $options An array of options
+     * @param object $builder A Formbuilder interface object
+     * @param array  $options An array of options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -68,21 +68,21 @@ class UserShowType extends AbstractType
         if (null !== $dataArr) {
             $userId = $dataArr->getId();
         }
-        
+
         // If the current user has admin role then the field will be changeable
         if (true === $isAdmin) {
             $builder->add('username', 'text', array('attr' => array(
                 'placeholder' => 'Username'
             )));
         }
-        
+
         $builder->add('email', 'text', array('attr' => array(
             'placeholder' => 'Email'
         )));
         $builder->add('employeeName', 'text', array('attr' => array(
             'placeholder' => 'Employee Name'
         )));
-        
+
         $tax = $builder->create('taxIdentification', 'integer', array(
             'attr' => array(
                 'placeholder' => 'Tax number'
@@ -95,16 +95,16 @@ class UserShowType extends AbstractType
             $tax->addViewTransformer(new SimpleIntegerToStringTransformer());
         }
         $builder->add($tax);
-        
+
         $builder->add('bankAccountNumber', 'text', array('attr' => array(
             'placeholder' => 'Bank account number'
         )));
         $builder->add('bankName', 'text', array('attr' => array(
             'placeholder' => 'Bank Name'
         )));
-        
+
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
-        
+
         if (true === $isAdmin) {
             $builder->add('groups', 'entity', array(
                 'class' => 'OpitNotesUserBundle:Groups',
@@ -112,16 +112,23 @@ class UserShowType extends AbstractType
                 'multiple' => true,
                 'expanded' => true
             ));
-            
+
             $builder->add('jobTitle', 'entity', array(
                 'class' => 'OpitNotesUserBundle:JobTitle',
                 'property' => 'title',
                 'multiple' => false,
                 'data' => $dataArr->getJobTitle()
             ));
-            
+
             $builder->add('isActive', 'choice', array(
                 'choices' => $this->container->getParameter('notes_user_status')
+            ));
+
+            $builder->add('ldapEnabled', 'choice', array(
+                'choices'   => array('No', 'Yes'),
+                'multiple' => false,
+                'expanded' => true,
+                'data' => $dataArr->isLdapEnabled() || 0
             ));
         }
     }

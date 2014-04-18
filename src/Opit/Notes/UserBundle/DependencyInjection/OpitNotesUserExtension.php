@@ -23,7 +23,15 @@ class OpitNotesUserExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         
         $container->setParameter('opit_notes_user', $config);
-
+        // Check if php's ldap extension is loaded and ldap enabled in bundle config
+        if (extension_loaded('ldap') && (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled'])) {
+            unset($config['ldap']['enabled']);
+            $container->setParameter('ldap', $config['ldap']);
+            
+            $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+            $loader->load('ldap_services.xml');
+        }
+        
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
     }

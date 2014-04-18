@@ -4,12 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-
     <parameters>
         <parameter key="opit.twig.opit_extension.class">Opit\Notes\UserBundle\Twig\OpitExtension</parameter>
         <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
         <parameter key="opit.model.user.class">Opit\Notes\UserBundle\Model\UserService</parameter>
         <parameter key="opit.listener.first_login.class">Opit\Notes\UserBundle\EventListener\FirstLoginListener</parameter>
+        <parameter key="opit.security.ldap_authenticator.class">Opit\Notes\UserBundle\Security\Ldap\LdapAuthenticator</parameter>
     </parameters>
     <services>
         <service id="opit.twig.opit_extension" class="%opit.twig.opit_extension.class%">
@@ -24,5 +24,11 @@
             <argument type="service" id="router" />
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
         </service>
+        <service id="opit.security.ldap_authenticator" class="%opit.security.ldap_authenticator.class%" public="false">
+            <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="opit.manager.ldap_manager" on-invalid="null" />
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+        <service id="ldap" alias="opit.security.ldap_authenticator" />
     </services>
 </container>
