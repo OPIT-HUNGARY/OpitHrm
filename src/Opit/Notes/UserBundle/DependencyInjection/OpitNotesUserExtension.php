@@ -30,6 +30,7 @@ class OpitNotesUserExtension extends Extension
 {
     /**
      * {@inheritDoc}
+     * @throws \LogicException
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -37,8 +38,13 @@ class OpitNotesUserExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         
         $container->setParameter('opit_notes_user', $config);
-        // Check if php's ldap extension is loaded and ldap enabled in bundle config
-        if (extension_loaded('ldap') && (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled'])) {
+        // Check if ldap auth is enabled in bundle config
+        if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
+            // Check for required php extension
+            if (!extension_loaded('ldap')) {
+                throw new \LogicException('LDAP extension missing.');
+            }
+            
             unset($config['ldap']['enabled']);
             $container->setParameter('ldap', $config['ldap']);
             

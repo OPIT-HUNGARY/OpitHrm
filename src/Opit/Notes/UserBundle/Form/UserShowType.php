@@ -124,12 +124,15 @@ class UserShowType extends AbstractType
                 'choices' => $this->container->getParameter('notes_user_status')
             ));
 
-            $builder->add('ldapEnabled', 'choice', array(
-                'choices'   => array('No', 'Yes'),
-                'multiple' => false,
-                'expanded' => true,
-                'data' => $dataArr->isLdapEnabled() || 0
-            ));
+            // Display ldap feature related form inputs
+            if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
+                $builder->add('ldapEnabled', 'choice', array(
+                    'choices'   => array('No', 'Yes'),
+                    'multiple' => false,
+                    'expanded' => true,
+                    'data' => $dataArr->isLdapEnabled() || 0
+                ));
+            }
         }
     }
     /**
