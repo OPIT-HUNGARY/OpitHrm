@@ -19,8 +19,8 @@ use Opit\Notes\UserBundle\Entity\User;
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes
+ * @package Notes
+ * @subpackage UserBundle
  */
 class GroupsRepositoryFunctionalTest extends WebTestCase
 {

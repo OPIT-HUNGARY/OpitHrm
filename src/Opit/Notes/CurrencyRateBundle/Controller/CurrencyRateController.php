@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Opit\Notes\CurrencyRateBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,10 +21,10 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * This controller class is for the ChangeRateBundle.
  *
- * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage CurrrencyRateBundle
+ * @package Notes
+ * @subpackage CurrencyRateBundle
  */
 class CurrencyRateController extends Controller
 {

@@ -10,8 +10,8 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes/UserBundle
+ * @package Notes
+ * @subpackage UserBundle
  */
 class SimpleIntegerToStringTransformerTest extends \PHPUnit_Framework_TestCase
 {

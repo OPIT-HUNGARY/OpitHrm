@@ -18,8 +18,8 @@ use Opit\Notes\UserBundle\Twig\OpitExtension;
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes
+ * @package Notes
+ * @subpackage UserBundle
  */
 class OpitExtensionTest extends \PHPUnit_Framework_TestCase
 {

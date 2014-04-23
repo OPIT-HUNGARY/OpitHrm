@@ -1,13 +1,14 @@
 <?php
 
 /*
- * This file is part of the ChangeRate Bundle
- *
- * (c) Opit Consulting Kft. <info@opit.hu>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
+
 namespace Opit\Notes\CurrencyRateBundle\Service;
 
 use Opit\Notes\CurrencyRateBundle\Entity\Rate;
@@ -21,9 +22,9 @@ use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 /**
  * This class is a service for the ChangeRateBundle to get the exchange rates.
  *
- * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
+ * @package Notes
  * @subpackage CurrencyRateBundle
  */
 class ExchangeRateService implements ExchangeRateInterface

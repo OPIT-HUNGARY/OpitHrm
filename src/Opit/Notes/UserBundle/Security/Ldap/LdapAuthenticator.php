@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Opit\Notes\UserBundle\Security\Ldap;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +23,14 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Psr\Log\LoggerInterface;
 use Zend\Ldap\Ldap;
 
+/**
+ * Description of LdapAuthenticator
+ *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @package Notes
+ * @subpackage UserBundle
+ */
 class LdapAuthenticator implements SimpleFormAuthenticatorInterface
 {
 

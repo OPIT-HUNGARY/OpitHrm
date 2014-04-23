@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of the Travel bundle.
- *
- * (c) Opit Consulting Kft. <info@opit.hu>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\TravelBundle\Entity;
@@ -16,9 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * This class is a container for the travel status workflow.
  *
- * @author OPIT Consulting Kft. - NOTES Team - {@link http://www.opit.hu}
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
+ * @package Notes
  * @subpackage TravelBundle
  *
  * @ORM\Table(name="notes_status_workflow")

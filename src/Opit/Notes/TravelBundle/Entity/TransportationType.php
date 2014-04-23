@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -8,6 +17,11 @@ use \Doctrine\Common\Collections\ArrayCollection;
 /**
  * TransPortationTypes
  *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @package Notes
+ * @subpackage TravelBundle
+ * 
  * @ORM\Table(name="notes_transportation_type")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TransportationTypeRepository")
  */

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -9,6 +18,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * TEPerDiem
  *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @package Notes
+ * @subpackage TravelBundle
+ * 
  * @ORM\Table(name="notes_te_per_diem")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TEPerDiemRepository")
  * @UniqueEntity(fields={"hours"}, message="The hours is already used.")

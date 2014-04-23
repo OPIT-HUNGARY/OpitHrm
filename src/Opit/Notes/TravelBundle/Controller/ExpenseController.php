@@ -1,4 +1,14 @@
 <?php
+
+/*
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
 namespace Opit\Notes\TravelBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,8 +28,8 @@ use Opit\Notes\TravelBundle\Entity\Status;
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes
+ * @package Notes
+ * @subpackage TravelBundle
  */
 class ExpenseController extends Controller
 {

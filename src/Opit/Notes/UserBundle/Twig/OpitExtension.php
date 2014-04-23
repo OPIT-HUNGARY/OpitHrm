@@ -1,13 +1,14 @@
 <?php
 
 /*
- *  This file is part of the Edk bundle.
+ *  This file is part of the {Bundle}.
  * 
  *  (c) Opit Consulting Kft. <info@opit.hu>
  * 
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
+
 namespace Opit\Notes\UserBundle\Twig;
 
 /**
@@ -15,7 +16,8 @@ namespace Opit\Notes\UserBundle\Twig;
  *
  * @author OPIT Consulting Kft. - EDK/TAO Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package OpitNotesUserBundle
+ * @package Notes
+ * @subpackage UserBundle
  */
 class OpitExtension extends \Twig_Extension
 {

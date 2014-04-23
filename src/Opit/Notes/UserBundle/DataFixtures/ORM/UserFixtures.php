@@ -1,12 +1,12 @@
 <?php
 
 /*
- * This file is part of the Notes bundle.
- *
- * (c) Opit Consulting Kft. <info@opit.hu>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ *  This file is part of the {Bundle}.
+ * 
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ * 
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\UserBundle\DataFixtures\ORM;
@@ -21,8 +21,8 @@ use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes
+ * @package Notes
+ * @subpackage UserBundle
  * 
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")

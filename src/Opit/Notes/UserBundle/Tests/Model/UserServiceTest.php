@@ -18,8 +18,8 @@ use Opit\Notes\UserBundle\Model\UserService;
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Opit
- * @subpackage Notes
+ * @package Notes
+ * @subpackage UserBundle
  */
 class UserServiceTest extends \PHPUnit_Framework_TestCase
 {
