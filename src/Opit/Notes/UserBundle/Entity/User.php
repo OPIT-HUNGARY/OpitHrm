@@ -35,7 +35,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity(fields={"username"}, message="The username is already used.", groups={"user"})
  * @UniqueEntity(fields={"email"}, message="The email is already used.", groups={"user"})
- * @UniqueEntity(fields={"employeeName"}, message="The employeeName is already used.", groups={"user"})
  * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.", groups={"user"})
  */
 class User implements UserInterface, \Serializable, TravelRequestUserInterface
@@ -53,7 +52,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     private $deletedAt;
 
     /**
-     * @ORM\Column(type="string", length=25, unique=true)
+     * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
      */
     protected $username;
@@ -83,7 +82,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
+     * @ORM\Column(type="string", length=60)
      * @Assert\NotBlank(message="The email may not be blank.", groups={"password"})
      * @Assert\Email(message = "The email '{{ value }}' is not a valid email address.", groups={"user"})
      */
@@ -131,7 +130,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="tax_identification", type="bigint", unique=true, nullable=true)
+     * @ORM\Column(name="tax_identification", type="bigint", nullable=true)
      * @Assert\NotBlank(message="The tax identification can not be blank.", groups={"user"})
      * @Assert\Range(
      *      min = "1000000000",
