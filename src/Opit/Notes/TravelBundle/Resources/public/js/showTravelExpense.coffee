@@ -577,8 +577,7 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
             .done (data) ->
                 $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
                 $preview.dialog
-                    open: ->
-                        $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Details'
+                    title: '<i class="fa fa-list-alt"></i> Details'
                     close: ->
                         $preview.dialog "destroy"
                     width: 550
@@ -612,8 +611,7 @@ $('#travelRequestPreview').on 'click', ->
         $previewTr = $('<div id="dialog-show-details-tr"></div>');
         $previewTr.html(data)
             .dialog
-                open: ->
-                    $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Details')
+                title: '<i class="fa fa-list-alt"></i> Details'
                 close: ->
                     $previewTr.dialog "destroy"
                 width: 550

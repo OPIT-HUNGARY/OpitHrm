@@ -6,8 +6,7 @@ $(document).ready ->
       .done (data) ->
         $('<div id="dialog-edititem"></div>').html(data)
           .dialog
-              open: ->
-                $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Create User')
+              title: '<i class="fa fa-list-alt"></i> Create User'
               dialogClass: 'popup-dialog'
               width: 750
               modal: on
@@ -53,31 +52,36 @@ $(document).ready ->
         deleteUser()
 
     $('#userlistWrapper').on 'click', '.reset-password', ->
-        userId = $(@).data('user-id');
-        $('<div id="reset-password-dialog"></div>').html(
-            "Are you sure you want to reset <b class='underline'>#{ $(@).closest('tr').find('td:nth-child(4)').html() }'s</b> password ?
-            The user will be informed about new password via email."
-        )
-            .dialog
-                open: ->
-                  $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Reset user password')
-                dialogClass: 'popup-dialog'
-                width: 750
-                modal: on
-                buttons:
-                  Reset: ->
-                    $.ajax
-                        global: false
-                        type: 'POST'
-                        url: Routing.generate 'OpitNotesUserBundle_user_password_reset'
-                        data: 'id': userId
-                    .done (data)->
-                        $('#reset-password-dialog').dialog 'destroy'
-                    .fail (data) ->
-                        console.warn data
-                  Close: ->
-                      $('#reset-password-dialog').dialog 'destroy'
-                      return
+        _self = $(@)
+        userId = _self.data('user-id');
+
+        # Only allow password changes for local users
+        $(document).data('OpitNotesUserBundle').funcs.isLdapUser(userId).done ->
+            $('<div id="reset-password-dialog"></div>').html(
+                "Are you sure you want to reset <b class='underline'>#{ _self.closest('tr').find('.list-username').html() }'s</b> password ?
+                The user will be informed about new password via email."
+            )
+                .dialog
+                    title: '<i class="fa fa-exclamation-triangle"></i> Reset user password'
+                    dialogClass: 'popup-dialog'
+                    width: 750
+                    modal: on
+                    buttons:
+                      Reset: ->
+                        $.ajax
+                            global: false
+                            type: 'POST'
+                            url: Routing.generate 'OpitNotesUserBundle_user_password_reset'
+                            data: 'id': userId
+                        .done (data)->
+                            $('#reset-password-dialog').dialog 'destroy'
+                        .fail (data) ->
+                            console.warn data
+                      Close: ->
+                          $('#reset-password-dialog').dialog 'destroy'
+                          return
+            return
+        return
         
     $('#userlistWrapper').on 'click', 'th .fa-trash-o', ->
         $('.list-delete-user').filter(() -> return not @.disabled).checkAll()

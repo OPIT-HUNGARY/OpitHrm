@@ -5,8 +5,7 @@ $("#addJobTitle").click ->
     .done (data) ->
         $('<div id="dialog-editjobtitle"></div>').html(data)
             .dialog
-                open: ->
-                    $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Create job title'
+                title: '<i class="fa fa-list-alt"></i> Create job title'
                 width: 750
                 modal: on
                 buttons:
@@ -42,8 +41,7 @@ $("#list-table").on "click", ".list-jobtitle", ->
     .done (data) ->
         $('<div id="dialog-editjobtitle"></div>').html(data)
             .dialog
-                open: ->
-                    $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Edit job title'
+                title: '<i class="fa fa-list-alt"></i> Edit job title'
                 width: 750
                 modal: on
                 buttons:

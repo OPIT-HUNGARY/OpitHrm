@@ -183,7 +183,17 @@ $.fn.datepicker = (options) ->
         $self.before defaultOptions.wrapper
         $self.prev().append defaultOptions.indicatorIcon
     return $self
-    
+
+# Fix to allow dialog to pass html strings for title option
+$.widget "ui.dialog", $.extend {}, $.ui.dialog.prototype, {
+    _title: (title) ->
+        if not @options.title
+            title.html "&#160;"
+        else
+            title.html @options.title
+        return
+}
+
 __dialog = $.fn.dialog
 
 $.fn.dialog = (options) ->
@@ -202,8 +212,7 @@ $(document).ajaxError (event, request, settings) ->
         loginUrl = Routing.generate 'OpitNotesUserBundle_security_login'
         $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html "Your session has timed out please <a href='#{ loginUrl }'>login</a> again."
         $sessionTimeout.dialog
-            open: ->
-                $('.ui-dialog-title').append '<i class="fa fa-exclamation-circle"></i> Session timeout'
+            title: '<i class="fa fa-exclamation-circle"></i> Session timeout'
             width: 550
             maxHeight: $(window).outerHeight()-100
             modal: on

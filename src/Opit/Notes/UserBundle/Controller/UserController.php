@@ -344,6 +344,22 @@ class UserController extends Controller
     }
 
     /**
+     * Returns if the given user has ldap auth enabled
+     *
+     * @Route("/secured/user/ldap/enabled", name="OpitNotesUserBundle_user_ldap_enabled")
+     * @Method({"POST"})
+     * @Secure(roles="ROLE_USER")
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function isLdapUser()
+    {
+        $user = $this->getUserObject();
+
+        return new JsonResponse(array('ldap_enabled' => $user->isldapEnabled()));
+    }
+
+    /**
      * Gets a user object
      *
      * @param integer $id

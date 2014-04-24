@@ -581,9 +581,7 @@
           var $preview;
           $preview = $('<div id="dialog-travelrequest-preview"></div>').html(data);
           return $preview.dialog({
-            open: function() {
-              return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
-            },
+            title: '<i class="fa fa-list-alt"></i> Details',
             close: function() {
               return $preview.dialog("destroy");
             },
@@ -629,9 +627,7 @@
       var $previewTr;
       $previewTr = $('<div id="dialog-show-details-tr"></div>');
       $previewTr.html(data).dialog({
-        open: function() {
-          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Details');
-        },
+        title: '<i class="fa fa-list-alt"></i> Details',
         close: function() {
           return $previewTr.dialog("destroy");
         },

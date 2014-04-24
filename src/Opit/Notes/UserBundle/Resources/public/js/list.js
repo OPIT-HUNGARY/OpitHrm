@@ -10,9 +10,7 @@
         })
       }).done(function(data) {
         $('<div id="dialog-edititem"></div>').html(data).dialog({
-          open: function() {
-            return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Create User');
-          },
+          title: '<i class="fa fa-list-alt"></i> Create User',
           dialogClass: 'popup-dialog',
           width: 750,
           modal: true,
@@ -69,34 +67,35 @@
       return deleteUser();
     });
     $('#userlistWrapper').on('click', '.reset-password', function() {
-      var userId;
-      userId = $(this).data('user-id');
-      return $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + ($(this).closest('tr').find('td:nth-child(4)').html()) + "'s</b> password ? The user will be informed about new password via email.").dialog({
-        open: function() {
-          return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Reset user password');
-        },
-        dialogClass: 'popup-dialog',
-        width: 750,
-        modal: true,
-        buttons: {
-          Reset: function() {
-            return $.ajax({
-              global: false,
-              type: 'POST',
-              url: Routing.generate('OpitNotesUserBundle_user_password_reset'),
-              data: {
-                'id': userId
-              }
-            }).done(function(data) {
-              return $('#reset-password-dialog').dialog('destroy');
-            }).fail(function(data) {
-              return console.warn(data);
-            });
-          },
-          Close: function() {
-            $('#reset-password-dialog').dialog('destroy');
+      var userId, _self;
+      _self = $(this);
+      userId = _self.data('user-id');
+      $(document).data('OpitNotesUserBundle').funcs.isLdapUser(userId).done(function() {
+        $('<div id="reset-password-dialog"></div>').html("Are you sure you want to reset <b class='underline'>" + (_self.closest('tr').find('.list-username').html()) + "'s</b> password ? The user will be informed about new password via email.").dialog({
+          title: '<i class="fa fa-exclamation-triangle"></i> Reset user password',
+          dialogClass: 'popup-dialog',
+          width: 750,
+          modal: true,
+          buttons: {
+            Reset: function() {
+              return $.ajax({
+                global: false,
+                type: 'POST',
+                url: Routing.generate('OpitNotesUserBundle_user_password_reset'),
+                data: {
+                  'id': userId
+                }
+              }).done(function(data) {
+                return $('#reset-password-dialog').dialog('destroy');
+              }).fail(function(data) {
+                return console.warn(data);
+              });
+            },
+            Close: function() {
+              $('#reset-password-dialog').dialog('destroy');
+            }
           }
-        }
+        });
       });
     });
     $('#userlistWrapper').on('click', 'th .fa-trash-o', function() {

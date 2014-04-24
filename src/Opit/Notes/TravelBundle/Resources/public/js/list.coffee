@@ -9,8 +9,7 @@ $(document).ready ->
             dialogWidth = 550
             $('<div id="dialog-show-details-tr"></div>').html(data)
                 .dialog
-                    open: ->
-                        $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
+                    title: '<i class="fa fa-book"></i> Status history'
                     width: dialogWidth
                     maxHeight: $(window).outerHeight()-100
                     modal: on
@@ -32,8 +31,7 @@ $(document).ready ->
         dialogWidth = 550
         $('<div id="dialog-show-details-tr"></div>').html(data)
           .dialog
-            open: ->
-              $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Details')
+            title: '<i class="fa fa-list-alt"></i> Details'
             width: dialogWidth
             maxHeight: $(window).outerHeight()-100
             modal: on

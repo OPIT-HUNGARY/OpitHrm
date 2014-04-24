@@ -16,9 +16,7 @@
       },
       changeStateDialog: function($dropdown, callback, travelId) {
         return $('<div></div>').html("Change the status of travel from '" + ($dropdown.find('option:nth-child(1)').text().toLowerCase()) + "' to '" + ($dropdown.find('option:selected').text().toLowerCase()) + "' ?").dialog({
-          open: function() {
-            return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Travel status change');
-          },
+          title: '<i class="fa fa-exclamation-triangle"></i> Travel status change',
           buttons: {
             Yes: function() {
               $(this).dialog('destroy');
@@ -52,9 +50,7 @@
           $spinner.remove();
           $changeState = $('.changeState[data-tr="' + travelExpenseId + '"]').removeClass('dropdown-disabled').prop('selectedIndex', 0);
           return $('<div id="dialog-tr-error"></div>').html('Status could not be changed due to an error.').dialog({
-            open: function() {
-              return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
-            },
+            title: '<i class="fa fa-exclamation-triangle"></i> An error occurred',
             width: 550,
             buttons: {
               Close: function() {
@@ -82,9 +78,7 @@
         }).done(function(data) {
           if (data === 'error') {
             return $('<div id="dialog-tr-error"></div>').html('You cannot change the status of the travel request because it has been already changed.').dialog({
-              open: function() {
-                return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed');
-              },
+              title: '<i class="fa fa-exclamation-triangle"></i> Status cannot be changed',
               width: 550,
               buttons: {
                 Reload: function() {
@@ -105,9 +99,7 @@
           $spinner.remove();
           $changeState = $('.changeState[data-tr="' + travelRequestId + '"]').removeClass('dropdown-disabled').prop('selectedIndex', 0);
           return $('<div id="dialog-tr-error"></div>').html('Status could not be changed due to an error.').dialog({
-            open: function() {
-              return $('.ui-dialog-title').append('<i class="fa fa-exclamation-triangle"></i> An error occurred');
-            },
+            title: '<i class="fa fa-exclamation-triangle"></i> An error occurred',
             width: 550,
             buttons: {
               Close: function() {
@@ -128,9 +120,7 @@
           }
         }).done(function(data) {
           $('<div id="dialog-show-details-tr"></div>').html(data).dialog({
-            open: function() {
-              return $('.ui-dialog-title').append('<i class="fa fa-book"></i> Status history');
-            },
+            title: '<i class="fa fa-book"></i> Status history',
             width: 550,
             maxHeight: $(window).outerHeight() - 100,
             modal: true,

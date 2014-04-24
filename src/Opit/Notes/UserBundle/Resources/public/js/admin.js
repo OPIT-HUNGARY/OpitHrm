@@ -10,9 +10,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editjobtitle"></div>').html(data).dialog({
-        open: function() {
-          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Create job title');
-        },
+        title: '<i class="fa fa-list-alt"></i> Create job title',
         width: 750,
         modal: true,
         buttons: {
@@ -63,9 +61,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editjobtitle"></div>').html(data).dialog({
-        open: function() {
-          return $('.ui-dialog-title').append('<i class="fa fa-list-alt"></i> Edit job title');
-        },
+        title: '<i class="fa fa-list-alt"></i> Edit job title',
         width: 750,
         modal: true,
         buttons: {

@@ -241,8 +241,7 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
         .done (data) ->
             $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
             $preview.dialog
-                open: ->
-                    $('.ui-dialog-title').append '<i class="fa fa-list-alt"></i> Details'
+                title: '<i class="fa fa-list-alt"></i> Details'
                 close: ->
                     $preview.dialog "destroy"
                 width: 550

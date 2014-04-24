@@ -10,8 +10,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
           .done (data) ->
             $('<div id="dialog-edititem"></div>').html(data)
               .dialog
-                  open: ->
-                    $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Edit User')
+                  title: '<i class="fa fa-list-alt"></i> Edit User'
                   modal: on
                   width: 710
                   buttons:
@@ -48,6 +47,27 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                        return
               return
             return
+        isLdapUser: (userId) ->
+            df = $.Deferred();
+            $.ajax
+                type: 'POST'
+                url: Routing.generate 'OpitNotesUserBundle_user_ldap_enabled'
+                data: 'id': userId
+            .done (data)->
+                if data.ldap_enabled is on
+                    $('<div id="ldap-password-dialog"></div>').html("This feature is not supported for LDAP users. Please, kindly turn to your system administrator for help.")
+                        .dialog
+                            width: 500
+                            title: '<i class="fa fa-exclamation-triangle"></i> Unsupported feature'
+                            close: ->
+                                $(@).dialog 'destroy'
+                                return
+                    df.fail()
+                else
+                    df.resolve()
+                return
+
+            return df
 
 $subMenuClone = {}
 subMenuCloneClass = '.subMenuClone'
@@ -240,33 +260,38 @@ $(document).ready ->
                         
         $('#changePassword').on 'click', ->
             id = $(@).attr "data-user-id"
-            $.ajax
-                method: 'GET'
-                url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
-            .done (data) ->
-                $('<div id="password-dialog"></div>').html(data)
-                .dialog
-                    open: ->
-                        $('.ui-dialog-title').append ('<i class="fa fa-list-alt"></i> Reset Password')
-                        $(@).html(data)
-                    width: 500
-                    modal: on
-                    buttons:
-                        Save: ->
-                            $.ajax
-                                type: 'POST'
-                                global: false
-                                url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
-                                data: $('#changePassword_frm').serialize()
-                            .done (data)->
+
+            # Only allow password changes for local users
+            $(document).data('OpitNotesUserBundle').funcs.isLdapUser(id).done ->
+                $.ajax
+                    method: 'GET'
+                    url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
+                .done (data) ->
+                    $('<div id="password-dialog"></div>').html(data)
+                    .dialog
+                        title: '<i class="fa fa-list-alt"></i> Reset Password'
+                        open: ->
+                            $(@).html(data)
+                        width: 600
+                        modal: on
+                        buttons:
+                            Save: ->
+                                $.ajax
+                                    type: 'POST'
+                                    global: false
+                                    url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
+                                    data: $('#changePassword_frm').serialize()
+                                .done (data)->
+                                    $('#password-dialog').dialog 'destroy'
+                                    $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
+                                .fail (data) ->
+                                    data = $.parseJSON data.responseText
+                                    $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
+                            Close: ->
                                 $('#password-dialog').dialog 'destroy'
-                                $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
-                            .fail (data) ->
-                                data = $.parseJSON data.responseText
-                                $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
-                        Close: ->
-                            $('#password-dialog').dialog 'destroy'
-                            return
+                                return
+                return
+            return
                 
 
 

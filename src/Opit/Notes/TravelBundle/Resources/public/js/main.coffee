@@ -14,8 +14,7 @@ $.extend true, $(document).data('notes'),
     
         changeStateDialog: ($dropdown, callback, travelId) ->
             $('<div></div>').html("Change the status of travel from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
-                open: ->
-                    $('.ui-dialog-title').append '<i class="fa fa-exclamation-triangle"></i> Travel status change'
+                title: '<i class="fa fa-exclamation-triangle"></i> Travel status change'
                 buttons:
                     Yes: ->
                         $(@).dialog 'destroy'
@@ -43,8 +42,7 @@ $.extend true, $(document).data('notes'),
                                 .prop 'selectedIndex', 0
                 $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'
                     .dialog
-                        open: ->
-                            $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> An error occurred')
+                        title: '<i class="fa fa-exclamation-triangle"></i> An error occurred'
                         width: 550
                         buttons:
                             Close: ->
@@ -65,8 +63,7 @@ $.extend true, $(document).data('notes'),
                 if data is 'error'
                     $('<div id="dialog-tr-error"></div>').html('You cannot change the status of the travel request because it has been already changed.')
                         .dialog
-                            open: ->
-                                $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> Status cannot be changed')
+                            title: '<i class="fa fa-exclamation-triangle"></i> Status cannot be changed'
                             width: 550
                             buttons:
                                 Reload: ->
@@ -85,8 +82,7 @@ $.extend true, $(document).data('notes'),
                                 .prop 'selectedIndex', 0
                 $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'
                     .dialog
-                        open: ->
-                            $('.ui-dialog-title').append ('<i class="fa fa-exclamation-triangle"></i> An error occurred')
+                        title: '<i class="fa fa-exclamation-triangle"></i> An error occurred'
                         width: 550
                         buttons:
                             Close: ->
@@ -101,8 +97,7 @@ $.extend true, $(document).data('notes'),
             .done (data) ->
                 $('<div id="dialog-show-details-tr"></div>').html(data)
                     .dialog
-                        open: ->
-                            $('.ui-dialog-title').append ('<i class="fa fa-book"></i> Status history')
+                        title: '<i class="fa fa-book"></i> Status history'
                         width: 550
                         maxHeight: $(window).outerHeight()-100
                         modal: on

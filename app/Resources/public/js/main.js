@@ -212,6 +212,16 @@
     return $self;
   };
 
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+      if (!this.options.title) {
+        title.html("&#160;");
+      } else {
+        title.html(this.options.title);
+      }
+    }
+  }));
+
   __dialog = $.fn.dialog;
 
   $.fn.dialog = function(options) {
@@ -236,9 +246,7 @@
       loginUrl = Routing.generate('OpitNotesUserBundle_security_login');
       $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html("Your session has timed out please <a href='" + loginUrl + "'>login</a> again.");
       return $sessionTimeout.dialog({
-        open: function() {
-          return $('.ui-dialog-title').append('<i class="fa fa-exclamation-circle"></i> Session timeout');
-        },
+        title: '<i class="fa fa-exclamation-circle"></i> Session timeout',
         width: 550,
         maxHeight: $(window).outerHeight() - 100,
         modal: true,
