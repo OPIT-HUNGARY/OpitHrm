@@ -26,10 +26,7 @@
             <tr>
                 <td class="width-24-fix">
                     {% if attribute(value, 'Role') is defined %}
-                        {% if attribute(value, 'Role') == 'ROLE_ADMIN' or attribute(value, 'Role') == 'ROLE_USER'
-                            or attribute(value, 'Role') == 'ROLE_TEAM_MANAGER' or attribute(value, 'Role') == 'ROLE_GENERAL_MANAGER'
-                            or attribute(value, 'Role') == 'ROLE_STAKEHOLDER' or attribute(value, 'Role') == 'ROLE_PAYROLL'
-                            or attribute(value, 'Role') == 'ROLE_FINANCE' %}
+                        {% if attribute(value, 'Role') in security_roles|merge(['ROLE_STAKEHOLDER', 'ROLE_PAYROLL', 'ROLE_FINANCE']) %}
                             <i class="fa fa-cog darker-gray-color" title="System role"></i>
                         {% else %}
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
@@ -51,12 +48,10 @@
                             {{ attribute(value, propertyName)|join(', ') }}
                         </span>
                     </td>
-                {% elseif propertyName == 'isActive' %}
-                    {% if attribute(value, propertyName) == 1 %}
-                        <td>Active</td>
-                    {% else %}
-                        <td>Inactive</td>
-                    {% endif %}
+                {% elseif propertyName in ['isActive', 'ldapEnabled'] %}
+                    <td>
+                        {% if attribute(value, propertyName) == 1 %}<i class="fa fa-check font-size-d8-em"></i>{% endif %}
+                    </td>
                 {% else %}
                     {% if 'role' != propertyName %}
                         <td>{{ attribute(value, propertyName) }}</td>
@@ -88,13 +83,7 @@
                     {% endset %}
                     
                     {% if attribute(value, 'Role') is defined %}
-                        {% if attribute(value, 'Role') != 'ROLE_ADMIN' and
-                            attribute(value, 'Role') != 'ROLE_USER' and
-                            attribute(value, 'Role') != 'ROLE_TEAM_MANAGER' and
-                            attribute(value, 'Role') != 'ROLE_GENERAL_MANAGER' and
-                            attribute(value, 'Role') != 'ROLE_STAKEHOLDER' and
-                            attribute(value, 'Role') != 'ROLE_PAYROLL' and
-                            attribute(value, 'Role') != 'ROLE_FINANCE' and
+                        {% if attribute(value, 'Role') not in security_roles|merge(['ROLE_STAKEHOLDER', 'ROLE_PAYROLL', 'ROLE_FINANCE']) and
                             attribute(value, 'id') not in disabledRoles %}
                             {{ actionIcons }}
                         {% endif %}

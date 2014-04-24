@@ -57,7 +57,8 @@ class OpitExtension extends \Twig_Extension
     public function getGlobals()
     {
         return array(
-            'ldap_enabled' => $this->container->hasParameter('ldap_enabled')
+            'ldap_enabled' => $this->container->hasParameter('ldap_enabled'),
+            'security_roles' => array_keys($this->container->getParameter('security.role_hierarchy.roles'))
         );
     }
 

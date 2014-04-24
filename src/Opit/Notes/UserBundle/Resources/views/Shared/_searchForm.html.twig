@@ -18,6 +18,14 @@
                 <label for="search_employee_name">Employee name</label>
                 <input type="text" name="search[employeeName]" id="search_employee_name" />
             </div>
+            <div class="searchProperty">
+                <label for="search_ldap_enabled">Ldap enabled</label>
+                <select name="search[ldapEnabled]" id="search_ldap_enabled">
+                    <option value="NULL">Any</option>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
         </div>
         <div id="searchFormButtons">
             <button class="button search" id="searchButton" type="submit"><i class="fa fa-search"></i>Search</button>

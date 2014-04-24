@@ -184,7 +184,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     protected $isFirstLogin;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="boolean", options={"default":false})
      */
     protected $ldapEnabled;
 

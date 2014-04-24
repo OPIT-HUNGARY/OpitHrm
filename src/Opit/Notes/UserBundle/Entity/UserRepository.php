@@ -147,7 +147,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $oderParams = isset($parameters['order']) ? $parameters['order'] : array();
         
         foreach ($whereParams as $key => $value) {
-            if ($value != '') {
+            // To workaround empty form posts for search criteria expecting no values, the "NULL" value can be used.
+            // Posted NULL values will be excluded from search.
+            if ($value != '' && $value != 'NULL') {
                 $params[':'.$key] = '%'.$value.'%';
                 $andx[] = $qb->expr()->andX($qb->expr()->like('u.'.$key, ':'.$key));
             }

@@ -82,12 +82,13 @@ class UserController extends Controller
                 "email" => $user->getEmail(),
                 "employeeName" => $user->getEmployeeName(),
                 "isActive" => $user->getIsActive(),
+                "ldapEnabled" => $user->isLdapEnabled(),
                 "roles" => $roles
             );
         }
         
         $numberOfPages = ceil(count($users) / $config['max_results']);
-        $propertyNames = array("username", "email", "employeeName", "isActive", "roles");
+        $propertyNames = array("username", "email", "employeeName", "isActive", "ldapEnabled", "roles");
         
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $config['max_pager_pages'];
