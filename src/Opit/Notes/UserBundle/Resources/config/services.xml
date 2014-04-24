@@ -13,6 +13,7 @@
     </parameters>
     <services>
         <service id="opit.twig.opit_extension" class="%opit.twig.opit_extension.class%">
+            <argument type="service" id="service_container" />
             <tag name="twig.extension" />
         </service>
         <service id="opit.model.user" class="%opit.model.user.class%">

@@ -44,8 +44,11 @@ class OpitNotesUserExtension extends Extension
             if (!extension_loaded('ldap')) {
                 throw new \LogicException('LDAP extension missing.');
             }
-            
+
+            $container->setParameter('ldap_enabled', $config['ldap']['enabled']);
+
             unset($config['ldap']['enabled']);
+            // Used by the ldap authenticator service
             $container->setParameter('ldap', $config['ldap']);
             
             $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

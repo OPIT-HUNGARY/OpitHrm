@@ -45,6 +45,9 @@
                 v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}
             {%- endif %}</a>
             &nbsp;-&nbsp;
+            {% if ldap_enabled is defined and ldap_enabled %}
+                LDAP <i class="fa fa-check"></i>&nbsp;-&nbsp;
+            {% endif %}
             <span>An initiative of <a href="http://www.opit.hu" class="color-dark-grey" target="_blank">OPIT Consulting KFT</a>, Hungary</span>
         </footer>
         {% endblock %}
