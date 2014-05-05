@@ -1,0 +1,47 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    Team list - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'teamForm';
+        var valueField = 'team';
+        var url = 'OpitNotesUserBundle_admin_teams_show';
+        var removeUrl = 'OpitNotesUserBundle_admin_teams_delete';
+        var propertyName = 'team';
+        var propertyNameCapital = 'Team';
+    </script>
+    {% javascripts
+        '@OpitNotesUserBundle/Resources/public/js/Admin/et_role_funcs.js'
+        output='js/notes_admin_teams_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+<h1>Team list</h1>
+    <table>
+        <tr>
+            <td class="padding-0">
+                <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
+        'propertyNames': propertyNames,
+        'propertyValues': propertyValues
+        } %}
+    {% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
+        'fieldName': 'team',
+        'fieldLabel': 'Team name'
+    } %}
+{% endblock %}

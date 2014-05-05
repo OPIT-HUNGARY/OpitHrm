@@ -1,4 +1,35 @@
 <?php
+/*
+ * The MIT License
+ *
+ * Copyright 2014 Marton Kaufmann <kaufmann@opit.hu>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+/**
+ * Description of Teams
+ *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @package Opit
+ * @subpackage Notes
+ */
 
 namespace Opit\Notes\UserBundle\Entity;
 
@@ -7,7 +38,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Employee
  *
- * @ORM\Table()
+ * @ORM\Table(name="notes_employees")
  * @ORM\Entity
  */
 class Employee
@@ -19,7 +50,7 @@ class Employee
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id; 
+    private $id;
     
     /**
      * @var \DateTime
@@ -41,6 +72,12 @@ class Employee
      * @ORM\Column(name="numberOfKids", type="smallint")
      */
     private $numberOfKids;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="Teams", inversedBy="employee")
+     * @ORM\JoinTable(name="notes_employees_teams")
+     */
+    protected $teams;
 
 
     /**
@@ -120,5 +157,38 @@ class Employee
     public function getNumberOfKids()
     {
         return $this->numberOfKids;
+    }
+    
+    /**
+     * Get teams
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTeams()
+    {
+        return $this->teams;
+    }
+    
+    /**
+     * Add teams
+     *
+     * @param  \Opit\Notes\UserBundle\Entity\Teams $teams
+     * @return User
+     */
+    public function addTeam(\Opit\Notes\UserBundle\Entity\Teams $teams)
+    {
+        $this->teams[] = $teams;
+
+        return $this;
+    }
+
+    /**
+     * Remove teams
+     *
+     * @param \Opit\Notes\UserBundle\Entity\Teams $teams
+     */
+    public function removeTeam(\Opit\Notes\UserBundle\Entity\Teams $teams)
+    {
+        $this->teams->removeElement($teams);
     }
 }

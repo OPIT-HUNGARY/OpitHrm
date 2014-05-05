@@ -20,6 +20,7 @@ use Opit\Notes\UserBundle\Entity\JobTitle;
 use Opit\Notes\UserBundle\Form\JobTitleType;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\UserBundle\Entity\Groups;
+use Opit\Notes\UserBundle\Entity\Teams;
 
 /**
  * Description of AdminController
@@ -289,7 +290,7 @@ class AdminUserController extends Controller
             } else {
                 $userRelatedGroup[] = $group->getName();
             }
-        }        
+        }
         
         $entityManager->flush();
         
@@ -300,6 +301,68 @@ class AdminUserController extends Controller
         }
         
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
+    }
+    
+    /**
+     * @Route("/secured/admin/teams/list", name="OpitNotesUserBundle_admin_teams_list")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function teamsListAction()
+    {
+        return $this->render('OpitNotesUserBundle:Admin:teamsList.html.twig', $this->getAllTeams());
+    }
+    
+    /**
+     * @Route("/secured/admin/teams/show/{id}", name="OpitNotesUserBundle_admin_teams_show", requirements={ "id" = "new|\d+"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function teamsShowAction()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $teamId = $request->attributes->get('id');
+        
+        if ('new' === $teamId) {
+            $team = new Teams();
+        } else {
+            $team = $entityManager->getRepository('OpitNotesUserBundle:Teams')->find($teamId);
+        }
+        
+        $team->setTeamName($request->request->get('value'));
+        $entityManager->persist($team);
+
+        $entityManager->flush();
+        
+        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
+    }
+    
+    /**
+     * @Route("/secured/admin/teams/delete", name="OpitNotesUserBundle_admin_teams_delete")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function deleteTeamAction()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $teamId = $this->getRequest()->request->get('id');
+        
+        if (!is_array($teamId)) {
+            $teamId = array($teamId);
+        }
+        foreach ($teamId as $id) {
+            $team = $entityManager->getRepository('OpitNotesUserBundle:Teams')->find($id);
+            if (0 === count($team->getEmployees())) {
+                $entityManager->remove($team);
+            }
+        }
+        
+        $entityManager->flush();
+        
+        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
     }
     
     /**
@@ -328,5 +391,21 @@ class AdminUserController extends Controller
             'disabledRoles' => $disabledRoles,
             'numberOfRelations' => $numberOfRelations
         );
-    }    
+    }
+    
+    protected function getAllTeams()
+    {
+        $numberOfRelations = array();
+        $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Teams')->findAll();
+        
+        foreach ($teams as $team) {
+            $numberOfRelations[$team->getId()] = count($team->getEmployees());
+        }
+        
+        return array(
+            'propertyNames' => array('id', 'teamName'),
+            'propertyValues' => $teams,
+            'numberOfRelations' => $numberOfRelations
+        );
+    }
 }

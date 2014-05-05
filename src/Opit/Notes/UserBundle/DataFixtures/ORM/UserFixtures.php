@@ -51,6 +51,7 @@ class UserFixtures extends AbstractDataFixture
         } else {
             $testAdmin->setIsFirstLogin(1);
         }
+        $testAdmin->setLdapEnabled(0);
         $testAdmin->addGroup($this->getReference('admin-group'));
         $testAdmin->setBankAccountNumber('11112222-99999999-99999999');
         $testAdmin->setBankName('Fictive Bank');
@@ -64,6 +65,7 @@ class UserFixtures extends AbstractDataFixture
                 $password = $encoder->encodePassword('test' . $i . 'Password', '');
                 $testUser->setPassword($password);
                 $testUser->setSalt('');
+                $testUser->setLdapEnabled(0);
                 $testUser->setEmail('mymail' . $i . '@mail.com');
                 $testUser->setEmployeeName('empname' . $i);
                 $testUser->setIsActive(1);
@@ -89,6 +91,7 @@ class UserFixtures extends AbstractDataFixture
             $testTeamManager->addGroup($this->getReference('user-group'));
             $testTeamManager->setBankAccountNumber('11112222-99999999-99999999');
             $testTeamManager->setBankName('Fictive Bank');
+            $testTeamManager->setLdapEnabled(0);
             $testTeamManager->setTaxIdentification('8888188888');
             $manager->persist($testTeamManager);
 
@@ -105,6 +108,7 @@ class UserFixtures extends AbstractDataFixture
             $testGeneralManager->addGroup($this->getReference('user-group'));
             $testGeneralManager->setBankAccountNumber('11112222-99999999-99999999');
             $testGeneralManager->setBankName('Fictive Bank');
+            $testGeneralManager->setLdapEnabled(0);
             $testGeneralManager->setTaxIdentification('8888888288');
             $manager->persist($testGeneralManager);
             
@@ -120,6 +124,7 @@ class UserFixtures extends AbstractDataFixture
             $user->addGroup($this->getReference('user-group'));
             $user->setBankAccountNumber('11112222-99999999-11999999');
             $user->setBankName('Fictive Bank');
+            $user->setLdapEnabled(0);
             $user->setTaxIdentification('8888888211');
             $manager->persist($user);
             
