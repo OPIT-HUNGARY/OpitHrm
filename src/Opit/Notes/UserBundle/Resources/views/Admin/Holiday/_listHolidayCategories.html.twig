@@ -1,0 +1,37 @@
+<form  class="form-holidaycategory">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            {% set orderIcon %}
+                <i class="fa fa-sort default-right"></i>
+            {% endset %}
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Description</span>
+            </th>
+            <th>Actions</th>
+        </tr>
+        {% for holidayCategory in holidayCategories %}
+        <tr class="clickableTableRow">
+            <td>
+                <input name="delete-holidaycategory[]" type="checkbox" class="list-delete-holidaycategory" value="{{ holidayCategory.id }}">
+            </td>
+            <td data-tr-id='{{ holidayCategory.id }}'>{{ holidayCategory.id }}</td>
+            <td><span class="list-holidaycategory clickable" data-id="{{ holidayCategory.id }}">{{ holidayCategory.name }}</span></td>
+            <td>{{ holidayCategory.description|slice(0,80) }}{% if holidayCategory.description|length > 80 %}{{ '...' }}{% endif %}</td>
+            <td>
+                <a href="#" class="list-holidaycategory" data-id="{{ holidayCategory.id }}" title="Edit job title"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" data-id="{{ holidayCategory.id }}" class="delete-single-holidaycategory" title="Delete job title"><i class="fa fa-trash-o"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
