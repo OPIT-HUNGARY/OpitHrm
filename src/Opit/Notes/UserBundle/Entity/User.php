@@ -58,6 +58,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     protected $username;
 
     /**
+     * @ORM\OneToOne(targetEntity="Employee")
+     * @ORM\JoinColumn(name="employee", referencedColumnName="id")
+     */
+    protected $employee;
+    
+    /**
      * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
      */
@@ -558,6 +564,18 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
         return $this->isFirstLogin;
     }
 
+    public function setEmployee($employee)
+    {
+        $this->employee = $employee;
+        
+        return $this;
+    }
+    
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+    
     /**
      * Set ldapEnabled
      *
