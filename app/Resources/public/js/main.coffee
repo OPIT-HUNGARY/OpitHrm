@@ -207,8 +207,8 @@ $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)
     $("##{id[1]} *[title]").tipsy() if id?[1]?
     
-$(document).ajaxError (event, request, settings) ->
-    if window.location.href.indexOf('login') <= -1 and 403 is request.status
+$(document).ajaxError (event, request, settings, thrownError) ->
+    if window.location.href.indexOf('login') <= -1 and 401 is request.status
         loginUrl = Routing.generate 'OpitNotesUserBundle_security_login'
         $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html "Your session has timed out please <a href='#{ loginUrl }'>login</a> again."
         $sessionTimeout.dialog
@@ -219,6 +219,24 @@ $(document).ajaxError (event, request, settings) ->
             buttons:
                 Login: ->
                     window.location.href = loginUrl
+    else
+        serverMessage = request.responseText.match /<h1[^>]*>((?:.|\r?\n)*?)<\/h1>/
+        message = "<h2 class=\"dialog-h2\">#{ thrownError }</h2>"
+
+        if null isnt serverMessage
+            message += "<p>#{ serverMessage[1] }</p>"
+
+        $('<div id="dialog-error"></div>').html(message).dialog
+            title: '<i class="fa fa-warning"></i> Error occured'
+            width: 500
+            buttons:
+                Close: ->
+                    $(@).dialog "destroy"
+                    return
+            close: ->
+                $(@).dialog "destroy"
+                return
+    return
 
 # Secret weather app feature ;)
 $(document).keydown (e) ->

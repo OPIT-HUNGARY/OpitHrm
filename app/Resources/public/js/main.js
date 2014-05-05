@@ -240,12 +240,12 @@
     }
   });
 
-  $(document).ajaxError(function(event, request, settings) {
-    var $sessionTimeout, loginUrl;
-    if (window.location.href.indexOf('login') <= -1 && 403 === request.status) {
+  $(document).ajaxError(function(event, request, settings, thrownError) {
+    var $sessionTimeout, loginUrl, message, serverMessage;
+    if (window.location.href.indexOf('login') <= -1 && 401 === request.status) {
       loginUrl = Routing.generate('OpitNotesUserBundle_security_login');
       $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html("Your session has timed out please <a href='" + loginUrl + "'>login</a> again.");
-      return $sessionTimeout.dialog({
+      $sessionTimeout.dialog({
         title: '<i class="fa fa-exclamation-circle"></i> Session timeout',
         width: 550,
         maxHeight: $(window).outerHeight() - 100,
@@ -254,6 +254,24 @@
           Login: function() {
             return window.location.href = loginUrl;
           }
+        }
+      });
+    } else {
+      serverMessage = request.responseText.match(/<h1[^>]*>((?:.|\r?\n)*?)<\/h1>/);
+      message = "<h2 class=\"dialog-h2\">" + thrownError + "</h2>";
+      if (null !== serverMessage) {
+        message += "<p>" + serverMessage[1] + "</p>";
+      }
+      $('<div id="dialog-error"></div>').html(message).dialog({
+        title: '<i class="fa fa-warning"></i> Error occured',
+        width: 500,
+        buttons: {
+          Close: function() {
+            $(this).dialog("destroy");
+          }
+        },
+        close: function() {
+          $(this).dialog("destroy");
         }
       });
     }

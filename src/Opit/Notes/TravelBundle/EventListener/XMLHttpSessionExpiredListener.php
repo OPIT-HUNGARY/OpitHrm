@@ -33,9 +33,9 @@ class XMLHttpSessionExpiredListener
         
         if (false === strpos($event->getRequest()->getRequestUri(), 'login')) {
             if ($event->getRequest()->isXmlHttpRequest() && $event->getResponse()->getStatusCode() == "302") {
-                $event->getResponse()->setStatusCode(403);
+                $event->getResponse()->setStatusCode(401);
                 $response = new \Symfony\Component\HttpFoundation\Response();
-                $response->setStatusCode(403);
+                $response->setStatusCode(401);
                 $event->setResponse($response);
             }
         }
