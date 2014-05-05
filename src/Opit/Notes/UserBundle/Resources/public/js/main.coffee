@@ -148,6 +148,7 @@ getUnreadNotifications = () ->
     $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_notifications_unread_count'
+        global: off
     .done (data) ->
         $unreadNotificationsCount = $('#unread-notifications-count')
         $notificationsIcon = $('#notifications i')

@@ -31,6 +31,7 @@ $.extend true, $(document).data('notes'),
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_expense_state'
                 data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
+                global: false
             .done (data) ->
                 location.reload()
             .complete () ->

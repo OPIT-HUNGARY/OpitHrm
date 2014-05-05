@@ -520,3 +520,50 @@
 
 .bottom-0 {
   bottom: 0; }
+
+#ajax-loader {
+  text-align: center;
+  position: fixed;
+  right: 10px;
+  bottom: 5px;
+  z-index: 7000000; }
+
+#ajax-loader span {
+  display: inline-block;
+  vertical-align: middle;
+  width: 3px;
+  height: 3px;
+  background: #646464;
+  -webkit-animation: loader 0.9s infinite alternate;
+  -moz-animation: loader 0.9s infinite alternate; }
+  #ajax-loader span:nth-of-type(2) {
+    -webkit-animation-delay: 0.3s;
+    -moz-animation-delay: 0.3s; }
+  #ajax-loader span:nth-of-type(3) {
+    -webkit-animation-delay: 0.6s;
+    -moz-animation-delay: 0.6s; }
+
+@-webkit-keyframes loader {
+  0% {
+    width: 3px;
+    height: 3px;
+    opacity: 0.9;
+    -webkit-transform: translateX(0px); }
+
+  100% {
+    width: 3px;
+    height: 3px;
+    opacity: 0.1;
+    -webkit-transform: translateX(-21px); } }
+@-moz-keyframes loader {
+  0% {
+    width: 3px;
+    height: 3px;
+    opacity: 0.9;
+    -moz-transform: translateX(0); }
+
+  100% {
+    width: 3px;
+    height: 3px;
+    opacity: 0.1;
+    -moz-transform: translateX(-21px); } }

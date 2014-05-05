@@ -202,7 +202,18 @@ $.fn.dialog = (options) ->
     # to update scrollbar if element is resized
     $(@).on 'dialogresizestop', (event, ui) ->
         $(@).mCustomScrollbar 'update'
+
+$(document).ajaxStart ->
+    # Add generic ajax indicator for global requests
+    # Requests which do not require an indicator should set { global: false }
+    if $('#ajax-loader').length is 0
+        $loader = $('<div id="ajax-loader"><span></span><span></span><span></span></div>')
+        $loader.css { bottom: $('.sf-toolbar').outerHeight() } if $('.sf-toolbar').length
+        $loader.appendTo 'body'
         
+$(document).ajaxStop ->
+    $('#ajax-loader').remove()
+
 $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/)
     $("##{id[1]} *[title]").tipsy() if id?[1]?

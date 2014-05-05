@@ -232,6 +232,23 @@
     });
   };
 
+  $(document).ajaxStart(function() {
+    var $loader;
+    if ($('#ajax-loader').length === 0) {
+      $loader = $('<div id="ajax-loader"><span></span><span></span><span></span></div>');
+      if ($('.sf-toolbar').length) {
+        $loader.css({
+          bottom: $('.sf-toolbar').outerHeight()
+        });
+      }
+      return $loader.appendTo('body');
+    }
+  });
+
+  $(document).ajaxStop(function() {
+    return $('#ajax-loader').remove();
+  });
+
   $(document).ajaxComplete(function(event, XMLHttpRequest, ajaxOptions) {
     var id;
     id = XMLHttpRequest.responseText.match(/id="([\w|-]+)"/);

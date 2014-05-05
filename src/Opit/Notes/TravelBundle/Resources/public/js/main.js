@@ -40,7 +40,8 @@
           data: {
             'statusId': statusId,
             'travelExpenseId': travelExpenseId
-          }
+          },
+          global: false
         }).done(function(data) {
           return location.reload();
         }).complete(function() {

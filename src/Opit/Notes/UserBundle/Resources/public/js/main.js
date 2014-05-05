@@ -172,7 +172,8 @@
   getUnreadNotifications = function() {
     return $.ajax({
       method: 'POST',
-      url: Routing.generate('OpitNotesTravelBundle_notifications_unread_count')
+      url: Routing.generate('OpitNotesTravelBundle_notifications_unread_count'),
+      global: false
     }).done(function(data) {
       var $notificationsIcon, $unreadNotificationsCount;
       $unreadNotificationsCount = $('#unread-notifications-count');
