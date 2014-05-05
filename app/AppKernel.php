@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new Opit\Notes\CurrencyRateBundle\OpitNotesCurrencyRateBundle(),
+            new Opit\Notes\HolidayBundle\OpitNotesHolidayBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

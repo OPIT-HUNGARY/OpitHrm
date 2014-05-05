@@ -1,3 +1,8 @@
+opit_notes_holiday:
+    resource: "@OpitNotesHolidayBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 opit_notes_currency_rate:
     resource: "@OpitNotesCurrencyRateBundle/Controller/"
     type:     annotation
