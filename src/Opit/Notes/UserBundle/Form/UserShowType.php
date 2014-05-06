@@ -16,6 +16,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
+use Opit\Notes\UserBundle\Form\TeamType;
 
 /**
  * Description of ContactType
@@ -133,6 +134,8 @@ class UserShowType extends AbstractType
                     'data' => $dataArr->isLdapEnabled() || 0
                 ));
             }
+            
+            $builder->add('employee', new EmployeeType());
         }
     }
     /**

@@ -25,7 +25,7 @@
  */
 
 /**
- * Description of Teams
+ * Description of Team
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @package Opit
@@ -37,12 +37,12 @@ namespace Opit\Notes\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Teams
+ * Team
  *
  * @ORM\Table(name="notes_teams")
  * @ORM\Entity
  */
-class Teams
+class Team
 {
     /**
      * @var integer
@@ -75,11 +75,20 @@ class Teams
         return $this->id;
     }
     
+    /**
+     * 
+     * @return type
+     */
     public function getTeamName()
     {
         return $this->teamName;
     }
     
+    /**
+     * 
+     * @param type $teamName
+     * @return \Opit\Notes\UserBundle\Entity\Teams
+     */
     public function setTeamName($teamName)
     {
         $this->teamName = $teamName;
@@ -101,7 +110,7 @@ class Teams
      * Add employees
      * 
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
-     * @return \Opit\Notes\UserBundle\Entity\Teams
+     * @return \Opit\Notes\UserBundle\Entity\Team
      */
     public function addEmployee(\Opit\Notes\UserBundle\Entity\Employee $employee)
     {

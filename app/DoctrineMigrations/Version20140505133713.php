@@ -22,7 +22,6 @@ class Version20140505133713 extends AbstractMigration
         $this->addSql("ALTER TABLE notes_employees_teams ADD CONSTRAINT FK_AB7644BA8C03F15C FOREIGN KEY (employee_id) REFERENCES notes_employees (id) ON DELETE CASCADE");
         $this->addSql("ALTER TABLE notes_employees_teams ADD CONSTRAINT FK_AB7644BAD6365F12 FOREIGN KEY (teams_id) REFERENCES notes_teams (id) ON DELETE CASCADE");
         $this->addSql("DROP TABLE Employee");
-//        $this->addSql("ALTER TABLE notes_users DROP FOREIGN KEY FK_8E744D495D9F75A1");
         $this->addSql("ALTER TABLE notes_users ADD CONSTRAINT FK_8E744D495D9F75A1 FOREIGN KEY (employee) REFERENCES notes_employees (id)");
     }
 
@@ -38,7 +37,6 @@ class Version20140505133713 extends AbstractMigration
         $this->addSql("DROP TABLE notes_teams");
         $this->addSql("DROP TABLE notes_employees");
         $this->addSql("DROP TABLE notes_employees_teams");
-        $this->addSql("ALTER TABLE notes_users DROP FOREIGN KEY FK_8E744D495D9F75A1");
         $this->addSql("ALTER TABLE notes_users ADD CONSTRAINT FK_8E744D495D9F75A1 FOREIGN KEY (employee) REFERENCES Employee (id)");
     }
 }

@@ -34,6 +34,7 @@
 namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Employee
@@ -69,17 +70,23 @@ class Employee
     /**
      * @var integer
      *
-     * @ORM\Column(name="numberOfKids", type="smallint")
+     * @ORM\Column(name="numberOfChildren", type="integer")
+     * @Assert\Range(
+     *      min = "0",
+     *      max = "30",
+     *      minMessage = "The number of children should be greater or equal 0.",
+     *      maxMessage = "The number of children should be less than 30.",
+     *      groups={"user"}
+     * )
      */
-    private $numberOfKids;
+    private $numberOfChildren;
     
     /**
-     * @ORM\ManyToMany(targetEntity="Teams", inversedBy="employee")
+     * @ORM\ManyToMany(targetEntity="Team", inversedBy="employee")
      * @ORM\JoinTable(name="notes_employees_teams")
      */
     protected $teams;
-
-
+    
     /**
      * Get id
      *
@@ -137,26 +144,26 @@ class Employee
     }
 
     /**
-     * Set numberOfKids
+     * Set numberOfChildren
      *
-     * @param integer $numberOfKids
+     * @param integer $numberOfChildren
      * @return Employee
      */
-    public function setNumberOfKids($numberOfKids)
+    public function setNumberOfChildren($numberOfChildren)
     {
-        $this->numberOfKids = $numberOfKids;
+        $this->numberOfChildren = $numberOfChildren;
 
         return $this;
     }
 
     /**
-     * Get numberOfKids
+     * Get numberOfChildren
      *
      * @return integer 
      */
-    public function getNumberOfKids()
+    public function getNumberOfChildren()
     {
-        return $this->numberOfKids;
+        return $this->numberOfChildren;
     }
     
     /**
@@ -175,7 +182,7 @@ class Employee
      * @param  \Opit\Notes\UserBundle\Entity\Teams $teams
      * @return User
      */
-    public function addTeam(\Opit\Notes\UserBundle\Entity\Teams $teams)
+    public function addTeam(\Opit\Notes\UserBundle\Entity\Team $teams)
     {
         $this->teams[] = $teams;
 
@@ -187,7 +194,7 @@ class Employee
      *
      * @param \Opit\Notes\UserBundle\Entity\Teams $teams
      */
-    public function removeTeam(\Opit\Notes\UserBundle\Entity\Teams $teams)
+    public function removeTeam(\Opit\Notes\UserBundle\Entity\Team $teams)
     {
         $this->teams->removeElement($teams);
     }

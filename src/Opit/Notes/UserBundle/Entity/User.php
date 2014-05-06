@@ -58,7 +58,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     protected $username;
 
     /**
-     * @ORM\OneToOne(targetEntity="Employee")
+     * @ORM\OneToOne(targetEntity="Employee", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="employee", referencedColumnName="id")
      */
     protected $employee;
