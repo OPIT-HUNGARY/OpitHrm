@@ -20,7 +20,7 @@ use Opit\Notes\UserBundle\Entity\JobTitle;
 use Opit\Notes\UserBundle\Form\JobTitleType;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\UserBundle\Entity\Groups;
-use Opit\Notes\UserBundle\Entity\Teams;
+use Opit\Notes\UserBundle\Entity\Team;
 
 /**
  * Description of AdminController
@@ -326,9 +326,9 @@ class AdminUserController extends Controller
         $teamId = $request->attributes->get('id');
         
         if ('new' === $teamId) {
-            $team = new Teams();
+            $team = new Team();
         } else {
-            $team = $entityManager->getRepository('OpitNotesUserBundle:Teams')->find($teamId);
+            $team = $entityManager->getRepository('OpitNotesUserBundle:Team')->find($teamId);
         }
         
         $team->setTeamName($request->request->get('value'));
@@ -354,7 +354,7 @@ class AdminUserController extends Controller
             $teamId = array($teamId);
         }
         foreach ($teamId as $id) {
-            $team = $entityManager->getRepository('OpitNotesUserBundle:Teams')->find($id);
+            $team = $entityManager->getRepository('OpitNotesUserBundle:Team')->find($id);
             if (0 === count($team->getEmployees())) {
                 $entityManager->remove($team);
             }
@@ -396,7 +396,7 @@ class AdminUserController extends Controller
     protected function getAllTeams()
     {
         $numberOfRelations = array();
-        $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Teams')->findAll();
+        $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Team')->findAll();
         
         foreach ($teams as $team) {
             $numberOfRelations[$team->getId()] = count($team->getEmployees());
