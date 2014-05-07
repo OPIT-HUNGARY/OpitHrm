@@ -4,6 +4,7 @@ imports:
     - { resource: "@OpitNotesUserBundle/Resources/config/config.yml" }
     - { resource: "@OpitNotesTravelBundle/Resources/config/config.yml" }
     - { resource: "@OpitNotesCurrencyRateBundle/Resources/config/config.yml" }
+    - { resource: "@OpitNotesHolidayBundle/Resources/config/config.yml" }
 
 framework:
     #esi:             ~
@@ -35,7 +36,7 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: false
-    bundles:        [ OpitNotesUserBundle, OpitNotesTravelBundle ]
+    bundles:        [ OpitNotesUserBundle, OpitNotesTravelBundle, OpitNotesHolidayBundle ]
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
@@ -82,7 +83,7 @@ swiftmailer:
 #    spool:     { type: memory }
 
 fos_js_routing:
-    routes_to_expose: [ OpitNotesUserBundle_\w+, OpitNotesTravelBundle_\w+, OpitNotesCurrencyRateBundle_\w+ ]
+    routes_to_expose: [ OpitNotesUserBundle_\w+, OpitNotesTravelBundle_\w+, OpitNotesCurrencyRateBundle_\w+, OpitNotesHolidayBundle_\w+ ]
     
 # Doctrine Extensions Configuration
 stof_doctrine_extensions:
