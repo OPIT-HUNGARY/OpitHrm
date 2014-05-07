@@ -1,35 +1,35 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-    Holiday date list - {{ parent() }}
+    Holiday type list - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
     {% stylesheets
         '../app/Resources/public/css/list.css'
-    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-<h1>Holiday date list</h1>
+<h1>Holiday type list</h1>
 <div  id="list">
     <table>
         <tr>
             <td class="padding-0">
-                <button id="addHolidayDate" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="addHolidayType" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
                 <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
             </td>
         </tr>
     </table>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesUserBundle:Admin:Holiday/_listHolidayDates.html.twig' %}
+    {% include 'OpitNotesHolidayBundle:Admin:_listHolidayTypes.html.twig' %}
 </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesUserBundle/Resources/public/js/Admin/Holiday/date.js'
+        '@OpitNotesHolidayBundle/Resources/public/js/Admin/type.js'
         '@OpitNotesUserBundle/Resources/public/js/list.js'
-    output='js/notes_holiday_admin_list.js' filter='?yui_js' %}
+    output='js/opitnotesholiday/admin_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}

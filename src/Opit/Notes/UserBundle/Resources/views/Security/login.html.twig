@@ -2,13 +2,13 @@
 {% block stylesheets %}
     {% stylesheets 
         '@OpitNotesUserBundle/Resources/public/css/login.css'
-    output='css/notes_login.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesuser/login.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="/bundles/opitnotesuser/js/login.js" ></script>
+    <script type="text/javascript" src="{{ asset('bundles/opitnotesuser/js/login.js') }}" ></script>
 {% endblock %}            
             
 {% block body %}

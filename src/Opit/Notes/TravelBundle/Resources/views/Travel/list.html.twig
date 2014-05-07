@@ -3,7 +3,7 @@
     {% stylesheets
         '../app/Resources/public/css/list.css'
         '@OpitNotesTravelBundle/Resources/public/css/module.css'
-    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotestravel/list.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -30,7 +30,7 @@
     {{ parent() }}
     {% javascripts
         '@OpitNotesTravelBundle/Resources/public/js/list.js'
-    output='js/notes_te_list.js' filter='?yui_js' %}
+    output='js/opitnotestravel/te_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}

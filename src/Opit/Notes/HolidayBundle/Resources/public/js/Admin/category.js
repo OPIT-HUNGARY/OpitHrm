@@ -5,7 +5,7 @@
   $("#addHolidayCategory").click(function() {
     return $.ajax({
       method: 'GET',
-      url: Routing.generate('OpitNotesUserBundle_admin_show_holiday_category', {
+      url: Routing.generate('OpitNotesHolidayBundle_admin_show_holiday_category', {
         id: 0
       })
     }).done(function(data) {
@@ -18,7 +18,7 @@
             return $.ajax({
               type: 'POST',
               global: false,
-              url: Routing.generate('OpitNotesUserBundle_admin_add_holiday_category', {
+              url: Routing.generate('OpitNotesHolidayBundle_admin_add_holiday_category', {
                 id: 0
               }),
               data: $('#addholidaycategory_frm').serialize()
@@ -28,7 +28,7 @@
               return $.ajax({
                 type: 'POST',
                 global: false,
-                url: Routing.generate('OpitNotesUserBundle_admin_list_holiday_categories'),
+                url: Routing.generate('OpitNotesHolidayBundle_admin_list_holiday_categories'),
                 data: {
                   "showList": 1
                 }
@@ -56,7 +56,7 @@
     id = $(this).attr("data-id");
     return $.ajax({
       method: 'GET',
-      url: Routing.generate('OpitNotesUserBundle_admin_show_holiday_category', {
+      url: Routing.generate('OpitNotesHolidayBundle_admin_show_holiday_category', {
         id: id
       })
     }).done(function(data) {
@@ -69,7 +69,7 @@
             return $.ajax({
               type: 'POST',
               global: false,
-              url: Routing.generate('OpitNotesUserBundle_admin_add_holiday_category', {
+              url: Routing.generate('OpitNotesHolidayBundle_admin_add_holiday_category', {
                 id: id
               }),
               data: $('#addholidaycategory_frm').serialize()
@@ -79,7 +79,7 @@
               return $.ajax({
                 type: 'POST',
                 global: false,
-                url: Routing.generate('OpitNotesUserBundle_admin_list_holiday_categories'),
+                url: Routing.generate('OpitNotesHolidayBundle_admin_list_holiday_categories'),
                 data: {
                   "showList": 1
                 }
@@ -115,7 +115,7 @@
 
   deleteHolidayCategory = function() {
     var url;
-    url = Routing.generate('OpitNotesUserBundle_admin_delete_holiday_category');
+    url = Routing.generate('OpitNotesHolidayBundle_admin_delete_holiday_category');
     return $(document).data('notes').funcs.deleteAction('Holiday category delete', 'holiday category(s)', url, '.list-delete-holidaycategory');
   };
 

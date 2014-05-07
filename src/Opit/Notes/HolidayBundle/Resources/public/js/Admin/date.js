@@ -5,7 +5,7 @@
   $("#addHolidayDate").click(function() {
     return $.ajax({
       method: 'GET',
-      url: Routing.generate('OpitNotesUserBundle_admin_show_holiday_date', {
+      url: Routing.generate('OpitNotesHolidayBundle_admin_show_holiday_date', {
         id: 0
       })
     }).done(function(data) {
@@ -18,7 +18,7 @@
             return $.ajax({
               type: 'POST',
               global: false,
-              url: Routing.generate('OpitNotesUserBundle_admin_add_holiday_date', {
+              url: Routing.generate('OpitNotesHolidayBundle_admin_add_holiday_date', {
                 id: 0
               }),
               data: $('#addholidaydate_frm').serialize()
@@ -28,7 +28,7 @@
               return $.ajax({
                 type: 'POST',
                 global: false,
-                url: Routing.generate('OpitNotesUserBundle_admin_list_holiday_dates'),
+                url: Routing.generate('OpitNotesHolidayBundle_admin_list_holiday_dates'),
                 data: {
                   "showList": 1
                 }
@@ -56,7 +56,7 @@
     id = $(this).attr("data-id");
     return $.ajax({
       method: 'GET',
-      url: Routing.generate('OpitNotesUserBundle_admin_show_holiday_date', {
+      url: Routing.generate('OpitNotesHolidayBundle_admin_show_holiday_date', {
         id: id
       })
     }).done(function(data) {
@@ -69,7 +69,7 @@
             return $.ajax({
               type: 'POST',
               global: false,
-              url: Routing.generate('OpitNotesUserBundle_admin_add_holiday_date', {
+              url: Routing.generate('OpitNotesHolidayBundle_admin_add_holiday_date', {
                 id: id
               }),
               data: $('#addholidaydate_frm').serialize()
@@ -79,7 +79,7 @@
               return $.ajax({
                 type: 'POST',
                 global: false,
-                url: Routing.generate('OpitNotesUserBundle_admin_list_holiday_dates'),
+                url: Routing.generate('OpitNotesHolidayBundle_admin_list_holiday_dates'),
                 data: {
                   "showList": 1
                 }
@@ -115,7 +115,7 @@
 
   deleteHolidayDate = function() {
     var url;
-    url = Routing.generate('OpitNotesUserBundle_admin_delete_holiday_date');
+    url = Routing.generate('OpitNotesHolidayBundle_admin_delete_holiday_date');
     return $(document).data('notes').funcs.deleteAction('Holiday date delete', 'holiday date(s)', url, '.list-delete-holidaydate');
   };
 

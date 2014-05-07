@@ -1,7 +1,7 @@
 $("#addHolidayDate").click ->
     $.ajax
         method: 'GET'
-        url: Routing.generate 'OpitNotesUserBundle_admin_show_holiday_date', id: 0
+        url: Routing.generate 'OpitNotesHolidayBundle_admin_show_holiday_date', id: 0
     .done (data) ->
         $('<div id="dialog-editholidaydate"></div>').html(data)
             .dialog
@@ -13,14 +13,14 @@ $("#addHolidayDate").click ->
                         $.ajax
                             type: 'POST'
                             global: false
-                            url: Routing.generate 'OpitNotesUserBundle_admin_add_holiday_date', id: 0
+                            url: Routing.generate 'OpitNotesHolidayBundle_admin_add_holiday_date', id: 0
                             data: $('#addholidaydate_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
                                 global: false
-                                url: Routing.generate 'OpitNotesUserBundle_admin_list_holiday_dates'
+                                url: Routing.generate 'OpitNotesHolidayBundle_admin_list_holiday_dates'
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
@@ -37,7 +37,7 @@ $("#list-table").on "click", ".list-holidaydate", ->
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
-        url: Routing.generate 'OpitNotesUserBundle_admin_show_holiday_date', id: id
+        url: Routing.generate 'OpitNotesHolidayBundle_admin_show_holiday_date', id: id
     .done (data) ->
         $('<div id="dialog-editholidaydate"></div>').html(data)
             .dialog
@@ -49,14 +49,14 @@ $("#list-table").on "click", ".list-holidaydate", ->
                         $.ajax
                             type: 'POST'
                             global: false
-                            url: Routing.generate 'OpitNotesUserBundle_admin_add_holiday_date', id: id
+                            url: Routing.generate 'OpitNotesHolidayBundle_admin_add_holiday_date', id: id
                             data: $('#addholidaydate_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
                                 global: false
-                                url: Routing.generate 'OpitNotesUserBundle_admin_list_holiday_dates'
+                                url: Routing.generate 'OpitNotesHolidayBundle_admin_list_holiday_dates'
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
@@ -81,7 +81,7 @@ $('#list-table').on "click", ".delete-single-holidaydate", ->
 
 # Call the deleteAction from the app main.js
 deleteHolidayDate = () ->
-    url = Routing.generate 'OpitNotesUserBundle_admin_delete_holiday_date'
+    url = Routing.generate 'OpitNotesHolidayBundle_admin_delete_holiday_date'
     $(document).data('notes').funcs.deleteAction('Holiday date delete', 'holiday date(s)', url, '.list-delete-holidaydate')
 
 $('#list-table').on "click", "th .fa-trash-o", ->

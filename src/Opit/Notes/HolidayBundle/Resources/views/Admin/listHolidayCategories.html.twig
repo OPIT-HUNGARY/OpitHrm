@@ -5,7 +5,7 @@
 {% block stylesheets %}
     {% stylesheets
         '../app/Resources/public/css/list.css'
-    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -21,15 +21,15 @@
         </tr>
     </table>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesUserBundle:Admin:Holiday/_listHolidayCategories.html.twig' %}
+    {% include 'OpitNotesHolidayBundle:Admin/_listHolidayCategories.html.twig' %}
 </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesUserBundle/Resources/public/js/Admin/Holiday/category.js'
+        '@OpitNotesHolidayBundle/Resources/public/js/Admin/category.js'
         '@OpitNotesUserBundle/Resources/public/js/list.js'
-    output='js/notes_holiday_admin_list.js' filter='?yui_js' %}
+    output='js/opitnotesholiday/admin_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}

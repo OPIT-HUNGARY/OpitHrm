@@ -3,7 +3,7 @@
     {{ parent() }}
     {% stylesheets
         '../app/Resources/public/css/list.css'
-    output='css/notes_list.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesuser/list.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -33,7 +33,7 @@
     {{ parent() }}
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/list.js'
-    output='js/notes_list.js' filter='?yui_js' %}
+    output='js/opitnotesuser/list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}

@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace Opit\Notes\UserBundle\Controller;
+namespace Opit\Notes\HolidayBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -52,7 +52,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate list holiday categories
      *
-     * @Route("/secured/admin/list/holiday/categories", name="OpitNotesUserBundle_admin_list_holiday_categories")
+     * @Route("/secured/admin/list/holiday/categories", name="OpitNotesHolidayBundle_admin_list_holiday_categories")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -64,7 +64,7 @@ class AdminHolidayController extends Controller
         $holidayCategories = $em->getRepository('OpitNotesHolidayBundle:HolidayCategory')->findAll();
 
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayCategories.html.twig',
+            'OpitNotesHolidayBundle:Admin:' . ($showList ? '_' : '') . 'listHolidayCategories.html.twig',
             array('holidayCategories' => $holidayCategories)
         );
     }
@@ -72,7 +72,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate add/edit holiday category form
      *
-     * @Route("/secured/admin/add/holiday/category/{id}", name="OpitNotesUserBundle_admin_add_holiday_category", requirements={ "id" = "\d+"})
+     * @Route("/secured/admin/add/holiday/category/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_category", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -118,7 +118,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate show holiday category form
      *
-     * @Route("/secured/admin/show/holiday/category/{id}", name="OpitNotesUserBundle_admin_show_holiday_category", requirements={"id" = "\d+"})
+     * @Route("/secured/admin/show/holiday/category/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_category", requirements={"id" = "\d+"})
      * @Method({"GET"})
      * @Template()
      */
@@ -139,7 +139,7 @@ class AdminHolidayController extends Controller
         );
         
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/showHolidayCategoryForm.html.twig',
+            'OpitNotesHolidayBundle:Admin:showHolidayCategoryForm.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -147,7 +147,7 @@ class AdminHolidayController extends Controller
     /**
      * To delete holiday categories in Notes
      *
-     * @Route("/secured/admin/delete/holiday/category", name="OpitNotesUserBundle_admin_delete_holiday_category")
+     * @Route("/secured/admin/delete/holiday/category", name="OpitNotesHolidayBundle_admin_delete_holiday_category")
      * @Method({"POST"})
      */
     public function deleteHolidayCategoryAction()
@@ -199,7 +199,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate list holiday dates
      *
-     * @Route("/secured/admin/list/holiday/dates", name="OpitNotesUserBundle_admin_list_holiday_dates")
+     * @Route("/secured/admin/list/holiday/dates", name="OpitNotesHolidayBundle_admin_list_holiday_dates")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -217,7 +217,7 @@ class AdminHolidayController extends Controller
         }
 
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayDates.html.twig',
+            'OpitNotesHolidayBundle:Admin:' . ($showList ? '_' : '') . 'listHolidayDates.html.twig',
             array('groupedHolidayDates' => $groupedHolidayDates)
         );
     }
@@ -225,7 +225,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate show holiday date form
      *
-     * @Route("/secured/admin/show/holiday/date/{id}", name="OpitNotesUserBundle_admin_show_holiday_date", requirements={"id" = "\d+"})
+     * @Route("/secured/admin/show/holiday/date/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_date", requirements={"id" = "\d+"})
      * @Method({"GET"})
      * @Template()
      */
@@ -246,7 +246,7 @@ class AdminHolidayController extends Controller
         );
 
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/showHolidayDateForm.html.twig',
+            'OpitNotesHolidayBundle:Admin:showHolidayDateForm.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -279,7 +279,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate add/edit holiday date form
      *
-     * @Route("/secured/admin/add/holiday/date/{id}", name="OpitNotesUserBundle_admin_add_holiday_date", requirements={ "id" = "\d+"})
+     * @Route("/secured/admin/add/holiday/date/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_date", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -326,7 +326,7 @@ class AdminHolidayController extends Controller
     /**
      * To delete holiday dates in Notes
      *
-     * @Route("/secured/admin/delete/holiday/date", name="OpitNotesUserBundle_admin_delete_holiday_date")
+     * @Route("/secured/admin/delete/holiday/date", name="OpitNotesHolidayBundle_admin_delete_holiday_date")
      * @Method({"POST"})
      */
     public function deleteHolidayDateAction()
@@ -353,7 +353,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate list holiday types
      *
-     * @Route("/secured/admin/list/holiday/types", name="OpitNotesUserBundle_admin_list_holiday_types")
+     * @Route("/secured/admin/list/holiday/types", name="OpitNotesHolidayBundle_admin_list_holiday_types")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -365,7 +365,7 @@ class AdminHolidayController extends Controller
         $holidayTypes = $em->getRepository('OpitNotesHolidayBundle:HolidayType')->findAll();
 
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayTypes.html.twig',
+            'OpitNotesHolidayBundle:Admin:' . ($showList ? '_' : '') . 'listHolidayTypes.html.twig',
             array('holidayTypes' => $holidayTypes)
         );
     }
@@ -373,7 +373,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate show holiday type form
      *
-     * @Route("/secured/admin/show/holiday/type/{id}", name="OpitNotesUserBundle_admin_show_holiday_type", requirements={"id" = "\d+"})
+     * @Route("/secured/admin/show/holiday/type/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_type", requirements={"id" = "\d+"})
      * @Method({"GET"})
      * @Template()
      */
@@ -394,7 +394,7 @@ class AdminHolidayController extends Controller
         );
 
         return $this->render(
-            'OpitNotesUserBundle:Admin:Holiday/showHolidayTypeForm.html.twig',
+            'OpitNotesHolidayBundle:Admin:showHolidayTypeForm.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -427,7 +427,7 @@ class AdminHolidayController extends Controller
     /**
      * To generate add/edit holiday type form
      *
-     * @Route("/secured/admin/add/holiday/type/{id}", name="OpitNotesUserBundle_admin_add_holiday_type", requirements={ "id" = "\d+"})
+     * @Route("/secured/admin/add/holiday/type/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_type", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -474,7 +474,7 @@ class AdminHolidayController extends Controller
     /**
      * To delete holiday types in Notes
      *
-     * @Route("/secured/admin/delete/holiday/type", name="OpitNotesUserBundle_admin_delete_holiday_type")
+     * @Route("/secured/admin/delete/holiday/type", name="OpitNotesHolidayBundle_admin_delete_holiday_type")
      * @Method({"POST"})
      */
     public function deleteHolidayTypeAction()

@@ -2,7 +2,7 @@
 {% block stylesheets %}
     {% stylesheets 
         '@OpitNotesUserBundle/Resources/public/css/list.css'
-    output='css/notes_main.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesuser/main.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}           
@@ -12,7 +12,7 @@
         '//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js'
         '//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.min.js'
         '@OpitNotesUserBundle/Resources/public/js/search.js'
-    output='js/notes_main.js' filter='?yui_js' %}
+    output='js/opitnotesuser/main.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
