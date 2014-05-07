@@ -34,6 +34,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\HolidayBundle\Entity\HolidayCategory;
 use Opit\Notes\HolidayBundle\Form\HolidayCategoryType;
+use Opit\Notes\HolidayBundle\Entity\HolidayDate;
+use Opit\Notes\HolidayBundle\Form\HolidayDateType;
+use Opit\Notes\HolidayBundle\Entity\HolidayType;
+use Opit\Notes\HolidayBundle\Form\HolidayTypeType;
 
 /**
  * Description of AdminHolidayController
@@ -58,16 +62,15 @@ class AdminHolidayController extends Controller
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
         $holidayCategories = $em->getRepository('OpitNotesHolidayBundle:HolidayCategory')->findAll();
-        $disabledHolidayCategories = array();
 
         return $this->render(
             'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayCategories.html.twig',
-            array('holidayCategories' => $holidayCategories, 'disabledHolidayCategories' => $disabledHolidayCategories)
+            array('holidayCategories' => $holidayCategories)
         );
     }
     
     /**
-     * To generate add/edit job title form
+     * To generate add/edit holiday category form
      *
      * @Route("/secured/admin/add/holiday/category/{id}", name="OpitNotesUserBundle_admin_add_holiday_category", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
@@ -191,5 +194,307 @@ class AdminHolidayController extends Controller
         }
 
         return $holidayCategory;
+    }
+    
+    /**
+     * To generate list holiday dates
+     *
+     * @Route("/secured/admin/list/holiday/dates", name="OpitNotesUserBundle_admin_list_holiday_dates")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function listHolidayDateAction()
+    {
+        $request = $this->getRequest();
+        $showList = (boolean) $request->request->get('showList');
+        $em = $this->getDoctrine()->getManager();
+        $holidayDates = $em->getRepository('OpitNotesHolidayBundle:HolidayDate')->findBy(array(), array('holidayDate' => 'DESC'));
+        $groupedHolidayDates = array();
+
+        // Grouping the holiday dates by year
+        foreach ($holidayDates as $date) {
+            $groupedHolidayDates[substr($date->getHolidayDate()->format('Y-m-d'), 0, 4)][] = $date;
+        }
+
+        return $this->render(
+            'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayDates.html.twig',
+            array('groupedHolidayDates' => $groupedHolidayDates)
+        );
+    }
+
+    /**
+     * To generate show holiday date form
+     *
+     * @Route("/secured/admin/show/holiday/date/{id}", name="OpitNotesUserBundle_admin_show_holiday_date", requirements={"id" = "\d+"})
+     * @Method({"GET"})
+     * @Template()
+     */
+    public function showHolidayDateFormAction()
+    {
+        $request = $this->getRequest();
+        $id = $request->attributes->get('id');
+
+        if ($id) {
+            $holidayDate = $this->getHolidayDate($id);
+        } else {
+            $holidayDate = new HolidayDate();
+        }
+
+        $form = $this->createForm(
+            new HolidayDateType(),
+            $holidayDate
+        );
+
+        return $this->render(
+            'OpitNotesUserBundle:Admin:Holiday/showHolidayDateForm.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+    
+    /**
+     * Returns a holidayDate object
+     *
+     * @param integer $holidayDateId
+     * @return mixed  holidayDate object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getHolidayDate($holidayDateId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $holidayDateId) {
+            $holidayDateId = $request->request->get('id');
+        }
+
+        $holidayDate = $em->getRepository('OpitNotesHolidayBundle:HolidayDate')->find($holidayDateId);
+
+        if (!$holidayDate) {
+            throw $this->createNotFoundException('Missing job title for id "' . $holidayDateId . '"');
+        }
+
+        return $holidayDate;
+    }
+    
+    /**
+     * To generate add/edit holiday date form
+     *
+     * @Route("/secured/admin/add/holiday/date/{id}", name="OpitNotesUserBundle_admin_add_holiday_date", requirements={ "id" = "\d+"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function addHolidayDateAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $id = $request->attributes->get('id');
+        $errorMessages = array();
+        $result = array('response' => 'error');
+
+        if ($id) {
+            $holidayDate = $this->getHolidayDate($request->attributes->get('id'));
+        } else {
+            $holidayDate = new HolidayDate();
+        }
+
+        $form = $this->createForm(new HolidayDateType(), $holidayDate);
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em->persist($holidayDate);
+                $em->flush();
+
+                $result['response'] = 'success';
+            }
+
+            $validator = $this->get('validator');
+            $errors = $validator->validate($holidayDate);
+
+            if (count($errors) > 0) {
+                foreach ($errors as $e) {
+                    $errorMessages[] = $e->getMessage();
+                }
+            }
+            $result['errorMessage'] = $errorMessages;
+        }
+
+        return new JsonResponse(array($result));
+    }
+    
+    /**
+     * To delete holiday dates in Notes
+     *
+     * @Route("/secured/admin/delete/holiday/date", name="OpitNotesUserBundle_admin_delete_holiday_date")
+     * @Method({"POST"})
+     */
+    public function deleteHolidayDateAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $ids = (array) $request->request->get('delete-holidaydate');
+        $result = array('response' => 'error');
+
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+
+        foreach ($ids as $id) {
+            $holidayDate = $this->getHolidayDate($id);
+            $em->remove($holidayDate);
+        }
+        $em->flush();
+        $result['response'] = 'success';
+
+        return new JsonResponse(array('code' => 200, $result));
+    }
+    
+    /**
+     * To generate list holiday types
+     *
+     * @Route("/secured/admin/list/holiday/types", name="OpitNotesUserBundle_admin_list_holiday_types")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function listHolidayTypeAction()
+    {
+        $request = $this->getRequest();
+        $showList = (boolean) $request->request->get('showList');
+        $em = $this->getDoctrine()->getManager();
+        $holidayTypes = $em->getRepository('OpitNotesHolidayBundle:HolidayType')->findAll();
+
+        return $this->render(
+            'OpitNotesUserBundle:Admin:Holiday/' . ($showList ? '_' : '') . 'listHolidayTypes.html.twig',
+            array('holidayTypes' => $holidayTypes)
+        );
+    }
+    
+    /**
+     * To generate show holiday type form
+     *
+     * @Route("/secured/admin/show/holiday/type/{id}", name="OpitNotesUserBundle_admin_show_holiday_type", requirements={"id" = "\d+"})
+     * @Method({"GET"})
+     * @Template()
+     */
+    public function showHolidayTypeFormAction()
+    {
+        $request = $this->getRequest();
+        $id = $request->attributes->get('id');
+
+        if ($id) {
+            $holidayType = $this->getHolidayType($id);
+        } else {
+            $holidayType = new HolidayType();
+        }
+
+        $form = $this->createForm(
+            new HolidayTypeType(),
+            $holidayType
+        );
+
+        return $this->render(
+            'OpitNotesUserBundle:Admin:Holiday/showHolidayTypeForm.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+    
+    /**
+     * Returns a holidayType object
+     *
+     * @param integer $holidayTypeId
+     * @return mixed  holidayType object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getHolidayType($holidayTypeId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $holidayTypeId) {
+            $holidayTypeId = $request->request->get('id');
+        }
+
+        $holidayType = $em->getRepository('OpitNotesHolidayBundle:HolidayType')->find($holidayTypeId);
+
+        if (!$holidayType) {
+            throw $this->createNotFoundException('Missing holiday type for id "' . $holidayTypeId . '"');
+        }
+
+        return $holidayType;
+    }
+    
+    /**
+     * To generate add/edit holiday type form
+     *
+     * @Route("/secured/admin/add/holiday/type/{id}", name="OpitNotesUserBundle_admin_add_holiday_type", requirements={ "id" = "\d+"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function addHolidayTypeAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $id = $request->attributes->get('id');
+        $errorMessages = array();
+        $result = array('response' => 'error');
+
+        if ($id) {
+            $holidayType = $this->getHolidayType($request->attributes->get('id'));
+        } else {
+            $holidayType = new HolidayType();
+        }
+
+        $form = $this->createForm(new HolidayTypeType(), $holidayType);
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em->persist($holidayType);
+                $em->flush();
+
+                $result['response'] = 'success';
+            }
+
+            $validator = $this->get('validator');
+            $errors = $validator->validate($holidayType);
+
+            if (count($errors) > 0) {
+                foreach ($errors as $e) {
+                    $errorMessages[] = $e->getMessage();
+                }
+            }
+            $result['errorMessage'] = $errorMessages;
+        }
+
+        return new JsonResponse(array($result));
+    }
+    
+    /**
+     * To delete holiday types in Notes
+     *
+     * @Route("/secured/admin/delete/holiday/type", name="OpitNotesUserBundle_admin_delete_holiday_type")
+     * @Method({"POST"})
+     */
+    public function deleteHolidayTypeAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
+        $ids = (array) $request->request->get('delete-holidaytype');
+        $result = array('response' => 'error');
+
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+
+        foreach ($ids as $id) {
+            $holidayType = $this->getHolidayType($id);
+            $em->remove($holidayType);
+        }
+        $em->flush();
+        $result['response'] = 'success';
+
+        return new JsonResponse(array('code' => 200, $result));
     }
 }

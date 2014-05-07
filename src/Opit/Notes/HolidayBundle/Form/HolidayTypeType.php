@@ -39,53 +39,42 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Description of HolidayCategoryType
+ * Description of HolidayTypeType
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage UserBundle
  */
-class HolidayCategoryType extends AbstractType
+class HolidayTypeType extends AbstractType
 {
-
-     /**
-     * Builds a form with given fields.
-     *
-     * @param object  $builder A Formbuilder interface object
-     * @param array   $options An array of options
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array('attr' => array(
-            'max_length' => 50,
+            'max_length' => 100,
             'placeholder' => 'Name'
         )));
-        $builder->add('description', 'textarea', array('attr' => array(
-            'max_length' => 255,
-            'placeholder' => 'Description'
-        )));
-        $builder->add($builder->create('id', 'hidden', array('mapped' => false)));
     }
-
-   /**
-     * Sets the default form options
-     *
-     * @param object $resolver An OptionsResolver interface object
+    
+    /**
+     * @param OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\HolidayBundle\Entity\HolidayCategory',
+            'data_class' => 'Opit\Notes\HolidayBundle\Entity\HolidayType'
         ));
     }
+
     /**
-     * Get the name
-     *
-     * @return string name
+     * @return string
      */
     public function getName()
     {
-        return 'holidayCategory';
+        return 'opit_notes_holidaybundle_holidaytype';
     }
 }

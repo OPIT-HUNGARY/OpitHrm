@@ -1,0 +1,42 @@
+<form  class="form-holidaydate">
+    <div id="list-table">
+    {% for year, holidayDates in groupedHolidayDates %}
+    <h2>{{year}}</h2>
+    <table class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            {% set orderIcon %}
+                <i class="fa fa-sort default-right"></i>
+            {% endset %}
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Date</span>
+            </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Type</span>
+            </th>
+            <th>Actions</th>
+        </tr>
+        {% for holidayDate in holidayDates %}
+        <tr class="clickableTableRow">
+            <td>
+                <input name="delete-holidaydate[]" type="checkbox" class="list-delete-holidaydate" value="{{ holidayDate.id }}">
+            </td>
+            <td data-tr-id='{{ holidayDate.id }}'>{{ holidayDate.id }}</td>
+            <td><span class="list-holidaydate clickable" data-id="{{ holidayDate.id }}">{{ holidayDate.holidayDate|date('Y-m-d') }}</span></td>
+            <td>{{ holidayDate.holidayType.name|slice(0,80) }}{% if holidayDate.holidayType.name|length > 80 %}{{ '...' }}{% endif %}</td>
+            <td>
+                <a href="#" class="list-holidaydate" data-id="{{ holidayDate.id }}" title="Edit holiday date"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" data-id="{{ holidayDate.id }}" class="delete-single-holidaydate" title="Delete holiday date"><i class="fa fa-trash-o"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+    </div>
+</form>

@@ -41,7 +41,7 @@ $("#list-table").on "click", ".list-holidaycategory", ->
     .done (data) ->
         $('<div id="dialog-editholidaycategory"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Edit job title'
+                title: '<i class="fa fa-list-alt"></i> Edit holiday category'
                 width: 750
                 modal: on
                 buttons:

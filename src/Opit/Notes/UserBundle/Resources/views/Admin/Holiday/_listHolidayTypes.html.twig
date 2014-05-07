@@ -1,0 +1,32 @@
+<form  class="form-holidaytype">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            {% set orderIcon %}
+                <i class="fa fa-sort default-right"></i>
+            {% endset %}
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>Actions</th>
+        </tr>
+        {% for holidayType in holidayTypes %}
+        <tr class="clickableTableRow">
+            <td>
+                <input name="delete-holidaytype[]" type="checkbox" class="list-delete-holidaytype" value="{{ holidayType.id }}">
+            </td>
+            <td data-tr-id='{{ holidayType.id }}'>{{ holidayType.id }}</td>
+            <td><span class="list-holidaytype clickable" data-id="{{ holidayType.id }}">{{ holidayType.name }}</span></td>
+            <td>
+                <a href="#" class="list-holidaytype" data-id="{{ holidayType.id }}" title="Edit holiday type"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" data-id="{{ holidayType.id }}" class="delete-single-holidaytype" title="Delete holiday type"><i class="fa fa-trash-o"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>

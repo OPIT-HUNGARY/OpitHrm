@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * HolidayCategory
+ * HolidayType
  *
- * @ORM\Table(name="notes_holiday_categories")
+ * @ORM\Table(name="notes_holiday_types")
  * @ORM\Entity
  */
-class HolidayCategory
+class HolidayType
 {
     /**
      * @var integer
@@ -25,18 +25,10 @@ class HolidayCategory
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=50)
+     * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank(message="The name may not be blank.")
      */
     private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255)
-     * @Assert\NotBlank(message="The description may not be blank.")
-     */
-    private $description;
 
 
     /**
@@ -53,7 +45,7 @@ class HolidayCategory
      * Set name
      *
      * @param string $name
-     * @return HolidayCategory
+     * @return HolidayType
      */
     public function setName($name)
     {
@@ -70,28 +62,5 @@ class HolidayCategory
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     * @return HolidayCategory
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
 }

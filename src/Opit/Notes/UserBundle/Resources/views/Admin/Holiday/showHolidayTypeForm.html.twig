@@ -1,0 +1,26 @@
+{% form_theme form 'OpitNotesUserBundle:Form:form_template.html.twig' %}
+{% if form.vars.value.getId() is not null %}
+    {% set title = "Edit holiday type"  %}
+    {% set desc = "Edit an existing holiday type." %}
+{% else %}
+    {% set title = "Create holiday type"  %}
+    {% set desc = "Create a new holiday type." %}
+{% endif %}
+<h2 class="dialog-h2">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+<form name="addholidaytype_frm" id="addholidaytype_frm" method="post">
+    {{ form_start(form) }}
+    <div class="modalwindow width-98 default-border height-auto overflow-hidden">
+        <div class="float-left width-300">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-orange bold padding-4">
+                {{ form_label(form.name) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.name, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</form>
