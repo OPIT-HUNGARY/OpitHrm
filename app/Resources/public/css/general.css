@@ -323,6 +323,9 @@ header {
     -o-border-bottom-left-radius: 10px;
     border-bottom-left-radius: 10px; }
   #notifications #unread-notifications-count {
+    position: absolute;
+    top: 0;
+    left: 0;
     background-color: #f28c38;
     width: 14px;
     height: 14px;
@@ -330,8 +333,8 @@ header {
     text-align: center;
     line-height: 1.6em;
     font-size: 9px;
-    margin-left: 4px;
-    margin-top: -17px;
+    margin-left: 14px;
+    margin-top: 18px;
     font-weight: bold;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
