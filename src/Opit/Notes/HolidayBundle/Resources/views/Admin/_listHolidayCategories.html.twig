@@ -28,8 +28,8 @@
             <td><span class="list-holidaycategory clickable" data-id="{{ holidayCategory.id }}">{{ holidayCategory.name }}</span></td>
             <td>{{ holidayCategory.description|slice(0,80) }}{% if holidayCategory.description|length > 80 %}{{ '...' }}{% endif %}</td>
             <td>
-                <a href="#" class="list-holidaycategory" data-id="{{ holidayCategory.id }}" title="Edit holiday category"><i class="fa fa-pencil-square-o"></i></a>
-                <a href="#" data-id="{{ holidayCategory.id }}" class="delete-single-holidaycategory" title="Delete holiday category"><i class="fa fa-trash-o"></i></a>
+                <a href="#" class="list-holidaycategory" data-id="{{ holidayCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" data-id="{{ holidayCategory.id }}" class="delete-single-holidaycategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>
             </td>
         </tr>
         {% endfor %}

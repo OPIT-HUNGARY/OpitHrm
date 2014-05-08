@@ -5,7 +5,7 @@ $("#addHolidayType").click ->
     .done (data) ->
         $('<div id="dialog-editholidaytype"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Create holiday type'
+                title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day type'
                 width: 750
                 modal: on
                 buttons:
@@ -41,7 +41,7 @@ $("#list-table").on "click", ".list-holidaytype", ->
     .done (data) ->
         $('<div id="dialog-editholidaytype"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Edit holiday type'
+                title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day type'
                 width: 750
                 modal: on
                 buttons:
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-holidaytype", ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday type modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day type modified successfully"
                                 if validationResult is true
                                     $('#dialog-editholidaytype').dialog "destroy"
                     Close: ->

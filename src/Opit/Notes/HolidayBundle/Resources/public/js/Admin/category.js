@@ -10,7 +10,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editholidaycategory"></div>').html(data).dialog({
-        title: '<i class="fa fa-list-alt"></i> Create holiday category',
+        title: '<i class="fa fa-list-alt"></i> Create leave category',
         width: 750,
         modal: true,
         buttons: {
@@ -35,7 +35,7 @@
               }).done(function(data) {
                 var validationResult;
                 $('#list-table').html(data);
-                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Holiday category created successfully");
+                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Leave category created successfully");
                 if (validationResult === true) {
                   return $('#dialog-editholidaycategory').dialog("destroy");
                 }
@@ -61,7 +61,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editholidaycategory"></div>').html(data).dialog({
-        title: '<i class="fa fa-list-alt"></i> Edit holiday category',
+        title: '<i class="fa fa-list-alt"></i> Edit leave category',
         width: 750,
         modal: true,
         buttons: {
@@ -86,7 +86,7 @@
               }).done(function(data) {
                 var validationResult;
                 $('#list-table').html(data);
-                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Holiday category modified successfully");
+                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Leave category modified successfully");
                 if (validationResult === true) {
                   return $('#dialog-editholidaycategory').dialog("destroy");
                 }

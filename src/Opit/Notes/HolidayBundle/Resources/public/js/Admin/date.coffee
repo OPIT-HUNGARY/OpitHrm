@@ -5,7 +5,7 @@ $("#addHolidayDate").click ->
     .done (data) ->
         $('<div id="dialog-editholidaydate"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Create holiday date'
+                title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day'
                 width: 750
                 modal: on
                 buttons:
@@ -24,7 +24,7 @@ $("#addHolidayDate").click ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday date created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day created successfully"
                                 if validationResult is true
                                     $('#dialog-editholidaydate').dialog "destroy"
                     Close: ->
@@ -41,7 +41,7 @@ $("#list-table").on "click", ".list-holidaydate", ->
     .done (data) ->
         $('<div id="dialog-editholidaydate"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Edit holiday date'
+                title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day'
                 width: 750
                 modal: on
                 buttons:
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-holidaydate", ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday date modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day modified successfully"
                                 if validationResult is true
                                     $('#dialog-editholidaydate').dialog "destroy"
                     Close: ->

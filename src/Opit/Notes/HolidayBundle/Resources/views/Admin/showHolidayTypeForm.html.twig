@@ -1,10 +1,10 @@
 {% form_theme form 'OpitNotesUserBundle:Form:form_template.html.twig' %}
 {% if form.vars.value.getId() is not null %}
-    {% set title = "Edit holiday type"  %}
-    {% set desc = "Edit an existing holiday type." %}
+    {% set title = "Edit Administrative Leave/Working Day type"  %}
+    {% set desc = "Edit an existing Administrative Leave/Working Day type." %}
 {% else %}
-    {% set title = "Create holiday type"  %}
-    {% set desc = "Create a new holiday type." %}
+    {% set title = "Create Administrative Leave/Working Day type"  %}
+    {% set desc = "Create a new Administrative Leave/Working Day type." %}
 {% endif %}
 <h2 class="dialog-h2">{{ title|trans }}</h2>
 <div class="dialog-description">{{desc|trans}}</div>

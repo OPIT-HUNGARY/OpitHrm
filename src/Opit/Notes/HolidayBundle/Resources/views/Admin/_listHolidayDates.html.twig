@@ -31,8 +31,8 @@
             <td><span class="list-holidaydate clickable" data-id="{{ holidayDate.id }}">{{ holidayDate.holidayDate|date('Y-m-d') }}</span></td>
             <td>{{ holidayDate.holidayType.name|slice(0,80) }}{% if holidayDate.holidayType.name|length > 80 %}{{ '...' }}{% endif %}</td>
             <td>
-                <a href="#" class="list-holidaydate" data-id="{{ holidayDate.id }}" title="Edit holiday date"><i class="fa fa-pencil-square-o"></i></a>
-                <a href="#" data-id="{{ holidayDate.id }}" class="delete-single-holidaydate" title="Delete holiday date"><i class="fa fa-trash-o"></i></a>
+                <a href="#" class="list-holidaydate" data-id="{{ holidayDate.id }}" title="Edit Administrative Leave/Working Day"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#" data-id="{{ holidayDate.id }}" class="delete-single-holidaydate" title="Delete Administrative Leave/Working Day"><i class="fa fa-trash-o"></i></a>
             </td>
         </tr>
         {% endfor %}

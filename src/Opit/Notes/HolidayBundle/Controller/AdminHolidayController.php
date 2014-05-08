@@ -70,7 +70,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate add/edit holiday category form
+     * To generate add/edit leave category form
      *
      * @Route("/secured/admin/add/holiday/category/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_category", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
@@ -116,7 +116,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate show holiday category form
+     * To generate show leave category form
      *
      * @Route("/secured/admin/show/holiday/category/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_category", requirements={"id" = "\d+"})
      * @Method({"GET"})
@@ -145,7 +145,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To delete holiday categories in Notes
+     * To delete leave categories in Notes
      *
      * @Route("/secured/admin/delete/holiday/category", name="OpitNotesHolidayBundle_admin_delete_holiday_category")
      * @Method({"POST"})
@@ -197,7 +197,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate list holiday dates
+     * To generate list Administrative Leave/Working Day
      *
      * @Route("/secured/admin/list/holiday/dates", name="OpitNotesHolidayBundle_admin_list_holiday_dates")
      * @Secure(roles="ROLE_ADMIN")
@@ -223,7 +223,7 @@ class AdminHolidayController extends Controller
     }
 
     /**
-     * To generate show holiday date form
+     * To generate show Administrative Leave/Working Day form
      *
      * @Route("/secured/admin/show/holiday/date/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_date", requirements={"id" = "\d+"})
      * @Method({"GET"})
@@ -277,7 +277,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate add/edit holiday date form
+     * To generate add/edit Administrative Leave/Working Day form
      *
      * @Route("/secured/admin/add/holiday/date/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_date", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
@@ -324,7 +324,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To delete holiday dates in Notes
+     * To delete Administrative Leave/Working Day in Notes
      *
      * @Route("/secured/admin/delete/holiday/date", name="OpitNotesHolidayBundle_admin_delete_holiday_date")
      * @Method({"POST"})
@@ -351,7 +351,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate list holiday types
+     * To generate list Administrative Leave/Working Day types
      *
      * @Route("/secured/admin/list/holiday/types", name="OpitNotesHolidayBundle_admin_list_holiday_types")
      * @Secure(roles="ROLE_ADMIN")
@@ -371,7 +371,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate show holiday type form
+     * To generate show Administrative Leave/Working Day type form
      *
      * @Route("/secured/admin/show/holiday/type/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_type", requirements={"id" = "\d+"})
      * @Method({"GET"})
@@ -400,7 +400,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * Returns a holidayType object
+     * Returns a Administrative Leave/Working Day type object
      *
      * @param integer $holidayTypeId
      * @return mixed  holidayType object or null
@@ -425,7 +425,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To generate add/edit holiday type form
+     * To generate add/edit Administrative Leave/Working Day type form
      *
      * @Route("/secured/admin/add/holiday/type/{id}", name="OpitNotesHolidayBundle_admin_add_holiday_type", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_ADMIN")
@@ -472,7 +472,7 @@ class AdminHolidayController extends Controller
     }
     
     /**
-     * To delete holiday types in Notes
+     * To delete Administrative Leave/Working Day types in Notes
      *
      * @Route("/secured/admin/delete/holiday/type", name="OpitNotesHolidayBundle_admin_delete_holiday_type")
      * @Method({"POST"})

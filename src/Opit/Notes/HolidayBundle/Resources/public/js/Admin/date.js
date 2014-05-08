@@ -10,7 +10,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editholidaydate"></div>').html(data).dialog({
-        title: '<i class="fa fa-list-alt"></i> Create holiday date',
+        title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day',
         width: 750,
         modal: true,
         buttons: {
@@ -35,7 +35,7 @@
               }).done(function(data) {
                 var validationResult;
                 $('#list-table').html(data);
-                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Holiday date created successfully");
+                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Administrative Leave/Working Day created successfully");
                 if (validationResult === true) {
                   return $('#dialog-editholidaydate').dialog("destroy");
                 }
@@ -61,7 +61,7 @@
       })
     }).done(function(data) {
       $('<div id="dialog-editholidaydate"></div>').html(data).dialog({
-        title: '<i class="fa fa-list-alt"></i> Edit holiday date',
+        title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day',
         width: 750,
         modal: true,
         buttons: {
@@ -86,7 +86,7 @@
               }).done(function(data) {
                 var validationResult;
                 $('#list-table').html(data);
-                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Holiday date modified successfully");
+                validationResult = $(document).data('notes').funcs.showAlert(response, "create", "Administrative Leave/Working Day modified successfully");
                 if (validationResult === true) {
                   return $('#dialog-editholidaydate').dialog("destroy");
                 }

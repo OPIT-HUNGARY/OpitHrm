@@ -5,7 +5,7 @@ $("#addHolidayCategory").click ->
     .done (data) ->
         $('<div id="dialog-editholidaycategory"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Create holiday category'
+                title: '<i class="fa fa-list-alt"></i> Create leave category'
                 width: 750
                 modal: on
                 buttons:
@@ -24,7 +24,7 @@ $("#addHolidayCategory").click ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday category created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category created successfully"
                                 if validationResult is true
                                     $('#dialog-editholidaycategory').dialog "destroy"
                     Close: ->
@@ -41,7 +41,7 @@ $("#list-table").on "click", ".list-holidaycategory", ->
     .done (data) ->
         $('<div id="dialog-editholidaycategory"></div>').html(data)
             .dialog
-                title: '<i class="fa fa-list-alt"></i> Edit holiday category'
+                title: '<i class="fa fa-list-alt"></i> Edit leave category'
                 width: 750
                 modal: on
                 buttons:
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-holidaycategory", ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday category modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category modified successfully"
                                 if validationResult is true
                                     $('#dialog-editholidaycategory').dialog "destroy"
                     Close: ->
