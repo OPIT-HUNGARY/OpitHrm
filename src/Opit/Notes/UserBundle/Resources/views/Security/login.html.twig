@@ -3,7 +3,7 @@
     {% stylesheets 
         '@OpitNotesUserBundle/Resources/public/css/login.css'
     output='css/opitnotesuser/login.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block javascripts %}

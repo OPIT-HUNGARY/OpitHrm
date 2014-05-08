@@ -10,6 +10,7 @@
         <title>{% block title %}NOTES{% endblock %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="{{ asset("favicon.ico") }}" />
 
         {% stylesheets 
             'css/html5-boilerplate/normalize.css'
@@ -21,7 +22,7 @@
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
             'libs/tipsy/css/tipsy.css'
            output='css/base.css' filter='?yui_css, cssrewrite'%}
-            <link rel="stylesheet" href="{{ asset_url }}" />
+            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
         <script src="{{ asset('js/modernizr/modernizr.2.7.1.js') }}"></script>
@@ -67,7 +68,7 @@
                 '@OpitNotesUserBundle/Resources/public/js/main.js'
                 '@OpitNotesTravelBundle/Resources/public/js/main.js'
             output='js/base.js' filter='?yui_js' %}
-                <script type="text/javascript" src="{{ asset_url }}" ></script>
+                <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
             {% endjavascripts %}
             <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         {% endblock %}

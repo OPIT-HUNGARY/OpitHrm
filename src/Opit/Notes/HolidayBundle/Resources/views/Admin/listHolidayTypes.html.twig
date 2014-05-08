@@ -6,7 +6,7 @@
     {% stylesheets
         '../app/Resources/public/css/list.css'
     output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
@@ -30,6 +30,6 @@
         '@OpitNotesHolidayBundle/Resources/public/js/Admin/type.js'
         '@OpitNotesUserBundle/Resources/public/js/list.js'
     output='js/opitnotesholiday/admin_list.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}
 {% endblock %}

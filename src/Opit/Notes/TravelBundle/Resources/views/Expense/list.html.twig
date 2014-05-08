@@ -20,6 +20,6 @@
     {% javascripts
         '@OpitNotesTravelBundle/Resources/public/js/list.js'
     output='js/opitnotestravel/tr_list.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}
 {% endblock %}

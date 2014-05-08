@@ -6,7 +6,7 @@
     {% stylesheets
         '../app/Resources/public/css/list.css'
     output='css/opitnotesuser/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
     {% endstylesheets %}
 {% endblock %}
 {% block javascripts %}
@@ -22,7 +22,7 @@
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/Admin/et_role_funcs.js'
         output='js/opitnotesuser/admin_groups_list.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}
 {% endblock %}
 {% block body %}
