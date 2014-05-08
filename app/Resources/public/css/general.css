@@ -11,10 +11,14 @@ html, body {
   font-size: 13px; }
 
 table th {
-  background-color: #f28c38;
+  background-color: #646464;
   padding: 10px 10px 10px 10px;
   text-align: left;
   color: white; }
+  table th .fa-trash-o {
+    color: white; }
+    table th .fa-trash-o:hover {
+      color: white; }
 table td {
   padding: 5px 10px 5px 10px; }
 
@@ -26,7 +30,7 @@ table.bordered {
     font-weight: bold;
     background-color: #d2d2d2; }
   table.bordered th, table.bordered caption {
-    background-color: #f28c38;
+    background-color: #646464;
     color: white;
     padding: 5px;
     margin-top: 5px; }
@@ -44,7 +48,7 @@ input[type="text"], input[type="date"], input[type="number"], input[type="passwo
   border-radius: 5px; }
 
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus {
-  border: solid 1px #f28c38; }
+  border: solid 1px #646464; }
 
 select {
   background-repeat: no-repeat;
@@ -120,7 +124,7 @@ header {
     header #menuWrapper nav:first-child {
       background-color: rgba(220, 220, 220, 0.8); }
     header #menuWrapper nav:last-child {
-      background-color: #f28c38; }
+      background-color: #94c11c; }
     header #menuWrapper nav:first-child .mainMenu {
       float: left;
       height: 44px;
@@ -157,12 +161,12 @@ header {
       display: block;
       z-index: 2; }
     header #menuWrapper nav:first-child .active {
-      background-color: #f28c38;
+      background-color: #94c11c;
       color: white; }
     header #menuWrapper nav:first-child .active:hover {
-      background-color: #f28c38; }
+      background-color: #94c11c; }
     header #menuWrapper nav:first-child .active .subMenu {
-      background-color: #f28c38;
+      background-color: #94c11c;
       display: block;
       z-index: 1; }
 
@@ -267,7 +271,7 @@ header {
   left: 0;
   top: 0;
   display: none;
-  background-color: #f28c38;
+  background-color: #94c11c;
   z-index: 5;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -285,8 +289,6 @@ header {
 #notifications:hover {
   right: -312px;
   cursor: pointer; }
-  #notifications:hover i {
-    color: #f28c38; }
 
 #notifications {
   display: block;
@@ -322,11 +324,15 @@ header {
     -ms-border-bottom-left-radius: 10px;
     -o-border-bottom-left-radius: 10px;
     border-bottom-left-radius: 10px; }
+    #notifications > i:hover {
+      color: #94c11c; }
+  #notifications.right-m15-important > i {
+    color: #94c11c; }
   #notifications #unread-notifications-count {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #f28c38;
+    background-color: #94c11c;
     width: 14px;
     height: 14px;
     color: white;
@@ -373,20 +379,20 @@ header {
         #notifications #notifications-wrapper #notifications-content .notification .notification-header .notification-header-delete {
           float: right;
           margin: 0 10px 0 0; }
-          #notifications #notifications-wrapper #notifications-content .notification .notification-header .notification-header-delete .fa-trash-o {
-            font-size: 1.1em;
-            color: black; }
-          #notifications #notifications-wrapper #notifications-content .notification .notification-header .notification-header-delete .fa-trash-o:hover {
-            cursor: pointer;
-            color: #f28c38; }
       #notifications #notifications-wrapper #notifications-content .notification .notification-message {
         padding: 3px 0 3px 3px; }
         #notifications #notifications-wrapper #notifications-content .notification .notification-message .notification-details:hover {
-          color: #f28c38; }
+          color: #94c11c; }
     #notifications #notifications-wrapper #notifications-content .notification:last-child {
       border-bottom: none; }
     #notifications #notifications-wrapper #notifications-content .unread {
       background-color: white; }
+
+.fa-trash-o {
+  font-size: 1.1em; }
+  .fa-trash-o:hover {
+    cursor: pointer;
+    color: #aa0000; }
 
 input.error, select.error {
   border: solid 2px #aa0000;

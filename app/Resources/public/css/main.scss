@@ -79,14 +79,18 @@
     color: $defaultGreen;
 }
 
+.color-light-green{
+    color: $lightGreen;
+}
+
 .color-black{
     color: black;
 }
 
 /* Background color properties */
 
-.background-color-orange{
-    background-color: $orangeColor;
+.background-color-green{
+    background-color: $lightGreen;
 }
 
 .background-color-light-orange{
@@ -95,6 +99,10 @@
 
 .background-color-dark-grey{
     background-color: $darkerGrayColor;
+}
+
+.background-section-color-grey{
+    background-color: $darkGrey;
 }
 
 .background-color-light-grey{
@@ -595,7 +603,7 @@
 }
 
 .dialog-description {
-    background-color: $orangeColor;
+    background-color: $lightGreen;
     color: white;
     margin-bottom:5px;
     padding:5px;

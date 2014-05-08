@@ -1,17 +1,56 @@
-/*  Created on : Nov 20, 2013, 3:09:17 PM Author     : OPIT\NOTES
+/* 
+    Created on : Nov 20, 2013, 3:09:17 PM
+    Author     : OPIT\NOTES
 */
-/*  Created on : Mar 10, 2014, 10:16:52 AM Author     : OPIT\NOTES
+/* 
+    Created on : Mar 10, 2014, 10:16:52 AM
+    Author     : OPIT\NOTES
 */
-#mainWrapper { width: 60%; min-width: 1024px; }
-#mainWrapper #welcomeWrapper { min-width: 740px; height: 250px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
-#mainWrapper #welcomeWrapper #welcomeText { font-size: 8em; }
-#mainWrapper #welcomeWrapper #welcomeUnderText { font-size: 1.7em; margin-top: -35px; }
-#mainWrapper #loginForm { height: 223px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
-#mainWrapper #loginForm > div { margin: 20px; }
-#mainWrapper #loginForm form #login .placeholder { margin: -30px 0 0 10px; }
-#mainWrapper #loginForm form input { width: 240px; height: 30px; outline: none; border: 2px solid transparent; background-color: #fafafa; padding: 2px 5px; text-indent: 25px; -webkit-border-radius: 3px; -moz-border-radius: 3px; -ms-border-radius: 3px; -o-border-radius: 3px; border-radius: 3px; }
-#mainWrapper #loginForm form input:focus { border: solid 2px #f28c38; }
-#mainWrapper #loginForm form label { display: none; }
-#mainWrapper #loginForm form button { border: 0; outline: 0; padding: 8px 30px 8px 30px; }
-#mainWrapper #featuresForm { width: 69%; height: 223px; text-indent: 20px; box-shadow: 1px 1px 1px 1px #a0a0a0; }
-#mainWrapper #featuresForm li { margin: 0 0 0 20px; text-indent: 5px; }
+#mainWrapper {
+  width: 60%;
+  min-width: 1024px; }
+  #mainWrapper #welcomeWrapper {
+    min-width: 740px;
+    height: 250px;
+    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    #mainWrapper #welcomeWrapper #welcomeText {
+      font-size: 8em; }
+    #mainWrapper #welcomeWrapper #welcomeUnderText {
+      font-size: 1.7em;
+      margin-top: -35px; }
+  #mainWrapper #loginForm {
+    height: 223px;
+    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    #mainWrapper #loginForm > div {
+      margin: 20px; }
+    #mainWrapper #loginForm form #login .placeholder {
+      margin: -30px 0 0 10px; }
+    #mainWrapper #loginForm form input {
+      width: 240px;
+      height: 30px;
+      outline: none;
+      border: 2px solid transparent;
+      background-color: #fafafa;
+      padding: 2px 5px;
+      text-indent: 25px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      -ms-border-radius: 3px;
+      -o-border-radius: 3px;
+      border-radius: 3px; }
+    #mainWrapper #loginForm form input:focus {
+      border: solid 2px #b4b4b4; }
+    #mainWrapper #loginForm form label {
+      display: none; }
+    #mainWrapper #loginForm form button {
+      border: 0;
+      outline: 0;
+      padding: 8px 30px 8px 30px; }
+  #mainWrapper #featuresForm {
+    width: 69%;
+    height: 223px;
+    text-indent: 20px;
+    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    #mainWrapper #featuresForm li {
+      margin: 0 0 0 20px;
+      text-indent: 5px; }

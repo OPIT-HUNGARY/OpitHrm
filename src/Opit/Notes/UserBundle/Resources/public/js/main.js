@@ -181,14 +181,14 @@
       if ($('#unread-notifications').html() !== data) {
         if ('0' !== data) {
           $unreadNotificationsCount.removeClass('display-none');
-          $notificationsIcon.addClass('color-orange');
+          $notificationsIcon.addClass('color-light-green');
           $unreadNotificationsCount.html(data);
           $('#notifications').addClass('right-m312-important');
         }
       }
       if ('0' === $unreadNotificationsCount.html()) {
         $unreadNotificationsCount.addClass('display-none');
-        $notificationsIcon.removeClass('color-orange');
+        $notificationsIcon.removeClass('color-light-green');
         $('#notifications').removeClass('right-m312-important');
       }
       return setTimeout(getUnreadNotifications, 10000);
@@ -231,7 +231,7 @@
       $container = $(this).parent();
       if (!$container.hasClass('right-m15-important')) {
         $container.addClass('right-m15-important');
-        $(this).removeClass('color-orange');
+        $(this).removeClass('color-light-green');
         $('#unread-notifications-count').addClass('display-none');
         getAllNotifications($('#notifications-content'));
         $('#notifications-wrapper').on('click.notifications', function(event) {

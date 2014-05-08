@@ -63,7 +63,7 @@ formFieldsetAddClasses = (formFieldsetIds) ->
     
 formFieldsetAddHeader = (formFieldsetId) ->
     $label = $("##{ formFieldsetId }").parent().children 'label'
-    $label.replaceWith '<h3 class="background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em">' + $label.html() + '</h3>'
+    $label.replaceWith '<h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">' + $label.html() + '</h3>'
         
 createFormFieldSetChild = ($self) ->
     $self.addClass 'formFieldsetChild'
@@ -153,7 +153,7 @@ $(document).ready ->
     requiredApprovals = $('<div>')
                             .addClass('formFieldset')
                             .addClass('padding-bottom-5 margin-top-20 margin-bottom-20')
-    requiredApprovals.append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em').html 'Required approvals')
+    requiredApprovals.append($('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em').html 'Required approvals')
     $div = $('<div>')
             .addClass('margin-left-1-em')
             .append $('#travelRequest_team_manager_ac').parent()

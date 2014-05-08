@@ -16,10 +16,10 @@
 {% else %}
     <p>
         The status of your travel request (
-        <span style="color:rgb(150, 30, 30);">
+        <span style="color:rgb(148, 193, 28);">
             {{ travelRequest.travelRequestId }}
         </span>
-        ) has been changed to <strong style="color:rgb(150, 30, 30);">{{ templateVars['currentState']|upper }}</strong>.
+        ) has been changed to <strong style="color:rgb(148, 193, 28);">{{ templateVars['currentState']|upper }}</strong>.
         <br />
         {% if templateVars['isApproved'] is defined %}
             You can now add travel expense to your request
@@ -37,7 +37,7 @@
     </p>
 {% endif %}
 
-<h2>Travel request (<span style="color:rgb(150, 30, 30);">{{ travelRequest.travelRequestId }}</span>) details</h2>
+<h2>Travel request (<span style="color:rgb(148, 193, 28);">{{ travelRequest.travelRequestId }}</span>) details</h2>
 <table style="margin:0 0 0 10px;" bordercolor="rgb(30, 30, 30)">
     <tr>
         <td width="240px" style="border-bottom: solid 1px;font-weight:bold;">Employee name</td>

@@ -57,7 +57,7 @@
   formFieldsetAddHeader = function(formFieldsetId) {
     var $label;
     $label = $("#" + formFieldsetId).parent().children('label');
-    return $label.replaceWith('<h3 class="background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em">' + $label.html() + '</h3>');
+    return $label.replaceWith('<h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">' + $label.html() + '</h3>');
   };
 
   createFormFieldSetChild = function($self) {
@@ -161,7 +161,7 @@
       }
     });
     requiredApprovals = $('<div>').addClass('formFieldset').addClass('padding-bottom-5 margin-top-20 margin-bottom-20');
-    requiredApprovals.append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em').html('Required approvals'));
+    requiredApprovals.append($('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em').html('Required approvals'));
     $div = $('<div>').addClass('margin-left-1-em').append($('#travelRequest_team_manager_ac').parent()).append($('#travelRequest_general_manager_ac').parent());
     $('#travelRequest_general_manager').after(requiredApprovals.append($div));
     $('#travelRequest_departure_date, #travelRequest_arrival_date, #travelRequest_customer_related, #travelRequest_customer_name, #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass('display-inline-block vertical-align-top margin-right-1-em');

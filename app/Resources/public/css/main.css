@@ -60,18 +60,24 @@
 .color-green {
   color: darkgreen; }
 
+.color-light-green {
+  color: #94c11c; }
+
 .color-black {
   color: black; }
 
 /* Background color properties */
-.background-color-orange {
-  background-color: #f28c38; }
+.background-color-green {
+  background-color: #94c11c; }
 
 .background-color-light-orange {
   background-color: #d46e1a; }
 
 .background-color-dark-grey {
   background-color: #505050; }
+
+.background-section-color-grey {
+  background-color: #646464; }
 
 .background-color-light-grey {
   background-color: #c8c8c8; }
@@ -498,7 +504,7 @@
   border-radius: 5px; }
 
 .dialog-description {
-  background-color: #f28c38;
+  background-color: #94c11c;
   color: white;
   margin-bottom: 5px;
   padding: 5px;

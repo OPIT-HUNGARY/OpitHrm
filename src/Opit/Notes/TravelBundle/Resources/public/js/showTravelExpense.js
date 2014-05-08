@@ -481,9 +481,9 @@
 
   $generalFormFieldset = $formFieldset.clone().addClass('generalFormFieldset clearfix padding-10');
 
-  $expensesPaidByMe = $formFieldset.clone().append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by me <i class="fa fa-question-circle"></i>'));
+  $expensesPaidByMe = $formFieldset.clone().append($('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by me <i class="fa fa-question-circle"></i>'));
 
-  $expensesPaidByOpit = $formFieldset.clone().append($('<h3>').addClass('background-color-orange color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by opit <i class="fa fa-question-circle"></i>'));
+  $expensesPaidByOpit = $formFieldset.clone().append($('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html('Expenses paid by opit <i class="fa fa-question-circle"></i>'));
 
   $('#travelExpense').prepend($expensesPaidByOpit);
 

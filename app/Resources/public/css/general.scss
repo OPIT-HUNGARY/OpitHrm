@@ -12,10 +12,18 @@ html, body{
 
 table {
     th {
-        background-color: $orangeColor;
+        background-color: $darkGrey;
         padding: 10px 10px 10px 10px;
         text-align: left;
-        color: white; 
+        color: white;
+
+        .fa-trash-o{
+            color:white;
+
+            &:hover {
+                color:white;
+            }
+        }
     }
     td { 
         padding: 5px 10px 5px 10px;
@@ -35,7 +43,7 @@ table.bordered{
     }
     
     th, caption{
-        background-color: $orangeColor;
+        background-color: $darkGrey;
         color: white;
         padding: 5px;
         margin-top: 5px;
@@ -52,7 +60,7 @@ input[type="text"], input[type="date"], input[type="number"], input[type="passwo
 }
 
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, input[type="password"]:focus{
-    border:solid 1px $orangeColor;
+    border:solid 1px $darkGrey;
 }
 
 select {
@@ -135,7 +143,7 @@ header{
         }
 
          nav:last-child{
-            background-color:$orangeColor;
+            background-color:$lightGreen;
         } 
 
          nav:first-child .mainMenu{
@@ -170,16 +178,16 @@ header{
         }
 
          nav:first-child .active{
-            background-color:$orangeColor;
+            background-color:$lightGreen;
             color:white;
         }
 
          nav:first-child .active:hover{
-            background-color:$orangeColor;
+            background-color:$lightGreen;
         }
 
          nav:first-child .active .subMenu{
-            background-color:$orangeColor;
+            background-color:$lightGreen;
             display:block;
             z-index:1;
         }
@@ -272,7 +280,7 @@ header{
     left:0;
     top:0;
     display:none;
-    background-color:$orangeColor;
+    background-color:$lightGreen;
     z-index:5;
     @include border-radius(0);
     
@@ -293,10 +301,6 @@ header{
 #notifications:hover{
     right:-312px;
     cursor:pointer;
-    
-    i{
-        color:$orangeColor;
-    }
 }
 
 #notifications{
@@ -320,13 +324,21 @@ header{
         margin-right: -4px;
         @include border-top-left-radius(10px);
         @include border-bottom-left-radius(10px);
+
+        &:hover {
+            color:$lightGreen;
+        }
     }
-    
+
+    &.right-m15-important > i {
+        color:$lightGreen;
+    }
+
     #unread-notifications-count{
         position:absolute;
         top: 0;
         left: 0;
-        background-color:$orangeColor;
+        background-color:$lightGreen;
         width: 14px;
         height: 14px;
         color: white;
@@ -378,16 +390,6 @@ header{
                     .notification-header-delete{
                         float:right;
                         margin:0 10px 0 0;
-
-                        .fa-trash-o{
-                            font-size:1.1em;
-                            color:black;
-                        }
-
-                        .fa-trash-o:hover{
-                            cursor:pointer;
-                            color:$orangeColor;
-                        }
                     }
                 }
 
@@ -395,7 +397,7 @@ header{
                     padding:3px 0 3px 3px;
 
                     .notification-details:hover{
-                        color: $orangeColor;
+                        color: $lightGreen;
                     }
                 }
             }
@@ -408,6 +410,15 @@ header{
                 background-color: white;
             }
         }
+    }
+}
+
+.fa-trash-o{
+    font-size:1.1em;
+
+    &:hover{
+        cursor:pointer;
+        color:$defaultRed;
     }
 }
 
