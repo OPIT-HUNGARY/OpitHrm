@@ -16,7 +16,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
-use Opit\Notes\UserBundle\Form\TeamType;
 
 /**
  * Description of ContactType
@@ -124,7 +123,7 @@ class UserShowType extends AbstractType
             $builder->add('isActive', 'choice', array(
                 'choices' => $this->container->getParameter('notes_user_status')
             ));
-
+            
             // Display ldap feature related form inputs
             if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
                 $builder->add('ldapEnabled', 'choice', array(
@@ -134,9 +133,9 @@ class UserShowType extends AbstractType
                     'data' => $dataArr->isLdapEnabled() || 0
                 ));
             }
-            
-            $builder->add('employee', new EmployeeType());
         }
+        
+        $builder->add('employee', new EmployeeType());
     }
     /**
      * Sets the default form options

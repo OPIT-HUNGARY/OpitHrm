@@ -56,10 +56,11 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
      */
     protected $username;
-
+    
     /**
      * @ORM\OneToOne(targetEntity="Employee", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="employee", referencedColumnName="id")
+     * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
+     * @Assert\Valid
      */
     protected $employee;
     

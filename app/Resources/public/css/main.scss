@@ -621,6 +621,10 @@
     bottom: 0;
 }
 
+.textarea-non-resizeable{
+    resize: none;
+}
+
 #ajax-loader {
     text-align: center;
     position: fixed;

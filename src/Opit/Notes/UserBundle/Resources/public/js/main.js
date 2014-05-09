@@ -17,10 +17,14 @@
             title: '<i class="fa fa-list-alt"></i> Edit User',
             modal: true,
             width: 710,
+            open: function() {
+              return $(document).data('notes').funcs.initDateInputs($(this));
+            },
             buttons: {
               Save: function() {
                 return $.ajax({
                   type: 'POST',
+                  global: false,
                   url: Routing.generate('OpitNotesUserBundle_user_add', {
                     id: userId
                   }),

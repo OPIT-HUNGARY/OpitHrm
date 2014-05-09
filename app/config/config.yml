@@ -71,6 +71,12 @@ doctrine:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                 enabled: true
+                
+services:
+    opit.listener.leave_request_post_listener:
+        class: Opit\Notes\HolidayBundle\EventListener\LeaveRequestPostListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
 
 # Swiftmailer Configuration
 swiftmailer:

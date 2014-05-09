@@ -13,10 +13,13 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                   title: '<i class="fa fa-list-alt"></i> Edit User'
                   modal: on
                   width: 710
+                  open: ->
+                    $(document).data('notes').funcs.initDateInputs $(@)
                   buttons:
                     Save: ->
                       $.ajax
                         type: 'POST'
+                        global: off
                         url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
                         data: $('#adduser_frm').serialize()
                       .done (data, textStatus, jqXHR)->

@@ -55,8 +55,11 @@ class HolidayCategoriesFixtures extends AbstractDataFixture
     public function doLoad(ObjectManager $manager)
     {
         $categories = array(
-            'Bank holidays' => 'Those days when the bank is closed. So the employees must not work in the OPIT.',
-            'Weekend working days' => 'Those weekend days, when everybody has to work in the OPIT.',
+            'Full day' => 'Employee takes full day off.',
+            'Morning half day' => 'Employee takes morning half day off.',
+            'Afternoon half day' => 'Employee takes afternoon half day off.',
+            'Sick leave' => 'Employee takes sick leave.',
+            'Unpaid leave' => 'Employee takes unpaid leave.',
         );
 
         foreach ($categories as $key => $value) {

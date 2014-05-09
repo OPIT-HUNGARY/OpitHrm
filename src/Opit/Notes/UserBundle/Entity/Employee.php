@@ -35,12 +35,14 @@ namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Employee
  *
  * @ORM\Table(name="notes_employees")
  * @ORM\Entity
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Employee
 {
@@ -51,26 +53,35 @@ class Employee
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
+    
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
     
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateOfBirth", type="date")
+     * @ORM\Column(name="date_of_birth", type="date")
+     * @Assert\NotBlank(message="Date of birth cannot be empty.", groups={"user"})
+     * @Assert\Date()
      */
-    private $dateOfBirth;
+    protected $dateOfBirth;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="joiningDate", type="date")
+     * @ORM\Column(name="joining_date", type="date")
+     * @Assert\NotBlank(message="Joining date cannot be empty.", groups={"user"})
+     * @Assert\Date()
      */
-    private $joiningDate;
+    protected $joiningDate;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="numberOfChildren", type="integer")
+     * @ORM\Column(name="number_of_children", type="integer")
      * @Assert\Range(
      *      min = "0",
      *      max = "30",
@@ -79,7 +90,7 @@ class Employee
      *      groups={"user"}
      * )
      */
-    private $numberOfChildren;
+    protected $numberOfChildren;
     
     /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="employee")
@@ -88,6 +99,23 @@ class Employee
     protected $teams;
     
     /**
+     * Employee leave requests
+     * 
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\HolidayBundle\Entity\LeaveRequest", mappedBy="employee")
+     * @Assert\Valid
+     */
+    protected $leaveRequests;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->teams = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->leaveRequests = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -95,6 +123,29 @@ class Employee
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     * @return Employee
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime 
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
     }
 
     /**
@@ -165,22 +216,12 @@ class Employee
     {
         return $this->numberOfChildren;
     }
-    
-    /**
-     * Get teams
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTeams()
-    {
-        return $this->teams;
-    }
-    
+
     /**
      * Add teams
      *
-     * @param  \Opit\Notes\UserBundle\Entity\Teams $teams
-     * @return User
+     * @param \Opit\Notes\UserBundle\Entity\Team $teams
+     * @return Employee
      */
     public function addTeam(\Opit\Notes\UserBundle\Entity\Team $teams)
     {
@@ -192,10 +233,54 @@ class Employee
     /**
      * Remove teams
      *
-     * @param \Opit\Notes\UserBundle\Entity\Teams $teams
+     * @param \Opit\Notes\UserBundle\Entity\Team $teams
      */
     public function removeTeam(\Opit\Notes\UserBundle\Entity\Team $teams)
     {
         $this->teams->removeElement($teams);
+    }
+
+    /**
+     * Get teams
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTeams()
+    {
+        return $this->teams;
+    }
+
+    /**
+     * Add leaveRequests
+     *
+     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests
+     * @return Employee
+     */
+    public function addLeaveRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests)
+    {
+        $this->leaveRequests[] = $leaveRequests;
+        $leaveRequests->setEmployee($this); // synchronously updating inverse side
+
+        return $this;
+    }
+
+    /**
+     * Remove leaveRequests
+     *
+     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests
+     */
+    public function removeLeaveRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests)
+    {
+        $this->leaveRequests->removeElement($leaveRequests);
+    }
+
+    /**
+     * Get leaveRequests
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLeaveRequests()
+    {
+        return $this->leaveRequests;
     }
 }

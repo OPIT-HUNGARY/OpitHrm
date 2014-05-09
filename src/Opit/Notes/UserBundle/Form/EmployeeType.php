@@ -42,9 +42,7 @@ class EmployeeType extends AbstractType
         ));
         
         $builder->add('numberOfChildren', 'number', array('attr' => array(
-            'placeholder' => 'Number of children',
-            'min' => '0',
-            'max' => '30'
+            'placeholder' => 'Number of children'
         )));
         
         $builder->add('joiningDate', 'date', array(

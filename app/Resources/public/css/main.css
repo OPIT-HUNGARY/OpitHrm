@@ -527,6 +527,9 @@
 .bottom-0 {
   bottom: 0; }
 
+.textarea-non-resizeable {
+  resize: none; }
+
 #ajax-loader {
   text-align: center;
   position: fixed;
@@ -561,6 +564,7 @@
     height: 3px;
     opacity: 0.1;
     -webkit-transform: translateX(-21px); } }
+
 @-moz-keyframes loader {
   0% {
     width: 3px;

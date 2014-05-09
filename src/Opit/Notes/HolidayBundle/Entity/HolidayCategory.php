@@ -4,11 +4,13 @@ namespace Opit\Notes\HolidayBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * HolidayCategory
  *
  * @ORM\Table(name="notes_holiday_categories")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Entity
  */
 class HolidayCategory
@@ -22,6 +24,11 @@ class HolidayCategory
      */
     private $id;
 
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+    
     /**
      * @var string
      *
@@ -37,7 +44,19 @@ class HolidayCategory
      * @Assert\NotBlank(message="The description may not be blank.")
      */
     private $description;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="LeaveRequest", mappedBy="category", cascade={"persist"})
+     */
+    protected $requests;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->requests = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -47,6 +66,29 @@ class HolidayCategory
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     * @return HolidayCategory
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime 
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
     }
 
     /**
@@ -93,5 +135,38 @@ class HolidayCategory
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Add requests
+     *
+     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $requests
+     * @return HolidayCategory
+     */
+    public function addRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $requests)
+    {
+        $this->requests[] = $requests;
+
+        return $this;
+    }
+
+    /**
+     * Remove requests
+     *
+     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $requests
+     */
+    public function removeRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $requests)
+    {
+        $this->requests->removeElement($requests);
+    }
+
+    /**
+     * Get requests
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRequests()
+    {
+        return $this->requests;
     }
 }
