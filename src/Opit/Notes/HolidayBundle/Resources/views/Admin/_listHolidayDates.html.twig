@@ -1,8 +1,8 @@
 <form  class="form-holidaydate">
     <div id="list-table">
     {% for year, holidayDates in groupedHolidayDates %}
-    <h2>{{year}}</h2>
-    <table class="width-100">
+        <h2>{{year}}</h2>
+    <table id="group-{{year}}" class="width-100">
         <tr>
             <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
             {% set orderIcon %}
@@ -23,7 +23,7 @@
             <th>Actions</th>
         </tr>
         {% for holidayDate in holidayDates %}
-        <tr class="clickableTableRow">
+        <tr class="clickableTableRow" id="row-{{ holidayDate.id }}">
             <td>
                 <input name="delete-holidaydate[]" type="checkbox" class="list-delete-holidaydate" value="{{ holidayDate.id }}">
             </td>

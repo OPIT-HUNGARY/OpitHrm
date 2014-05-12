@@ -44,7 +44,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage UserBundle
+ * @subpackage HolidayBundle
  */
 class HolidayCategoryType extends AbstractType
 {

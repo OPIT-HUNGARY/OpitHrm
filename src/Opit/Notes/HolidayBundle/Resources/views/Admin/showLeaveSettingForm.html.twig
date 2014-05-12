@@ -1,0 +1,15 @@
+{% if index is null %}
+    {% set index = '__index__' %}
+{% endif %}
+<div class='formFieldsetChild padding-10 margin-right-1-em margin-bottom-1-em display-inline-block vertical-align-top'>
+    {{ form_row(form.id, {'id': 'leaveSetting'~index~'id', 'full_name': 'leaveSetting['~index~'][id]'}) }}
+    {{ form_row(form.number, {'id': 'leaveSetting'~index~'number', 'full_name': 'leaveSetting['~index~'][number]' }) }}
+    {{ form_row(form.numberOfLeaves, {'id': 'leaveSetting'~index~'numberOfLeaves', 'full_name': 'leaveSetting['~index~'][numberOfLeaves]' }) }}
+    {{ form_row(form.leaveGroup, {'id': 'leaveSetting'~index~'leaveGroup', 'full_name': 'leaveSetting['~index~'][leaveGroup]'}) }}
+    <div class='deleteFormFieldsetChild formFieldsetButton no-pointer'>
+        <span class='deleteLeaveSetting deleteFormFieldsetChild formFieldsetButton form-fieldset-delete-button'>
+            <i class='fa fa-minus-square'></i>
+            Delete
+        </span>
+    </div>
+</div>

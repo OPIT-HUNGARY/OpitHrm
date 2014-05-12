@@ -1,4 +1,5 @@
 <?php
+
 /*
  * The MIT License
  *
@@ -32,49 +33,58 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\HolidayBundle\Form;
+namespace Opit\Notes\HolidayBundle\DataFixtures\ORM;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Opit\Notes\HolidayBundle\Entity\LeaveGroup;
+use Opit\Notes\HolidayBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of HolidayTypeType
+ * Description of LeaveGroupFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage HolidayBundle
+ * @subpackage HolidayRateBundle
  */
-class HolidayTypeType extends AbstractType
+class LeaveGroupsFixtures extends AbstractDataFixture
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * {@inheritDoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function doLoad(ObjectManager $manager)
     {
-        $builder->add('name', 'text', array('attr' => array(
-            'max_length' => 100,
-            'placeholder' => 'Name'
-        )));
-    }
-    
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\HolidayBundle\Entity\HolidayType'
-        ));
+        $groups = array(
+            'Age',
+            'Children',
+            'Illness'
+        );
+
+        foreach ($groups as $group) {
+            $leaveGroup = new LeaveGroup();
+            $leaveGroup->setName($group);
+            $manager->persist($leaveGroup);
+
+            $this->addReference(strtolower($group), $leaveGroup);
+        }
+
+        $manager->flush();
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
-    public function getName()
+    public function getOrder()
     {
-        return 'opit_notes_holidaybundle_holidaytype';
+        return 10; // the order in which fixtures will be loaded
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    protected function getEnvironments()
+    {
+        return array('dev', 'prod', 'test');
     }
 }

@@ -31,7 +31,6 @@
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
-
 namespace Opit\Notes\HolidayBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -39,14 +38,14 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Description of HolidayTypeType
+ * Description of LeaveSettingType
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage HolidayBundle
  */
-class HolidayTypeType extends AbstractType
+class LeaveSettingType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -54,10 +53,27 @@ class HolidayTypeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', 'text', array('attr' => array(
-            'max_length' => 100,
-            'placeholder' => 'Name'
+        $inArray = array_key_exists('data', $options);
+        
+        $builder->add('number', 'integer', array('label' => 'Number', 'attr' => array(
+            'min' => 0,
+            'placeholder' => 'Number'
         )));
+        $builder->add('numberOfLeaves', 'integer', array('label' => 'No. of leaves', 'attr' => array(
+            'min' => 0,
+            'placeholder' => 'Number of leaves'
+        )));
+        $builder->add('id', 'hidden', array(
+            'mapped'=>false,
+            'data' => $inArray?(($id = $options['data']->getId()) ? $id : ''):''
+        ));
+        
+        $leaveGroup = $inArray?(($leaveGroup = $options['data']->getLeaveGroup()) ? $leaveGroup : ''):'';
+        
+        $builder->add('leaveGroup', 'hidden', array(
+            'mapped'=>false,
+            'data' => $leaveGroup?(($leaveGroupId = $leaveGroup->getId()) ? $leaveGroupId : ''):''
+        ));
     }
     
     /**
@@ -66,7 +82,7 @@ class HolidayTypeType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\HolidayBundle\Entity\HolidayType'
+            'data_class' => 'Opit\Notes\HolidayBundle\Entity\LeaveSetting'
         ));
     }
 
@@ -75,6 +91,6 @@ class HolidayTypeType extends AbstractType
      */
     public function getName()
     {
-        return 'opit_notes_holidaybundle_holidaytype';
+        return 'opit_notes_holidaybundle_holidaysetting';
     }
 }

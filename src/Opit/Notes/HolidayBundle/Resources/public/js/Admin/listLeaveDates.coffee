@@ -33,7 +33,8 @@ $("#addHolidayDate").click ->
             return
         return
 
-$("#list-table").on "click", ".list-holidaydate", ->
+$("#list-table").on "click", ".list-holidaydate", (event) ->
+    event.preventDefault()
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
@@ -74,7 +75,8 @@ $('#delete').click ->
     deleteHolidayDate()
 
 # Delete icon in the table row
-$('#list-table').on "click", ".delete-single-holidaydate", ->
+$('#list-table').on "click", ".delete-single-holidaydate", (event) ->
+    event.preventDefault()
     $checkbox = $(@).closest('tr').find(':checkbox')
     $checkbox.prop 'checked', true
     deleteHolidayDate()
@@ -85,7 +87,8 @@ deleteHolidayDate = () ->
     $(document).data('notes').funcs.deleteAction('Holiday date delete', 'holiday date(s)', url, '.list-delete-holidaydate')
 
 $('#list-table').on "click", "th .fa-trash-o", ->
-      $('.list-delete-holidaydate').filter(() -> return not @.disabled).checkAll()
+    group = $(@).closest('table').attr('id')
+    $("##{group} .list-delete-holidaydate").filter(() -> return not @.disabled).checkAll()
 
 inverse = false
 $('form').on 'click', '.fa-sort', ->

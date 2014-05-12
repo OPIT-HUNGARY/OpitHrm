@@ -16,7 +16,7 @@
  * all copies or substantial portions of the Software.
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * IMPLIED, INCLUDING BUT NOT LIMID TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
@@ -31,6 +31,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\HolidayBundle\Entity\HolidayCategory;
 use Opit\Notes\HolidayBundle\Form\HolidayCategoryType;
@@ -38,6 +39,9 @@ use Opit\Notes\HolidayBundle\Entity\HolidayDate;
 use Opit\Notes\HolidayBundle\Form\HolidayDateType;
 use Opit\Notes\HolidayBundle\Entity\HolidayType;
 use Opit\Notes\HolidayBundle\Form\HolidayTypeType;
+use Opit\Notes\HolidayBundle\Entity\LeaveSetting;
+use Opit\Notes\HolidayBundle\Form\LeaveSettingType;
+use Opit\Notes\TravelBundle\Helper\Utils;
 
 /**
  * Description of AdminHolidayController
@@ -496,5 +500,185 @@ class AdminHolidayController extends Controller
         $result['response'] = 'success';
 
         return new JsonResponse(array('code' => 200, $result));
+    }
+    
+    /**
+     * To generate list holiday options
+     *
+     * @Route("/secured/admin/list/holiday/options", name="OpitNotesHolidayBundle_admin_list_holiday_settings")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function listLeaveSettingsAction()
+    {
+        $request = $this->getRequest();
+        $showList = (boolean) $request->request->get('showList');
+        $config = $this->container->getParameter('opit_notes_leave');
+        $isEnabled = $config['leave_entitlement_plan']['enabled'];
+        $groupedLeaveSettings = array();
+        $leaveGroups = array();
+
+        // If the leave settings configuration is enabled in the config.
+        if ($isEnabled) {
+            $em = $this->getDoctrine()->getManager();
+            $leaveSettings = $em->getRepository('OpitNotesHolidayBundle:LeaveSetting')->findAll();
+            $leaveGroups = $em->getRepository('OpitNotesHolidayBundle:LeaveGroup')->findAll();
+
+            // Grouping the holiday dates by year
+            foreach ($leaveSettings as $setting) {
+                $groupedLeaveSettings[$setting->getLeaveGroup()->getName()][] = $setting;
+            }
+        }
+
+        return $this->render(
+            $showList ? 'OpitNotesHolidayBundle:Admin:_listLeaveSettings.html.twig' : 'OpitNotesHolidayBundle:Admin:listLeaveSettings.html.twig',
+            array('groupedLeaveSettings' => $groupedLeaveSettings, 'leaveGroups' => $leaveGroups, 'isEnabled' => $isEnabled)
+        );
+    }
+    
+    /**
+     * To show holiday option
+     *
+     * @Route("/secured/admin/show/holiday/option/{id}", name="OpitNotesHolidayBundle_admin_show_holiday_setting", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function showLeaveSettingAction(Request $request)
+    {
+        $id = $request->attributes->get('id');
+
+        if ($id == 'new') {
+            $index = null;
+            $leaveSetting = new LeaveSetting();
+        } else {
+            $index = $request->attributes->get('index');
+            $leaveSetting = $this->getLeaveSetting($id);
+        }
+
+        
+        $form = $this->createForm(
+            new LeaveSettingType(),
+            $leaveSetting
+        );
+        return $this->render(
+            'OpitNotesHolidayBundle:Admin:showLeaveSettingForm.html.twig',
+            array('form' => $form->createView(), 'index' => $index)
+        );
+    }
+    
+    /**
+     * To save holiday setting
+     *
+     * @Route("/secured/admin/save/holidaysetting", name="OpitNotesHolidayBundle_admin_save_holiday_setting")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function saveLeaveSettingAction()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all();
+        $em = $this->getDoctrine()->getManager();
+        $result['response'] = 'success';
+        $status = null;
+
+        //If it was a post
+        if ($request->isMethod('POST')) {
+            
+            $leaveSettingList = $em->getRepository('OpitNotesHolidayBundle:LeaveSetting')->findAll();
+            $ids = Utils::arrayValueRecursive('id', $data);
+
+            // Remove holiday settings
+            foreach ($leaveSettingList as $hs) {
+                if (!in_array($hs->getId(), $ids)) {
+                    // delete
+                    $leaveSetting = $this->getLeaveSetting($hs->getId(), false);
+                    $em->remove($leaveSetting);
+                    $em->flush();
+                }
+            }
+            if (!empty($data)) {
+                // Save holiday settings
+                foreach ($data['leaveSetting'] as $d) {
+                    // save
+                    $leaveSetting = $this->getLeaveSetting($d['id'], false);
+                    $result = $this->setLeaveSettingData($leaveSetting, $d);
+                    if (500 === $result['status']) {
+                        $status = $result['status'];
+                        break;
+                    }
+                }
+            }
+        }
+        return new JsonResponse(array('code' => $status, $result));
+    }
+    
+    /**
+     * Set the holiday setting entity
+     *
+     * @param \Opit\Notes\HolidayBundle\Entity\LeaveSetting $leaveSetting
+     * @param array $data value of holiday setting
+     * @return int|boolean
+     */
+    protected function setLeaveSettingData($leaveSetting, $data)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $result = array();
+        $result['status'] = 200;
+        
+        //If it is a new holiday setting create, else modify it.
+        if (false === $leaveSetting) {
+            // Create a new holiday setting and save it.
+            $leaveSetting = new LeaveSetting();
+        }
+        $leaveSetting->setNumber($data['number']);
+        $leaveSetting->setNumberOfLeaves($data['numberOfLeaves']);
+        // get the holiday group entity by id
+        $leaveGroup = $em->getRepository('OpitNotesHolidayBundle:LeaveGroup')->find((integer)$data['leaveGroup']);
+        $leaveSetting->setLeaveGroup($leaveGroup);
+        
+        $validator = $this->get('validator');
+        $errors = $validator->validate($leaveSetting);
+        // If the validation failed
+        if (count($errors) > 0) {
+            $result['status'] = 500;
+            $result['response'] = 'error';
+            // Get the error messages.
+            foreach ($errors as $e) {
+                $result['errorMessage'][] = $e->getMessage();
+            }
+        } else {
+            $em->persist($leaveSetting);
+            $em->flush();
+        }
+        return $result;
+    }
+    
+    /**
+     * Returns a Holiday Option request object
+     *
+     * @param integer $leaveSettingId
+     * @return mixed  LeaveSetting object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getLeaveSetting($leaveSettingId = null, $throwError = true)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $leaveSettingId) {
+            $leaveSettingId = $request->request->get('id');
+        }
+
+        $leaveSetting = $em->getRepository('OpitNotesHolidayBundle:LeaveSetting')->find($leaveSettingId);
+        
+        if (!$leaveSetting || null === $leaveSetting) {
+            //If this method throws error or just return with false value.
+            if (true === $throwError) {
+                throw $this->createNotFoundException('Missing Per diem for id "' . $leaveSetting . '"');
+            } else {
+                return false;
+            }
+        }
+        return $leaveSetting;
     }
 }
