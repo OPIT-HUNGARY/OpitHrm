@@ -61,6 +61,7 @@ class UserShowType extends AbstractType
     {
         $dataArr = $builder->getData();
         $config = $this->container->getParameter('opit_notes_user');
+        $leaveConfig = $this->container->getParameter('opit_notes_leave');
         $userId = null;
         $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
 
@@ -123,7 +124,7 @@ class UserShowType extends AbstractType
             $builder->add('isActive', 'choice', array(
                 'choices' => $this->container->getParameter('notes_user_status')
             ));
-            
+
             // Display ldap feature related form inputs
             if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
                 $builder->add('ldapEnabled', 'choice', array(
@@ -133,8 +134,17 @@ class UserShowType extends AbstractType
                     'data' => $dataArr->isLdapEnabled() || 0
                 ));
             }
+            // If the leave settings configuration is disabled then this form option will be viewed
+            if (isset($leaveConfig['leave_entitlement_plan']['enabled']) && false === $leaveConfig['leave_entitlement_plan']['enabled']) {
+                $builder->add('entitledLeaves', 'integer', array('label' => 'Yearly Leave Entitlement',
+                    'data' => $dataArr->getEntitledLeaves() ? $dataArr->getEntitledLeaves() : $leaveConfig['leave_entitlement_plan']['default_days'],
+                    'attr' => array(
+                    'placeholder' => 'Yearly leave entitlement',
+                )));
+            }
+
         }
-        
+
         $builder->add('employee', new EmployeeType());
     }
     /**

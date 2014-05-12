@@ -82,6 +82,7 @@ class Employee
      * @var integer
      *
      * @ORM\Column(name="number_of_children", type="integer")
+     * @Assert\NotBlank(message="Number of Children cannot be empty.", groups={"user"})
      * @Assert\Range(
      *      min = "0",
      *      max = "30",

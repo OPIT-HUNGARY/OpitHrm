@@ -189,6 +189,16 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @ORM\Column(name="is_first_login", type="boolean")
      */
     protected $isFirstLogin;
+    
+    /**
+     * @ORM\Column(name="entitled_leaves", type="integer", nullable=true)
+     * @Assert\Range(
+     *      min = "0",
+     *      minMessage = "The entitled leave days should be greater than 0.",
+     *      groups={"user"}
+     * )
+     */
+    protected $entitledLeaves;
 
     /**
      * @ORM\Column(type="boolean", options={"default":false})
@@ -598,5 +608,28 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function isLdapEnabled()
     {
         return $this->ldapEnabled;
+    }
+
+    /**
+     * Set entitledLeaves
+     *
+     * @param integer $entitledLeaves
+     * @return User
+     */
+    public function setEntitledLeaves($entitledLeaves)
+    {
+        $this->entitledLeaves = $entitledLeaves;
+
+        return $this;
+    }
+
+    /**
+     * Get entitledLeaves
+     *
+     * @return integer 
+     */
+    public function getEntitledLeaves()
+    {
+        return $this->entitledLeaves;
     }
 }
