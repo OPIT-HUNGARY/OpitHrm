@@ -1,0 +1,29 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+        {% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/opitnotesleave/js/showLeaveRequest.js') }}" ></script>
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+{% endblock %}
+{% block body %}
+    <h1>{% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request</h1>
+
+    <div class="dialog-description default-border-radius">
+        Leave requests can be added or edited from here.
+    </div>
+    
+    <div id="reply-message" class="alert-message error-message display-none">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
+    </div>
+    
+    {{ form(form) }}
+    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave requests</h3>
+        <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave request</a>
+    </div>
+    <a href="{{ path('OpitNotesLeaveBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
+{% endblock %}

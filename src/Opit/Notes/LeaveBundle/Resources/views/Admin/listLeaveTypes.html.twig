@@ -1,0 +1,35 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+    Administrative Leave/Working Day type list - {{ parent() }}
+{% endblock %}
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+    output='css/opitnotesleave/list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+<h1>Administrative Leave/Working Day type list</h1>
+<div  id="list">
+    <table>
+        <tr>
+            <td class="padding-0">
+                <button id="addHolidayType" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitNotesLeaveBundle:Admin:_listLeaveTypes.html.twig' %}
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesLeaveBundle/Resources/public/js/Admin/type.js'
+        '@OpitNotesUserBundle/Resources/public/js/list.js'
+    output='js/opitnotesleave/admin_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
+{% endblock %}

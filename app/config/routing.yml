@@ -1,5 +1,5 @@
-opit_notes_holiday:
-    resource: "@OpitNotesHolidayBundle/Controller/"
+opit_notes_leave:
+    resource: "@OpitNotesLeaveBundle/Controller/"
     type:     annotation
     prefix:   /
 

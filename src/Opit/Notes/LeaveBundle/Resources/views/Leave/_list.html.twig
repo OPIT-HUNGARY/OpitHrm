@@ -1,0 +1,47 @@
+<form class="delete-checkbox-form">
+<table id="list-table" class="width-100">
+    <tr>
+        <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+        <th>
+            <i class="fa fa-sort default-right" data-field="category"></i>
+            <span class="order-text cursor-pointer">ID</span>
+        </th>
+        <th>
+            <i class="fa fa-sort default-right" data-field="endDate"></i>
+            <span class="order-text cursor-pointer">Leave dates</span>
+        </th>
+        <th>Actions</th>
+    </tr>
+    {% for leaveRequest in leaveRequests %}
+    <tr>
+        <td><input type="checkbox" class="deleteMultipleLeaveRequest" name="deleteMultipleLeaveRequest[]" value="{{ leaveRequest.id }}" /></td>
+        <td class="text-decoration-underline">
+            <span class="cursor-pointer clickable">{{ leaveRequest.leaveRequestId }}</span>
+        </td>
+        <td>
+            {% for leave in leaveRequest.leaves %}
+                {{ leave.startDate|date('d  F  Y (D)') }} - {{ leave.endDate|date('d  F  Y (D)') }},<br />
+            {% endfor %}
+        </td>
+        <td>
+            <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': leaveRequest.id}) }}" title="Edit leave request">
+                <i class="fa fa-pencil-square-o fa-1x"></i>
+            </a>
+            <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ leaveRequest.id }}" class="delete-leave-request">
+                <i class="fa fa-trash-o fa-1x"></i>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% if numberOfPages is defined and numberOfPages > 0 %}
+{% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
+    {
+        'numberOfPages': numberOfPages,
+        'maxNumberOfPages': maxPages,
+        'offset': offset,
+        'url': path('OpitNotesLeaveBundle_leave_list')
+    }
+%}
+{% endif %}
+</form>

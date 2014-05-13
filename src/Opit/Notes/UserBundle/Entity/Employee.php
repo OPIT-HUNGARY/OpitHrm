@@ -102,7 +102,7 @@ class Employee
     /**
      * Employee leave requests
      * 
-     * @ORM\OneToMany(targetEntity="\Opit\Notes\HolidayBundle\Entity\LeaveRequest", mappedBy="employee")
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="employee")
      * @Assert\Valid
      */
     protected $leaveRequests;
@@ -254,10 +254,10 @@ class Employee
     /**
      * Add leaveRequests
      *
-     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequests
      * @return Employee
      */
-    public function addLeaveRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests)
+    public function addLeaveRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequests)
     {
         $this->leaveRequests[] = $leaveRequests;
         $leaveRequests->setEmployee($this); // synchronously updating inverse side
@@ -268,9 +268,9 @@ class Employee
     /**
      * Remove leaveRequests
      *
-     * @param \Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequests
      */
-    public function removeLeaveRequest(\Opit\Notes\HolidayBundle\Entity\LeaveRequest $leaveRequests)
+    public function removeLeaveRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequests)
     {
         $this->leaveRequests->removeElement($leaveRequests);
     }

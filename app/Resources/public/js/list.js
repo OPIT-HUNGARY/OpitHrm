@@ -107,7 +107,7 @@
           } else if ($('#leave_list').length === 1) {
             warningMessage = 'Are you sure you want to delete the selected leave requests?';
             checkBoxClass = '.deleteMultipleLeaveRequest';
-            url = Routing.generate('OpitNotesHolidayBundle_leaverequest_delete');
+            url = Routing.generate('OpitNotesLeaveBundle_leaverequest_delete');
             title = 'Leave request removal';
             errorText = 'The leave request could not be deleted due to an error.';
           } else {
