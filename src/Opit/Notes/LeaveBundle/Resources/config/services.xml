@@ -4,17 +4,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="opit_notes_leave.example.class">Opit\Notes\LeaveBundle\Example</parameter>
+        <parameter key="opit_notes_leave.leave_calculation_service.class">Opit\Notes\LeaveBundle\Service\LeaveCalculationService</parameter>
     </parameters>
 
     <services>
-        <service id="opit_notes_leave.example" class="%opit_notes_leave.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="opit_notes_leave.leave_calculation_service" lazy="true" class="%opit_notes_leave.leave_calculation_service.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="service_container" />
         </service>
     </services>
-    -->
+
 </container>

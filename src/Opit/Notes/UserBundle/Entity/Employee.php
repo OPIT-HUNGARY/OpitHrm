@@ -35,6 +35,7 @@ namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Opit\Notes\LeaveBundle\Model\LeaveEntitlementEmployeeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -44,7 +45,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Entity
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
-class Employee
+class Employee implements LeaveEntitlementEmployeeInterface
 {
     /**
      * @var integer

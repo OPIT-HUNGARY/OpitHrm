@@ -7,7 +7,11 @@
     <script type="text/javascript" src="{{ asset('bundles/opitnotesleave/js/list.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('css/notes_list.css') }}" />
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block body %}
     <h1>Leave request list</h1>
@@ -21,6 +25,9 @@
         </tr>
     </table>
     <div id="list-reply-message"></div>
+    <div id="leave-entitlement" class="background-color-light-grey margin-bottom-10 padding-10 border-radius-5">
+        <strong>Annual leave entitlement:</strong> {{ leaveDays }} day(s).
+    </div>
     <div id="leave_list">
         {% include 'OpitNotesLeaveBundle:Leave:_list.html.twig' %}
     </div>    

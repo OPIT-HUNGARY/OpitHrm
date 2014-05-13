@@ -31,6 +31,10 @@ class LeaveController extends Controller
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
         
+        // Calculating the leave days for the current employee.
+        $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
+        $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
+
         $config = $this->container->getParameter('opit_notes_leave');
         $maxResults = $config['max_results'];
         $offset = $request->request->get('offset');
@@ -58,6 +62,7 @@ class LeaveController extends Controller
             $template,
             array(
                 'leaveRequests' => $leaveRequests,
+                'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
                 'maxPages' => $config['max_pager_pages']
