@@ -83,14 +83,15 @@
         });
         $('#list-table th .fa-trash-o').click(function() {
           $('.deleteMultipleTravelRequest').checkAll();
-          return $('.deleteMultipleTravelExpense').checkAll();
+          $('.deleteMultipleTravelExpense').checkAll();
+          $('.deleteMultipleLeaveRequest').checkAll();
         });
         $('#list-table .deleteSingeTravelRequest').click(function(event) {
           event.preventDefault();
           return $(document).data('notes').funcs.deleteSingleRequest('request', $(this));
         });
         return $('#delete').click(function() {
-          var checkBoxClass, errorText, message, selectedTravelRequestRow, title, travelRequests, url, warningMessage;
+          var checkBoxClass, errorText, message, requests, selectedRequests, title, url, warningMessage;
           if ($('#userlistWrapper').length === 1) {
             title = 'User delete';
             message = 'user(s)';
@@ -103,15 +104,21 @@
             url = Routing.generate('OpitNotesTravelBundle_travel_delete');
             title = 'Travel request removal';
             errorText = 'The travel request could not be deleted due to an error.';
+          } else if ($('#leave_list').length === 1) {
+            warningMessage = 'Are you sure you want to delete the selected leave requests?';
+            checkBoxClass = '.deleteMultipleLeaveRequest';
+            url = Routing.generate('OpitNotesHolidayBundle_leaverequest_delete');
+            title = 'Leave request removal';
+            errorText = 'The leave request could not be deleted due to an error.';
           } else {
             return false;
           }
-          travelRequests = [];
-          selectedTravelRequestRow = [];
+          requests = [];
+          selectedRequests = [];
           $(checkBoxClass).each(function() {
             if ($(this).is(':checked')) {
-              travelRequests.push($(this).val());
-              return selectedTravelRequestRow.push($(this).parent().parent());
+              requests.push($(this).val());
+              return selectedRequests.push($(this).parent().parent());
             }
           });
           $('<div></div>').html(warningMessage).dialog({
@@ -122,10 +129,10 @@
                   method: 'POST',
                   url: url,
                   data: {
-                    'id': travelRequests
+                    'id': requests
                   }
                 }).done(function(data) {
-                  $(selectedTravelRequestRow).each(function() {
+                  $(selectedRequests).each(function() {
                     return $(this).remove();
                   });
                 }).fail(function() {

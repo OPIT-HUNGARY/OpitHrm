@@ -31,6 +31,8 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->integerNode('max_results')->cannotBeEmpty()->defaultValue('%max_results%')->end()
+                ->integerNode('max_pager_pages')->cannotBeEmpty()->defaultValue('%max_pager_pages%')->end()
             ->end();
 
         return $treeBuilder;

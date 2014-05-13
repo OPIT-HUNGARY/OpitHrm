@@ -1,0 +1,28 @@
+<section id="searchFormWrapper" class="margin-bottom-20 padding-10 border-radius-5">
+    <h3 id="searchFormTitle" class="margin-0">
+        <i class="fa fa-chevron-up default-right cursor-pointer float-right color-grey border-radius-5 padding-4 font-weight-normal"></i>
+        Search Options
+    </h3>
+
+    <form id="searchLeaveForm" method="post" action="{{ path('OpitNotesHolidayBundle_leave_list') }}">
+        <div id="searchFormProperties" class="padding-10">
+            <div class="searchProperty vertical-align-top">
+                <label for="search_leave_id">ID</label>
+                <input type="text" name="search[leaveId]" id="search_leave_id" />
+            </div>
+            <div class="searchProperty vertical-align-top">
+                <label for="search_start_date">Start date</label>
+                <input type="date" name="search[startDate]" id="search_start_date" />
+            </div>
+            <div class="searchProperty vertical-align-top">
+                <label for="search_end_date">End date</label>
+                <input type="date" name="search[endDate]" id="search_end_date" />
+            </div>
+        </div>
+        <div id="searchFormButtons">
+            <button class="button search" id="searchButton" type="submit"><i class="fa fa-search"></i>Search</button>
+            <button class="button reset" id="resetButton" type="reset"><i class="fa fa-refresh"></i>Reset</button>
+        </div>
+        <input type="hidden" name="issearch" value="1" />
+    </form>
+</section>

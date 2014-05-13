@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * LeaveRequest
  *
  * @ORM\Table(name="notes_leave_request")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\HolidayBundle\Entity\LeaveRequestRepository")
  */
 class LeaveRequest
 {

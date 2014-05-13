@@ -2,3 +2,6 @@ opit_notes_holiday:
     leave_entitlement_plan:
         enabled: true
         default_days: %leave_default_days%
+
+    max_results: %max_results%
+    max_pager_pages: %max_pager_pages%

@@ -7,7 +7,6 @@
     <script type="text/javascript" src="{{ asset('bundles/opitnotesholiday/js/showLeaveRequest.js') }}" ></script>
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
 {% endblock %}
 {% block body %}
@@ -26,5 +25,5 @@
         <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave requests</h3>
         <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave request</a>
     </div>
-    <a href="{{ path('OpitNotesTravelBundle_travel_list') }}" id="cancel-button" class="button">Cancel</a>
+    <a href="{{ path('OpitNotesHolidayBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
 {% endblock %}

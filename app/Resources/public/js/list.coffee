@@ -64,6 +64,8 @@ $.extend true, $(document).data('notes'),
             $('#list-table th .fa-trash-o').click ->
                 $('.deleteMultipleTravelRequest').checkAll()
                 $('.deleteMultipleTravelExpense').checkAll()
+                $('.deleteMultipleLeaveRequest').checkAll()
+                return
 
             $('#list-table .deleteSingeTravelRequest').click (event) ->
                 event.preventDefault()
@@ -82,15 +84,21 @@ $.extend true, $(document).data('notes'),
                     url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
                     title = 'Travel request removal'
                     errorText = 'The travel request could not be deleted due to an error.'
+                else if $('#leave_list').length is 1
+                    warningMessage = 'Are you sure you want to delete the selected leave requests?'
+                    checkBoxClass = '.deleteMultipleLeaveRequest'
+                    url = Routing.generate 'OpitNotesHolidayBundle_leaverequest_delete'
+                    title = 'Leave request removal'
+                    errorText = 'The leave request could not be deleted due to an error.'
                 else
                     return false
 
-                travelRequests = []
-                selectedTravelRequestRow = []
+                requests = []
+                selectedRequests = []
                 $(checkBoxClass).each ->
                     if $(@).is ':checked'
-                        travelRequests.push $(@).val()
-                        selectedTravelRequestRow.push $(@).parent().parent()
+                        requests.push $(@).val()
+                        selectedRequests.push $(@).parent().parent()
 
                 $('<div></div>').html(warningMessage).dialog
                     title: title
@@ -99,9 +107,9 @@ $.extend true, $(document).data('notes'),
                             $.ajax
                               method: 'POST'
                               url: url
-                              data: 'id': travelRequests
+                              data: 'id': requests
                             .done (data) ->
-                                $(selectedTravelRequestRow).each ->
+                                $(selectedRequests).each ->
                                     $(@).remove()
                                 return
                             .fail () ->
