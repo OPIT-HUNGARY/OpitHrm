@@ -8,7 +8,7 @@ opit_notes_user:
     max_results: %max_results%
     max_pager_pages: %max_pager_pages%
     ldap:
-        enabled: true
+        enabled: false
         host: %ldap_host%
         accountDomainNameShort: %ldap_domain_name_short%
         baseDn: %ldap_base_dn%
