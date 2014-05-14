@@ -42,7 +42,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Employee
  *
  * @ORM\Table(name="notes_employees")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\EmployeeRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Employee implements LeaveEntitlementEmployeeInterface
@@ -107,6 +107,12 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @Assert\Valid
      */
     protected $leaveRequests;
+    
+    /**
+     * @ORM\Column(type="string", length=25)
+     * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
+     */
+    protected $employeeName;
 
     /**
      * Constructor
@@ -284,5 +290,26 @@ class Employee implements LeaveEntitlementEmployeeInterface
     public function getLeaveRequests()
     {
         return $this->leaveRequests;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public function getEmployeeName()
+    {
+        return $this->employeeName;
+    }
+    
+    /**
+     * Set employee name
+     *
+     * @param  string $employeeName
+     * @return User
+     */
+    public function setEmployeeName($employeeName)
+    {
+        $this->employeeName = $employeeName;
+
+        return $this;
     }
 }

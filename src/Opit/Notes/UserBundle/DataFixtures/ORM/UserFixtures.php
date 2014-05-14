@@ -43,6 +43,7 @@ class UserFixtures extends AbstractDataFixture
         $employee->setDateOfBirth(new \DateTime('1990-02-01'));
         $employee->setJoiningDate(new \DateTime('2009-03-01'));
         $employee->setNumberOfChildren(0);
+        $employee->setEmployeeName('employee');
 
         $testAdmin = new User();
         $testAdmin->setUsername('admin');
@@ -51,7 +52,6 @@ class UserFixtures extends AbstractDataFixture
         $testAdmin->setPassword($password);
         $testAdmin->setSalt('');
         $testAdmin->setEmail('admin@mail.com');
-        $testAdmin->setEmployeeName('admin');
         $testAdmin->setIsActive(1);
         if ('test' === $this->getCurrentEnvironment()) {
             $testAdmin->setIsFirstLogin(0);
@@ -70,6 +70,7 @@ class UserFixtures extends AbstractDataFixture
             $employee2->setDateOfBirth(new \DateTime('1990-02-01'));
             $employee2->setJoiningDate(new \DateTime('2009-03-01'));
             $employee2->setNumberOfChildren(0);
+            $employee2->setEmployeeName('employee2');
 
             for ($i = 0; $i < 10; $i++) {
                 $testUser = new User();
@@ -80,7 +81,6 @@ class UserFixtures extends AbstractDataFixture
                 $testUser->setSalt('');
                 $testUser->setLdapEnabled(0);
                 $testUser->setEmail('mymail' . $i . '@mail.com');
-                $testUser->setEmployeeName('empname' . $i);
                 $testUser->setIsActive(1);
                 $testUser->setIsFirstLogin(1);
                 $testUser->addGroup($this->getReference('user-group'));
@@ -98,7 +98,6 @@ class UserFixtures extends AbstractDataFixture
             $testTeamManager->setPassword($password);
             $testTeamManager->setSalt('');
             $testTeamManager->setEmail('tm@mail.com');
-            $testTeamManager->setEmployeeName('team_manager');
             $testTeamManager->setIsActive(1);
             $testTeamManager->setIsFirstLogin(1);
             $testTeamManager->addGroup($this->getReference('team-manager-group'));
@@ -116,7 +115,6 @@ class UserFixtures extends AbstractDataFixture
             $testGeneralManager->setPassword($password);
             $testGeneralManager->setSalt('');
             $testGeneralManager->setEmail('gm@mail.com');
-            $testGeneralManager->setEmployeeName('general_manager');
             $testGeneralManager->setIsActive(1);
             $testGeneralManager->setIsFirstLogin(1);
             $testGeneralManager->addGroup($this->getReference('general-manager-group'));
@@ -134,7 +132,6 @@ class UserFixtures extends AbstractDataFixture
             $user->setPassword($password);
             $user->setSalt('');
             $user->setEmail('user@mail.com');
-            $user->setEmployeeName('user');
             $user->setIsActive(1);
             $user->setIsFirstLogin(true);
             $user->addGroup($this->getReference('user-group'));

@@ -54,7 +54,7 @@
         </div>
         </div>
     </div>
-    <div class="mainMenu {{ (module == 'leave') ? 'active': '' }}">
+    <div class="mainMenu {{ (module == 'leave' or module == 'calendar') ? 'active': '' }}">
         Leave
         <div class="subMenu">
         <div class="subMenuItem">
@@ -62,6 +62,9 @@
         </div>
         <div class="subMenuItem">
             <a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>List request</a>
+        </div>
+        <div class="subMenuItem">
+            <a href='{{ path('OpitNotesLeaveBundle_calendar_team') }}'>Team leaves calendar</a>
         </div>
         </div>
     </div>

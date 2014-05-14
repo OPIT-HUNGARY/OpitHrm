@@ -44,25 +44,25 @@ class LeaveRequestRepository extends EntityRepository
      */
     public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
-        $dq = $this->createQueryBuilder('l')->join('l.leaves', 'r');
+        $dq = $this->createQueryBuilder('lr')->join('lr.leaves', 'l');
         
         if (isset($parameters['startDate']) && $parameters['startDate'] !== '') {
-            $dq->andWhere('r.startDate > :startDate');
+            $dq->andWhere('l.startDate > :startDate');
             $dq->setParameter(':startDate', $parameters['startDate']);
         }
         
         if (isset($parameters['endDate']) && $parameters['endDate'] !== '') {
-            $dq->andWhere('r.endDate < :endDate');
+            $dq->andWhere('l.endDate < :endDate');
             $dq->setParameter(':endDate', $parameters['endDate']);
         }
         
         if (isset($parameters['leaveId']) && $parameters['leaveId'] !== '') {
-            $dq->andWhere('l.leaveRequestId LIKE :leaveId');
+            $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
             $dq->setParameter(':leaveId', '%'.$parameters['leaveId'].'%');
         }
 
         if (!$pagnationParameters['isAdmin']) {
-            $dq->andWhere($dq->expr()->eq('l.employee', ':employee'));
+            $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
             $dq->setParameter(':employee', $pagnationParameters['employee']);
         }
  
@@ -70,5 +70,22 @@ class LeaveRequestRepository extends EntityRepository
         $dq->setMaxResults($pagnationParameters['maxResults']);
                 
         return new Paginator($dq->getQuery(), true);
+    }
+    
+    public function findEmployeesLeaveRequests($employeeIds, $startDate = '', $endDate = '')
+    {
+        $dq = $this->createQueryBuilder('lr')
+            ->select('lr, l, e')
+            ->where('lr.employee in (:employee)')
+            ->andwhere('l.startDate > :startDate')
+            ->andWhere('l.endDate < :endDate')
+            ->innerJoin('lr.leaves', 'l')
+            ->innerJoin('lr.employee', 'e')
+            ->setParameter('employee', $employeeIds)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery();
+        
+        return $dq->getArrayResult();
     }
 }

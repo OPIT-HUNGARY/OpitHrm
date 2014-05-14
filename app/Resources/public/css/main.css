@@ -6,6 +6,10 @@
     Created on : Mar 10, 2014, 10:16:52 AM
     Author     : OPIT\NOTES
 */
+/* Z-indexes */
+.z-index-10 {
+  z-index: 10; }
+
 /* Display properties */
 .display-block {
   display: block; }

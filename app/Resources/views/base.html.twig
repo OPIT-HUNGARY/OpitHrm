@@ -40,7 +40,7 @@
             </div>
         </div>
         {% block footer %}
-        <footer class="background-color-lightest-grey padding-5 align-center position-fixed width-100 bottom-0 color-dark-grey font-size-d9-em">
+        <footer class="background-color-lightest-grey padding-5 align-center position-fixed width-100 bottom-0 color-dark-grey font-size-d9-em z-index-10">
             <span>NOTES 2014 -</span>
             <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-dark-grey">{% if true -%}
                 v{% if version_number is defined %}{{ version_number }}{% else %}1.0{% endif %}

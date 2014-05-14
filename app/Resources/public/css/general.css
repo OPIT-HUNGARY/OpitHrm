@@ -272,7 +272,7 @@ header {
   top: 0;
   display: none;
   background-color: #94c11c;
-  z-index: 5;
+  z-index: 10;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   -ms-border-radius: 0;

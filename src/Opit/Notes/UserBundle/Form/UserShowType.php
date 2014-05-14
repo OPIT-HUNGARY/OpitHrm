@@ -80,9 +80,6 @@ class UserShowType extends AbstractType
         $builder->add('email', 'text', array('attr' => array(
             'placeholder' => 'Email'
         )));
-        $builder->add('employeeName', 'text', array('attr' => array(
-            'placeholder' => 'Employee Name'
-        )));
 
         $tax = $builder->create('taxIdentification', 'integer', array(
             'attr' => array(

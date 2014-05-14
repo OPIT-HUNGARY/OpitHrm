@@ -76,11 +76,13 @@ class UserController extends Controller
                 $roles[] = $role["name"];
             }
 
+            $employeeName = $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '';
+            
             //create new array for user containing its properties
             $propertyValues[$user->getId()] = array(
                 "username" => $user->getUsername(),
                 "email" => $user->getEmail(),
-                "employeeName" => $user->getEmployeeName(),
+                "employeeName" => $employeeName,
                 "isActive" => $user->getIsActive(),
                 "ldapEnabled" => $user->isLdapEnabled(),
                 "roles" => $roles

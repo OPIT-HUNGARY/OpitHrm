@@ -40,7 +40,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Team
  *
  * @ORM\Table(name="notes_teams")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\TeamRepository")
  */
 class Team
 {

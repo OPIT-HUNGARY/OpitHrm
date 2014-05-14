@@ -63,12 +63,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
      * @Assert\Valid
      */
     protected $employee;
-    
-    /**
-     * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
-     */
-    protected $employeeName;
 
     /**
      * @ORM\Column(type="string", length=32)
@@ -244,14 +238,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     /**
      * @inheritDoc
      */
-    public function getEmployeeName()
-    {
-        return $this->employeeName;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getIsActive()
     {
         return $this->isActive;
@@ -325,19 +311,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
     public function setUsername($username)
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * Set employee name
-     *
-     * @param  string $employeeName
-     * @return User
-     */
-    public function setEmployeeName($employeeName)
-    {
-        $this->employeeName = $employeeName;
 
         return $this;
     }

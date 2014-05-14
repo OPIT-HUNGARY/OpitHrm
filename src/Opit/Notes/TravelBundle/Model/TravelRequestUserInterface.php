@@ -22,7 +22,6 @@ namespace Opit\Notes\TravelBundle\Model;
  */
 interface TravelRequestUserInterface
 {
-    public function getEmployeeName();
     public function getEmail();
     public function getUsername();
 }

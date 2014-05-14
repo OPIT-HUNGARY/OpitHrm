@@ -33,6 +33,10 @@ class EmployeeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add('employeeName', 'text', array('attr' => array(
+            'placeholder' => 'Employee Name'
+        )));
+        
         $builder->add('teams', 'entity', array(
             'label' => 'Teams',
             'class' => 'OpitNotesUserBundle:Team',

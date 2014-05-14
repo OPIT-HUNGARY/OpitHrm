@@ -1,0 +1,28 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+        Team leaves calendar - {{ parent() }}
+{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('libs/fullcalendar/css/fullcalendar.css') }}" />
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        'libs/fullcalendar/js/fullcalendar.min.js'
+        '@OpitNotesLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.js'
+    output='js/team_leaves_calendar.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block body %}
+    <h1 class="width-55">Team leaves calendar</h1>
+    <hr class="width-55" />
+    <h2 class="width-55">Team employees</h2>
+    <div class="margin-bottom-20 display-block width-55">
+    {% for employee in employees %}
+        <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employee['class'] }}" data-class="{{ employee['class'] }}">{{ employee['name'] }}</div>
+    {% endfor %}
+    </div>
+    <hr class="width-55" />
+    <div id="team-leaves-calendar" class="width-55"></div>
+{% endblock %}
