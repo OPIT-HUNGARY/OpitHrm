@@ -1,0 +1,157 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : May 14, 2014, 10:07:42 AM
+    Author     : OPIT Consulting Kft. - NOTES/TAO Team - {@link http://www.opit.hu} 
+*/
+#menu {
+  list-style: none;
+  width: 99%;
+  height: 40px;
+  background: #94c11c;
+  float: left;
+  padding: 0 10px 0 10px;
+  margin: -3px 3px 0 0; }
+  #menu li {
+    float: left;
+    display: block;
+    text-align: center;
+    position: relative;
+    padding: 4px 10px 4px 10px;
+    margin-right: 30px;
+    margin-top: 7px;
+    border: none; }
+    #menu li:hover {
+      border: 1px solid #777777;
+      padding: 4px 9px 4px 9px;
+      /* Background color and gradients */
+      background: #F4F4F4;
+      background: -moz-linear-gradient(top, #f4f4f4, #eeeeee);
+      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f4f4f4), to(#eeeeee));
+      /* Rounded corners */
+      -moz-border-radius: 5px 5px 0px 0px;
+      -webkit-border-radius: 5px 5px 0px 0px;
+      border-radius: 5px 5px 0px 0px; }
+      #menu li:hover a {
+        color: #161616;
+        text-shadow: 1px 1px 1px #ffffff; }
+      #menu li:hover .dropdown_1column,
+      #menu li:hover .dropdown_2columns,
+      #menu li:hover .dropdown_3columns,
+      #menu li:hover .dropdown_4columns {
+        left: -1px;
+        top: auto; }
+      #menu li:hover .align_right {
+        left: auto;
+        right: -1px;
+        top: auto; }
+      #menu li:hover div a {
+        font-size: 12px;
+        color: #015b86; }
+      #menu li:hover div a:hover {
+        color: #029feb; }
+    #menu li a {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: #FFF;
+      display: block;
+      outline: 0;
+      text-decoration: none; }
+    #menu li .align_right {
+      /* Rounded Corners */
+      -moz-border-radius: 5px 0px 5px 5px;
+      -webkit-border-radius: 5px 0px 5px 5px;
+      border-radius: 5px 0px 5px 5px; }
+    #menu li ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px 0; }
+      #menu li ul li {
+        font-size: 12px;
+        line-height: 24px;
+        position: relative;
+        text-shadow: 1px 1px 1px #ffffff;
+        padding: 0;
+        margin: 0;
+        float: none;
+        text-align: left;
+        width: 160px; }
+        #menu li ul li:hover {
+          background: none;
+          border: none;
+          padding: 0;
+          margin: 0; }
+  #menu .menu_right {
+    float: right;
+    margin-right: 0px; }
+  #menu h2 {
+    font-size: 21px;
+    font-weight: 400;
+    letter-spacing: -1px;
+    margin: 7px 0 14px 0;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #666666; }
+  #menu h3 {
+    font-size: 14px;
+    margin: 7px 0 14px 0;
+    padding-bottom: 7px;
+    border-bottom: 1px solid #888888; }
+  #menu p {
+    line-height: 18px;
+    margin: 0 0 10px 0; }
+
+.dropdown_1column,
+.dropdown_2columns,
+.dropdown_3columns,
+.dropdown_4columns {
+  margin: 4px auto;
+  float: left;
+  position: absolute;
+  left: -999em;
+  /* Hides the drop down */
+  text-align: left;
+  padding: 10px 5px 10px 5px;
+  border: 1px solid #777777;
+  border-top: none;
+  /* Gradient background */
+  background: #F4F4F4;
+  background: -moz-linear-gradient(top, #eeeeee, #bbbbbb);
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#eeeeee), to(#bbbbbb));
+  /* Rounded Corners */
+  -moz-border-radius: 0px 5px 5px 5px;
+  -webkit-border-radius: 0px 5px 5px 5px;
+  border-radius: 0px 5px 5px 5px; }
+
+.dropdown_1column {
+  width: 140px; }
+
+.dropdown_2columns {
+  width: 280px; }
+
+.dropdown_3columns {
+  width: 420px; }
+
+.dropdown_4columns {
+  width: 560px; }
+
+.col_1, .col_2, .col_3, .col_4 {
+  display: inline;
+  float: left;
+  position: relative;
+  margin-left: 5px;
+  margin-right: 5px; }
+
+.col_1 {
+  width: 160px; }
+
+.col_2 {
+  width: 270px; }
+
+.col_3 {
+  width: 410px; }
+
+.col_4 {
+  width: 550px; }

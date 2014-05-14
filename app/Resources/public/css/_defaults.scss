@@ -39,6 +39,8 @@ $buttonAddDarkColor: rgba(10, 140, 10, 1);
 $defaultFontSize: 13px;
 $defaultFontSize: .9em;
 
+$menuBgGrey: rgba(148, 193, 28, 1);
+
 @mixin border-radius($radius) {
     -webkit-border-radius: $radius;
     -moz-border-radius: $radius;

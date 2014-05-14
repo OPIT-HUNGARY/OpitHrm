@@ -1,0 +1,96 @@
+{# must return the controller name #}
+{% set module = splitText(app.request.attributes.get('_route'), '_', 1) %}
+
+<ul id="menu">
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <li><a href="#">Administration</a>
+
+            <div class="dropdown_4columns">
+
+                <div class="col_4">
+                    <h2><i class="fa fa-cogs"></i>  Application Administrative Setup</h2>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-user"></i> User management</h3>
+                    <ul>
+                        <li><a href='{{ path('OpitNotesUserBundle_admin_groups_list') }}'>Roles</a></li>
+                        <li><a href="{{ path('OpitNotesUserBundle_admin_list_jobtitle') }}">Job titles</a></li>
+                        <li><a href="{{ path('OpitNotesUserBundle_admin_teams_list') }}">Teams</a></li>
+                        <li><a href="{{ path('OpitNotesUserBundle_user_list') }}">View List</a></li>
+                    </ul>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-plane"></i> Travel management</h3>
+                    <ul>
+                        <li><a href='{{ path('OpitNotesUserBundle_admin_travelexpensetype_list') }}'>Expense types</a></li>
+                        <li><a href='{{ path('OpitNotesUserBundle_admin_list_perdiem') }}'>Per diem</a></li>
+                    </ul>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-road"></i> Leave management</h3>
+                    <ul>
+                        <li><a href='{{ path('OpitNotesLeaveBundle_admin_list_leave_categories') }}'>Categories</a></li>
+                        <li><a href='{{ path('OpitNotesLeaveBundle_admin_list_leave_dates') }}'>Administrative L/WD Setup</a></li>
+                        <li><a href='{{ path('OpitNotesLeaveBundle_admin_list_leave_types') }}'>Administrative L/WD Types</a></li>
+                        <li><a href='{{ path('OpitNotesLeaveBundle_admin_list_leave_settings') }}'>Entitlement Configuration</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </li>
+
+        <li><a href="#">Report Management</a>
+
+        <div class="dropdown_2columns">
+
+           <div class="col_2">
+                <h2><i class="fa fa-bar-chart-o"></i>  View and Generate Reports</h2>
+            </div>
+
+            <div class="col_1">
+                <h3><i class="fa fa-clock-o"></i> Time Sheet</h3>
+                <ul>
+                    <li><a href="#">View List</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </li>
+
+    {% endif %}
+    <li><a href="#">Request Management</a>
+
+        <div class="dropdown_3columns">
+
+           <div class="col_3">
+                <h2><i class="fa fa-tags"></i>  Create and View Requests</h2>
+            </div>
+
+            <div class="col_1">
+                <h3><i class="fa fa-plane"></i> Travel</h3>
+                <ul>
+                    <li><a href='{{ path('OpitNotesTravelBundle_travel_show') }}'>Create</a></li>
+                    <li><a href="{{ path('OpitNotesTravelBundle_travel_list') }}">View List</a></li>
+                </ul>
+            </div>
+
+            <div class="col_1">
+                <h3><i class="fa fa-road"></i> Leave</h3>
+                <ul>
+                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_show') }}'>Create</a></li>
+                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>View List</a></li>
+                    <li><a href='{{ path('OpitNotesLeaveBundle_calendar_team') }}'>Team Calender</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </li>
+
+</ul>
