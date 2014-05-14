@@ -20,15 +20,24 @@
             </td>
         </tr>
     </table>
+<section id="pager" class="align-center background-color-lightest-grey margin-bottom-20 padding-10 border-radius-5">
+    {% for year in years %}
+        <span class="year cursor-pointer" data-year="{{ year }}"><strong>{{ year }}</strong></span>
+    {% endfor %}
+</section>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesLeaveBundle:Admin:_listLeaveDates.html.twig' %}
+    <form  class="form-holidaydate">
+        <div id="list-table">
+            {% include 'OpitNotesLeaveBundle:Admin:_listLeaveDates.html.twig' %}
+        </div>
+    </form>
 </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesLeaveBundle/Resources/public/js/Admin/listLeaveDates.js'
-        '@OpitNotesUserBundle/Resources/public/js/list.js'
+        '@OpitNotesLeaveBundle/Resources/public/js/Admin/listLeaveDates.coffee'
+        '@OpitNotesUserBundle/Resources/public/js/list.coffee'
     output='js/opitnotesleave/admin_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}

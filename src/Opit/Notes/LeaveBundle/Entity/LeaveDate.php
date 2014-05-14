@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * LeaveDate
  *
  * @ORM\Table(name="notes_leave_dates")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\LeaveDateRepository")
  */
 class LeaveDate
 {

@@ -34,13 +34,13 @@
     margin: 10px 0 10px 15px; }
 
 #pager i:hover {
-  color: #f28c38; }
+  color: #94c11c; }
 #pager span {
   padding: 0 5px; }
 #pager span:hover {
-  color: #f28c38; }
+  color: #94c11c; }
 #pager .selected-page {
-  color: #f28c38;
+  color: #94c11c;
   text-decoration: underline; }
 #pager .selected-page:hover {
   text-decoration: underline; }

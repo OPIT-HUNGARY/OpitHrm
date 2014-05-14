@@ -8,6 +8,7 @@ $("#addHolidayDate").click ->
                 title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day'
                 width: 750
                 modal: on
+                open: -> $(document).data('notes').funcs.initDateInputs $('#addholidaydate_frm')
                 buttons:
                     Create: ->
                         $.ajax
@@ -45,6 +46,7 @@ $("#list-table").on "click", ".list-holidaydate", (event) ->
                 title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day'
                 width: 750
                 modal: on
+                open: -> $(document).data('notes').funcs.initDateInputs $('#addholidaydate_frm')
                 buttons:
                     Save: ->
                         $.ajax
@@ -68,6 +70,20 @@ $("#list-table").on "click", ".list-holidaydate", (event) ->
                         $('#dialog-editholidaydate').dialog "destroy"
                         return
             return
+        return
+
+# Get the dates of the year
+$('.year').click (event) ->
+    # Set the classes
+    $('.year').removeClass 'selected-page'
+    $(@).addClass 'selected-page'
+
+    $.ajax
+        method: 'POST'
+        url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_dates'
+        data: 'showList' : 1, 'year' : $(@).data('year')
+    .done (data) ->
+        $('#list-table').html data
         return
 
 # Delete button
@@ -96,3 +112,8 @@ $('form').on 'click', '.fa-sort', ->
 
 $('form').on 'click', '.order-text', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+
+$(document).ready ->
+    # Remove the mousedown event from the year classes.
+    $('.year').bind 'mousedown', false
+    $('.year:first').addClass 'selected-page'

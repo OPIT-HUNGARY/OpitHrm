@@ -62,7 +62,7 @@
 
 #pager{
     i:hover{
-        color:$orangeColor;
+        color:$lightGreen;
     }
     
     span{
@@ -70,11 +70,11 @@
     }
     
     span:hover{
-        color:$orangeColor;
+        color:$lightGreen;
     }
     
     .selected-page{
-        color:$orangeColor;
+        color:$lightGreen;
         text-decoration:underline;
     }
     

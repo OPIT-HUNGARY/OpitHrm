@@ -212,17 +212,27 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
-        $holidayDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(array(), array('holidayDate' => 'DESC'));
-        $groupedHolidayDates = array();
+        $years = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->getYears();
+        $leaveDates = array();
 
-        // Grouping the leave dates by year
-        foreach ($holidayDates as $date) {
-            $groupedHolidayDates[substr($date->getHolidayDate()->format('Y-m-d'), 0, 4)][] = $date;
+        // Check it is an ajax call to view the specific year's leave/working dates
+        if ($showList) {
+            // Set the year
+            $year = $request->request->get('year');
+            // If the year is not setted then it will be the current year
+            if (null === $year) {
+                $year = date('Y');
+            }
+             // Get the leave dates of the searched year.
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYear($year);
+        } else {
+             // Get the leave dates of the current year.
+             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYear(date('Y'));
         }
 
         return $this->render(
             'OpitNotesLeaveBundle:Admin:' . ($showList ? '_' : '') . 'listLeaveDates.html.twig',
-            array('groupedHolidayDates' => $groupedHolidayDates)
+            array('years' => $years, 'leaveDates' => $leaveDates)
         );
     }
 
@@ -239,14 +249,14 @@ class AdminLeaveController extends Controller
         $id = $request->attributes->get('id');
 
         if ($id) {
-            $holidayDate = $this->getHolidayDate($id);
+            $leaveDate = $this->getLeaveDate($id);
         } else {
-            $holidayDate = new LeaveDate();
+            $leaveDate = new LeaveDate();
         }
 
         $form = $this->createForm(
             new LeaveDateType(),
-            $holidayDate
+            $leaveDate
         );
 
         return $this->render(
@@ -262,22 +272,22 @@ class AdminLeaveController extends Controller
      * @return mixed  leaveDate object or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    protected function getLeaveDate($holidayDateId = null)
+    protected function getLeaveDate($leaveDateId = null)
     {
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $holidayDateId) {
-            $holidayDateId = $request->request->get('id');
+        if (null === $leaveDateId) {
+            $leaveDateId = $request->request->get('id');
         }
 
-        $holidayDate = $em->getRepository('OpitNotesLeaveBundle:leaveDate')->find($holidayDateId);
+        $leaveDate = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->find($leaveDateId);
 
-        if (!$holidayDate) {
-            throw $this->createNotFoundException('Missing job title for id "' . $holidayDateId . '"');
+        if (!$leaveDate) {
+            throw $this->createNotFoundException('Missing job title for id "' . $leaveDateId . '"');
         }
 
-        return $holidayDate;
+        return $leaveDate;
     }
     
     /**
@@ -296,25 +306,25 @@ class AdminLeaveController extends Controller
         $result = array('response' => 'error');
 
         if ($id) {
-            $holidayDate = $this->getHolidayDate($request->attributes->get('id'));
+            $leaveDate = $this->getLeaveDate($request->attributes->get('id'));
         } else {
-            $holidayDate = new LeaveDate();
+            $leaveDate = new LeaveDate();
         }
 
-        $form = $this->createForm(new LeaveDateType(), $holidayDate);
+        $form = $this->createForm(new LeaveDateType(), $leaveDate);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em->persist($holidayDate);
+                $em->persist($leaveDate);
                 $em->flush();
 
                 $result['response'] = 'success';
             }
 
             $validator = $this->get('validator');
-            $errors = $validator->validate($holidayDate);
+            $errors = $validator->validate($leaveDate);
 
             if (count($errors) > 0) {
                 foreach ($errors as $e) {
@@ -345,8 +355,8 @@ class AdminLeaveController extends Controller
         }
 
         foreach ($ids as $id) {
-            $holidayDate = $this->getHolidayDate($id);
-            $em->remove($holidayDate);
+            $leaveDate = $this->getLeaveDate($id);
+            $em->remove($leaveDate);
         }
         $em->flush();
         $result['response'] = 'success';

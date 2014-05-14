@@ -57,9 +57,7 @@ class LeaveDateType extends AbstractType
         $dataArr = $builder->getData();
         
         $builder->add('holidayDate', 'date', array(
-            'data' => $dataArr->getHolidayDate() != null ? $dataArr->getHolidayDate() : new \DateTime(),
-            'widget' => 'choice',
-            'format' => 'yyyyMMdd'
+            'widget' => 'single_text',
         ));
         
         $builder->add('holidayType', 'entity', array(
@@ -85,6 +83,6 @@ class LeaveDateType extends AbstractType
      */
     public function getName()
     {
-        return 'opit_notes_leavebundle_leavedate';
+        return 'leaveDate';
     }
 }

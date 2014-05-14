@@ -13,6 +13,9 @@
         title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day',
         width: 750,
         modal: true,
+        open: function() {
+          return $(document).data('notes').funcs.initDateInputs($('#addholidaydate_frm'));
+        },
         buttons: {
           Create: function() {
             return $.ajax({
@@ -65,6 +68,9 @@
         title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day',
         width: 750,
         modal: true,
+        open: function() {
+          return $(document).data('notes').funcs.initDateInputs($('#addholidaydate_frm'));
+        },
         buttons: {
           Save: function() {
             return $.ajax({
@@ -103,6 +109,21 @@
     });
   });
 
+  $('.year').click(function(event) {
+    $('.year').removeClass('selected-page');
+    $(this).addClass('selected-page');
+    return $.ajax({
+      method: 'POST',
+      url: Routing.generate('OpitNotesLeaveBundle_admin_list_leave_dates'),
+      data: {
+        'showList': 1,
+        'year': $(this).data('year')
+      }
+    }).done(function(data) {
+      $('#list-table').html(data);
+    });
+  });
+
   $('#delete').click(function() {
     return deleteHolidayDate();
   });
@@ -137,6 +158,11 @@
 
   $('form').on('click', '.order-text', function() {
     return inverse = $(document).data('notes').funcs.clientSideListOrdering($(this).parent().find('i'), inverse);
+  });
+
+  $(document).ready(function() {
+    $('.year').bind('mousedown', false);
+    return $('.year:first').addClass('selected-page');
   });
 
 }).call(this);
