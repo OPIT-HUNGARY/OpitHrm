@@ -13,6 +13,7 @@ namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\UserBundle\Entity\Employee;
 use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
@@ -38,8 +39,14 @@ class UserFixtures extends AbstractDataFixture
         $user = new User();
         $encoder = $factory->getEncoder($user);
         
+        $employee = new Employee();
+        $employee->setDateOfBirth(new \DateTime('1990-02-01'));
+        $employee->setJoiningDate(new \DateTime('2009-03-01'));
+        $employee->setNumberOfChildren(0);
+
         $testAdmin = new User();
         $testAdmin->setUsername('admin');
+        $testAdmin->setEmployee($employee);
         $password = $encoder->encodePassword('admin', '');
         $testAdmin->setPassword($password);
         $testAdmin->setSalt('');
@@ -59,9 +66,15 @@ class UserFixtures extends AbstractDataFixture
         $manager->persist($testAdmin);
         
         if ('dev' === $this->getCurrentEnvironment()) {
+            $employee2 = new Employee();
+            $employee2->setDateOfBirth(new \DateTime('1990-02-01'));
+            $employee2->setJoiningDate(new \DateTime('2009-03-01'));
+            $employee2->setNumberOfChildren(0);
+
             for ($i = 0; $i < 10; $i++) {
                 $testUser = new User();
                 $testUser->setUsername('test' . $i . 'Name');
+                $testUser->setEmployee(clone $employee2);
                 $password = $encoder->encodePassword('test' . $i . 'Password', '');
                 $testUser->setPassword($password);
                 $testUser->setSalt('');
@@ -80,6 +93,7 @@ class UserFixtures extends AbstractDataFixture
 
             $testTeamManager = new User();
             $testTeamManager->setUsername('teamManager');
+            $testTeamManager->setEmployee(clone $employee);
             $password = $encoder->encodePassword('teamManager', '');
             $testTeamManager->setPassword($password);
             $testTeamManager->setSalt('');
@@ -97,6 +111,7 @@ class UserFixtures extends AbstractDataFixture
 
             $testGeneralManager = new User();
             $testGeneralManager->setUsername('generalManager');
+            $testGeneralManager->setEmployee(clone $employee);
             $password = $encoder->encodePassword('generalManager', '');
             $testGeneralManager->setPassword($password);
             $testGeneralManager->setSalt('');
@@ -114,6 +129,7 @@ class UserFixtures extends AbstractDataFixture
             
             $user = new User();
             $user->setUsername('user');
+            $user->setEmployee(clone $employee);
             $password = $encoder->encodePassword('user', '');
             $user->setPassword($password);
             $user->setSalt('');
