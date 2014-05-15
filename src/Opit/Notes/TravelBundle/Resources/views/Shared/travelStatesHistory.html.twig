@@ -30,7 +30,7 @@
                 <tr>
                     <td class="width-30">{{ travelRequestState.status.name }}</td>
                     <td class="width-30">{{ travelRequestState.created|date('Y-m-d H:i') }}</td>
-                    <td>{{ travelRequestState.createdUser is empty ? '--' : travelRequestState.createdUser.employeeName }}</td>
+                    <td>{{ travelRequestState.createdUser is empty ? '--' : travelRequestState.createdUser.employee.employeeName }}</td>
                 </tr>
             {% endfor %}
             </table>
@@ -44,7 +44,7 @@
                 <tr>
                     <td class="width-30">{{ travelExpenseState.status.name }}</td>
                     <td class="width-30">{{ travelExpenseState.created|date('Y-m-d H:i') }}</td>
-                    <td>{{ travelExpenseState.createdUser is empty ? '--' : travelExpenseState.createdUser.employeeName }}</td>
+                    <td>{{ travelExpenseState.createdUser is empty ? '--' : travelExpenseState.createdUser.employee.employeeName }}</td>
                 </tr>
             {% endfor %}
             </table>

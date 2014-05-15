@@ -74,13 +74,15 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $this->createQueryBuilder('u');
 
         if (isset($data['id']) && $data['id']>0) {
-            $qb->where('(u.username = :username OR u.email = :email OR u.employeeName = :employeeName) AND u.id != :id')
+            $qb->leftJoin('u.employee', 'e', 'WITH')
+            ->where('(u.username = :username OR u.email = :email OR e.employeeName = :employeeName) AND u.id != :id')
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
             ->setParameter('employeeName', $data['employeeName'])
             ->setParameter('id', $data['id']);
         } else {
-            $qb->where('u.username = :username OR u.email = :email OR u.employeeName = :employeeName')
+            $qb->leftJoin('u.employee', 'e', 'WITH')
+            ->where('u.username = :username OR u.email = :email OR e.employeeName = :employeeName')
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
             ->setParameter('employeeName', $data['employeeName']);
@@ -215,10 +217,10 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function findUserByEmployeeNameUsingLike($chunk)
     {
         $q = $this->createQueryBuilder('u')
-                ->where('u.employeeName LIKE :employeeName')
+                ->leftJoin('u.employee', 'e', 'WITH')
+                ->where('e.employeeName LIKE :employeeName')
                 ->setParameter(':employeeName', "%{$chunk}%")
                 ->getQuery();
-                
         return $q->getResult();
     }
     

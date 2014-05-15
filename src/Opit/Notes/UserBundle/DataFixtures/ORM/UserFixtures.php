@@ -93,7 +93,7 @@ class UserFixtures extends AbstractDataFixture
 
             $testTeamManager = new User();
             $testTeamManager->setUsername('teamManager');
-            $testTeamManager->setEmployee(clone $employee);
+            $testTeamManager->setEmployee(clone $employee->setEmployeeName('teamManager'));
             $password = $encoder->encodePassword('teamManager', '');
             $testTeamManager->setPassword($password);
             $testTeamManager->setSalt('');
@@ -110,7 +110,7 @@ class UserFixtures extends AbstractDataFixture
 
             $testGeneralManager = new User();
             $testGeneralManager->setUsername('generalManager');
-            $testGeneralManager->setEmployee(clone $employee);
+            $testGeneralManager->setEmployee(clone $employee->setEmployeeName('generalManager'));
             $password = $encoder->encodePassword('generalManager', '');
             $testGeneralManager->setPassword($password);
             $testGeneralManager->setSalt('');
@@ -127,7 +127,7 @@ class UserFixtures extends AbstractDataFixture
             
             $user = new User();
             $user->setUsername('user');
-            $user->setEmployee(clone $employee);
+            $user->setEmployee(clone $employee->setEmployeeName('user'));
             $password = $encoder->encodePassword('user', '');
             $user->setPassword($password);
             $user->setSalt('');

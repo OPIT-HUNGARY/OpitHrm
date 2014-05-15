@@ -217,8 +217,8 @@ class TravelController extends Controller
             foreach ($groups as $group) {
                 if ('ALL' === $role || $group->getRole() === $role) {
                     $userNames[] = array(
-                        'value'=>$user->getEmployeeName(),
-                        'label'=>$user->getEmployeeName(),
+                        'value'=>$user->getEmployee()->getEmployeeName(),
+                        'label'=>$user->getEmployee()->getEmployeeName(),
                         'id'=>$user->getId()
                     );
                 }

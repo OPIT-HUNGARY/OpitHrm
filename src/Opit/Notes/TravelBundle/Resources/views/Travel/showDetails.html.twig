@@ -11,8 +11,8 @@
             {% endif %}
             <tr>
                 <td class="bgGrey bold">Employee Name</td>
-                {% if travelRequest.user.employeeName is defined %}
-                <td>{{ travelRequest.user.employeeName }}</td>
+                {% if travelRequest.user.employee.employeeName is defined %}
+                <td>{{ travelRequest.user.employee.employeeName }}</td>
                 {% endif %}
             </tr>
             <tr>
@@ -53,13 +53,13 @@
                     {% if travelRequest.teamManager is null %}
                         [Empty]
                     {% else %}
-                        {{ travelRequest.teamManager.employeeName }}
+                        {{ travelRequest.teamManager.employee.employeeName }}
                     {% endif %}
                 </td>
             </tr>
             <tr>
                 <td class="bgGrey bold">General Manager</td>
-                <td>{{ travelRequest.generalManager.employeeName }}</td>
+                <td>{{ travelRequest.generalManager.employee.employeeName }}</td>
             </tr>
         </table>
         {% if travelRequest.destinations is defined %}

@@ -17,7 +17,7 @@
             <td><input type="checkbox" class="deleteMultipleTravelExpense" name="deleteMultipleTravelExpense[]" value="{{ travelExpense.id }}" /></td>
             <td>
                 {% if travelExpense.user is not null %}
-                    {{ travelExpense.user.employeeName }}
+                    {{ travelExpense.user.employee.employeeName }}
                 {% endif %}
             </td>
             <td>{{ travelExpense.departureDateTime|date('d  F  Y (D) H:i:s') }}</td>

@@ -349,8 +349,8 @@ class ExpenseController extends Controller
         
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
-        $generalManager = $travelRequest->getGeneralManager()->getEmployeeName();
-        $employee = $travelRequest->getUser()->getEmployeeName();
+        $generalManager = $travelRequest->getGeneralManager()->getEmployee()->getEmployeeName();
+        $employee = $travelRequest->getUser()->getEmployee()->getEmployeeName();
         $dateTimeNow = date("Y-m-d H:i");
 
         $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));

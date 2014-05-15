@@ -106,7 +106,7 @@ class TravelType extends AbstractType
         );
         $builder->add('team_manager_ac', 'text', array(
             'label' => 'Team manager',
-            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeName() : null,
             'mapped' => false,
             'required' => false,
             'attr' => array('placeholder' => 'Team manager')
@@ -116,7 +116,7 @@ class TravelType extends AbstractType
         );
         $builder->add('general_manager_ac', 'text', array(
             'label' => 'General manager',
-            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeName() : null,
             'mapped' => false,
             'attr' => array('placeholder' => 'General manager')
         ));

@@ -31,7 +31,7 @@
     <tr class="clickableTableRow">
         <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
         <td class="clickable text-decoration-underline cursor-pointer" data-tr-id="{{ travelRequest.id }}">{{ travelRequest.travelRequestId }}</td>
-        <td>{{ travelRequest.user.employeeName }}</td>
+        <td>{{ travelRequest.user.employee.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>
         <td>{{ travelRequest.arrivalDate|date('d  F  Y (D)') }}</td>
         <td class="text-overflow-ellipsis overflow-hidden white-space-nowrap max-width-150 pointer trip-purpose cursor-pointer">{{ travelRequest.tripPurpose }}</td>
@@ -86,8 +86,8 @@
                     {% endif %}
                 {% else %}
                     {% set teStatus = teIds[travelRequest.id].status %}
-                    {% set trEmployeeName = travelRequest.user.employeeName %}
-                    {% set appEmployeeName = app.user.employeeName %}
+                    {% set trEmployeeName = travelRequest.user.employee.employeeName %}
+                    {% set appEmployeeName = app.user.employee.employeeName %}
                     {% if teStatus != states['Created'] or (trEmployeeName == appEmployeeName) %}
                         <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelRequest.travelExpense.id, 'trId': travelRequest.id}) }}" class="small-button">
                             <i class="fa {% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName) %} fa-pencil-square-o {% else %} fa-list-alt {% endif %}"></i>
