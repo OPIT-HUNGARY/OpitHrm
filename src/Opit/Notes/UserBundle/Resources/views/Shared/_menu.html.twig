@@ -57,17 +57,27 @@
     <div class="mainMenu {{ (module == 'leave' or module == 'calendar') ? 'active': '' }}">
         Leave
         <div class="subMenu">
-        <div class="subMenuItem">
-            <a href='{{ path('OpitNotesLeaveBundle_leave_show') }}'>Create request</a>
-        </div>
-        <div class="subMenuItem">
-            <a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>List request</a>
+            <div class="subMenuItem">
+                <a href='{{ path('OpitNotesLeaveBundle_leave_show') }}'>Create request</a>
+            </div>
+            <div class="subMenuItem">
+                <a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>List request</a>
         </div>
         <div class="subMenuItem">
             <a href='{{ path('OpitNotesLeaveBundle_calendar_team') }}'>Team leaves calendar</a>
-        </div>
+            </div>
         </div>
     </div>
+   {% if is_granted('ROLE_ADMIN') %}
+    <div class="mainMenu {{ (module == 'timesheet') ? 'active': '' }}">
+        Report
+        <div class="subMenu">
+            <div class="subMenuItem">
+                <a href='{{ path('OpitNotesLeaveBundle_timesheet_list') }}'>List time sheet</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <!--
     <div class="mainMenu {{ (module == 'default') ? 'active' : '' }}">
         Version History

@@ -1,0 +1,31 @@
+<form class="delete-checkbox-form">
+<table id="list-table" class="width-100">
+    <tr>
+        <th>
+            <i class="fa fa-sort default-right" data-field="category"></i>
+            <span class="order-text cursor-pointer">Month</span>
+        </th>
+        <th>Time sheet status</th>
+        <th>Actions</th>
+    </tr>
+    {% for monthNumber, monthName in availableMonths %}
+    <tr>
+        <td>
+            <span>{{ monthName }}</span>
+        </td>
+        <td>
+            {# loop through all statuses and display them in a dropdown #}
+            <select class="changeState {% if monthNumber < date()|date('m')%} dropdown-disabled" disabled="disabled" {% else %} {{'"'}} {% endif %}>
+                <option>Created</option>
+                <option {% if monthNumber < date()|date('m')%} selected="selected" {% endif %}>Approved</option>
+            </select>
+        </td>
+        <td>
+            <a href="" class="small-button print-view">
+                <i class="fa fa-print"></i>
+                <span>Print</span>
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>

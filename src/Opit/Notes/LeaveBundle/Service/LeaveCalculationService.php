@@ -52,7 +52,7 @@ class LeaveCalculationService
      * 
      * @var object
      */
-    protected $container;
+    protected $options;
     
     /**
      * Day of the Calendar
@@ -66,13 +66,13 @@ class LeaveCalculationService
      * 
      * @param \Doctrine\ORM\EntityManager
      */
-    public function __construct(EntityManager $entityManager, $container)
+    public function __construct(EntityManager $entityManager, $options)
     {
         $this->em = $entityManager;
-        $this->container = $container;
+        $this->options = $options;
 
-        $config = $this->container->getParameter('opit_notes_leave');
-        $this->calendarDays = $config['calculation_params']['calendar_days'];
+        // Set default days if not passed by $options
+        $this->calendarDays = array_key_exists('calendar_days', $this->options) ? $this->options['calendar_days'] : 365;
     }
     
     /**

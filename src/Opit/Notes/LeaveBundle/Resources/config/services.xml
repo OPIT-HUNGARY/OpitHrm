@@ -11,7 +11,7 @@
     <services>
         <service id="opit_notes_leave.leave_calculation_service" lazy="true" class="%opit_notes_leave.leave_calculation_service.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="service_container" />
+            <argument>%leave_calculation_options%</argument>
         </service>
     </services>
 

@@ -23,6 +23,7 @@ class OpitNotesLeaveExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('opit_notes_leave', $config);
+        $container->setParameter('leave_calculation_options', $config['calculation_params']);
         
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');

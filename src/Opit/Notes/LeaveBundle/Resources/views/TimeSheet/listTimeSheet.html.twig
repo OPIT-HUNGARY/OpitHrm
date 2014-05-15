@@ -1,0 +1,34 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block title %}
+        Time Sheet list - {{ parent() }}
+{% endblock %}
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/list.css'
+    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+    <h1>Time sheet list</h1>
+    <table>
+        <tr>
+            <td class="padding-0">
+                <a href=""><button id="generate" class="button"><i class="fa fa-plus-square fa-1x"></i>Generate current month</button></a>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <div id="leave_list">
+        {% include 'OpitNotesLeaveBundle:TimeSheet:_listTimeSheet.html.twig' %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesLeaveBundle/Resources/public/js/listTimeSheet.coffee'
+        '@OpitNotesUserBundle/Resources/public/js/list.js'
+    output='js/opitnotesleave/timesheet_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
