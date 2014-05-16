@@ -9,7 +9,11 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelRequest.js') }}" ></script>
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/showTravelRequest.coffee'
+    output='js/opitnotestravel/show_travel_request.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />

@@ -27,9 +27,9 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesLeaveBundle/Resources/public/js/Admin/category.js'
-        '@OpitNotesUserBundle/Resources/public/js/list.js'
-    output='js/opitnotesleave/admin_list.js' filter='?yui_js' %}
+        '@OpitNotesLeaveBundle/Resources/public/js/Admin/category.coffee'
+        '@OpitNotesUserBundle/Resources/public/js/list.coffee'
+    output='js/opitnotesleave/admin/list_categories.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}
 {% endblock %}

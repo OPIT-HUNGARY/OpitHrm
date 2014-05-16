@@ -350,4 +350,8 @@
 <div class="height-20"></div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script src="{{ asset('bundles/opitnotestravel/js/travelExpensePrintView.js') }}"></script>
+{% javascripts
+    '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.coffee'
+output='js/opitnotestravel/travel_expense_print.js' filter='?yui_js' %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+{% endjavascripts %}

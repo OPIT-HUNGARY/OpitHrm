@@ -9,7 +9,7 @@
     {{ parent() }}
     {% javascripts
         'libs/fullcalendar/js/fullcalendar.min.js'
-        '@OpitNotesLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.js'
+        '@OpitNotesLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.coffee'
     output='js/team_leaves_calendar.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}

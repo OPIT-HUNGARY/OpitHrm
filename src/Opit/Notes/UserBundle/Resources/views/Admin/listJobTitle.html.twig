@@ -27,8 +27,8 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesUserBundle/Resources/public/js/admin.js'
-        '@OpitNotesUserBundle/Resources/public/js/list.js'
+        '@OpitNotesUserBundle/Resources/public/js/admin.coffee'
+        '@OpitNotesUserBundle/Resources/public/js/list.coffee'
     output='js/opitnotesuser/jobtitle_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}

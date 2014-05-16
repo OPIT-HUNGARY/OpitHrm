@@ -26,8 +26,8 @@ Per Diem list - {{ parent() }}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesUserBundle/Resources/public/js/Admin/PerDiem/admin.js'
-    output='js/opitnotestravel/admin.js' filter='?yui_js' %}
+        '@OpitNotesTravelBundle/Resources/public/js/Admin/perDiem.coffee'
+    output='js/opitnotestravel/admin/per_diem.js' filter='?yui_js' %}
     <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
     {% endjavascripts %}
 {% endblock %}

@@ -4,7 +4,11 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/opitnotesleave/js/list.js') }}" ></script>
+    {% javascripts
+        '@OpitNotesLeaveBundle/Resources/public/js/list.coffee'
+    output='js/opitnotesleave/list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
     {% stylesheets

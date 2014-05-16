@@ -26,8 +26,12 @@
         });
         {% endif %}
     </script>
-    <script type="text/javascript" src="{{ asset('bundles/opitnotestravel/js/showTravelExpense.js') }}" ></script>
-    <script type="text/javascript" src="{{ asset('bundles/opitnotescurrencyrate/js/CurrencyConverter.js') }}"></script>
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/showTravelExpense.coffee'
+        '@OpitNotesCurrencyRateBundle/Resources/public/js/CurrencyConverter.coffee'
+    output='js/opitnotestravel/show_travel_expense.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
 {% endblock %}
 
 {% block stylesheets %}
