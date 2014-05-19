@@ -21,7 +21,7 @@ use Opit\Notes\TravelBundle\Form\ExpenseType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * Description of ExpenseController
@@ -114,7 +114,7 @@ class ExpenseController extends Controller
         
         // te = Travel Expense
         $travelExpenseStates = array();
-        $statusManager = $this->get('opit.manager.status_manager');
+        $statusManager = $this->get('opit.manager.travel_status_manager');
         
         // get travel expense current status
         $currentStatus = $statusManager->getCurrentStatus($travelExpense);
@@ -458,7 +458,7 @@ class ExpenseController extends Controller
             $form->handleRequest($request);
             
             if ($form->isValid()) {
-                $statusManager = $this->get('opit.manager.status_manager');
+                $statusManager = $this->get('opit.manager.travel_status_manager');
                 $isNew = $travelExpense->getId();
                 $travelExpense = $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense);
                 
@@ -490,6 +490,10 @@ class ExpenseController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')->find($travelExpenseId);
          
-        $this->get('opit.manager.status_manager')->addStatus($travelExpense, $statusId);
+        $status = $this->get('opit.manager.travel_status_manager')->addStatus($travelExpense, $statusId);
+        
+        // send a new notification when travel request or expense status changes
+        $notificationManager = $this->container->get('opit.manager.notification_manager');
+        $notificationManager->addNewNotification($travelExpense, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
     }
 }

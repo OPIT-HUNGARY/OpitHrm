@@ -86,6 +86,6 @@ class LeaveRequestRepository extends EntityRepository
             ->setParameter('endDate', $endDate)
             ->getQuery();
         
-        return $dq->getArrayResult();
+        return $dq->getResult();
     }
 }

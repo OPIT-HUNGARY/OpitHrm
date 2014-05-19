@@ -9,19 +9,19 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
+namespace Opit\Notes\StatusBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\TravelBundle\Entity\StatusWorkflow;
-use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
+use Opit\Notes\StatusBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * travel bundle status workflow fixtures
+ * status bundle status workflow fixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage StatusBundle
  */
 class StatusWorkflowFixtures extends AbstractDataFixture
 {

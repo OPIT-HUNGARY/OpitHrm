@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormError;
@@ -84,7 +84,7 @@ class TravelController extends Controller
             'maxPages' => $config['max_pager_pages'],
             'offset' => ($offset + 1),
             'isFirstLogin' => $user->getIsFirstLogin(),
-            'states' => $entityManager->getRepository('OpitNotesTravelBundle:Status')->getStatusNameId()
+            'states' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->getStatusNameId()
         );
 
         if (null === $showList && (null === $offset && !$isSearch)) {
@@ -148,7 +148,7 @@ class TravelController extends Controller
         $forApproval = $request->attributes->get('fa');
         $isNewTravelRequest = "new" !== $travelRequestId;
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
-        $statusManager = $this->get('opit.manager.status_manager');
+        $statusManager = $this->get('opit.manager.travel_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
         

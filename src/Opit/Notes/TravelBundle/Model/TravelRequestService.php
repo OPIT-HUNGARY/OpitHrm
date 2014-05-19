@@ -15,11 +15,11 @@ use Doctrine\ORM\EntityManager;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\TravelBundle\Manager\StatusManager;
+use Opit\Notes\TravelBundle\Manager\TravelStatusManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
@@ -38,17 +38,20 @@ class TravelRequestService
     protected $entityManager;
     protected $statusManager;
     protected $aclManager;
+    protected $container;
     
     public function __construct(
         SecurityContext $securityContext,
         EntityManager $entityManager,
-        StatusManager $statusManager,
-        AclManager $aclManager
+        TravelStatusManager $statusManager,
+        AclManager $aclManager,
+        $container
     ) {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->aclManager = $aclManager;
+        $this->container = $container;
     }
     
     public function isUserGeneralManager(TravelResourceInterface $travelRequest)
@@ -60,7 +63,7 @@ class TravelRequestService
     /**
      * 
      * @param Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param integer Opit\Notes\TravelBundle\Entity\Status $currentStatus
+     * @param integer Opit\Notes\StatusBundle\Entity\Status $currentStatus
      * @return array
      */
     public function setTravelRequestAccessRights(TravelResourceInterface $travelRequest, $currentStatus)
@@ -298,7 +301,11 @@ class TravelRequestService
                     break;
             }
             
-            $this->statusManager->addStatus($travelRequest, $statusId);
+            $status = $this->statusManager->addStatus($travelRequest, $statusId);
+            
+            // send a new notification when travel request or expense status changes
+            $notificationManager = $this->container->get('opit.manager.notification_manager');
+            $notificationManager->addNewNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
             
             return new JsonResponse();
         } else {

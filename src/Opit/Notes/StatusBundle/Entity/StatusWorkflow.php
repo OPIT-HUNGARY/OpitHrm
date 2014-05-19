@@ -9,20 +9,21 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\StatusBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
- * This class is a container for the travel status workflow.
+ * This class is a container the status workflow.
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage StatusBundle
  *
  * @ORM\Table(name="notes_status_workflow")
- * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatusWorkflowRepository")
+ * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusWorkflowRepository")
  */
 class StatusWorkflow
 {
@@ -58,10 +59,10 @@ class StatusWorkflow
     /**
      * Set parent
      *
-     * @param \Opit\Notes\TravelBundle\Entity\Status $parent
+     * @param Status $parent
      * @return StatusWorkflow
      */
-    public function setParent(\Opit\Notes\TravelBundle\Entity\Status $parent = null)
+    public function setParent(Status $parent = null)
     {
         $this->parent = $parent;
 
@@ -71,7 +72,7 @@ class StatusWorkflow
     /**
      * Get parent
      *
-     * @return \Opit\Notes\TravelBundle\Entity\Status
+     * @return Status
      */
     public function getParent()
     {
@@ -81,10 +82,10 @@ class StatusWorkflow
     /**
      * Set status
      *
-     * @param \Opit\Notes\TravelBundle\Entity\Status $status
+     * @param Status $status
      * @return StatusWorkflow
      */
-    public function setStatus(\Opit\Notes\TravelBundle\Entity\Status $status = null)
+    public function setStatus(Status $status = null)
     {
         $this->status = $status;
 
@@ -94,7 +95,7 @@ class StatusWorkflow
     /**
      * Get status
      *
-     * @return \Opit\Notes\TravelBundle\Entity\Status
+     * @return Status
      */
     public function getStatus()
     {

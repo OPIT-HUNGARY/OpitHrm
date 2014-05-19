@@ -89,7 +89,7 @@ class AdminLeaveController extends Controller
         $result = array('response' => 'error');
 
         if ($id) {
-            $holidayCategory = $this->getHolidayCategory($request->attributes->get('id'));
+            $holidayCategory = $this->getLeaveCategory($request->attributes->get('id'));
         } else {
             $holidayCategory = new LeaveCategory();
         }
@@ -132,7 +132,7 @@ class AdminLeaveController extends Controller
         $id = $request->attributes->get('id');
 
         if ($id) {
-            $holidayCategory = $this->getHolidayCategory($id);
+            $holidayCategory = $this->getLeaveCategory($id);
         } else {
             $holidayCategory = new LeaveCategory();
         }
@@ -166,7 +166,7 @@ class AdminLeaveController extends Controller
         }
 
         foreach ($ids as $id) {
-            $holidayCategory = $this->getHolidayCategory($id);
+            $holidayCategory = $this->getLeaveCategory($id);
             $em->remove($holidayCategory);
         }
         $em->flush();

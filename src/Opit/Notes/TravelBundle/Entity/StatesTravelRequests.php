@@ -12,9 +12,8 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\UserBundle\Entity\User;
 
 /**
  * This class is a container for the Travel Request Status model
@@ -43,7 +42,7 @@ class StatesTravelRequests extends AbstractBase
     protected $travelRequest;
 
      /**
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="travelRequests", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\StatusBundle\Entity\Status", fetch="EAGER")
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     protected $status;
@@ -90,7 +89,7 @@ class StatesTravelRequests extends AbstractBase
     /**
      * Set status
      *
-     * @param \Opit\Notes\TravelBundle\Entity\Status $status
+     * @param \Opit\Notes\StatusBundle\Entity\Status $status
      * @return StatesTravelRequests
      */
     public function setStatus(Status $status = null)
@@ -103,7 +102,7 @@ class StatesTravelRequests extends AbstractBase
     /**
      * Get status
      *
-     * @return \Opit\Notes\TravelBundle\Entity\Status
+     * @return \Opit\Notes\StatusBundle\Entity\Status
      */
     public function getStatus()
     {

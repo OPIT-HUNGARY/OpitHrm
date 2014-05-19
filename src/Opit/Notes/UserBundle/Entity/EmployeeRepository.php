@@ -29,7 +29,7 @@ namespace Opit\Notes\UserBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Description of TeamRepository
+ * Description of EmployeeRepository
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @package Opit

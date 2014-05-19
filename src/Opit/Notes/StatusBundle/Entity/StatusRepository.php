@@ -9,11 +9,10 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\StatusBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\Common\CommonException;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * Status Repository
@@ -23,10 +22,10 @@ use Opit\Notes\TravelBundle\Entity\Status;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage StatusBundle
  */
 class StatusRepository extends EntityRepository
-{    
+{
     /**
      * Returns array with status name as key and id as value.
      * 

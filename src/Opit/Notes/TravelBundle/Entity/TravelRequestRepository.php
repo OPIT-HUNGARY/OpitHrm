@@ -13,7 +13,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * TravelRequestRepository

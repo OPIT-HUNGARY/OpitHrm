@@ -14,7 +14,7 @@ namespace Opit\Notes\TravelBundle\Model;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\ORM\EntityManager;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
@@ -71,11 +71,9 @@ class TravelExpenseService
     public function calculatePerDiem(EntityManager $entityManager, $arrivalDateTime, $departureDateTime)
     {
         $departureTimeHour = intval($departureDateTime->format('H'));
-        $departureDay = intval($departureDateTime->format('d'));
         $departureDate = $departureDateTime->format('Y-m-d');
 
         $arrivalTimeHour = intval($arrivalDateTime->format('H'));
-        $arrivalDay = intval($arrivalDateTime->format('d'));
         $arrivalDate = $arrivalDateTime->format('Y-m-d');
         
         $perDiemAmount = 0;
@@ -324,7 +322,7 @@ class TravelExpenseService
      */
     public function getMidRate()
     {
-        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find(Status::FOR_APPROVAL);
+        $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::FOR_APPROVAL);
         $teStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
                                  ->findOneByStatus($status, array('id' => 'ASC'));
         

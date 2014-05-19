@@ -32,6 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Opit\Notes\UserBundle\Entity\Employee;
 
 /**
  * Description of CalendarController
@@ -52,21 +53,8 @@ class CalendarController extends Controller
      */
     public function showTeamLeavesCalendarAction()
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
-
-        if ($securityContext->isGranted('ROLE_ADMIN')) {
-            $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAllEmployeeIdNameHydrated();
-        } else {
-            $employee = $securityContext->getToken()->getUser()->getEmployee();
-            
-            if (count($employee->getTeams()) > 0) {
-                $teamsEmployees = $this->getRelatedEmployeesFromTeams($employee->getId());
-            } else {
-                // if employee is not part of any team get his data only
-                $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findEmployeeIdNameHydrated($employee->getId());
-            }
-        }
+        $teamsEmployees = $this->getTeamsEmployees($securityContext->getToken()->getUser()->getEmployee());
         
         $employees = array();
         
@@ -79,7 +67,7 @@ class CalendarController extends Controller
                 $employeeName = $employee['employeeName'];
                 $employees[$employeeId] = array(
                     'name' => strtoupper($employee['employeeName']),
-                    'class' => $employeeName . '-' . $employeeId
+                    'class' => str_replace(' ', '_', $employeeName . '-' . $employeeId)
                 );
             }
         }
@@ -100,16 +88,7 @@ class CalendarController extends Controller
         $securityContext = $this->container->get('security.context');
         $employee = $securityContext->getToken()->getUser()->getEmployee();
 
-        if ($securityContext->isGranted('ROLE_ADMIN')) {
-            $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAllEmployeeIdNameHydrated();
-        } else {
-            if (count($employee->getTeams()) > 0) {
-                $teamsEmployees = $this->getRelatedEmployeesFromTeams($employee->getId());
-            } else {
-                // if employee is not part of any team get his data only
-                $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findEmployeeIdNameHydrated($employee->getId());
-            }
-        }
+        $teamsEmployees = $this->getTeamsEmployees($employee);
         
         // get all leave requests employees are in
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
@@ -124,14 +103,14 @@ class CalendarController extends Controller
         // loop through all leave requests
         foreach ($leaveRequests as $leaveRequest) {
             // loop hrough all leave request leaves
-            foreach ($leaveRequest['leaves'] as $leave) {
+            foreach ($leaveRequest->getLeaves() as $leave) {
                 // set leave data
-                $employee = $leaveRequest['employee'];
+                $employee = $leaveRequest->getEmployee();
                 $leaves[] = array(
-                    'title' => strtoupper($employee['employeeName']) . ' - ' . $leave['description'],
-                    'start' => $leave['startDate']->format('Y-m-d'),
-                    'end' => $leave['endDate']->format('Y-m-d'),
-                    'className' => $employee['employeeName'] . '-' . $employee['id'],
+                    'title' => strtoupper($employee->getEmployeeName()) . ' - ' . $leave->getCategory()->getName(),
+                    'start' => $leave->getStartDate()->format('Y-m-d'),
+                    'end' => $leave->getEndDate()->format('Y-m-d'),
+                    'className' => str_replace(' ', '_', ($employee->getEmployeeName() . '-' . $employee->getId())),
                     'textColor' => 'white'
                 );
             }
@@ -140,17 +119,32 @@ class CalendarController extends Controller
         return new JsonResponse($leaves);
     }
     
-    protected function getRelatedEmployeesFromTeams($employeeId)
+    /**
+     * 
+     * @param type $employee
+     * @return type
+     */
+    protected function getTeamsEmployees(Employee $employee)
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $securityContext = $this->container->get('security.context');
         
-        // get all teams employee is part of
-        $employeeTeams = $entityManager->getRepository('OpitNotesUserBundle:Employee')
-            ->findEmployeeTeamIds($employeeId);
+        if ($securityContext->isGranted('ROLE_ADMIN')) {
+            $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAllEmployeeIdNameHydrated();
+        } else {
+            if (count($employee->getTeams()) > 0) {
+                // get all teams employee is part of
+                $employeeTeams = $entityManager->getRepository('OpitNotesUserBundle:Employee')
+                    ->findEmployeeTeamIds($employee->getId());
 
-        // get all employees in teams
-        $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Team')
-            ->findTeamsEmployees($employeeTeams);
+                // get all employees in teams
+                $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Team')
+                    ->findTeamsEmployees($employeeTeams);
+            } else {
+                // if employee is not part of any team get his data only
+                $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findEmployeeIdNameHydrated($employee->getId());
+            }
+        }
         
         return $teamsEmployees;
     }

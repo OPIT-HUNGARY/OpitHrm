@@ -8,8 +8,8 @@
     <parameters>
         <parameter key="opit.model.travel_expense.class">Opit\Notes\TravelBundle\Model\TravelExpenseService</parameter>
         <parameter key="opit.model.travel_request.class">Opit\Notes\TravelBundle\Model\TravelRequestService</parameter>
-        <parameter key="opit.manager.status_manager.class">Opit\Notes\TravelBundle\Manager\StatusManager</parameter>
-        <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
+        <parameter key="opit.manager.travel_status_manager.class">Opit\Notes\TravelBundle\Manager\TravelStatusManager</parameter>
+        <parameter key="opit.manager.email_manager.class">Opit\Component\Email\EmailComponent</parameter>
         <parameter key="opit.manager.notification_manager.class">Opit\Notes\TravelBundle\Manager\NotificationManager</parameter>
         <parameter key="opit.manager.pdf_manager.class">Opit\Notes\TravelBundle\Manager\PDFManager</parameter>
         <parameter key="opit.security.acl.voter.class">Opit\Notes\TravelBundle\Manager\AclManager</parameter>
@@ -26,10 +26,11 @@
         <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="opit.manager.status_manager" />
+            <argument type="service" id="opit.manager.travel_status_manager" />
             <argument type="service" id="opit.security.acl.manager" />
+            <argument type="service" id="service_container" />
         </service>
-        <service id="opit.manager.status_manager" class="%opit.manager.status_manager.class%">
+        <service id="opit.manager.travel_status_manager" class="%opit.manager.travel_status_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.email_manager" />
             <argument type="service" id="security.encoder_factory" />

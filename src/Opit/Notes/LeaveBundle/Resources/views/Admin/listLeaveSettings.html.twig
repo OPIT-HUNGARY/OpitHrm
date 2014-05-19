@@ -1,13 +1,13 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-Leave settings list - {{ parent() }}
+Entitlement configuration - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
 {% endblock %}
 {% block body %}
-<h1>Leave settings configuration</h1>
-<div class="dialog-description">Leave settings can be configured from here. These values will be used for the leave days calculation.</div>
+<h1>Entitlement configuration</h1>
+<div class="dialog-description">Entitlement configuration can be set from here. This values will be used for the leave days calculation.</div>
 {% if isEnabled  %}
     <div  id="list">
         <div id="list-reply-message"></div>
@@ -20,7 +20,7 @@ Leave settings list - {{ parent() }}
     </div>
 {% else %}
     <h3>
-        The leave settings configuration is disabled.
+        The entitlement configuration is disabled.
     </h3>
 {% endif %}
 {% endblock %}

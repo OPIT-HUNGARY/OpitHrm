@@ -12,30 +12,25 @@
 namespace Opit\Notes\TravelBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Request;
-use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
-use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
-use Opit\Notes\TravelBundle\Entity\Status;
+use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
-use Opit\Notes\TravelBundle\Entity\StatesTravelRequests;
-use Opit\Notes\TravelBundle\Entity\StatesTravelExpenses;
 use Opit\Notes\TravelBundle\Entity\Token;
+use Opit\Notes\StatusBundle\Manager\StatusManager;
 
 /**
- * Description of TravelController
+ * Description of TravelStatusManager
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage TravelBundle
  */
-class StatusManager
+class TravelStatusManager extends StatusManager
 {
     protected $entityManager;
     protected $mail;
     protected $factory;
-    protected $request;
     protected $container;
     
     public function __construct(EntityManager $entityManager, $mail, $factory, $container)
@@ -44,144 +39,6 @@ class StatusManager
         $this->mail = $mail;
         $this->factory = $factory;
         $this->container = $container;
-    }
-
-    public function setRequest(Request $request = null)
-    {
-        $this->request = $request;
-    }
-    
-    /**
-     * Method to change the status of a travel request or expense and
-     * send an email containing the changes and also set a new notification.
-     * 
-     * @param type $resource
-     * @param integer $requiredStatus
-     */
-    public function addStatus($resource, $requiredStatus)
-    {
-        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($requiredStatus);
-        $statusId = $status->getId();
-        $toGeneralManager = Status::FOR_APPROVAL === $statusId ? true : false;
-        $nextStates = array();
-        $instanceS =
-            new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($resource) . 's');
-        
-        $this->removeTravelTokens($resource->getId());
-
-        // check if the state the resource will be set to is the parent of the current status of the resource
-        foreach ($this->getNextStates($status) as $key => $value) {
-            if ($key === $statusId) {
-                $this->entityManager->persist($instanceS->newInstanceArgs(array($status, $resource)));
-            } else {
-                $nextStates[$key] = $value;
-            }
-        }
-
-        $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
-        $this->entityManager->flush();
-        
-        // set a new notification when travel request or expense status changes
-        $notificationManager = $this->container->get('opit.manager.notification_manager');
-        $notificationManager->addNewNotification($resource, $toGeneralManager, $status);
-    }
-    
-    /**
-     * 
-     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $resource
-     * @return Status
-     */
-    public function getCurrentStatus($resource)
-    {
-        $status = null;
-        
-        if (null === $resource) {
-            return null;
-        }
-        
-        $className = Utils::getClassBasename($resource);
-        $currentStatus = $this->entityManager
-            ->getRepository('OpitNotesTravelBundle:States' . $className . 's')
-            ->getCurrentStatus($resource->getId());
-        
-        if (null === $currentStatus) {
-            $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->findStatusCreate();
-        } else {
-            $status = $currentStatus->getStatus();
-        }
-        
-        return $status;
-    }
-    
-    /**
-     * 
-     * @param \Opit\Notes\TravelBundle\Entity\Status $currentState
-     * @return array
-     */
-    public function getNextStates(Status $currentState, $excludeIds = array())
-    {
-        $statesToDisplay = array();
-        $currentStateId = $currentState->getId();
-        $nextStates =
-            $this->entityManager->getRepository('OpitNotesTravelBundle:StatusWorkflow')
-            ->findAvailableStates($currentState, $excludeIds);
-        
-        $statesToDisplay[$currentStateId] = $currentState->getName();
-        
-        foreach ($nextStates as $nextState) {
-            $status = $nextState->getStatus();
-            $statesToDisplay[$status->getId()] = $status->getName();
-        }
-        
-        return $statesToDisplay;
-    }
-    
-    /**
-     * Validates if next status can be set
-     * 
-     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $travelResource
-     * @param integer $statusId The new status to be set
-     * @return boolean
-     */
-    public function isValid(TravelResourceInterface $travelResource, $statusId)
-    {
-        $valid = false;
-        
-        $currentStatus = $this->getCurrentStatus($travelResource);
-        $availableStateIds = array_keys($this->getNextStates($currentStatus));
-        
-        // Set validity true if current status does not match new status
-        // and new status is in available states list
-        if ($currentStatus->getId() != $statusId && in_array($statusId, $availableStateIds)) {
-            $valid = true;
-        }
-        
-        return $valid;
-    }
-    
-    /**
-     * Enforce status persistence
-     * 
-     * @param integer $statusId
-     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $travelResource
-     * @param \Opit\Notes\UserBundle\Entity\User $user
-     */
-    public function forceStatus($statusId, TravelResourceInterface $travelResource, $user = null)
-    {
-        $status = $this->entityManager->getRepository('OpitNotesTravelBundle:Status')->find($statusId);
-        
-        $instanceS =
-            new \ReflectionClass('Opit\Notes\TravelBundle\Entity\States' . Utils::getClassBasename($travelResource) . 's');
-        $createdStatus = $instanceS->newInstanceArgs(array($status, $travelResource));
-        
-        if (null !== $user) {
-            $createdStatus->setCreatedUser($user);
-            $createdStatus->setUpdatedUser($user);
-        }
-        $createdStatus->setStatus($status);
-        
-        $this->entityManager->persist($createdStatus);
-        $this->entityManager->flush();
     }
     
     /**
@@ -222,7 +79,7 @@ class StatusManager
     
     /**
      * 
-     * @param \Opit\Notes\TravelBundle\Entity\Status $status
+     * @param \Opit\Notes\StatusBundle\Entity\Status $status
      * @param array $nextStates
      * @param mixed $resource
      * @param integer $requiredStatus
