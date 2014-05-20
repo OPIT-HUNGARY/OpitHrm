@@ -6,21 +6,34 @@
     Created on : Mar 10, 2014, 10:16:52 AM
     Author     : OPIT\NOTES
 */
+html {
+  background: url("../../../images/bg-office.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+
 #mainWrapper {
   width: 60%;
-  min-width: 1024px; }
+  min-width: 980px; }
   #mainWrapper #welcomeWrapper {
-    min-width: 740px;
-    height: 250px;
-    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    width: 30%;
+    height: 180px;
+    text-indent: 15px;
+    background-color: aquamarine;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+    /* For IE8 and earlier */ }
     #mainWrapper #welcomeWrapper #welcomeText {
-      font-size: 8em; }
+      font-size: 2em; }
     #mainWrapper #welcomeWrapper #welcomeUnderText {
-      font-size: 1.7em;
-      margin-top: -35px; }
+      font-size: .8em;
+      margin-top: -10px; }
   #mainWrapper #loginForm {
-    height: 223px;
-    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    background-color: aquamarine;
+    width: 30%;
+    height: 268px;
+    background: rgba(127, 255, 212, 0.8); }
     #mainWrapper #loginForm > div {
       margin: 20px; }
     #mainWrapper #loginForm form #login .placeholder {
@@ -29,17 +42,17 @@
       width: 240px;
       height: 30px;
       outline: none;
-      border: 2px solid transparent;
-      background-color: #fafafa;
+      border: 1px solid transparent;
+      background-color: #FAFFBD;
       padding: 2px 5px;
       text-indent: 25px;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      -ms-border-radius: 3px;
-      -o-border-radius: 3px;
-      border-radius: 3px; }
+      -webkit-border-radius: 0px;
+      -moz-border-radius: 0px;
+      -ms-border-radius: 0px;
+      -o-border-radius: 0px;
+      border-radius: 0px; }
     #mainWrapper #loginForm form input:focus {
-      border: solid 2px #b4b4b4; }
+      border: solid 1px #b4b4b4; }
     #mainWrapper #loginForm form label {
       display: none; }
     #mainWrapper #loginForm form button {
@@ -47,10 +60,24 @@
       outline: 0;
       padding: 8px 30px 8px 30px; }
   #mainWrapper #featuresForm {
-    width: 69%;
-    height: 223px;
-    text-indent: 20px;
-    box-shadow: 1px 1px 1px 1px #a0a0a0; }
+    width: 69.5%;
+    min-height: 600px;
+    text-indent: 20px; }
     #mainWrapper #featuresForm li {
       margin: 0 0 0 20px;
       text-indent: 5px; }
+
+.home-box {
+  color: #fafafa;
+  padding: .5em;
+  margin: 0 auto;
+  background-color: #000000;
+  min-height: 142px;
+  border-bottom: 1px solid #b6b6b6;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+  /* For IE8 and earlier */ }
+  .home-box:hover {
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    /* For IE8 and earlier */ }

@@ -174,11 +174,17 @@
 .margin-top-24 {
   margin-top: 24px; }
 
+.margin-top-30 {
+  margin-top: 30px; }
+
 .margin-right-0 {
   margin-right: 0; }
 
 .margin-right-1-em {
   margin-right: 1em; }
+
+.margin-right-15 {
+  margin-right: 15px; }
 
 .margin-bottom-0 {
   margin-bottom: 0; }
@@ -219,6 +225,9 @@
 
 .width-50 {
   width: 50px; }
+
+.width-200 {
+  width: 200px; }
 
 .max-width-150 {
   max-width: 150px; }
@@ -568,7 +577,6 @@
     height: 3px;
     opacity: 0.1;
     -webkit-transform: translateX(-21px); } }
-
 @-moz-keyframes loader {
   0% {
     width: 3px;

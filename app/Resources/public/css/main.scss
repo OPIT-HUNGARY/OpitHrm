@@ -131,6 +131,7 @@
     background-color: $darkBlack;
 }
 
+
 /* Align properties */
 
 .align-right{
@@ -233,12 +234,20 @@
     margin-top: 24px;
 }
 
+.margin-top-30{
+    margin-top: 30px;
+}
+
 .margin-right-0{
     margin-right: 0;
 }
 
 .margin-right-1-em{
     margin-right: 1em;
+}
+
+.margin-right-15{
+    margin-right: 15px;
 }
 
 .margin-bottom-0{
@@ -293,6 +302,10 @@
 
 .width-50{
     width: 50px;
+}
+
+.width-200{
+    width: 200px;
 }
 
 .max-width-150{

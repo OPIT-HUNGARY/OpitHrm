@@ -17,41 +17,74 @@
             
 {% block body %}
     <div id="mainWrapper" class="margin-center">
-        <div id="welcomeWrapper" class="width-100 margin-center background-color-lighter-grey">
-            <div id="welcomeText" class="color-black align-center">NOTES</div>
-            <div id="welcomeUnderText" class="color-light-green align-center">New OPIT Travel Expense System</div>
+        <div id="welcomeWrapper" class="float-left">
+            <div id="welcomeText" class="color-black align-left">NOTES</div>
+            <div id="welcomeUnderText" class="color-light-green align-left">New OPIT Travel Expense System</div>
         </div>
-        <div id="loginForm" class="float-left background-color-lighter-grey width-30 margin-top-10">
+        <div id="featuresForm" class="float-right">
+
+            <div class="home-box width-100">
+                <div class="float-left margin-top-30">
+                    <h1><i class="fa fa-cogs color-light-green"></i>  Admininstration</h1>
+                </div>
+                <div class="float-right margin-top-30 margin-right-15 width-200">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>User Management</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Management</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Management</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="home-box width-100">
+                <div class="float-left margin-top-30">
+                    <h1><i class="fa fa-bar-chart-o color-light-green"></i>  Reports </h1>
+                </div>
+                <div class="float-right margin-top-30 margin-right-15 width-200">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Generate Time Sheets</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>View Time Sheets</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="home-box width-100">
+                <div class="float-left margin-top-30">
+                    <h1><i class="fa fa-tags color-light-green"></i>  Requests</h1>
+                </div>
+                <div class="float-right align-left margin-top-30 margin-right-15 width-200">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Request</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Expense</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Request</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="home-box width-100">
+                <div class="float-left margin-top-30">
+                    <h1><i class="fa fa-plus-square color-light-green"></i>  Others</h1>
+                </div>
+                <div class="float-right align-left margin-top-30 margin-right-15 width-200">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>WorkFlow Support</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Easy LDAP Integration</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Currency Conversion</li>
+                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Team Calender</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="welcomeWrapper" class="float-left">
+            <div id="welcomeText" class="color-black align-left">Human</br>&nbsp;&nbsp;Resource</br>&nbsp;&nbsp;Management</div>
+        </div>
+        <div id="loginForm" class="float-left">
             <div>
-            <h2 class="margin-bottom-5">Login</h2>
             {% if error %}
                     <div class="error color-red margin-bottom-10">{{ error.message }}</div>
             {% endif %}
             {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'attr': {'id':'login'} }) }}
             </div>
         </div>
-        <div id="featuresForm" class="float-left margin-top-10 margin-left-10 background-color-lighter-grey">
-            <h2>The New OPIT Travel Expense System (NOTES) features:</h2>
 
-            <ol>
-                <li>
-                    User Management
-                </li>
-                <li>
-                    Administrate collating and displaying the expected travel expenses
-                </li>
-                <li>
-                    Submission for travel related expense
-                </li>
-                <li>
-                    Worklow support
-                </li>
-                <li>
-                    Automated currency rate fetching                
-                </li>
-            </ol>
-        </div>
-    </div>        
+    </div>
 {% endblock %}
 
 {# Remove the footer from the login template #}
