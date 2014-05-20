@@ -72,18 +72,6 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
 
             return df
 
-$subMenuClone = {}
-subMenuCloneClass = '.subMenuClone'
-
-cloneSubmenu = ->
-    # if header submenu exists in body delete it
-    if $('body').children(subMenuCloneClass).length
-        $('body').find(subMenuCloneClass).remove()
-    # create clone of submenu
-    $subMenuClone = $('.active').children('.subMenu').clone()
-    $subMenuClone.addClass 'subMenuClone'
-    $('body').append $subMenuClone
-               
 getAllNotifications = ($notificationsContent) ->
     changeStatus = (el, callback) ->
         if el.closest('.notification').hasClass 'unread'
@@ -193,109 +181,115 @@ $.fn.extend
             $(@).prop 'checked', checkAll
         $(document).data('notes').funcs.changeDeleteButton()
 
-$(document).ready ->
-        $(document).data('notes').funcs.initDeleteMultipleListener()
-        $(document).data('notes').funcs.initListPageListeners()
-        $(document).data('notes').funcs.initPager()
+initMenu = ->
+    $menu = $('#menu:first')
+    $clone = $('#menu.clone')
 
-        # add scrollbar to notifications
-        $('#notifications-wrapper').mCustomScrollbar()
+    if $menu.length > 0 and $clone.length is 0
+        $clone = $menu.clone()
+        $clone.attr
+            class: 'clone'
+        .css
+            top: 0
         
-        $('#notifications > i.fa-bell-o').on 'click.notifications', (event) ->
-            # stop event bubbling
-            event.stopPropagation()
-            $container = $(@).parent()
-            if !$container.hasClass 'right-m15-important'
-                $container.addClass 'right-m15-important'
-                # remove classes that make the notifications tab active
-                $(@).removeClass 'color-light-green'
-                $('#unread-notifications-count').addClass 'display-none'
-                # call get all notifications function
-                getAllNotifications $('#notifications-content')
-                
-                # prevent event propagation for elements inside notifications container
-                $('#notifications-wrapper').on 'click.notifications', (event) ->
-                    event.stopPropagation()
-                    
-                # register hide listener clicking outside of the notifications boundaries
-                $('body').on 'click.notifications', (event) ->
-                    if $('#notifications').hasClass 'right-m15-important'
-                        $('#notifications').removeClass 'right-m15-important'
-                        
-                        # detach event listener if notifications are hidden
-                        $('body, #notifications-wrapper').off 'click.notifications'
-            else
-                $container.removeClass 'right-m15-important'
-                
-                # detach event listener if notifications are hidden
-                $('body, #notifications-wrapper').off 'click.notifications'
+        $('body').append($clone);
         
-        # start checking for new notifications
-        getUnreadNotifications() if $('#notifications').length > 0
+    startHeight = parseInt($menu.offset().top) + parseInt($menu.outerHeight()) + 25
     
-        $('#loggedInUser').click ->
-            $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('notes').funcs?.showAlert
-            
-        $(document).on 'click', '.ui-button-text', ->
-            buttonText = $(@).html()
-            if buttonText == 'Yes' or buttonText == 'Continue'
-                $(document).data('notes').funcs.changeDeleteButton true
-            
-        cloneSubmenu()
-        
-        # function to make header menu tabs selectable
-        $('.menu .mainMenu')
-            .click ->
-                $('.menu .mainMenu').removeClass 'active'
-                $(@).addClass "active"
-                cloneSubmenu()
-        # scroll method for sticky header
-        $(window).scroll ->
-            $menuWrapperActive = $('#menuWrapper .active')
-            # if page scroll is below submenu top show submenu clone
-            if $menuWrapperActive.length > 0
-                if $menuWrapperActive.children('.subMenu').offset().top < $(window).scrollTop()
-                    if $('body').has(subMenuCloneClass).length
-                        $subMenuClone.css({display: 'block'})
-                # if page scroll is above submenu top hide submenu clone
-                if $menuWrapperActive.children('.subMenu').offset().top > $(window).scrollTop()
-                    if $('body').has(subMenuCloneClass).length
-                        $subMenuClone.css({display: 'none'})
-                        
-        $('#changePassword').on 'click', ->
-            id = $(@).attr "data-user-id"
+    # scroll method for sticky header
+    $(window).scroll ->
+        # if page scroll is below submenu top show submenu clone
+        if $menu.length > 0 and $clone.length > 0
+            if startHeight < parseInt($(window).scrollTop())
+                $('#menu.clone').slideDown('fast')
+            else
+                $('#menu.clone').slideUp('fast')
 
-            # Only allow password changes for local users
-            $(document).data('OpitNotesUserBundle').funcs.isLdapUser(id).done ->
-                $.ajax
-                    method: 'GET'
-                    url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
-                .done (data) ->
-                    $('<div id="password-dialog"></div>').html(data)
-                    .dialog
-                        title: '<i class="fa fa-list-alt"></i> Reset Password'
-                        open: ->
-                            $(@).html(data)
-                        width: 600
-                        modal: on
-                        buttons:
-                            Save: ->
-                                $.ajax
-                                    type: 'POST'
-                                    global: false
-                                    url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
-                                    data: $('#changePassword_frm').serialize()
-                                .done (data)->
-                                    $('#password-dialog').dialog 'destroy'
-                                    $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
-                                .fail (data) ->
-                                    data = $.parseJSON data.responseText
-                                    $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
-                            Close: ->
+$(document).ready ->
+    # init the menu
+    do initMenu
+
+    $(document).data('notes').funcs.initDeleteMultipleListener()
+    $(document).data('notes').funcs.initListPageListeners()
+    $(document).data('notes').funcs.initPager()
+
+    # add scrollbar to notifications
+    $('#notifications-wrapper').mCustomScrollbar()
+
+    $('#notifications > i.fa-bell-o').on 'click.notifications', (event) ->
+        # stop event bubbling
+        event.stopPropagation()
+        $container = $(@).parent()
+        if !$container.hasClass 'right-m15-important'
+            $container.addClass 'right-m15-important'
+            # remove classes that make the notifications tab active
+            $(@).removeClass 'color-light-green'
+            $('#unread-notifications-count').addClass 'display-none'
+            # call get all notifications function
+            getAllNotifications $('#notifications-content')
+
+            # prevent event propagation for elements inside notifications container
+            $('#notifications-wrapper').on 'click.notifications', (event) ->
+                event.stopPropagation()
+
+            # register hide listener clicking outside of the notifications boundaries
+            $('body').on 'click.notifications', (event) ->
+                if $('#notifications').hasClass 'right-m15-important'
+                    $('#notifications').removeClass 'right-m15-important'
+
+                    # detach event listener if notifications are hidden
+                    $('body, #notifications-wrapper').off 'click.notifications'
+        else
+            $container.removeClass 'right-m15-important'
+
+            # detach event listener if notifications are hidden
+            $('body, #notifications-wrapper').off 'click.notifications'
+
+    # start checking for new notifications
+    getUnreadNotifications() if $('#notifications').length > 0
+
+    $('#loggedInUser').click ->
+        $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('notes').funcs?.showAlert
+
+    $(document).on 'click', '.ui-button-text', ->
+        buttonText = $(@).html()
+        if buttonText == 'Yes' or buttonText == 'Continue'
+            $(document).data('notes').funcs.changeDeleteButton true
+
+    $('#changePassword').on 'click', ->
+        id = $(@).attr "data-user-id"
+
+        # Only allow password changes for local users
+        $(document).data('OpitNotesUserBundle').funcs.isLdapUser(id).done ->
+            $.ajax
+                method: 'GET'
+                url: Routing.generate 'OpitNotesUserBundle_user_show_password', id: id
+            .done (data) ->
+                $('<div id="password-dialog"></div>').html(data)
+                .dialog
+                    title: '<i class="fa fa-list-alt"></i> Reset Password'
+                    open: ->
+                        $(@).html(data)
+                    width: 600
+                    modal: on
+                    buttons:
+                        Save: ->
+                            $.ajax
+                                type: 'POST'
+                                global: false
+                                url: Routing.generate 'OpitNotesUserBundle_user_update_password', id: id
+                                data: $('#changePassword_frm').serialize()
+                            .done (data)->
                                 $('#password-dialog').dialog 'destroy'
-                                return
-                return
+                                $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
+                            .fail (data) ->
+                                data = $.parseJSON data.responseText
+                                $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
+                        Close: ->
+                            $('#password-dialog').dialog 'destroy'
+                            return
             return
+        return
                 
 
 
