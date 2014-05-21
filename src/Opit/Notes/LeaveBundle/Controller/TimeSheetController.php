@@ -94,6 +94,25 @@ class TimeSheetController extends Controller
      */
     public function exportTimeSheetToPDFAction(Request $request)
     {
+        $year = $request->query->get('year');
+        $month = $request->query->get('month');
+        $pdfFileName = $year . '-' . $month . '_Time_Sheet_Report.pdf';
+        $pdfContent = $this->getTimeSheetPage($request)->getContent();
+        $pdf = $this->get('opit.manager.pdf_manager');
+        $pdf->exportToPdf(
+            $pdfContent,
+            $pdfFileName,
+            'NOTES',
+            'Time Sheet',
+            'Time Sheet details',
+            array('leave', 'time sheet', 'notes'),
+            12,
+            array(),
+            'L',
+            'A4'
+        );
+
+        return new JsonResponse();
     }
 
     private function getTimeSheetPage($request)

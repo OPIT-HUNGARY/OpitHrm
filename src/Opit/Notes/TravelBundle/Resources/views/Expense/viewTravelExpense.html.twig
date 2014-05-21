@@ -2,13 +2,15 @@
     {% stylesheets
         'bundles/bmatznerfontawesome/css/font-awesome.min.css'
         output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
-        <link rel="stylesheet" type="text/css" href="{{ asset(asset_url) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+        {# TCDPF cannot handle versioned absolute assets, cut the query #}
+        {% set printAsset = asset('bundles/opitnotestravel/css/travelExpensePrintView.css')|split('?') %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ printAsset[0] }}" />
     {% endstylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/opitnotestravel/css/travelExpensePrintView.css' ) }}" />    
 {% endblock %}
 
 <a href="{{ path('OpitNotesTravelBundle_expense_export', {'id': app.request.get('id')}) }}">
-    <img src="{{ asset('images/pdf-download-icon.png') }}" class="icons position-fixed fix-right-10" />
+    <i class="fa fa-file-pdf-o fa-2x icons position-fixed fix-right-10 fix-top-30"></i>
 </a>
 <i class="fa fa-print fa-2x icons position-fixed fix-right-50"></i>
 <br />
@@ -353,5 +355,5 @@
 {% javascripts
     '@OpitNotesTravelBundle/Resources/public/js/travelExpensePrintView.coffee'
 output='js/opitnotestravel/travel_expense_print.js' filter='?yui_js' %}
-    <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
 {% endjavascripts %}

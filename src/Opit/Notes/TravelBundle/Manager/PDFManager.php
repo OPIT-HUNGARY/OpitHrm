@@ -52,6 +52,8 @@ class PDFManager
         array $keywords,
         $fontSize,
         array $margins,
+        $type = 'P',
+        $pageSize = 'A4',
         $setHeader = false,
         $setFooter = false,
         $autoPageBreak = true
@@ -73,7 +75,7 @@ class PDFManager
         $pdf->SetFont('freeserif', '', $fontSize);
         $pdf->setPrintHeader($setHeader);
         $pdf->setPrintFooter($setFooter);
-        $pdf->AddPage();
+        $pdf->AddPage($type, $pageSize);
         $pdf->writeHTML($content, true, true, false, '');
         $pdf->lastPage();
 
