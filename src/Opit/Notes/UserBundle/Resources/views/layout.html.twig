@@ -3,7 +3,7 @@
     {% stylesheets 
         '@OpitNotesUserBundle/Resources/public/css/list.css'
     output='css/opitnotesuser/main.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+        <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}           
 {% block javascripts %}
@@ -13,7 +13,7 @@
         '//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.min.js'
         '@OpitNotesUserBundle/Resources/public/js/search.coffee'
     output='js/opitnotesuser/main.js' filter='?yui_js' %}
-        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
 {% block header %}

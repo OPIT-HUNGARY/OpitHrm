@@ -23,7 +23,7 @@
             'bundles/bmatznerfontawesome/css/font-awesome.min.css'
             'libs/tipsy/css/tipsy.css'
            output='css/base.css' filter='?yui_css, cssrewrite'%}
-            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+            <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
         {% block stylesheets %}{% endblock %}
         <script src="{{ asset('js/modernizr/modernizr.2.7.1.js') }}"></script>
@@ -69,7 +69,7 @@
                 '@OpitNotesUserBundle/Resources/public/js/main.coffee'
                 '@OpitNotesTravelBundle/Resources/public/js/main.coffee'
             output='js/base.js' filter='?yui_js' %}
-                <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+                <script type="text/javascript" src="{{ asset_url }}" ></script>
             {% endjavascripts %}
             <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         {% endblock %}
