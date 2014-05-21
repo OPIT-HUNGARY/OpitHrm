@@ -42,7 +42,7 @@ class StatesTravelExpenses extends AbstractBase
     protected $travelExpense;
 
      /**
-     * @ORM\ManyToOne(targetEntity="\Opit\Notes\StatusBundle\Entity\Status", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelStatusInterface", fetch="EAGER")
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     protected $status;

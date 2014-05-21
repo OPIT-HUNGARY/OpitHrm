@@ -12,9 +12,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Opit\Notes\TravelBundle\Entity\Notification;
-use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\NotificationBundle\Entity\Notification;
 
 /**
  * TRNotification
@@ -30,39 +28,35 @@ class TRNotification extends Notification
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
+
     /**
      * @var string
      */
     protected $message;
-    
+
     /**
      * @var \DateTime
      */
     protected $dateTime;
-    
+
     /**
-     * @var integer
+     * @var \Opit\Notes\NotificationBundle\Entity\NotificationStatus
      */
     protected $read;
-    
-   /**
-    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User", inversedBy="notifications")
-    */
+
+    /**
+     * @var \Opit\Notes\UserBundle\Entity\User
+     */
     protected $receiver;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Entity\TravelRequest", inversedBy="notifications")
      * @ORM\JoinColumn(name="tr_id", referencedColumnName="id")
      */
     protected $travelRequest;
-
+    
     /**
      * Get id
      *
@@ -74,26 +68,49 @@ class TRNotification extends Notification
     }
 
     /**
-     * Set receiver
+     * Set message
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $receiver
+     * @param string $message
      * @return TRNotification
      */
-    public function setReceiver(User $receiver = null)
+    public function setMessage($message)
     {
-        $this->receiver = $receiver;
-    
+        $this->message = $message;
+
         return $this;
     }
 
     /**
-     * Get receiver
+     * Get message
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return string 
      */
-    public function getReceiver()
+    public function getMessage()
     {
-        return $this->receiver;
+        return $this->message;
+    }
+
+    /**
+     * Set dateTime
+     *
+     * @param \DateTime $dateTime
+     * @return TRNotification
+     */
+    public function setDateTime($dateTime)
+    {
+        $this->dateTime = $dateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get dateTime
+     *
+     * @return \DateTime 
+     */
+    public function getDateTime()
+    {
+        return $this->dateTime;
     }
 
     /**
@@ -102,10 +119,10 @@ class TRNotification extends Notification
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @return TRNotification
      */
-    public function setTravelRequest(TravelRequest $travelRequest = null)
+    public function setTravelRequest(\Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest = null)
     {
         $this->travelRequest = $travelRequest;
-    
+
         return $this;
     }
 
@@ -117,5 +134,51 @@ class TRNotification extends Notification
     public function getTravelRequest()
     {
         return $this->travelRequest;
+    }
+
+    /**
+     * Set read
+     *
+     * @param \Opit\Notes\NotificationBundle\Entity\NotificationStatus $read
+     * @return TRNotification
+     */
+    public function setRead(\Opit\Notes\NotificationBundle\Entity\NotificationStatus $read = null)
+    {
+        $this->read = $read;
+
+        return $this;
+    }
+
+    /**
+     * Get read
+     *
+     * @return \Opit\Notes\NotificationBundle\Entity\NotificationStatus 
+     */
+    public function getRead()
+    {
+        return $this->read;
+    }
+
+    /**
+     * Set receiver
+     *
+     * @param \Opit\Notes\UserBundle\Entity\User $receiver
+     * @return TRNotification
+     */
+    public function setReceiver(\Opit\Notes\UserBundle\Entity\User $receiver = null)
+    {
+        $this->receiver = $receiver;
+
+        return $this;
+    }
+
+    /**
+     * Get receiver
+     *
+     * @return \Opit\Notes\UserBundle\Entity\User 
+     */
+    public function getReceiver()
+    {
+        return $this->receiver;
     }
 }

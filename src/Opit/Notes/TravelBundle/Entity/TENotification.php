@@ -12,9 +12,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Opit\Notes\TravelBundle\Entity\Notification;
-use Opit\Notes\TravelBundle\Entity\TravelExpense;
-use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\NotificationBundle\Entity\Notification;
 
 /**
  * TENotification
@@ -30,31 +28,27 @@ class TENotification extends Notification
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
+
     /**
      * @var string
      */
     protected $message;
-    
+
     /**
      * @var \DateTime
      */
     protected $dateTime;
-    
+
     /**
-     * @var integer
+     * @var \Opit\Notes\NotificationBundle\Entity\NotificationStatus
      */
     protected $read;
-    
-   /**
-    * @ORM\ManyToOne(targetEntity="\Opit\Notes\UserBundle\Entity\User", inversedBy="notifications")
-    */
+
+    /**
+     * @var \Opit\Notes\UserBundle\Entity\User
+     */
     protected $receiver;
     
     /**
@@ -74,26 +68,49 @@ class TENotification extends Notification
     }
 
     /**
-     * Set receiver
+     * Set message
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $receiver
+     * @param string $message
      * @return TENotification
      */
-    public function setReceiver(User $receiver = null)
+    public function setMessage($message)
     {
-        $this->receiver = $receiver;
-    
+        $this->message = $message;
+
         return $this;
     }
 
     /**
-     * Get receiver
+     * Get message
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return string 
      */
-    public function getReceiver()
+    public function getMessage()
     {
-        return $this->receiver;
+        return $this->message;
+    }
+
+    /**
+     * Set dateTime
+     *
+     * @param \DateTime $dateTime
+     * @return TENotification
+     */
+    public function setDateTime($dateTime)
+    {
+        $this->dateTime = $dateTime;
+
+        return $this;
+    }
+
+    /**
+     * Get dateTime
+     *
+     * @return \DateTime 
+     */
+    public function getDateTime()
+    {
+        return $this->dateTime;
     }
 
     /**
@@ -102,10 +119,10 @@ class TENotification extends Notification
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return TENotification
      */
-    public function setTravelExpense(TravelExpense $travelExpense = null)
+    public function setTravelExpense(\Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense = null)
     {
         $this->travelExpense = $travelExpense;
-    
+
         return $this;
     }
 
@@ -117,5 +134,51 @@ class TENotification extends Notification
     public function getTravelExpense()
     {
         return $this->travelExpense;
+    }
+
+    /**
+     * Set read
+     *
+     * @param \Opit\Notes\NotificationBundle\Entity\NotificationStatus $read
+     * @return TENotification
+     */
+    public function setRead(\Opit\Notes\NotificationBundle\Entity\NotificationStatus $read = null)
+    {
+        $this->read = $read;
+
+        return $this;
+    }
+
+    /**
+     * Get read
+     *
+     * @return \Opit\Notes\NotificationBundle\Entity\NotificationStatus 
+     */
+    public function getRead()
+    {
+        return $this->read;
+    }
+
+    /**
+     * Set receiver
+     *
+     * @param \Opit\Notes\UserBundle\Entity\User $receiver
+     * @return TENotification
+     */
+    public function setReceiver(\Opit\Notes\UserBundle\Entity\User $receiver = null)
+    {
+        $this->receiver = $receiver;
+
+        return $this;
+    }
+
+    /**
+     * Get receiver
+     *
+     * @return \Opit\Notes\UserBundle\Entity\User 
+     */
+    public function getReceiver()
+    {
+        return $this->receiver;
     }
 }

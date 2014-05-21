@@ -20,8 +20,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\TravelBundle\Entity\TRNotification;
 use Opit\Notes\TravelBundle\Entity\TENotification;
-use Opit\Notes\TravelBundle\Entity\NotificationStatus;
-use Opit\Notes\TravelBundle\Helper\Utils;
+
+use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
 
 /**
  * DefaultController
@@ -129,7 +129,7 @@ class DefaultController extends Controller
     public function getUnreadNotificationsCountAction()
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
-        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notificationManager = $this->get('opit.manager.travel_notification_manager');
         $unreadCount = count($notificationManager->getUnreadNotifications($currentUser));
         return new JsonResponse($unreadCount);
     }
@@ -144,7 +144,7 @@ class DefaultController extends Controller
     public function getAllNotificationsAction()
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
-        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notificationManager = $this->get('opit.manager.travel_notification_manager');
         $notifications = $notificationManager->getAllNotifications($currentUser);
         $travelExpenses = array();
         $travelRequests = array();
@@ -177,9 +177,9 @@ class DefaultController extends Controller
     {
         $notificationId = $request->request->get('id');
         $entityManager = $this->getDoctrine()->getManager();
-        $notification = $entityManager->getRepository('OpitNotesTravelBundle:Notification')->find($notificationId);
-        $notificationManager = $this->get('opit.manager.notification_manager');
-        $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
+        $notification = $entityManager->getRepository('OpitNotesNotificationBundle:Notification')->find($notificationId);
+        $notificationManager = $this->get('opit.manager.travel_notification_manager');
+        $notification = $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
         $entityManager->persist($notification);
         $entityManager->flush();
 
@@ -196,7 +196,7 @@ class DefaultController extends Controller
     public function deleteNotificationAction(Request $request)
     {
         $notificationId = $request->request->get('id');
-        $notificationManager = $this->get('opit.manager.notification_manager');
+        $notificationManager = $this->get('opit.manager.travel_notification_manager');
         $notificationManager->deleteNotification($notificationId);
         
         return new JsonResponse(array('deleted' => true));

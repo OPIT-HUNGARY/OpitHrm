@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
+use Opit\Notes\NotificationBundle\Model\NotificationUserInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -37,7 +38,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @UniqueEntity(fields={"email"}, message="The email is already used.", groups={"user"})
  * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.", groups={"user"})
  */
-class User implements UserInterface, \Serializable, TravelRequestUserInterface
+class User implements UserInterface, \Serializable, TravelRequestUserInterface, NotificationUserInterface
 {
     /**
      * @ORM\Column(type="integer")
@@ -169,7 +170,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface
 
     /**
      * Notifications sent by user
-     * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\NotificationBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
      */
     protected $notifications;
 

@@ -1,3 +1,8 @@
+opit_notes_notification:
+    resource: "@OpitNotesNotificationBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 opit_notes_status:
     resource: "@OpitNotesStatusBundle/Controller/"
     type:     annotation

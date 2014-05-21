@@ -9,19 +9,19 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
+namespace Opit\Notes\NotificationBundle\DataFixtures\ORM;
 
-use Opit\Notes\TravelBundle\Entity\NotificationStatus;
+use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\NotificationBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * travel bundle status fixtures
+ * Description of NotificationStatusFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage NotificationBundle
  */
 class NotificationStatusFixtures extends AbstractDataFixture
 {
@@ -30,7 +30,7 @@ class NotificationStatusFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
-        $reflectionNS = new \ReflectionClass('Opit\Notes\TravelBundle\Entity\NotificationStatus');
+        $reflectionNS = new \ReflectionClass('Opit\Notes\NotificationBundle\Entity\NotificationStatus');
         $notificationStates = $reflectionNS->getConstants();
         
         foreach ($notificationStates as $name => $id) {

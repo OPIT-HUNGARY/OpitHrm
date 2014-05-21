@@ -9,7 +9,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\NotificationBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,10 +19,10 @@ use Doctrine\ORM\Mapping as ORM;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage NotificationBundle
  *
  * @ORM\Table(name="notes_notification_status")
- * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\NotificationStatusRepository")
+ * @ORM\Entity(repositoryClass="Opit\Notes\NotificationBundle\Entity\NotificationStatusRepository")
  */
 class NotificationStatus
 {
@@ -48,7 +48,7 @@ class NotificationStatus
     /**
      * 
      * @param integer $id
-     * @return \Opit\Notes\TravelBundle\Entity\NotificationStatus
+     * @return NotificationStatus
      */
     public function setId($id)
     {
@@ -69,7 +69,7 @@ class NotificationStatus
     /**
      *
      * @param string $notificationStatusName
-     * @return \Opit\Notes\TravelBundle\Entity\NotificationStatus
+     * @return NotificationStatus
      */
     public function setNotificationStatusName($notificationStatusName)
     {

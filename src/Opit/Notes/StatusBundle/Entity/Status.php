@@ -14,6 +14,7 @@ namespace Opit\Notes\StatusBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
+use Opit\Notes\TravelBundle\Model\TravelStatusInterface;
 
 /**
  * This class is a container for the Status model
@@ -26,7 +27,7 @@ use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
  * @ORM\Table(name="notes_status")
  * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusRepository")
  */
-class Status
+class Status implements TravelStatusInterface
 {
     const CREATED = 1;
     const FOR_APPROVAL = 2;

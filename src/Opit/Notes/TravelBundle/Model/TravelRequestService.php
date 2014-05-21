@@ -304,8 +304,8 @@ class TravelRequestService
             $status = $this->statusManager->addStatus($travelRequest, $statusId);
             
             // send a new notification when travel request or expense status changes
-            $notificationManager = $this->container->get('opit.manager.notification_manager');
-            $notificationManager->addNewNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+            $notificationManager = $this->container->get('opit.manager.travel_notification_manager');
+            $notificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
             
             return new JsonResponse();
         } else {

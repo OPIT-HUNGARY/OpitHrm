@@ -127,7 +127,7 @@ class TravelRequest implements TravelResourceInterface
      * @ORM\OneToOne(targetEntity="TravelExpense", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     private $travelExpense;
-    
+     
     /**
      * @ORM\OneToMany(targetEntity="StatesTravelRequests", mappedBy="travelRequest", cascade={"persist", "remove"})
      */

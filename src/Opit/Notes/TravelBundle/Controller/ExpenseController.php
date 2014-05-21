@@ -493,7 +493,7 @@ class ExpenseController extends Controller
         $status = $this->get('opit.manager.travel_status_manager')->addStatus($travelExpense, $statusId);
         
         // send a new notification when travel request or expense status changes
-        $notificationManager = $this->container->get('opit.manager.notification_manager');
+        $notificationManager = $this->container->get('opit.manager.travel_notification_manager');
         $notificationManager->addNewNotification($travelExpense, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
     }
 }

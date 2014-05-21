@@ -9,17 +9,17 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\NotificationBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Description of StatesTravelRequestsRepository
+ * Description of NotificationRepository
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage NotificationBundle
  */
 class NotificationRepository extends EntityRepository
 {
@@ -31,10 +31,10 @@ class NotificationRepository extends EntityRepository
      *   - notification date has to be today or
      *   - notification status is unread or unseen
      *
-     * @param integer $userId
+     * @param object $user
      * @return object
      */
-    public function getLastTenNotifications($userId)
+    public function getLastTenNotifications($user)
     {
         $qb = $this->createQueryBuilder('n');
         
@@ -43,7 +43,7 @@ class NotificationRepository extends EntityRepository
                 $qb->expr()->gte('n.dateTime', 'CURRENT_DATE()'),
                 $qb->expr()->lte('n.read', ':unread')
             ))
-            ->setParameter('nreceiver', $userId)
+            ->setParameter('nreceiver', $user)
             ->setParameter('unread', NotificationStatus::UNSEEN)
             ->setMaxResults(10)
             ->orderBy('n.id', 'DESC');

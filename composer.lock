@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9a2de099a4475c90616f4c9a30c395ef",
+    "hash": "1a506b4977ea40b6f29ab4e52304af32",
     "packages": [
         {
             "name": "bmatzner/fontawesome-bundle",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bmatzner/BmatznerFontAwesomeBundle.git",
-                "reference": "e72d1a6198231dc0eb8a691a5cf42b8a7f590fe4"
+                "reference": "4cbf7e5b567be0831f4a7d8f30bb9d2736211165"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bmatzner/BmatznerFontAwesomeBundle/zipball/e72d1a6198231dc0eb8a691a5cf42b8a7f590fe4",
-                "reference": "e72d1a6198231dc0eb8a691a5cf42b8a7f590fe4",
+                "url": "https://api.github.com/repos/bmatzner/BmatznerFontAwesomeBundle/zipball/4cbf7e5b567be0831f4a7d8f30bb9d2736211165",
+                "reference": "4cbf7e5b567be0831f4a7d8f30bb9d2736211165",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "typography",
                 "webfonts"
             ],
-            "time": "2013-11-22 10:28:03"
+            "time": "2014-05-15 12:48:36"
         },
         {
             "name": "doctrine/annotations",

@@ -9,17 +9,17 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\NotificationBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Description of StatesTravelRequestsRepository
+ * Description of NotificationStatusRepository
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage NotificationBundle
  */
 class NotificationStatusRepository extends EntityRepository
 {
