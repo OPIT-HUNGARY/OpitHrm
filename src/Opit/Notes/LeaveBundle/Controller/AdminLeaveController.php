@@ -49,7 +49,7 @@ use Opit\Notes\TravelBundle\Helper\Utils;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage UserBundle
+ * @subpackage LeaveBundle
  */
 class AdminLeaveController extends Controller
 {
@@ -224,10 +224,10 @@ class AdminLeaveController extends Controller
                 $year = date('Y');
             }
              // Get the leave dates of the searched year.
-            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYear($year);
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYearAndMonth($year);
         } else {
              // Get the leave dates of the current year.
-             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYear(date('Y'));
+             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYearAndMonth(date('Y'));
         }
 
         return $this->render(

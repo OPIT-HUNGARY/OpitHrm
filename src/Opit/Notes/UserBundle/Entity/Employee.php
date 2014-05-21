@@ -23,14 +23,6 @@
  * THE SOFTWARE.
  */
 
-/**
- * Description of Teams
- *
- * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
- * @package Opit
- * @subpackage Notes
- */
-
 namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -39,7 +31,11 @@ use Opit\Notes\LeaveBundle\Model\LeaveEntitlementEmployeeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Employee
+ * Description of Employee
+ *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @package Opit
+ * @subpackage Notes
  *
  * @ORM\Table(name="notes_employees")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\EmployeeRepository")
@@ -93,6 +89,21 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * )
      */
     protected $numberOfChildren;
+    
+    /**
+     * @var integer 
+     * 
+     * @ORM\Column(name="working_hours", type="integer")
+     * @Assert\NotBlank(message="Working hours cannot be empty.", groups={"user"})
+     * @Assert\Range(
+     *      min = "0",
+     *      max = "24",
+     *      minMessage = "The working hours should be greater or equal 0.",
+     *      maxMessage = "The working hours should be less than 24.",
+     *      groups={"user"}
+     * )
+     */
+    protected $workingHours;
     
     /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="employee")
@@ -223,6 +234,29 @@ class Employee implements LeaveEntitlementEmployeeInterface
     public function getNumberOfChildren()
     {
         return $this->numberOfChildren;
+    }
+    
+    /**
+     * Set working hours
+     *
+     * @param integer $workingHours
+     * @return Employee
+     */
+    public function setWorkingHours($workingHours)
+    {
+        $this->workingHours = $workingHours;
+
+        return $this;
+    }
+
+    /**
+     * Get working hours
+     *
+     * @return integer
+     */
+    public function getWorkingHours()
+    {
+        return $this->workingHours;
     }
 
     /**

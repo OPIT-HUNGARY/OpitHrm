@@ -34,12 +34,13 @@ use Doctrine\ORM\EntityRepository;
 class LeaveDateRepository extends EntityRepository
 {
     /**
-     * Find all leave dates by year
+     * Find all leave dates by date
      * 
      * @param integer $year
+     * @param integer $month
      * @return array of \Opit\Notes\LeaveBundle\Entity\LeaveDate objects
      */
-    public function findAllByYear($year)
+    public function findAllByYearAndMonth($year, $month = null)
     {
         // Set the first day of the year.
         $firstDayOfYear = new \DateTime();
@@ -48,10 +49,15 @@ class LeaveDateRepository extends EntityRepository
         $lastDayOfYear = new \DateTime();
         $lastDayOfYear->setDate($year, 12, 31);
 
+        if (null !== $month) {
+            $firstDayOfYear->setDate($year, $month, 01);
+            $lastDayOfYear->setDate($year, $month, 31);
+        }
+
         // Set the parameters.
         $parameters = array(
-            'firstDayOfYear' => $firstDayOfYear->format($year . '-01-01'),
-            'lastDayOfYear' => $lastDayOfYear->format($year . '-12-31')
+            'firstDayOfYear' => $firstDayOfYear->format('Y-m-d'),
+            'lastDayOfYear' => $lastDayOfYear->format('Y-m-d')
         );
 
         $leaveDate = $this->createQueryBuilder('ld');

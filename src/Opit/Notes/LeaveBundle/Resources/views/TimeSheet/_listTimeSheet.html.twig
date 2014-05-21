@@ -21,7 +21,7 @@
             </select>
         </td>
         <td>
-            <a href="" class="small-button print-view">
+            <a href="{{ path('OpitNotesLeaveBundle_timesheet_generate', { 'year': date()|date('Y'), 'month': monthNumber }) }}" class="small-button print-view">
                 <i class="fa fa-print"></i>
                 <span>Print</span>
             </a>

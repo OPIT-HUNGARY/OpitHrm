@@ -71,6 +71,9 @@
   color: black; }
 
 /* Background color properties */
+.background-color-white {
+  background-color: white; }
+
 .background-color-green {
   background-color: #94c11c; }
 
@@ -274,6 +277,9 @@
 .width-300 {
   width: 300px; }
 
+.width-250 {
+  width: 250px; }
+
 .width-large {
   width: 500px; }
 
@@ -327,6 +333,12 @@
 .position-fixed {
   position: fixed; }
 
+.fix-top-20 {
+  top: 20px; }
+
+.fix-right-15 {
+  right: 15px; }
+
 /* Border r. property*/
 .border-radius-5 {
   -webkit-border-radius: 5px;
@@ -341,6 +353,13 @@
   -ms-border-radius: 100%;
   -o-border-radius: 100%;
   border-radius: 100%; }
+
+/* Box shadow properties */
+.box-shadow-1-darkgray {
+  -moz-box-shadow: 1px 1px 1px 1px #505050;
+  -webkit-box-shadow: 1px 1px 1px 1px #505050;
+  -o-box-shadow: 1px 1px 1px 1px #505050;
+  box-shadow: 1px 1px 1px 1px #505050; }
 
 /* ? properties*/
 .deleteFormFieldsetChild {

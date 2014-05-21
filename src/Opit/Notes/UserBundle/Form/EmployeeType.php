@@ -62,6 +62,14 @@ class EmployeeType extends AbstractType
                 'placeholder' => 'Date of birth'
             )
         ));
+
+        $builder->add('workingHours', 'integer', array(
+            'attr' => array(
+                'min' => 0,
+                'max' => 24,
+                'placeholder' => 'Working hours'
+            )
+        ));
     }
     
     /**

@@ -2,6 +2,10 @@ opit_notes_leave:
     leave_entitlement_plan:
         enabled: true
         default_days: %leave_default_days%
+    time_sheet:
+        arrival_time:  %arrival_time%
+        lunch_time_in_minutes: %lunch_time_in_minutes%
+        user_grouping_number: 3
     calculation_params:
             calendar_days: 365
     max_results: %max_results%

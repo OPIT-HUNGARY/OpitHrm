@@ -1,0 +1,94 @@
+{% block stylesheets %}
+    {% stylesheets
+        '../app/Resources/public/css/main.css'
+        'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+        'bundles/opitnotesleave/css/timeSheetPrintView.css'
+    output='css/opitnotesleave/print.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
+        {# TCDPF cannot handle versioned absolute assets, cut the query #}
+        {% set printAsset = asset('bundles/opitnotesleave/css/timeSheetPrintView.css')|split('?') %}
+        <link rel="stylesheet" type="text/css" media="all" href="{{ printAsset[0] }}" />
+    {% endstylesheets %}
+{% endblock %}
+<div id="export_buttons" class="background-color-white padding-5 position-fixed fix-top-20 fix-right-15 box-shadow-1-darkgray border-radius-5">
+    <a id="download-pdf" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'year': year, 'month': month }) }}">
+        <i class="fa fa-file-pdf-o fa-2x icons"></i>
+    </a>
+    <i class="fa fa-print fa-2x icons"></i>
+</div>
+<br />
+<h3>Time Sheet</h3>
+{% for group, users in groupedUsers %}
+    {% set tableWidth = 100 * users|length / division %}
+    <table width="{{tableWidth|round}}%">
+        <tr>
+            <td class="background-color-light-grey padding-2 border-solid-1-black">Days</td>
+            {% for user in users %}
+                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black"><strong>{{ user.employee.employeeName }}</strong></td>
+                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black">In</td>
+                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black">Out</td>
+                <td class="background-color-light-grey padding-2 border-right-3-black border-solid-1-black">Signature</td>
+            {% endfor %}
+        </tr>
+        {% for day in daysOfMonth %}
+            {% if leaveDatesOfMonth[day|date('Y-m-d')] is defined %}
+                {% set holiday = leaveDatesOfMonth[day|date('Y-m-d')] %}
+            {% else %}
+                {% set holiday = null %}
+            {% endif %}
+        <tr>
+            <td class="padding-2 border-solid-1-black">{{ day|date('m/d/Y') }}</td>
+            {% for user in users %}
+            {% set employee = user.employee %}
+                {% if leaveDays[day|date('Y-m-d')] is defined and employee.id in leaveDays[day|date('Y-m-d')]|keys %}
+                    {% if employee.id in leaveDays[day|date('Y-m-d')]|keys  %}
+                         {% if leaveDays[day|date('Y-m-d')][employee.id] == 'Afternoon half day' %}
+                            <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
+                            <td class="border-solid-1-black">{{ arrivalTime }}</td>
+                            <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours / 2 ~'hours')|date('H:i') }}</td>
+                            <td class="border-right-3-black border-solid-1-black"></td>
+                        {% elseif leaveDays[day|date('Y-m-d')][employee.id] == 'Morning half day' %}
+                            <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
+                            <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours / 2 ~'hours')|date('H:i')}}</td>
+                            <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours')|date('H:i')}}</td>
+                            <td class="border-right-3-black border-solid-1-black"></td>
+                        {% else %}
+                            <td class="padding-2 white-space-nowrap">{% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}{{ '&nbsp;' }} {% else %}{{ leaveDays[day|date('Y-m-d')][employee.id] }}{% endif %}</td>
+                            <td></td>
+                            <td></td>
+                            <td class="border-right-3-black"></td>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}
+                        {% if holiday == 'Weekend working days' %}
+                            <td class="padding-2 white-space-nowrap border-solid-1-black">{{ 'Working day' }}</td>
+                            <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
+                            <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
+                            <td class="border-right-3-black border-solid-1-black"></td>
+                        {% else %}
+                            <td>{{ '&nbsp;' }}</td>
+                            <td></td>
+                            <td></td>
+                            <td class="border-right-3-black"></td>
+                        {% endif %}
+                    {% else %}
+                        <td class="padding-2 white-space-nowrap border-solid-1-black">{{ 'Working day' }}</td>
+                        <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
+                        <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
+                        <td class="border-solid-1-black border-right-3-black "></td>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+{% block javascripts %}
+{% javascripts
+    '@OpitNotesLeaveBundle/Resources/public/js/printViewTimeSheet.coffee'
+output='js/opitnotesleave/timesheet_print.js' filter='?yui_js' %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
+{% endjavascripts %}
+{% endblock %}

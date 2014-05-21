@@ -88,4 +88,25 @@ class LeaveRequestRepository extends EntityRepository
         
         return $dq->getResult();
     }
+
+    /**
+     * Find all leave requests by date interval.
+     *
+     * @param date $startDate
+     * @param date $endDate
+     * @return array
+     */
+    public function findLeaveRequestsByDates($startDate = '', $endDate = '')
+    {
+        $dq = $this->createQueryBuilder('lr');
+        $dq->select('lr, l, e')
+            ->where($dq->expr()->gte('l.startDate', ':startDate'))
+            ->andWhere($dq->expr()->lte('l.endDate', ':endDate'))
+            ->innerJoin('lr.leaves', 'l')
+            ->innerJoin('lr.employee', 'e')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+        return $dq->getQuery()->getResult();
+    }
 }

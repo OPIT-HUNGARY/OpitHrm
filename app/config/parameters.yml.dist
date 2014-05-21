@@ -30,3 +30,5 @@ parameters:
     ldap_base_dn: OU=Users,DC=foo,DC=net
 
     leave_default_days: ~
+    arrival_time: ~
+    lunch_time_in_minutes: ~

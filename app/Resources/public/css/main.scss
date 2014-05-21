@@ -95,6 +95,10 @@
 
 /* Background color properties */
 
+.background-color-white{
+    background-color: white;
+}
+
 .background-color-green{
     background-color: $lightGreen;
 }
@@ -368,6 +372,10 @@
     width: 300px;
 }
 
+.width-250{
+    width: 250px;
+}
+
 .width-large{
     width: 500px;
 }
@@ -442,6 +450,14 @@
     position: fixed;
 }
 
+.fix-top-20{
+    top: 20px;
+}
+
+.fix-right-15{
+    right: 15px;
+}
+
 /* Border r. property*/
 
 .border-radius-5{
@@ -450,6 +466,12 @@
 
 .round-border{
     @include border-radius(100%);
+}
+
+/* Box shadow properties */
+
+.box-shadow-1-darkgray{
+    @include box-shadow(1px, 1px, 1px, 1px, $darkerGrayColor);
 }
 
 /* ? properties*/
