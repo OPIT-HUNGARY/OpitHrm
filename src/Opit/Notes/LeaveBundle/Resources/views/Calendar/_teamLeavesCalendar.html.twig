@@ -1,0 +1,15 @@
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('libs/fullcalendar/css/fullcalendar.css') }}" />
+{% endblock %}
+{% block body %}
+    <div class="float-left summary-box" style="clear:both;width:612px;">
+        <h3><i class="fa fa-user"></i>  Team Leave Calender </h3>
+        <div id="team-leaves-calendar" class="width-98"></div>
+        <div class="margin-top-5 display-block width-55">
+            {% for employee in employees %}
+                <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employee['class'] }}" data-class="{{ employee['class'] }}">{{ employee['name'] }}</div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

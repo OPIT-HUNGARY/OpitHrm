@@ -176,4 +176,39 @@ class LeaveController extends Controller
         
         return new JsonResponse('$userNames');
     }
+
+    /**
+     * To send employee leave summary
+     *
+     * @Route("/secured/leaves/employeesummary", name="OpitNotesLeaveBundle_leaves_employeesummary")
+     * @Secure(roles="ROLE_USER")
+     * @Template()
+     */
+    public function employeeLeavesinfoBoardAction(){
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        // entitled leaves count
+        $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
+        $empLeaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($user->getEmployee());
+
+        //get leave categories
+        $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
+
+        //TODO : get leave request breakup count
+
+        //remaning leaves count
+        //TODO: modify once status workflow implemented
+        $remaniningLeavesCount = '';
+
+        //pending leave request count
+        //TODO: modify once status workflow implemented
+        $pendingLeaveRequestCount = count($user->getEmployee()->getLeaveRequests());
+
+        return $this->render('OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig', array('empLeaveEntitlement'=> $empLeaveEntitlement,
+            'leaveCategories'=> $leaveCategories,
+            'pendingLeaveRequestCount' => $pendingLeaveRequestCount
+                ));
+
+    }
 }

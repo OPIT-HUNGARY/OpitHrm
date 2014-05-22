@@ -488,3 +488,18 @@ footer {
 
 .mCSB_draggerRail {
   background-color: #d2d2d2 !important; }
+
+.summary-box {
+  color: #fafafa;
+  padding: 1em;
+  background-color: rgba(0, 0, 0, 0.8);
+  min-height: 185px;
+  border-bottom: 1px solid #b6b6b6;
+  margin-bottom: 3px; }
+  .summary-box:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    filter: alpha(opacity=90);
+    /* For IE8 and earlier */ }
+  .summary-box h3 {
+    color: #94c11c;
+    margin-top: 2px; }

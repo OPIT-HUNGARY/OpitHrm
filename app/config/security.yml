@@ -40,7 +40,7 @@ security:
                 authenticator: ldap
                 check_path: OpitNotesUserBundle_check
                 login_path: OpitNotesUserBundle_security_login
-                default_target_path: OpitNotesTravelBundle_travel_list
+                default_target_path: OpitNotesUserBundle_user_show_infoboard
             logout:
                 path:   OpitNotesUserBundle_logout
                 target: OpitNotesUserBundle_security_login

@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Twig OpitExtension class
  *
- * @author OPIT Consulting Kft. - EDK/TAO Team - {@link http://www.opit.hu}
+ * @author OPIT Consulting Kft. - NOTES/TAO Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage UserBundle
@@ -47,7 +47,8 @@ class OpitExtension extends \Twig_Extension
     {
         return array(
             'strpos' => new \Twig_Function_Method($this, 'strpos'),
-            'splitText' => new \Twig_Function_Method($this, 'splitText')
+            'splitText' => new \Twig_Function_Method($this, 'splitText'),
+            'bundleExist' => new \Twig_Function_Method($this, 'bundleExist')
         );
     }
 
@@ -134,4 +135,19 @@ class OpitExtension extends \Twig_Extension
     {
         return 'opit_extension';
     }
+
+   /**
+     * To check if bundle exist
+     *
+     *  @param  type $bundle
+     * @return boolean
+     */
+    public function bundleExist($bundle)
+    {
+        if (array_key_exists($bundle, $this->container->getParameter('kernel.bundles'))) {
+            return true;
+        }
+        return false;
+    }
+
 }

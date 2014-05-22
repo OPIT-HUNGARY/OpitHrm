@@ -401,4 +401,28 @@ class UserController extends Controller
         $entityManager->persist($user);
         $entityManager->flush();
     }
+
+   /**
+     * To show logged in  user summary page.Seperate bundles should add there info directly into the template.
+     *
+     * @Route("/secured/user/show/infoboard", name="OpitNotesUserBundle_user_show_infoboard")
+     * @Method({"GET"})
+     * @Template()
+     */
+    public function showUserSummaryAction()
+    {
+
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        //get employee info
+        $employeeInfo = array(
+            'employeeName' => $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '',
+            'joiningDate' => $user->getEmployee()->getJoiningDate(),
+            'dob' => $user->getEmployee()->getDateOfBirth(),
+            'noc' => $user->getEmployee()->getNumberOfChildren(),
+        );
+
+        return $this->render('OpitNotesUserBundle:User:showUserSummary.html.twig', array('employeeInfo' => $employeeInfo));
+    }
+
 }

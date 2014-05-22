@@ -51,7 +51,7 @@ class CalendarController extends Controller
      * @Secure(roles="ROLE_USER")
      * @Template()
      */
-    public function showTeamLeavesCalendarAction()
+    public function showTeamLeavesCalendarAction($partial=false)
     {
         $securityContext = $this->container->get('security.context');
         $teamsEmployees = $this->getTeamsEmployees($securityContext->getToken()->getUser()->getEmployee());
@@ -71,8 +71,11 @@ class CalendarController extends Controller
                 );
             }
         }
-        
-        return $this->render('OpitNotesLeaveBundle:Calendar:teamLeavesCalendar.html.twig', array('employees' => $employees));
+        if (!$partial) {
+            return $this->render('OpitNotesLeaveBundle:Calendar:teamLeavesCalendar.html.twig', array('employees' => $employees));
+        } else {
+            return $this->render('OpitNotesLeaveBundle:Calendar:_teamLeavesCalendar.html.twig', array('employees' => $employees));
+        }
     }
     
     /**

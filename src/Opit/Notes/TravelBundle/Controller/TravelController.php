@@ -382,4 +382,30 @@ class TravelController extends Controller
                 
         return $form;
     }
+
+   /**
+     * To send travel leave summary
+     *
+     * @Route("/secured/travel/employeesummary", name="OpitNotesLeaveBundle_travel_employeesummary")
+     * @Template()
+     */
+    public function employeeTravelInfoBoardAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        $totalTravelRequestCount = $em->getRepository('OpitNotesTravelBundle:TravelRequest')->findEmployeeTravelRequest($user->getID());
+
+        $notPendingTravelRequestCount = $em
+                        ->getRepository('OpitNotesTravelBundle:TravelRequest')
+                        ->findEmployeeNotPendingTravelRequest($user->getID()
+        );
+        $pendingTravelRequestCount = $totalTravelRequestCount-$notPendingTravelRequestCount;
+
+        return $this->render('OpitNotesTravelBundle:Travel:_employeeTravelInfoBoard.html.twig',
+                array('pendingTravelRequestCount' => $pendingTravelRequestCount,
+                    'totalTravelRequestCount' => $totalTravelRequestCount
+                    ));
+    }
+
 }

@@ -131,4 +131,41 @@ class TravelRequestRepository extends EntityRepository
         
         return $q->getResult();
     }
+
+   /*
+     * Find employees all travel requests count
+     * 
+     * @param string $userid
+    */
+    public function findEmployeeTravelRequest($userid){
+
+        $qb = $this->createQueryBuilder('tr');
+        $qb->select('COUNT(tr.id)');
+        $qb->where($qb->expr()->eq('tr.user', $userid));
+
+        $q = $qb->getQuery();
+
+        return $q->getSingleScalarResult();
+    }
+
+    /*
+     * Find employees all not pending travel requests count
+     *
+     * @param string $userid
+    */
+    public function findEmployeeNotPendingTravelRequest($userid){
+        $status = array(Status::APPROVED, Status::PAID, Status::REJECTED);
+
+        $qb = $this->createQueryBuilder('tr');
+
+        $qb->select($qb->expr()->countDistinct('tr.id'))
+        ->leftJoin('tr.states', 's')
+        ->where($qb->expr()->eq('tr.user', ':userId'))
+        ->andWhere($qb->expr()->In('s.status', ':states'))
+        ->setParameter(':userId', $userid)
+        ->setParameter(':states', $status);
+        $q = $qb->getQuery();
+
+        return $q->getSingleScalarResult();
+    }
 }

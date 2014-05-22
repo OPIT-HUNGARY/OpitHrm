@@ -1,0 +1,44 @@
+{% extends 'OpitNotesUserBundle::layout.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+{% block title %}
+    Employee Summary - {{ parent() }}
+{% endblock %}
+{% block body %}
+<h1>Information Board</h1>
+    <div id="employeeInfoWrapper" style="min-width:980px;">
+        <div class="float-left width-290 summary-box margin-right-5">
+            <h3><i class="fa fa-user"></i>  Employee Info </h3>
+                Name: {{ employeeInfo.employeeName|e }}<br>
+                Joining Date: {{ employeeInfo.joiningDate|date('d  F  Y') }}<br>
+                Birth Date: {{ employeeInfo.dob|date('d  F  Y') }}<br>
+                No. of Children: {{ employeeInfo.noc|e }}<br>
+        </div>
+        {% if bundleExist('OpitNotesTravelBundle') %}
+            {{ render(controller('OpitNotesTravelBundle:Travel:employeeTravelInfoBoard')) }}
+        {% endif %}
+        {% if bundleExist('OpitNotesLeaveBundle') %}
+            {{ render(controller('OpitNotesLeaveBundle:Leave:employeeLeavesinfoBoard')) }}
+            {{ render(controller('OpitNotesLeaveBundle:Calendar:showTeamLeavesCalendar', {
+                'partial': true
+            })) }}
+        {% endif %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesUserBundle/Resources/public/js/list.coffee'
+    output='js/opitnotesuser/list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
+    {% if bundleExist('OpitNotesLeaveBundle') %}
+        {% javascripts
+            'libs/fullcalendar/js/fullcalendar.min.js'
+            '@OpitNotesLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.coffee'
+            output='js/team_leaves_calendar.js' filter='?yui_js' %}
+            <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+        {% endjavascripts %}
+    {% endif %}
+{% endblock %}
