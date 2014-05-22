@@ -11,8 +11,7 @@
 
 namespace Opit\Notes\TravelBundle\Model;
 
-use Doctrine\ORM\EntityManager;
-
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\TravelBundle\Manager\TravelStatusManager;
@@ -23,6 +22,7 @@ use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
+use Opit\Notes\TravelBundle\Manager\TravelNotificationManager;
 
 /**
  * Description of TravelRequestService
@@ -38,20 +38,20 @@ class TravelRequestService
     protected $entityManager;
     protected $statusManager;
     protected $aclManager;
-    protected $container;
+    protected $travelNotification;
     
     public function __construct(
         SecurityContext $securityContext,
-        EntityManager $entityManager,
+        EntityManagerInterface $entityManager,
         TravelStatusManager $statusManager,
         AclManager $aclManager,
-        $container
+        TravelNotificationManager $travelNotificationManager
     ) {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->aclManager = $aclManager;
-        $this->container = $container;
+        $this->travelNotificationManager = $travelNotificationManager;
     }
     
     public function isUserGeneralManager(TravelResourceInterface $travelRequest)
@@ -304,8 +304,7 @@ class TravelRequestService
             $status = $this->statusManager->addStatus($travelRequest, $statusId);
             
             // send a new notification when travel request or expense status changes
-            $notificationManager = $this->container->get('opit.manager.travel_notification_manager');
-            $notificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+            $this->travelNotificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
             
             return new JsonResponse();
         } else {

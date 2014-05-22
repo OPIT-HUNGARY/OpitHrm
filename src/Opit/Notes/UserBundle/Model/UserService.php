@@ -12,7 +12,7 @@
 namespace Opit\Notes\UserBundle\Model;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Opit\Notes\TravelBundle\Manager\EmailManager;
+use Opit\Component\Email\EmailManager;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**

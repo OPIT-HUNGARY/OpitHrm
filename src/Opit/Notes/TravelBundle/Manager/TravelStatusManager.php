@@ -11,12 +11,14 @@
 
 namespace Opit\Notes\TravelBundle\Manager;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Helper\Utils;
 use Opit\Notes\TravelBundle\Entity\Token;
 use Opit\Notes\StatusBundle\Manager\StatusManager;
+use Opit\Notes\TravelBundle\Model\TravelExpenseService;
+use Symfony\Component\Routing\Router;
 
 /**
  * Description of TravelStatusManager
@@ -29,16 +31,26 @@ use Opit\Notes\StatusBundle\Manager\StatusManager;
 class TravelStatusManager extends StatusManager
 {
     protected $entityManager;
-    protected $mail;
+    protected $mailer;
     protected $factory;
-    protected $container;
+    protected $router;
+    protected $teService;
     
-    public function __construct(EntityManager $entityManager, $mail, $factory, $container)
+    /**
+     * 
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param type $factory
+     * @param \Symfony\Component\Routing\Router $router
+     * @param \Opit\Notes\TravelBundle\Model\TravelExpenseService $teService
+     * @param object $mailer
+     */
+    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, $mailer)
     {
         $this->entityManager = $entityManager;
-        $this->mail = $mail;
         $this->factory = $factory;
-        $this->container = $container;
+        $this->router = $router;
+        $this->mailer = $mailer;
+        $this->teService = $teService;
     }
     
     /**
@@ -91,7 +103,6 @@ class TravelStatusManager extends StatusManager
         $className = Utils::getClassBasename($resource);
         // lowercase first character of string
         $template = lcfirst($className);
-        $router = $this->container->get('router');
         $statusName = $status->getName();
         $statusId = $status->getId();
         // split class name at uppercase letters
@@ -100,8 +111,7 @@ class TravelStatusManager extends StatusManager
         $travelRequest = ($resource instanceof TravelExpense) ? $resource->getTravelRequest() : $resource;
         $generalManager = $travelRequest->getGeneralManager();
         // call method located in travel expense service
-        $estimatedCosts = $this->container->get('opit.model.travel_expense')
-            ->getTRCosts($travelRequest);
+        $estimatedCosts = $this->teService->getTRCosts($travelRequest);
         // create string for email travel type e.g.(Travel expense, Travel request)
         $subjectTravelType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
         $stateChangeLinks = array();
@@ -112,7 +122,7 @@ class TravelStatusManager extends StatusManager
             foreach ($nextStates as $key => $value) {
                 if ($key !== $requiredStatus) {
                     // Generate links that can be used to change the status of the travel request
-                    $stateChangeLinks[] = $router->generate('OpitNotesTravelBundle_change_status', array(
+                    $stateChangeLinks[] = $this->router->generate('OpitNotesTravelBundle_change_status', array(
                         'gmId' => $generalManager->getId(),
                         'travelType' => $resource::getType(),
                         'status' => $key,
@@ -130,7 +140,7 @@ class TravelStatusManager extends StatusManager
             $recipient = $travelRequest->getUser()->getEmail();
             $templateVariables = array(
                 'currentState' => $statusName,
-                'url' => $router->generate('OpitNotesUserBundle_security_login', array(), true)
+                'url' => $this->router->generate('OpitNotesUserBundle_security_login', array(), true)
             );
 
             switch ($statusId) {
@@ -154,18 +164,18 @@ class TravelStatusManager extends StatusManager
         $templateVariables['estimatedCostsHUF'] = ceil($estimatedCosts['HUF']);
         $templateVariables[$template] = $resource;
 
-        $this->mail->setRecipient($recipient);
-        $this->mail->setSubject(
+        $this->mailer->setRecipient($recipient);
+        $this->mailer->setSubject(
             $subjectTravelType .
             ' (' . $travelRequest->getTravelRequestId() . ') status changed to ' .
             strtolower($statusName)
         );
 
-        $this->mail->setBaseTemplate(
+        $this->mailer->setBodyByTemplate(
             'OpitNotesTravelBundle:Mail:' . $template . '.html.twig',
             $templateVariables
         );
 
-        $this->mail->sendMail();
+        $this->mailer->sendMail();
     }
 }

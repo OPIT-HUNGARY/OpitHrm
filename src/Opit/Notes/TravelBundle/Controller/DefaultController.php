@@ -45,7 +45,7 @@ class DefaultController extends Controller
         $method = 'get';
         $entityManager = $this->getDoctrine()->getManager();
         //get status and Status entity
-        $status = $entityManager->getRepository('OpitNotesTravelBundle:Status')
+        $status = $entityManager->getRepository('OpitNotesStatusBundle:Status')
             ->find($request->attributes->get('status'));
         $travelTypeName = 'te' == $request->attributes->get('travelType') ? 'expense': 'request';
         //get token and Token entity

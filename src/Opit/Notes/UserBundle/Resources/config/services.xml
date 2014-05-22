@@ -6,7 +6,7 @@
 
     <parameters>
         <parameter key="opit.twig.opit_extension.class">Opit\Notes\UserBundle\Twig\OpitExtension</parameter>
-        <parameter key="opit.manager.email_manager.class">Opit\Notes\TravelBundle\Manager\EmailManager</parameter>
+        <parameter key="opit.component.email_manager.class">Opit\Component\Email\EmailManager</parameter>
         <parameter key="opit.model.user.class">Opit\Notes\UserBundle\Model\UserService</parameter>
         <parameter key="opit.listener.first_login.class">Opit\Notes\UserBundle\EventListener\FirstLoginListener</parameter>
         <parameter key="opit.security.ldap_authenticator.class">Opit\Notes\UserBundle\Security\Ldap\LdapAuthenticator</parameter>
@@ -17,7 +17,7 @@
             <tag name="twig.extension" />
         </service>
         <service id="opit.model.user" class="%opit.model.user.class%">
-            <argument type="service" id="opit.manager.email_manager" />
+            <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="security.encoder_factory" />
         </service>
         <service id="opit.listener.first_login" class="%opit.listener.first_login.class%">
