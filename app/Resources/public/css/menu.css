@@ -8,12 +8,17 @@
 */
 #menu {
   list-style: none;
-  width: 99%;
+  width: 100%;
   height: 40px;
   background: #94c11c;
   float: left;
   padding: 0 10px 0 10px;
-  margin: -3px 3px 0 0; }
+  margin: -3px 3px 0 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box; }
   #menu.clone {
     position: fixed;
     top: 0;
