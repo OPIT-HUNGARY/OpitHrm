@@ -12,7 +12,7 @@
 namespace Opit\Component\Email;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 
 /**
  * Description of EmailManager
@@ -42,7 +42,7 @@ class EmailManager
      * @param \Psr\Log\LoggerInterface $logger
      * @param array $config
      */
-    public function __construct(\Swift_Mailer $swiftMailer, TimedTwigEngine $templating, LoggerInterface $logger = null, array $config = array())
+    public function __construct(\Swift_Mailer $swiftMailer, TwigEngine $templating, LoggerInterface $logger = null, array $config = array())
     {
         $this->swiftMailer = $swiftMailer;
         $this->templating = $templating;
