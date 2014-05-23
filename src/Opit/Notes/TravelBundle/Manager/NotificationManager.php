@@ -11,7 +11,7 @@
 
 namespace Opit\Notes\TravelBundle\Manager;
 
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 use Opit\Notes\UserBundle\Entity\User;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;

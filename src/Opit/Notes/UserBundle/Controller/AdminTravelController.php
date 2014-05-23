@@ -21,7 +21,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\TravelBundle\Entity\TEExpenseType;
 use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Form\PerDiemType;
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of AdminController

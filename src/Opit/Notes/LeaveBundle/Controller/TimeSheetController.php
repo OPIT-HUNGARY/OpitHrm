@@ -32,7 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
-use Opit\Notes\LeaveBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of TimeSheetController
@@ -158,7 +158,7 @@ class TimeSheetController extends Controller
         // Fetch leaves for every leave day.
         foreach ($leaveRequests as $leaveRequest) {
             foreach ($leaveRequest->getLeaves() as $leave) {
-                $days = Utils::getDaysBetweenTwoDateTime($leave->getStartDate(), $leave->getEndDate());
+                $days = Utils::diff_days($leave->getStartDate(), $leave->getEndDate());
                 // Fetch leave days by employee id and category name
                 foreach ($days as $day) {
                     $leaveDays[$day->format('Y-m-d')][$leaveRequest->getEmployee()->getId()] =
@@ -169,7 +169,7 @@ class TimeSheetController extends Controller
         // Get the days of the actual month.
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval("P1M"));
-        $daysOfMonth = Utils::getDaysBetweenTwoDateTime($startDate, $endDate);
+        $daysOfMonth = Utils::diff_days($startDate, $endDate);
 
         return $this->render(
             'OpitNotesLeaveBundle:TimeSheet:showTimeSheet.html.twig',

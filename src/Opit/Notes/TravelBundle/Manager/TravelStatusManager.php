@@ -14,7 +14,7 @@ namespace Opit\Notes\TravelBundle\Manager;
 use Doctrine\ORM\EntityManagerInterface;
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\StatusBundle\Entity\Status;
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 use Opit\Notes\TravelBundle\Entity\Token;
 use Opit\Notes\StatusBundle\Manager\StatusManager;
 use Opit\Notes\TravelBundle\Model\TravelExpenseService;

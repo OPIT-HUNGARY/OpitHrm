@@ -41,7 +41,7 @@ use Opit\Notes\LeaveBundle\Entity\LeaveType;
 use Opit\Notes\LeaveBundle\Form\LeaveTypeType;
 use Opit\Notes\LeaveBundle\Entity\LeaveSetting;
 use Opit\Notes\LeaveBundle\Form\LeaveSettingType;
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of AdminLeaveController

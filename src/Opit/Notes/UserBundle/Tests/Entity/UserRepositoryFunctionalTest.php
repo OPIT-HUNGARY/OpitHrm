@@ -13,6 +13,7 @@ namespace Opit\Notes\UserBundle\Tests\Entity;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Opit\Notes\UserBundle\Entity\User;
+use Opit\Notes\UserBundle\Entity\Employee;
 
 /**
  * Description of UserRepositoryFunctionalTest
@@ -154,7 +155,7 @@ class UserRepositoryFunctionalTest extends WebTestCase
     public function testFindUserByEmployeeNameUsingLike()
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
-                    ->findUserByEmployeeNameUsingLike($this->user->getEmployeeName());
+                    ->findUserByEmployeeNameUsingLike($this->user->getEmployee()->getEmployeeName());
         
         $this->assertNotNull($user, 'testFindUserByEmployeeNameUsingLike: The given result is null.');
     }
@@ -164,14 +165,22 @@ class UserRepositoryFunctionalTest extends WebTestCase
      */
     public function testDeleteUsersByIds()
     {
+        $newEmployee = new Employee();
+        $newEmployee->setDateOfBirth(new \DateTime('1990-02-01'));
+        $newEmployee->setJoiningDate(new \DateTime('2009-03-01'));
+        $newEmployee->setNumberOfChildren(0);
+        $newEmployee->setEmployeeName('employee');
+        $newEmployee->setWorkingHours(8);
+
         // Create a new user.
         $newUser = new User();
         $newUser->setUsername('test1');
         $newUser->setEmail('test1@mail.hu');
-        $newUser->setEmployeeName('test1');
+        $newUser->setEmployee($newEmployee);
         $newUser->setSalt('');
         $newUser->setPassword('test1');
         $newUser->setIsActive(1);
+        $newUser->setLdapEnabled(0);
         $newUser->setBankAccountNumber('00000000-11468115');
         $newUser->setBankName('OTP');
         $newUser->setIsFirstLogin(0);

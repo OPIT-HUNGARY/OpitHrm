@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Opit\Notes\CurrencyRateBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * This is a command class for the ChangeRateBundle to run command to fetch data.

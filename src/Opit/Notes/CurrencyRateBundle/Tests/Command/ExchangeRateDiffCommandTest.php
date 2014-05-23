@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of ExchangeRateDiffCommandTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -26,13 +26,24 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class ExchangeRateDiffCommandTest extends WebTestCase
 {
-    
+
     /**
      *
      * @var \Opit\Notes\CurrencyRateBundle\Command\ExchangeRateInsertCommand
      */
     private $command;
-    
+
+    /**
+     * Set up before the class
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        // Setup test db
+        system(dirname(__FILE__) . '/../dbSetup.sh');
+    }
+
     /**
      * Set up the testing
      */
@@ -43,7 +54,7 @@ class ExchangeRateDiffCommandTest extends WebTestCase
 
         $application = new Application($kernel);
         $application->add(new ExchangeRateDiffCommand());
-        
+
         $this->command = $application->find('exchange:rates:diff');
     }
 
@@ -56,7 +67,7 @@ class ExchangeRateDiffCommandTest extends WebTestCase
         $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
         // Get the last week's friday.
         $yesterday = date('Y-m-d', strtotime('yesterday'));
-        
+
         $commandTester1 = new CommandTester($this->command);
         $commandTester1->execute(
             array(
@@ -67,9 +78,9 @@ class ExchangeRateDiffCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester1->getDisplay(),
-            'Execute: CommandTester1 is failed.'
+            'Execute: CommandTester1 failed.'
         );
-        
+
         $commandTester2 = new CommandTester($this->command);
         $commandTester2->execute(
             array(
@@ -81,9 +92,9 @@ class ExchangeRateDiffCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester2->getDisplay(),
-            'Execute: CommandTester2 is failed.'
+            'Execute: CommandTester2 failed.'
         );
-        
+
         $commandTester3 = new CommandTester($this->command);
         $commandTester3->execute(
             array(
@@ -96,7 +107,7 @@ class ExchangeRateDiffCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester3->getDisplay(),
-            'Execute: CommandTester3 is failed.'
+            'Execute: CommandTester3 failed.'
         );
     }
 }

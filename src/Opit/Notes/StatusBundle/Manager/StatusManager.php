@@ -13,7 +13,7 @@ namespace Opit\Notes\StatusBundle\Manager;
 
 use Symfony\Component\HttpFoundation\Request;
 use Opit\Notes\StatusBundle\Entity\Status;
-use Opit\Notes\StatusBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of StatusManager

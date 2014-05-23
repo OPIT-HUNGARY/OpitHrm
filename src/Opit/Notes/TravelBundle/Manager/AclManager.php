@@ -19,7 +19,7 @@ use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\Exception;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Core\Util\ClassUtils;
+use Opit\Component\Utils\Utils;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**

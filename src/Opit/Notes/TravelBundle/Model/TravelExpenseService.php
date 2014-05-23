@@ -16,7 +16,7 @@ use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Doctrine\ORM\EntityManager;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 use Opit\Notes\TravelBundle\Model\TravelRequestUserInterface;
 

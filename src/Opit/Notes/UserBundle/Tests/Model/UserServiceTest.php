@@ -71,7 +71,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $this->encoder = $innerFactory;
              
         // Mocking the Email Manager.
-        $mailer = $this->getMockBuilder('Opit\Component\EmailManager')
+        $mailer = $this->getMockBuilder('Opit\Component\Email\EmailManager')
             ->disableOriginalConstructor()
             ->getMock();
         $mailer->expects($this->any())
@@ -79,7 +79,7 @@ class UserServiceTest extends \PHPUnit_Framework_TestCase
         $mailer->expects($this->any())
             ->method('setSubject');
         $mailer->expects($this->any())
-            ->method('setBaseTemplate');
+            ->method('setBodyByTemplate');
         
         //Set the Email manager property.
         $this->mail = $mailer;

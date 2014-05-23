@@ -12,6 +12,7 @@
 namespace Opit\Notes\UserBundle\Tests\Twig;
 
 use Opit\Notes\UserBundle\Twig\OpitExtension;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of OpitExtensionTest
@@ -21,7 +22,7 @@ use Opit\Notes\UserBundle\Twig\OpitExtension;
  * @package Notes
  * @subpackage UserBundle
  */
-class OpitExtensionTest extends \PHPUnit_Framework_TestCase
+class OpitExtensionTest extends WebTestCase
 {
     /**
      * @var \Opit\Notes\CurrencyRateBundle\Twig\OpitExtension
@@ -33,7 +34,12 @@ class OpitExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->opitExtension = new OpitExtension();
+        $client = static::createClient(array(), array(
+            'PHP_AUTH_USER' => 'admin',
+            'PHP_AUTH_PW'   => 'admin',
+        ));
+
+        $this->opitExtension = new OpitExtension($client->getContainer());
     }
     
     /**

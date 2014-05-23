@@ -11,7 +11,7 @@
 
 namespace Opit\Notes\CurrencyRateBundle\Tests\Helper;
 
-use Opit\Notes\CurrencyRateBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of UtilsTest

@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of UserControllerTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
@@ -27,14 +27,14 @@ class UserControllerTest extends WebTestCase
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
-    
+
     /**
      * @var \Opit\Notes\UserBundle\Entity\User
      */
     protected $user;
-    
+
     /**
-     * @var \Symfony\Component\BrowserKit\Client 
+     * @var \Symfony\Component\BrowserKit\Client
      */
     protected $client;
 
@@ -51,22 +51,22 @@ class UserControllerTest extends WebTestCase
         $this->em = $this->client->getContainer()
             ->get('doctrine')
             ->getManager();
-        
+
         $this->user = $this->em->getRepository('OpitNotesUserBundle:User')->findOneByUsername('admin');
     }
-    
+
     /**
      * test list action
      */
     public function testlistAction()
     {
-        
+
         $crawler = $this->client->request(
             'GET',
             '/secured/user/list'
         );
         $content = $this->client->getResponse()->getContent();
-        
+
         $this->assertNotEmpty($content, 'testlistAction: The content is empty');
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'));
         $this->assertGreaterThanOrEqual(
@@ -74,7 +74,7 @@ class UserControllerTest extends WebTestCase
             strlen($content),
             'testlistAction: The length of content is less than 1000.'
         );
-        
+
         // With search options
         $crawler = $this->client->request(
             'POST',
@@ -82,7 +82,7 @@ class UserControllerTest extends WebTestCase
             array('issearch' => '1',  'search' => array('username' => 'admin'))
         );
         $content = $this->client->getResponse()->getContent();
-        
+
         $this->assertNotEmpty($content, 'testlistAction: The content is empty');
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'));
         $this->assertGreaterThanOrEqual(
@@ -91,7 +91,7 @@ class UserControllerTest extends WebTestCase
             'testlistAction: The length of content is less than 1000.'
         );
     }
-    
+
     /**
      * testing showUserForm action.
      */
@@ -102,7 +102,7 @@ class UserControllerTest extends WebTestCase
             '/secured/user/show/' . $this->user->getId()
         );
         $content = $this->client->getResponse()->getContent();
-        
+
         $this->assertNotEmpty($content, 'testShowUserFormAction: The content is empty');
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
@@ -114,7 +114,7 @@ class UserControllerTest extends WebTestCase
             'testShowUserFormAction: The length of content is less than 1000.'
         );
     }
-    
+
     /**
      * testing adduser action.
      */
@@ -124,9 +124,9 @@ class UserControllerTest extends WebTestCase
             'POST',
             '/secured/user/add/' . $this->user->getId()
         );
-        
+
         $this->assertTrue($this->client->getResponse()->headers->contains('Content-Type', 'application/json'));
-        
+
         $crawler = $this->client->request(
             'POST',
             '/secured/user/add/' . $this->user->getId(),
@@ -134,7 +134,7 @@ class UserControllerTest extends WebTestCase
                 'user' => array(
                     'username' => $this->user->getUsername(),
                     'email' => $this->user->getEmail(),
-                    'employeeName' => $this->user->getEmployeeName(),
+                    'employeeName' => $this->user->getEmployee()->getEmployeeName(),
                     'taxIdentification' => $this->user->getTaxIdentification(),
                     'bankAccountNumber' => $this->user->getBankAccountNumber(),
                     'bankName' => $this->user->getBankName(),
@@ -164,7 +164,7 @@ class UserControllerTest extends WebTestCase
             'testAddUserAction: Missing array value.'
         );
     }
-    
+
     /**
      * testing deleteUser action.
      */
@@ -176,7 +176,7 @@ class UserControllerTest extends WebTestCase
             array('delete-user[]' => 0)
         );
         $decodedJson = json_decode($this->client->getResponse()->getContent(), true);
-        
+
         $this->assertJson(
             $this->client->getResponse()->getContent(),
             'testDeleteUserAction: The response\'s content is not a JSON object.'
@@ -192,7 +192,7 @@ class UserControllerTest extends WebTestCase
             'testDeleteUserAction: Missing array value.'
         );
     }
-    
+
     /**
      * testing showPassword action.
      */
@@ -207,10 +207,10 @@ class UserControllerTest extends WebTestCase
             'testShowPasswordAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing showChangePassword action.
-     */    
+     */
     public function testShowChangePasswordAction()
     {
         $crawler = $this->client->request(
@@ -219,10 +219,10 @@ class UserControllerTest extends WebTestCase
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
-            'testShowPasswordAction: The content-type is not html.'
+            'testShowChangePasswordAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing showUpdatePassword action.
      */
@@ -234,17 +234,17 @@ class UserControllerTest extends WebTestCase
         );
         $this->assertJson(
             $this->client->getResponse()->getContent(),
-            'testDeleteUserAction: The response\'s content is not a JSON object.'
+            'testShowUpdatePasswordAction: The response\'s content is not a JSON object.'
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'application/json'),
-            'testDeleteUserAction: The content-type is not a json.'
+            'testShowUpdatePasswordAction: The content-type is not a json.'
         );
     }
-    
+
     /**
      * testing the resetPassword action.
-     * 
+     *
      * This should be the last method, because this is reset the password for the admin.
      */
     public function testResetPasswordAction()
@@ -254,13 +254,14 @@ class UserControllerTest extends WebTestCase
             '/secured/user/password/reset',
             array('id' => $this->user->getId())
         );
+
         $this->assertJson(
             $this->client->getResponse()->getContent(),
-            'testDeleteUserAction: The response\'s content is not a JSON object.'
+            'testResetPasswordAction: The response\'s content is not a JSON object.'
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'application/json'),
-            'testDeleteUserAction: The content-type is not a json.'
+            'testResetPasswordAction: The content-type is not a json.'
         );
     }
 }

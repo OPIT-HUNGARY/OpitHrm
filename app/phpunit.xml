@@ -14,24 +14,22 @@
     bootstrap                   = "bootstrap.php.cache" >
 
     <testsuites>
-        <testsuite name="User Bundle Test Suite">
-            <directory>../src/*/UserBundle/Tests</directory>
-            <directory>../src/*/Bundle/UserBundle/Tests</directory>
-        </testsuite>
-        <testsuite name="Travel Bundle Test Suite">
-            <directory>../src/*/TravelBundle/Tests</directory>
-            <directory>../src/*/Bundle/TravelBundle/Tests</directory>
-        </testsuite>
         <testsuite name="Currency Rate Bundle Test Suite">
+            <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateDiffCommandTest.php</file>
             <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateInsertCommandTest.php</file>
             <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateUpdateCommandTest.php</file>
-            <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateDiffCommandTest.php</file>
             <file>../src/*/CurrencyRateBundle/Tests/Entity/CurrencyRepositoryFunctionalTest.php</file>
             <file>../src/*/CurrencyRateBundle/Tests/Entity/RateRepositoryFunctionalTest.php</file>
             <directory>../src/*/CurrencyRateBundle/Tests/Controller</directory>
             <directory>../src/*/CurrencyRateBundle/Tests/Helper</directory>
             <directory>../src/*/CurrencyRateBundle/Tests/Service</directory>
             <directory>../src/*/CurrencyRateBundle/Tests/Twig</directory>
+        </testsuite>
+        <testsuite name="User Bundle Test Suite">
+            <directory>../src/*/UserBundle/Tests</directory>
+        </testsuite>
+        <testsuite name="Travel Bundle Test Suite">
+            <directory>../src/*/TravelBundle/Tests</directory>
         </testsuite>
     </testsuites>
 

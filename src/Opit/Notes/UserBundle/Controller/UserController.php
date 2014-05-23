@@ -20,7 +20,7 @@ use Opit\Notes\UserBundle\Form\UserShowType;
 use Opit\Notes\UserBundle\Form\ChangePasswordType;
 use Opit\Notes\UserBundle\Entity\User;
 use JMS\SecurityExtraBundle\Annotation\Secure;
-use Opit\Notes\TravelBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of UserController

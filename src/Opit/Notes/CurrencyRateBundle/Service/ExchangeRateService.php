@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\CommonException;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Bridge\Monolog\Logger;
-use Opit\Notes\CurrencyRateBundle\Helper\Utils;
+use Opit\Component\Utils\Utils;
 use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 
 /**

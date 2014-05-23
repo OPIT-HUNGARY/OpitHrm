@@ -12,7 +12,7 @@
 namespace Opit\Notes\UserBundle\Model;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Opit\Component\Email\EmailManager;
+use Opit\Component\Email\EmailManagerInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 /**
@@ -29,7 +29,7 @@ class UserService
     protected $encoder;
     protected $password;
 
-    public function __construct(EmailManager $mail, EncoderFactoryInterface $encoder)
+    public function __construct(EmailManagerInterface $mail, EncoderFactoryInterface $encoder)
     {
         $this->mail = $mail;
         $this->encoder = $encoder;
@@ -55,7 +55,7 @@ class UserService
         $this->mail->setRecipient($user->getEmail());
         $this->mail->setSubject($subject);
         
-        $this->mail->setBaseTemplate(
+        $this->mail->setBodyByTemplate(
             'OpitNotesUserBundle:Mail:' . $template . '.html.twig',
             array('password' => $this->password, 'user' => $user)
         );
