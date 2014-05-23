@@ -393,7 +393,8 @@ class TravelController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
-
+        
+        //travel request info
         $totalTravelRequestCount = $em->getRepository('OpitNotesTravelBundle:TravelRequest')->findEmployeeTravelRequest($user->getID());
 
         $notPendingTravelRequestCount = $em
@@ -401,10 +402,22 @@ class TravelController extends Controller
                         ->findEmployeeNotPendingTravelRequest($user->getID()
         );
         $pendingTravelRequestCount = $totalTravelRequestCount-$notPendingTravelRequestCount;
+        
+        //travel expense info
+        $totalTravelExpenseCount = $em->getRepository('OpitNotesTravelBundle:TravelExpense')->findEmployeeTravelExpenseCount($user->getID());
+        $notPendingTravelExpenseCount = $em
+                        ->getRepository('OpitNotesTravelBundle:TravelExpense')
+                        ->findEmployeeNotPendingTravelExpense($user->getID()
+        );
+        $pendingTravelExpenseCount = $totalTravelExpenseCount - $notPendingTravelExpenseCount;
 
         return $this->render('OpitNotesTravelBundle:Travel:_employeeTravelInfoBoard.html.twig',
                 array('pendingTravelRequestCount' => $pendingTravelRequestCount,
-                    'totalTravelRequestCount' => $totalTravelRequestCount
+                    'totalTravelRequestCount' => $totalTravelRequestCount,
+                    'notPendingTravelRequestCount' => $notPendingTravelRequestCount,
+                    'totalTravelExpenseCount' => $totalTravelExpenseCount,
+                    'pendingTravelExpenseCount' => $pendingTravelExpenseCount,
+                    'notPendingTravelExpenseCount' => $notPendingTravelExpenseCount
                     ));
     }
 

@@ -12,6 +12,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * TravelExpenseRepository
@@ -78,4 +79,43 @@ class TravelExpenseRepository extends EntityRepository
         $q = $qb->getQuery();
         return $q->getResult();
     }
+
+  /*
+     * Find employees all travel expense count
+     *
+     * @param string $userid
+     */
+    public function findEmployeeTravelExpenseCount($userid)
+    {
+
+        $qb = $this->createQueryBuilder('te');
+        $qb->select('COUNT(te.id)');
+        $qb->where($qb->expr()->eq('te.user', $userid));
+
+        $q = $qb->getQuery();
+
+        return $q->getSingleScalarResult();
+    }
+
+  /*
+     * Find employees all not pending travel expense count
+     *
+     * @param string $userid
+    */
+    public function findEmployeeNotPendingTravelExpense($userid){
+        $status = array(Status::APPROVED, Status::PAID, Status::REJECTED);
+
+        $qb = $this->createQueryBuilder('te');
+
+        $qb->select($qb->expr()->countDistinct('te.id'))
+        ->leftJoin('te.states', 's')
+        ->where($qb->expr()->eq('te.user', ':userId'))
+        ->andWhere($qb->expr()->In('s.status', ':states'))
+        ->setParameter(':userId', $userid)
+        ->setParameter(':states', $status);
+        $q = $qb->getQuery();
+
+        return $q->getSingleScalarResult();
+    }
+
 }
