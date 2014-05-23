@@ -2,8 +2,8 @@
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets
-        '@OpitNotesTravelBundle/Resources/public/css/updateStatus.css'
-    output='css/opitnotestravel/status.css' filter='?yui_css,cssrewrite' %}
+        '@OpitNotesTravelBundle/Resources/public/css/updateStatus.scss'
+    output='css/opitnotestravel/update_status.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}

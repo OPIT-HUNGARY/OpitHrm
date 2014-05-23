@@ -35,8 +35,12 @@
 {% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelExpense.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+    {% stylesheets
+        '@OpitNotesTravelBundle/Resources/public/css/showTravelExpense.scss'
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotestravel/show_travel_expense.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}        
         
 {% block body %}

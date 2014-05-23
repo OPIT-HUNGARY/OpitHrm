@@ -1,12 +1,11 @@
 {% block stylesheets %}
     {% stylesheets
-        '../app/Resources/public/css/main.css'
+        '../app/Resources/public/css/main.scss'
         'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-        'bundles/opitnotesleave/css/timeSheetPrintView.css'
+        '@OpitNotesLeaveBundle/Resources/public/css/timeSheetPrintView.scss'
     output='css/opitnotesleave/print.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
-        {% set printAsset = asset('bundles/opitnotesleave/css/timeSheetPrintView.css')|split('?') %}
+        {% set printAsset = asset_url|split('?') %}
         <link rel="stylesheet" type="text/css" media="all" href="{{ printAsset[0] }}" />
     {% endstylesheets %}
 {% endblock %}

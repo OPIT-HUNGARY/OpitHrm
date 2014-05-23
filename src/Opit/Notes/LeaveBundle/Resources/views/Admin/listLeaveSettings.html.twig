@@ -3,7 +3,11 @@
 Entitlement configuration - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+    {% stylesheets
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotesleave/list_leave_settings.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block body %}
 <h1>Entitlement configuration</h1>

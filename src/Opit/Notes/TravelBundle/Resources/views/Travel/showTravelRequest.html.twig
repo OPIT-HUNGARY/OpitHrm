@@ -16,8 +16,12 @@
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/showTravelRequest.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+    {% stylesheets
+        '@OpitNotesTravelBundle/Resources/public/css/showTravelRequest.scss'
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotestravel/show_travel_request.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}        
         
 {% block body %}

@@ -2,13 +2,11 @@
 {% block title %}
     Leave category list - {{ parent() }}
 {% endblock %}
+
 {% block stylesheets %}
-    {% stylesheets
-        '../app/Resources/public/css/list.css'
-    output='css/opitnotesleave/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% include '::_stylesheets.html.twig' %}
 {% endblock %}
+
 {% block body %}
 <h1>Leave category list</h1>
 <div  id="list">

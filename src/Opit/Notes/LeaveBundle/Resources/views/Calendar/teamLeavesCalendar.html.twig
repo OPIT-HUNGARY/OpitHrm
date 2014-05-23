@@ -3,14 +3,18 @@
         Team leaves calendar - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('libs/fullcalendar/css/fullcalendar.css') }}" />
+    {% stylesheets
+        'libs/fullcalendar/css/fullcalendar.css'
+    output='css/opitnotesleave/fullcalendar.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
         'libs/fullcalendar/js/fullcalendar.min.js'
         '@OpitNotesLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.coffee'
-    output='js/team_leaves_calendar.js' filter='?yui_js' %}
+    output='js/opitnotesleave/team_leaves_calendar.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}

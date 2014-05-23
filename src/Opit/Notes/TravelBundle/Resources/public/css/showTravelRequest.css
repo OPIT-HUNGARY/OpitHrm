@@ -1,8 +1,0 @@
-/*  Created on : Nov 28, 2013, 4:00:11 PM Author     : OPIT\Notes
-*/
-/*  Created on : Mar 10, 2014, 10:16:52 AM Author     : OPIT\NOTES
-*/
-#travelRequest .generalFormFieldset, .travelForm .generalFormFieldset { padding: 10px; }
-#travelRequest .error-label, .travelForm .error-label { margin-top: 5px; display: inline-block; z-index: 4; }
-#travelRequest .formFieldset, .travelForm .formFieldset { margin: 20px 0 20px 0; }
-#travelRequest .formFieldset > div, .travelForm .formFieldset > div { margin-top: 2px; margin-bottom: 2px; }

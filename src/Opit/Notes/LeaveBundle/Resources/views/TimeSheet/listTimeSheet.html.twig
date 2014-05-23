@@ -2,13 +2,11 @@
 {% block title %}
         Time Sheet list - {{ parent() }}
 {% endblock %}
+
 {% block stylesheets %}
-    {% stylesheets
-        '../app/Resources/public/css/list.css'
-    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% include '::_stylesheets.html.twig' %}
 {% endblock %}
+
 {% block body %}
     <h1>Time sheet list</h1>
     <table>

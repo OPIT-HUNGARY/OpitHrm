@@ -10,13 +10,11 @@
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
+
 {% block stylesheets %}
-    {% stylesheets
-        '../app/Resources/public/css/list.css'
-    output='css/opitnotesholiday/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% include '::_stylesheets.html.twig' %}
 {% endblock %}
+
 {% block body %}
     <h1>Leave request list</h1>
     {% include 'OpitNotesLeaveBundle:Leave:_searchForm.html.twig' with { 'order_field': 'id' } %}

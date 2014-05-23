@@ -11,7 +11,11 @@
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/opitnotestravel/css/module.css') }}" />
+    {% stylesheets
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotesleave/show_leave_request.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block body %}
     <h1>{% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request</h1>

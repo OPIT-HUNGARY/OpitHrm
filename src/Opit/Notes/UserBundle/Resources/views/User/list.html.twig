@@ -1,12 +1,9 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
+
 {% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets
-        '../app/Resources/public/css/list.css'
-    output='css/opitnotesuser/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% include '::_stylesheets.html.twig' %}
 {% endblock %}
+
 {% block title %}
     User list - {{ parent() }}
 {% endblock %}
@@ -29,6 +26,7 @@
         </div>
     </div>
 {% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     {% javascripts

@@ -18,13 +18,11 @@
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
+
 {% block stylesheets %}
-    {% stylesheets
-        '../app/Resources/public/css/list.css'
-    output='css/opitnotesuser/list.css' filter='?yui_css,cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    {% include '::_stylesheets.html.twig' %}
 {% endblock %}
+
 {% block body %}
 <h1>Team list</h1>
     <table>

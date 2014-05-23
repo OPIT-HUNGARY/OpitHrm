@@ -1,8 +1,8 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
     {% stylesheets 
-        '@OpitNotesUserBundle/Resources/public/css/list.css'
-    output='css/opitnotesuser/main.css' filter='?yui_css,cssrewrite' %}
+        '@OpitNotesUserBundle/Resources/public/css/list.scss'
+    output='css/opitnotesuser/main.css' filter='?yui_css, cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}           

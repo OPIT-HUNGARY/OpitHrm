@@ -207,7 +207,7 @@ initMenu = ->
 
 $(document).ready ->
     # init the menu
-    do initMenu
+    do initMenu if $('#menu').length > 0
 
     $(document).data('notes').funcs.initDeleteMultipleListener()
     $(document).data('notes').funcs.initListPageListeners()

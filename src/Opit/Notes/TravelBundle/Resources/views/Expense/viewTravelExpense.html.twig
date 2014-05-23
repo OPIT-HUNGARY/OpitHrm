@@ -1,10 +1,10 @@
 {% block stylesheets %}
     {% stylesheets
         'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-        output='css/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
-        <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+        '@OpitNotesTravel/Resources/public/css/travelExpensePrintView.scss'
+        output='css/opitnotestravel/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
-        {% set printAsset = asset('bundles/opitnotestravel/css/travelExpensePrintView.css')|split('?') %}
+        {% set printAsset = asset_url|split('?') %}
         <link rel="stylesheet" type="text/css" media="all" href="{{ printAsset[0] }}" />
     {% endstylesheets %}
 {% endblock %}
