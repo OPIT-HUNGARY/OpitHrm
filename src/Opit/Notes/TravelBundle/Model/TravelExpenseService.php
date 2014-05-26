@@ -13,7 +13,7 @@ namespace Opit\Notes\TravelBundle\Model;
 
 use Opit\Notes\TravelBundle\Entity\TravelExpense;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Component\Utils\Utils;
@@ -35,7 +35,7 @@ class TravelExpenseService
     protected $config;
     protected $exchangeService;
     
-    public function __construct($securityContext, EntityManager $entityManager, ExchangeRateInterface $exchangeService, $config = array())
+    public function __construct($securityContext, EntityManagerInterface $entityManager, ExchangeRateInterface $exchangeService, $config = array())
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
@@ -63,12 +63,11 @@ class TravelExpenseService
     /**
      * Method to calculate the per diem for the travel expense
      * 
-     * @param EntityManager $entityManager
      * @param string $arrivalDateTime
      * @param string $departureDateTime
      * @return array
      */
-    public function calculatePerDiem(EntityManager $entityManager, $arrivalDateTime, $departureDateTime)
+    public function calculatePerDiem($arrivalDateTime, $departureDateTime)
     {
         $departureTimeHour = intval($departureDateTime->format('H'));
         $departureDate = $departureDateTime->format('Y-m-d');
@@ -93,7 +92,7 @@ class TravelExpenseService
             }
 
             $departureDayPerDiem =
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAmountToPay(
+                $this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAmountToPay(
                     $departureDayTravelHours
                 );
             
@@ -105,7 +104,7 @@ class TravelExpenseService
             }
 
             $arrivalDayPerDiem =
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                $this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
                 ->findAmountToPay($arrivalDayTravelHours);
             
             $perDiemAmount += $arrivalDayPerDiem;
@@ -114,7 +113,7 @@ class TravelExpenseService
             $fullDays = $daysBetweenArrivalDeparture->days - 1;
 
             $daysBetweenPerDiem =
-                ($entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                ($this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
                 ->findAmountToPay(24) * $fullDays);
             
             $perDiemAmount += $daysBetweenPerDiem;
@@ -125,7 +124,7 @@ class TravelExpenseService
                 $totalTravelHoursOnSameDay++;
             }
             $perDiemAmount +=
-                $entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
+                $this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
                 ->findAmountToPay($totalTravelHoursOnSameDay);
         }
 
@@ -235,11 +234,10 @@ class TravelExpenseService
     /**
      * Method to remove child nodes
      * 
-     * @param EntityManager $entityManager
      * @param TravelExpense $travelExpense
      * @param ArrayCollection $children
      */
-    public function removeChildNodes(EntityManager $entityManager, TravelExpense $travelExpense, $children)
+    public function removeChildNodes(TravelExpense $travelExpense, $children)
     {
         foreach ($children as $child) {
             $className = Utils::getClassBasename($child);
@@ -258,7 +256,7 @@ class TravelExpenseService
             
             if (null !== $getter && false === $travelExpense->$getter()->contains($child)) {
                 $child->setTravelExpense();
-                $entityManager->remove($child);
+                $this->entityManager->remove($child);
             }
         }
     }

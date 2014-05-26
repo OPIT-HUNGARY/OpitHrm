@@ -251,7 +251,6 @@ class ExpenseController extends Controller
         $departureDateTime = new \DateTime($request->request->get('departure'));
         $arrivalDateTime = new \DateTime($request->request->get('arrival'));
         $detailsOfPerDiem = $this->get('opit.model.travel_expense')->calculatePerDiem(
-            $this->getDoctrine()->getManager(),
             $arrivalDateTime,
             $departureDateTime
         );
@@ -462,7 +461,7 @@ class ExpenseController extends Controller
                 $isNew = $travelExpense->getId();
                 $travelExpense = $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense);
                 
-                $this->get('opit.model.travel_expense')->removeChildNodes($entityManager, $travelExpense, $children);
+                $this->get('opit.model.travel_expense')->removeChildNodes($travelExpense, $children);
                 $travelExpense->setTravelRequest($travelRequest);
                 $entityManager->persist($travelExpense);
                 $entityManager->flush();

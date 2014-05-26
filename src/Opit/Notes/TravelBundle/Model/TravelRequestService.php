@@ -236,17 +236,16 @@ class TravelRequestService
     /**
      * Removes related travel request instances.
      *
-     * @param EntityManager $entityManager
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param ArrayCollection $children
      */
-    public function removeChildNodes(EntityManager $entityManager, TravelRequest $travelRequest, $children)
+    public function removeChildNodes(TravelRequest $travelRequest, $children)
     {
         foreach ($children as $child) {
             $getter = ($child instanceof \Opit\Notes\TravelBundle\Entity\TRDestination) ? 'getDestinations' : 'getAccomodations';
             if (false === $travelRequest->$getter()->contains($child)) {
                 $child->setTravelRequest();
-                $entityManager->remove($child);
+                $this->entityManager->remove($child);
             }
         }
     }

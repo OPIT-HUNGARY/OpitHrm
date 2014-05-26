@@ -332,7 +332,7 @@ class TravelController extends Controller
             if ($form->isValid()) {
                 $isNew = $travelRequest->getId();
                 // Persist deleted destinations/accomodations
-                $travelRequestService->removeChildNodes($entityManager, $travelRequest, $children);
+                $travelRequestService->removeChildNodes($travelRequest, $children);
                 $entityManager->persist($travelRequest);
                 $entityManager->flush();
 
