@@ -19,8 +19,14 @@ $(document).ready ->
     $('#leave_request').find('label:first').remove()
     $collectionHolder = $('#leave_request_leaves')
     $collectionHolder.data 'index', 0
+    
     prototype = $collectionHolder.data 'prototype'
+    $prototype = $(prototype)
+    $prototype.find('.start-date').parent().addClass('display-inline-block')
+    $prototype.find('.end-date').parent().addClass('display-inline-block margin-left-5')
+    prototype = $prototype.html()
     prototype = prototype.replace '<label class="required">__name__label__</label>', ''
+    
     $form = $collectionHolder.closest 'form'
     $form.prepend $('.formFieldset')
     $form.find('#leave_request_create_leave_request').parent().append $('#cancel-button')
@@ -44,6 +50,10 @@ $(document).ready ->
         return $deleteButtonWrapper
         
     createHolidayRequest = ($holidayRequest) ->
+        if typeof $holidayRequest is 'object'
+            $holidayRequest.find('.start-date').parent().addClass 'display-inline-block'
+            $holidayRequest.find('.end-date').parent().addClass 'display-inline-block margin-left-5'
+            
         index = $collectionHolder.data 'index'
         $requestContainer = $('<div>').addClass 'formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
         if $holidayRequest is undefined

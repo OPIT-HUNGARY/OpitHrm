@@ -63,8 +63,8 @@ class LeaveType extends AbstractType
             'label'=>'Description',
             'attr' => array(
                 'placeholder' => 'Description',
-                'class' => 'textarea-non-resizeable',
-                'maxlength' => '35'
+                'class' => 'textarea-non-resizeable width-280',
+                'maxlength' => '100'
             )
         ));
         
