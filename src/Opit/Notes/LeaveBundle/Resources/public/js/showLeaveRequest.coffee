@@ -131,6 +131,20 @@ $(document).ready ->
 
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        if validateDates() is yes
+        isValid = yes
+        if $('.formFieldsetChild').length <= 0
+            isValid = no
+            $errorContainer = $('#reply-message')
+            $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No leave date added.')
+            $errorContainer.append $errorMessage
+            $errorContainer.removeClass 'display-none'
+        else
+            $('#reply-message').addClass 'display-none'
+            $('.leave-error').remove()
+            
+        if validateDates() is no
+            isValid = no
+            
+        if isValid is yes
             $form.submit()
         

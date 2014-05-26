@@ -8,9 +8,9 @@
         </th>
         <th>
             <i class="fa fa-sort default-right" data-field="endDate"></i>
-            <span class="order-text cursor-pointer">Leave dates</span>
+            <span class="order-text cursor-pointer">Dates</span>
         </th>
-        <th>Leave request status</th>
+        <th>Status</th>
         <th>Actions</th>
     </tr>
     {% for leaveRequest in leaveRequests %}
@@ -48,11 +48,9 @@
                 <i class="fa fa-list-alt fa-1x"></i>
             </a>
             {% endif %}
-            {% if not isGeneralManager %}
             <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
                 <i class="fa fa-trash-o fa-1x"></i>
             </a>
-            {% endif %}
         </td>
     </tr>
     {% endfor %}

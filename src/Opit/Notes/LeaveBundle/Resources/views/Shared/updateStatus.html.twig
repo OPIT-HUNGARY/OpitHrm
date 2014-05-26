@@ -16,12 +16,12 @@
 </div>
 <div id="request-status">
 {% if 'post' == method %}
-<h2>Status of leave request successfully updated to "{{ status }}".</h2>
+<h2>Leave request successfully updated: "{{ status }}".</h2>
 <h4>
-    You can go to <a href="{{ path('OpitNotesTravelBundle_travel_list') }}">NOTES</a> project or simply close the tab.
+    You can go to <a href="{{ path('OpitNotesTravelBundle_travel_list') }}">NOTES</a> or simply close the tab.
 </h4>
 {% else %}
-<h2>Update status of leave request to "{{ status }}".</h2>
+<h2>Update leave request: "{{ status }}".</h2>
 <form method="post" action="{{ app.request.uri }}">
     <input type="submit" class="button" value="Update" />
 </form>
