@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -20,6 +20,7 @@ use Opit\Notes\StatusBundle\Manager\StatusManager;
 use Opit\Notes\TravelBundle\Model\TravelExpenseService;
 use Symfony\Component\Routing\Router;
 use Opit\Component\Email\EmailManager;
+use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
 
 /**
  * Description of TravelStatusManager
@@ -38,7 +39,7 @@ class TravelStatusManager extends StatusManager
     protected $teService;
 
     /**
-     * 
+     *
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param type $factory
      * @param \Symfony\Component\Routing\Router $router
@@ -53,11 +54,9 @@ class TravelStatusManager extends StatusManager
         $this->mailer = $mailer;
         $this->teService = $teService;
     }
-    
+
     /**
-     * Removes the tokens to the related travel request or travel expense.
-     * 
-     * @param integer $id
+     * {@inheritdoc}
      */
     public function removeTokens($id)
     {
@@ -68,10 +67,10 @@ class TravelStatusManager extends StatusManager
         }
         $this->entityManager->flush();
     }
-    
+
     /**
      * Method to set token for a travel request or travel expense.
-     * 
+     *
      * @param integer $id
      */
     public function setTravelToken($id)
@@ -86,16 +85,13 @@ class TravelStatusManager extends StatusManager
         $token->setTravelId($id);
         $this->entityManager->persist($token);
         $this->entityManager->flush();
-        
+
         return $travelToken;
     }
-    
+
     /**
-     * 
-     * @param \Opit\Notes\StatusBundle\Entity\Status $status
-     * @param array $nextStates
-     * @param mixed $resource
-     * @param integer $requiredStatus
+     * {@inheritdoc}
+     *
      * @return boolean
      */
     protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus)
@@ -116,7 +112,7 @@ class TravelStatusManager extends StatusManager
         // create string for email travel type e.g.(Travel expense, Travel request)
         $subjectTravelType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
         $stateChangeLinks = array();
-        
+
         if (Status::FOR_APPROVAL === $statusId) {
             $travelToken = $this->setTravelToken($resource->getId());
 
@@ -178,5 +174,13 @@ class TravelStatusManager extends StatusManager
         );
 
         $this->mailer->sendMail();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getScope()
+    {
+        return get_class(new StatusWorkflow());
     }
 }

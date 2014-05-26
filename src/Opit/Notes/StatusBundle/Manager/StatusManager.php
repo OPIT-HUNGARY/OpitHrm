@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -23,27 +23,25 @@ use Opit\Component\Utils\Utils;
  * @package Notes
  * @subpackage StatusBundle
  */
-abstract class StatusManager
+abstract class StatusManager implements StatusManagerInterface
 {
     protected $request;
-    
+
     public function setRequest(Request $request = null)
     {
         $this->request = $request;
     }
-    
+
     /**
-     * Method to change the status of a request and
-     * send an email containing the changes and also set a new notification.
-     * 
-     * @param type $resource
-     * @param integer $requiredStatus
+     * {@inheritdoc}
+     *
+     * @return Opit\Notes\StatusBundle\Entity\Status
      */
     public function addStatus($resource, $requiredStatus)
     {
         $pieces = preg_split('/(?=[A-Z])/', $this->request->attributes->get('_template')->get('bundle'));
         $bundleName = $pieces[3] . '' . $pieces[4];
-        
+
         $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find($requiredStatus);
         $statusId = $status->getId();
         $nextStates = array();
@@ -64,20 +62,19 @@ abstract class StatusManager
         $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
 
         $this->entityManager->flush();
-        
+
         return $status;
     }
-    
+
     /**
-     * Method to get the current status of a request
-     * 
-     * @param $resource
+     * {@inheritdoc}
+     *
      * @return Status $status
      */
     public function getCurrentStatus($resource)
     {
         $status = null;
-        
+
         if (null === $resource) {
             return null;
         }
@@ -86,48 +83,49 @@ abstract class StatusManager
         $currentStatus = $this->entityManager
             ->getRepository($this->request->attributes->get('_template')->get('bundle') . ':States' . $className . 's')
             ->getCurrentStatus($resource->getId());
-        
+
         if (null === $currentStatus) {
             $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->findStatusCreate();
         } else {
             $status = $currentStatus->getStatus();
         }
-        
+
         return $status;
     }
-    
+
     /**
      * Enforce status persistence
-     * 
+     *
      * @param integer $statusId
      * @param $resource
-     * @param User $user
+     * @param User    $user
      */
     public function forceStatus($statusId, $resource, $user = null)
     {
         $pieces = preg_split('/(?=[A-Z])/', $this->request->attributes->get('_template')->get('bundle'));
         $bundleName = $pieces[3] . '' . $pieces[4];
-        
+
         $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find($statusId);
-        
+
         $instanceS =
             new \ReflectionClass('Opit\Notes\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's');
         $createdStatus = $instanceS->newInstanceArgs(array($status, $resource));
-        
+
         if (null !== $user) {
             $createdStatus->setCreatedUser($user);
             $createdStatus->setUpdatedUser($user);
         }
         $createdStatus->setStatus($status);
-        
+
         $this->entityManager->persist($createdStatus);
         $this->entityManager->flush();
     }
-    
+
     /**
-     * Method to get the next available states depending on current status
-     * 
-     * @param Status $currentState
+     * {@inheritdoc}
+     *
+     * @param array $excludeIds
+     *
      * @return array
      */
     public function getNextStates(Status $currentState, $excludeIds = array())
@@ -135,40 +133,65 @@ abstract class StatusManager
         $statesToDisplay = array();
         $currentStateId = $currentState->getId();
         $nextStates =
-            $this->entityManager->getRepository('OpitNotesStatusBundle:StatusWorkflow')
+            $this->entityManager->getRepository($this->getScope())
             ->findAvailableStates($currentState, $excludeIds);
-        
+
         $statesToDisplay[$currentStateId] = $currentState->getName();
-        
+
         foreach ($nextStates as $nextState) {
             $status = $nextState->getStatus();
             $statesToDisplay[$status->getId()] = $status->getName();
         }
-        
+
         return $statesToDisplay;
     }
-    
+
     /**
-     * Validates if next status can be set
-     * 
-     * @param type $resource
+     * {@inheritdoc}
+     *
+     * @param object  $resource
      * @param integer $statusId The new status to be set
+     *
      * @return boolean
      */
     public function isValid($resource, $statusId)
     {
         $valid = false;
-        
+
         $currentStatus = $this->getCurrentStatus($resource);
-        
+
         $availableStateIds = array_keys($this->getNextStates($currentStatus));
-        
+
         // Set validity true if current status does not match new status
         // and new status is in available states list
         if ($currentStatus->getId() != $statusId && in_array($statusId, $availableStateIds)) {
             $valid = true;
         }
-        
+
         return $valid;
     }
+
+    /**
+     * Retrieves the status workflow for the correct scope
+     *
+     * @return A fully qualified StatusWorkflow entity class name
+     */
+    abstract protected function getScope();
+
+    /**
+     * Removes the tokens to the related travel request or travel expense.
+     *
+     * @param integer $id
+     */
+    abstract public function removeTokens($id);
+
+    /**
+     * Composes and send an email based on a status change
+     *
+     * @param Status  $status
+     * @param array   $nextStates
+     * @param mixed   $resource
+     * @param integer $requiredStatus
+     */
+    abstract protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus);
 }

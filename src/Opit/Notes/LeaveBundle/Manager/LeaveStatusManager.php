@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -19,10 +19,10 @@ use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Core\SecurityContext;
-use Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager;
 use Opit\Component\Email\EmailManager;
 use Opit\Component\Utils\Utils;
 use Opit\Notes\LeaveBundle\Entity\Token;
+use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
 
 /**
  * Description of TravelStatusManager
@@ -41,9 +41,9 @@ class LeaveStatusManager extends StatusManager
     protected $securityContext;
     protected $leaveNotificationManager;
     protected $router;
-    
+
     /**
-     * 
+     *
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Component\Email\EmailManager $mailer
      * @param type $factory
@@ -61,9 +61,9 @@ class LeaveStatusManager extends StatusManager
         $this->leaveNotificationManager = $leaveNotificationManager;
         $this->router = $router;
     }
-    
+
     /**
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param integer $statusId
      * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -85,21 +85,21 @@ class LeaveStatusManager extends StatusManager
                     }
                     break;
             }
-            
+
             $status = $this->addStatus($leaveRequest, $statusId);
-            
+
             // send a new notification when leave request status changes
             $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
-            
+
             return new JsonResponse();
         } else {
             return new JsonResponse('error');
         }
     }
-    
+
     /**
      * Removes the tokens to the related leave request
-     * 
+     *
      * @param integer $id
      */
     public function removeTokens($id)
@@ -111,10 +111,10 @@ class LeaveStatusManager extends StatusManager
         }
         $this->entityManager->flush();
     }
-    
+
     /**
      * Method to set token for a leave request
-     * 
+     *
      * @param integer $id
      */
     public function setLeaveToken($id)
@@ -129,18 +129,18 @@ class LeaveStatusManager extends StatusManager
         $token->setLeaveId($id);
         $this->entityManager->persist($token);
         $this->entityManager->flush();
-        
+
         return $leaveToken;
     }
-    
+
     /**
-     * 
+     *
      * @param \Opit\Notes\StatusBundle\Entity\Status $status
      * @param array $nextStates
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $resource
      * @param type $requiredStatus
      */
-    protected function prepareEmail(Status $status, array $nextStates, LeaveRequest $resource, $requiredStatus)
+    protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus)
     {
         // get template name by converting entity name first letter to lower
         $className = Utils::getClassBasename($resource);
@@ -154,7 +154,7 @@ class LeaveStatusManager extends StatusManager
         // create string for email travel type e.g.(Travel expense, Travel request)
         $subjectTravelType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
         $stateChangeLinks = array();
-        
+
         if (Status::FOR_APPROVAL === $statusId) {
             $leaveToken = $this->setLeaveToken($resource->getId());
 
@@ -209,5 +209,13 @@ class LeaveStatusManager extends StatusManager
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:leaveRequest.html.twig', $templateVariables);
 
         $this->mailer->sendMail();
+    }
+
+     /**
+     * {@inheritdoc}
+     */
+    protected function getScope()
+    {
+        return get_class(new StatusWorkflow());
     }
 }
