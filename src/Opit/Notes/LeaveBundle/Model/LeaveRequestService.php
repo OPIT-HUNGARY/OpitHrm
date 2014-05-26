@@ -62,11 +62,18 @@ class LeaveRequestService
         $this->aclManager = $aclManager;
     }
     
+    /**
+     * Method to set listing rights for the leave requests.
+     * 
+     * @param object $leaveRequests
+     * @return array
+     */
     public function setLeaveRequestListingRights($leaveRequests)
     {
         $currentStatusNames = array();
         $leaveRequestStates = array();
         $isLocked = array();
+        $isDeleteable = array();
         
         foreach ($leaveRequests as $leaveRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($leaveRequest);
@@ -78,13 +85,36 @@ class LeaveRequestService
                 $this->getNextAvailableStates($leaveRequest);
             
             $isLocked[$leaveRequest->getId()] = $isTRLocked;
+            
+            $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest);
         }
         
         return array(
             'leaveRequestStates' => $leaveRequestStates,
             'currentStatusNames' => $currentStatusNames,
-            'isLocked' => $isLocked
+            'isLocked' => $isLocked,
+            'isDeleteable' => $isDeleteable
         );
+    }
+    
+    /**
+     * Method to check if leave request is deleteable by the user.
+     * 
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @return boolean
+     */
+    public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest)
+    {
+        if (!$this->securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$this->securityContext->isGranted('ROLE_ADMIN')) {
+            if (Status::APPROVED === $this->statusManager->getCurrentStatus($leaveRequest)->getId()) {
+                foreach ($leaveRequest->getLeaves() as $leave) {
+                    if ($leave->getStartDate() < new \DateTime()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
     
     /**
@@ -95,7 +125,7 @@ class LeaveRequestService
      */
     public function setLeaveRequestAccessRights(LeaveRequest $leaveRequest, Status $currentStatus)
     {
-        $isEditLocked = true;// travel request can not be edited
+        $isEditLocked = true;// leave request can not be edited
         $isStatusLocked = true;// status can not be changed
         $unlockedStates = array();
         $currentEmployee = $this->securityContext->getToken()->getUser()->getEmployee();
@@ -117,11 +147,6 @@ class LeaveRequestService
             if (Status::FOR_APPROVAL === $currentStatus->getId()) {
                 $isStatusLocked = false;
             }
-        }
-
-        // Unlock edit mode for admins at all times
-        if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-            $isEditLocked = false;// travel request can be edited
         }
 
         return array(

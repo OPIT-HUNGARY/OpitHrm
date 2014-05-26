@@ -48,9 +48,11 @@
                 <i class="fa fa-list-alt fa-1x"></i>
             </a>
             {% endif %}
+            {% if listingRights['isDeleteable'][id] %}
             <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
                 <i class="fa fa-trash-o fa-1x"></i>
             </a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
