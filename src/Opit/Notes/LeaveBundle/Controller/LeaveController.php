@@ -13,6 +13,7 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\LeaveBundle\Form\LeaveRequestType;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 class LeaveController extends Controller
 {
@@ -27,7 +28,9 @@ class LeaveController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
-        $employee = $securityContext->getToken()->getUser()->getEmployee();
+        $user = $securityContext->getToken()->getUser();
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $employee = $user->getEmployee();
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
         
@@ -42,7 +45,9 @@ class LeaveController extends Controller
             'firstResult' => ($offset * $maxResults),
             'maxResults' => $maxResults,
             'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
-            'employee' => $employee
+            'isGeneralManager' => $securityContext->isGranted('ROLE_GENERAL_MANAGER'),
+            'employee' => $employee,
+            'user' => $user
         );
         
         if ($isSearch) {
@@ -51,6 +56,9 @@ class LeaveController extends Controller
         
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
+        
+        $listingRights = $this->get('opit.model.leave_request')
+            ->setLeaveRequestListingRights($leaveRequests);
         
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesLeaveBundle:Leave:_list.html.twig';
@@ -65,7 +73,9 @@ class LeaveController extends Controller
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
-                'maxPages' => $config['max_pager_pages']
+                'maxPages' => $config['max_pager_pages'],
+                'listingRights' => $listingRights,
+                'isGeneralManager' => $isGeneralManager
             )
         );
     }
@@ -85,6 +95,7 @@ class LeaveController extends Controller
         $isNewLeaveRequest = 'new' === $leaveRequestId ? true : false;
         $securityContext = $this->container->get('security.context');
         $token = $securityContext->getToken();
+        $leaveRequestService = $this->get('opit.model.leave_request');
         
         if ($isNewLeaveRequest) {
             $employee = $token->getUser()->getEmployee();
@@ -97,12 +108,18 @@ class LeaveController extends Controller
                 throw $this->createNotFoundException('Missing leave request.');
             }
             
-            if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
+            if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() &&
+                !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
+                !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER')) {
                 throw new AccessDeniedException(
                     'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
                 );
             }
         }
+        
+        $statusManager = $this->get('opit.manager.leave_status_manager');
+        $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
+        $leaveRequestStates = $statusManager->getNextStates($currentStatus);
         
         $children = new ArrayCollection();
         $form = $this->createForm(
@@ -130,13 +147,25 @@ class LeaveController extends Controller
                 $entityManager->persist($leaveRequest);
                 $entityManager->flush();
                 
+                if ($isNewLeaveRequest) {
+                    $statusManager->changeStatus($leaveRequest, Status::CREATED, true);
+                }
+                
                 return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
             }
         }
         
         return $this->render(
             'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig',
-            array('form' => $form->createView(), 'isNewLeaveRequest' => $isNewLeaveRequest)
+            array_merge(
+                array(
+                    'form' => $form->createView(),
+                    'isNewLeaveRequest' => $isNewLeaveRequest,
+                    'leaveRequestStates' => $leaveRequestStates,
+                    'leaveRequest' => $leaveRequest
+                ),
+                $isNewLeaveRequest ? array('isStatusLocked' => true, 'isEditLocked'=> false) : $leaveRequestService->setLeaveRequestAccessRights($leaveRequest, $currentStatus)
+            )
         );
     }
 
@@ -175,6 +204,23 @@ class LeaveController extends Controller
         $entityManager->flush();
         
         return new JsonResponse('$userNames');
+    }
+    
+    /**
+     * Method to change state of leave request
+     *
+     * @Route("/secured/leave/state/", name="OpitNotesLeaveBundle_leave_request_state")
+     * @Template()
+     */
+    public function changeLeaveRequestStateAction(Request $request)
+    {
+        $statusId = $request->request->get('statusId');
+        $leaveRequestId = $request->request->get('leaveRequestId');
+        $entityManager = $this->getDoctrine()->getManager();
+        $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
+        
+        return $this->get('opit.manager.leave_status_manager')
+            ->changeStatus($leaveRequest, $statusId);
     }
 
     /**

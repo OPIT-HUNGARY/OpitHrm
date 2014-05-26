@@ -41,11 +41,33 @@ class LeaveRequest
     protected $leaveRequestId;
     
     /**
+     * @ORM\OneToMany(targetEntity="StatesLeaveRequests", mappedBy="leaveRequest", cascade={"persist", "remove"})
+     */
+    protected $states;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="gmLeaveRequests")
+     * @Assert\NotBlank(message="General manager cannot be empty.")
+     */
+    private $generalManager;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="tmLeaveRequests")
+     */
+    private $teamManager;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
+     */
+    protected $notifications;
+    
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->leaves = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -136,5 +158,119 @@ class LeaveRequest
     public function getEmployee()
     {
         return $this->employee;
+    }
+    
+    /**
+     * Add states
+     *
+     * @param StatesLeaveRequests $states
+     * @return TravelRequest
+     */
+    public function addState(StatesLeaveRequests $states)
+    {
+        $states->setLeaveRequest($this); // synchronously updating inverse side
+        $this->states[] = $states;
+
+        return $this;
+    }
+
+    /**
+     * Remove states
+     *
+     * @param StatesLeaveRequests $states
+     */
+    public function removeState(StatesLeaveRequests $states)
+    {
+        $this->states->removeElement($states);
+    }
+
+    /**
+     * Get states
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStates()
+    {
+        return $this->states;
+    }
+    
+    /**
+     * Get generalManager
+     *
+     * @return \Opit\Notes\UserBundle\Entity\User
+     */
+    public function getGeneralManager()
+    {
+        return $this->generalManager;
+    }
+    
+    /**
+     * Set generalManager
+     *
+     * @param \Opit\Notes\UserBundle\Entity\User $generalManager
+     * @return LeaveRequest
+     */
+    public function setGeneralManager(\Opit\Notes\UserBundle\Entity\User $generalManager = null)
+    {
+        $this->generalManager = $generalManager;
+    
+        return $this;
+    }
+    
+    /**
+     * Get generalManager
+     *
+     * @return \Opit\Notes\UserBundle\Entity\User
+     */
+    public function getTeamManager()
+    {
+        return $this->teamManager;
+    }
+    
+    /**
+     * Set generalManager
+     *
+     * @param \Opit\Notes\UserBundle\Entity\User $teamManager
+     * @return LeaveRequest
+     */
+    public function setTeamManager(\Opit\Notes\UserBundle\Entity\User $teamManager = null)
+    {
+        $this->teamManager = $teamManager;
+    
+        return $this;
+    }
+    
+    /**
+     * Add notifications
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LRNotification $notifications
+     * @return TravelRequest
+     */
+    public function addNotification(\Opit\Notes\LeaveBundle\Entity\LRNotification $notifications)
+    {
+        $this->notifications[] = $notifications;
+        $notifications->setLeaveRequest($this);
+    
+        return $this;
+    }
+
+    /**
+     * Remove notifications
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LRNotification $notifications
+     */
+    public function removeNotification(\Opit\Notes\LeaveBundle\Entity\LRNotification $notifications)
+    {
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }

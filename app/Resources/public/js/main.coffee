@@ -1,6 +1,20 @@
 $(document).data 'notes', {}
 $.extend true, $(document).data('notes'),
     funcs:
+        changeStateDialog: ($dropdown, callback, travelId, type) ->
+            $('<div></div>').html("Change the status of #{ type } from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
+                title: '<i class="fa fa-exclamation-triangle"></i> ' + type.toString().capitalize() + ' status change'
+                buttons:
+                    Yes: ->
+                        $(@).dialog 'destroy'
+                        callback $dropdown.val(), travelId, $(document).data('notes').funcs.disableStatusDropdown($dropdown)
+                    No: ->
+                        $(@).dialog 'destroy'
+                        $(document).data('notes').funcs.enableStatusDropdown $dropdown
+                close: ->
+                    $(@).dialog 'destroy'
+                    $(document).data('notes').funcs.enableStatusDropdown $dropdown    
+    
         initDateInputs: ($container) ->
             $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
             if not Modernizr.inputtypes.date
@@ -202,6 +216,9 @@ $.fn.dialog = (options) ->
     # to update scrollbar if element is resized
     $(@).on 'dialogresizestop', (event, ui) ->
         $(@).mCustomScrollbar 'update'
+        
+String.prototype.capitalize = () ->
+    return @.charAt(0).toUpperCase() + @.slice(1)
 
 $(document).ajaxStart ->
     # Add generic ajax indicator for global requests

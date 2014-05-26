@@ -1,4 +1,21 @@
 $(document).ready ->
+    $('.changeState').on 'change', ->
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
+        
+    $('#leave_request_team_manager_ac').autocomplete
+        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'team_manager'
+        minLength: 2
+        select: (event, ui) ->
+            $('#leave_request_team_manager').val ui.item.id
+            return
+
+    $('#leave_request_general_manager_ac').autocomplete
+        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'general_manager'
+        minLength: 2
+        select: (event, ui) ->
+            $('#leave_request_general_manager').val ui.item.id
+            return        
+
     $('#leave_request').find('label:first').remove()
     $collectionHolder = $('#leave_request_leaves')
     $collectionHolder.data 'index', 0
@@ -7,6 +24,10 @@ $(document).ready ->
     $form = $collectionHolder.closest 'form'
     $form.prepend $('.formFieldset')
     $form.find('#leave_request_create_leave_request').parent().append $('#cancel-button')
+    
+    $requiredApprovals = $('#required-approvals')
+    $requiredApprovals.append($('#leave_request_team_manager_ac').parent().addClass('display-inline-block vertical-align-top margin-right-1-em'))
+    $requiredApprovals.append($('#leave_request_general_manager_ac').parent().addClass('display-inline-block vertical-align-top margin-right-1-em'))
     
     $employeeError = $('#leave_request').find('ul')
     if $employeeError.length > 0
@@ -97,6 +118,16 @@ $(document).ready ->
     
     $('.addFormFieldsetChild').on 'click', ->    
         createHolidayRequest()
+        
+    $('.disabled .deleteFormFieldsetChild').each ->
+        $(@).remove()
+        
+    $('.disabled select, .disabled input, .disabled textarea').each ->
+        $(@).attr 'disabled', 'disabled'
+        
+    $('.disabled #leave_request_create_leave_request').addClass 'button-disabled'
+    $('.disabled #leave_request_create_leave_request').attr 'disabled', 'disabled'
+    $('.disabled').find('.addFormFieldsetChild').remove()        
 
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()

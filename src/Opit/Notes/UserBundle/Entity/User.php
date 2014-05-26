@@ -167,7 +167,19 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmTravelRequests;
+    
+    /**
+     * General manager leave requests
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="generalManager", cascade={"remove"})
+     */
+    protected $gmLeaveRequests;
 
+    /**
+     * Team manager leave requests
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="teamManager", cascade={"remove"})
+     */
+    protected $tmLeaveRequests;
+    
     /**
      * Notifications sent by user
      * @ORM\OneToMany(targetEntity="\Opit\Notes\NotificationBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
@@ -208,6 +220,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
         $this->userTravelRequests = new ArrayCollection();
         $this->gmTravelRequests = new ArrayCollection();
         $this->tmTravelRequests = new ArrayCollection();
+        $this->gmLeaveRequests = new ArrayCollection();
         $this->userTravelExpenses = new ArrayCollection();
         $this->setSalt("");
     }

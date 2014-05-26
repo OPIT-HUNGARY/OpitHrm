@@ -28,6 +28,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * Description of LeaveRepository
@@ -59,12 +60,28 @@ class LeaveRequestRepository extends EntityRepository
         if (isset($parameters['leaveId']) && $parameters['leaveId'] !== '') {
             $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
             $dq->setParameter(':leaveId', '%'.$parameters['leaveId'].'%');
-        }
-
-        if (!$pagnationParameters['isAdmin']) {
+        }   
+        
+        if ($pagnationParameters['isAdmin']) {
             $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
-            $dq->setParameter(':employee', $pagnationParameters['employee']);
+        } else if ($pagnationParameters['isGeneralManager']) {
+            $statusExpr = $dq->expr()->orX(
+                $dq->expr()->andX(
+                    $dq->expr()->notIn('s.status', ':status'),
+                    $dq->expr()->eq('lr.generalManager', ':user')
+                ),
+                $dq->expr()->eq('lr.employee', ':employee')
+            );
+            $dq->leftJoin('lr.states', 's', 'WITH')
+                ->andWhere($statusExpr);
+            
+            $dq->setParameter(':user', $pagnationParameters['user']);   
+            $dq->setParameter(':status', Status::CREATED);   
+        } else {
+            $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
         }
+        
+        $dq->setParameter(':employee', $pagnationParameters['employee']);            
  
         $dq->setFirstResult($pagnationParameters['firstResult']);
         $dq->setMaxResults($pagnationParameters['maxResults']);

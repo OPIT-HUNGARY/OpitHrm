@@ -9,12 +9,12 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\StatusBundle\Entity\AbstractBase;
-use Opit\Notes\TravelBundle\Entity\TravelExpense;
+use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
 
 /**
  * This class is a container for the Travel Expense Status model
@@ -24,10 +24,10 @@ use Opit\Notes\TravelBundle\Entity\TravelExpense;
  * @package Notes
  * @subpackage TravelBundle
  *
- * @ORM\Table(name="notes_states_travel_expense")
- * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\StatesTravelExpensesRepository")
+ * @ORM\Table(name="notes_states_leave_request")
+ * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\StatesLeaveRequestsRepository")
  */
-class StatesTravelExpenses extends AbstractBase
+class StatesLeaveRequests extends AbstractBase
 {
     /**
      * @ORM\Column(type="integer")
@@ -37,27 +37,27 @@ class StatesTravelExpenses extends AbstractBase
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="TravelExpense", inversedBy="states", fetch="EAGER")
-     * @ORM\JoinColumn(name="travel_expense_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="LeaveRequest", inversedBy="states", fetch="EAGER")
+     * @ORM\JoinColumn(name="leave_request_id", referencedColumnName="id")
      */
-    protected $travelExpense;
+    protected $leaveRequest;
 
      /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\TravelBundle\Model\TravelStatusInterface", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\StatusBundle\Entity\Status", fetch="EAGER")
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     protected $status;
 
-    public function __construct(Status $status = null, TravelExpense $travelExpense = null)
+    public function __construct(Status $status = null, LeaveRequest $leaveRequest = null)
     {
         $this->setStatus($status);
-        $this->setTravelExpense($travelExpense);
+        $this->setLeaveRequest($leaveRequest);
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return integer 
      */
     public function getId()
     {
@@ -65,35 +65,35 @@ class StatesTravelExpenses extends AbstractBase
     }
 
     /**
-     * Set travel expense
+     * Set leaveRequest
      *
-     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return StatesTravelExpenses
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @return StatesLeaveRequest
      */
-    public function setTravelExpense(TravelExpense $travelExpense = null)
+    public function setLeaveRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest = null)
     {
-        $this->travelExpense = $travelExpense;
+        $this->leaveRequest = $leaveRequest;
 
         return $this;
     }
 
     /**
-     * Get travel expense
+     * Get leaveRequest
      *
-     * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest 
      */
-    public function getTravelExpense()
+    public function getLeaveRequest()
     {
-        return $this->travelExpense;
+        return $this->leaveRequest;
     }
 
     /**
      * Set status
      *
      * @param \Opit\Notes\StatusBundle\Entity\Status $status
-     * @return StatesTravelExpenses
+     * @return StatesLeaveRequest
      */
-    public function setStatus(Status $status = null)
+    public function setStatus(\Opit\Notes\StatusBundle\Entity\Status $status = null)
     {
         $this->status = $status;
 
@@ -103,7 +103,7 @@ class StatesTravelExpenses extends AbstractBase
     /**
      * Get status
      *
-     * @return \Opit\Notes\StatusBundle\Entity\Status
+     * @return \Opit\Notes\StatusBundle\Entity\Status 
      */
     public function getStatus()
     {

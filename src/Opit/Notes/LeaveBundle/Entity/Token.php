@@ -9,7 +9,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,9 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage LeaveBundle
  * 
- * @ORM\Table(name="notes_travel_tokens")
+ * @ORM\Table(name="notes_leave_tokens")
  * @ORM\Entity
  */
 class Token
@@ -47,9 +47,9 @@ class Token
      *
      * @var integer
      * 
-     * @ORM\Column(name="travel_id") 
+     * @ORM\Column(name="leave_id") 
      */
-    protected $travelId;
+    protected $leaveId;
     
     /**
      * Get id
@@ -64,7 +64,7 @@ class Token
     /**
      *
      * @param string $token
-     * @return \Opit\Notes\TravelBundle\Entity\Token
+     * @return \Opit\Notes\LeaveBundle\Entity\Token
      */
     public function setToken($token)
     {
@@ -85,12 +85,12 @@ class Token
     
     /**
      *
-     * @param integer $travelId
-     * @return \Opit\Notes\TravelBundle\Entity\Token
+     * @param integer $leaveId
+     * @return \Opit\Notes\LeaveBundle\Entity\Token
      */
-    public function setTravelId($travelId)
+    public function setLeaveId($leaveId)
     {
-        $this->travelId = $travelId;
+        $this->leaveId = $leaveId;
         
         return $this;
     }
@@ -99,8 +99,8 @@ class Token
      *
      * @return integer
      */
-    public function getTravelId()
+    public function getLeaveId()
     {
-        return $this->travelId;
+        return $this->leaveId;
     }
 }

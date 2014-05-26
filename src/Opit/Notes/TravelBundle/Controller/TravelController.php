@@ -199,36 +199,6 @@ class TravelController extends Controller
     }
     
     /**
-     * @Route("/secured/travel/usersearch", name="OpitNotesTravelBundle_travel_userSearch")
-     * @Method({"GET"})
-     */
-    public function userSearchAction()
-    {
-        $userNames = array();
-        $request = $this->getRequest();
-        $term = $request->query->get('term');
-        $role = strtoupper('role' . '_' . $request->query->get('role'));
-        $users = $this->getDoctrine()->
-                        getRepository('OpitNotesUserBundle:User')->
-                        findUserByEmployeeNameUsingLike($term);
-
-        foreach ($users as $user) {
-            $groups = $user->getGroups();
-            foreach ($groups as $group) {
-                if ('ALL' === $role || $group->getRole() === $role) {
-                    $userNames[] = array(
-                        'value'=>$user->getEmployee()->getEmployeeName(),
-                        'label'=>$user->getEmployee()->getEmployeeName(),
-                        'id'=>$user->getId()
-                    );
-                }
-            }
-        }
-        
-        return new JsonResponse($userNames);
-    }
-    
-    /**
      * Method to delete one or more travel requests
      *
      * @Route("/secured/travel/delete", name="OpitNotesTravelBundle_travel_delete")

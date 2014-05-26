@@ -31,6 +31,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Opit\Notes\LeaveBundle\Form\LeaveType;
 use Opit\Notes\LeaveBundle\Form\DataTransformer\EmployeeIdToObjectTransformer;
+use Opit\Notes\TravelBundle\Form\DataTransformer\UserIdToObjectTransformer;
 
 /**
  * Description of HolidyaRequestType
@@ -57,8 +58,9 @@ class LeaveRequestType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entityManager = $options['em'];
-        $transformer = new EmployeeIdToObjectTransformer($entityManager);
-        $builder->add($builder->create('employee', 'hidden')->addModelTransformer($transformer));
+        $employeeTransformer = new EmployeeIdToObjectTransformer($entityManager);
+        $userTransformer = new UserIdToObjectTransformer($entityManager);
+        $builder->add($builder->create('employee', 'hidden')->addModelTransformer($employeeTransformer));
         
         $builder->add('leaves', 'collection', array(
             'type'         => new LeaveType(),
@@ -66,6 +68,26 @@ class LeaveRequestType extends AbstractType
             'allow_delete' => true,
             'by_reference' => false
         ));
+        
+        $builder->add(
+            $builder->create('team_manager', 'hidden')->addModelTransformer($userTransformer)
+        );
+        $builder->add('team_manager_ac', 'text', array(
+            'label' => 'Team manager',
+            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'mapped' => false,
+            'required' => false,
+            'attr' => array('placeholder' => 'Team manager')
+        ));
+        $builder->add(
+            $builder->create('general_manager', 'hidden')->addModelTransformer($userTransformer)
+        );
+        $builder->add('general_manager_ac', 'text', array(
+            'label' => 'General manager',
+            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'mapped' => false,
+            'attr' => array('placeholder' => 'General manager')
+        ));        
         
         $builder->add('create_leave_request', 'submit', array(
             'label' => $this->isNewLeaveRequest ? 'Add leave request' : 'Edit leave request',

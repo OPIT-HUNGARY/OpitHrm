@@ -97,7 +97,7 @@ addForm = ($collectionHolder, $addButton, addListener) ->
 
 $(document).ready ->
     $('.changeState').on 'change', ->
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, $(@).data('tr')
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, $(@).data('tr'), 'travel'
 
     if not Modernizr.inputtypes.date
         $arrivalDate = $('#travelRequest_arrival_date')
@@ -108,7 +108,7 @@ $(document).ready ->
         $departureDate.val $departureDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
         
     $('#travelRequest_user_ac').autocomplete
-        source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'all'
+        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'all'
         minLength: 2
         response: (event, ui) ->
             return
@@ -117,14 +117,14 @@ $(document).ready ->
             return
 
     $('#travelRequest_team_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'team_manager'
+        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'team_manager'
         minLength: 2
         select: (event, ui) ->
             $('#travelRequest_team_manager').val ui.item.id
             return
 
     $('#travelRequest_general_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesTravelBundle_travel_userSearch', role: 'general_manager'
+        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'general_manager'
         minLength: 2
         select: (event, ui) ->
             $('#travelRequest_general_manager').val ui.item.id

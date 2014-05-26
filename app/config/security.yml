@@ -8,6 +8,9 @@ security:
         Opit\Notes\TravelBundle\Entity\Token:
             algorithm:        sha512
             iterations:       1
+        Opit\Notes\LeaveBundle\Entity\Token:
+            algorithm:        sha512
+            iterations:       1
 
     role_hierarchy:
         ROLE_USER: ~

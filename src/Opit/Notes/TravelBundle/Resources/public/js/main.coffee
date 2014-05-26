@@ -11,21 +11,7 @@ $.extend true, $(document).data('notes'),
             $self.parent().find('.fa-spinner').remove()
             $self.prop 'selectedIndex', 0
             $self.removeClass 'dropdown-disabled'
-    
-        changeStateDialog: ($dropdown, callback, travelId) ->
-            $('<div></div>').html("Change the status of travel from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
-                title: '<i class="fa fa-exclamation-triangle"></i> Travel status change'
-                buttons:
-                    Yes: ->
-                        $(@).dialog 'destroy'
-                        callback $dropdown.val(), travelId, $(document).data('notes').funcs.disableStatusDropdown($dropdown)
-                    No: ->
-                        $(@).dialog 'destroy'
-                        $(document).data('notes').funcs.enableStatusDropdown $dropdown
-                close: ->
-                    $(@).dialog 'destroy'
-                    $(document).data('notes').funcs.enableStatusDropdown $dropdown
-    
+                                
         changeTravelExpenseStatus: (statusId, travelExpenseId, $spinner) ->
             $.ajax
                 method: 'POST'

@@ -47,7 +47,7 @@ class NotificationRepository extends EntityRepository
             ->setParameter('unread', NotificationStatus::UNSEEN)
             ->setMaxResults(10)
             ->orderBy('n.id', 'DESC');
-
+        
         return $qb->getQuery()->getResult();
     }
 }

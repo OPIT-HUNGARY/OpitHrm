@@ -52,3 +52,31 @@
         </div>
     </div>
 {% endfor %}
+
+<div class="notification-type-title">Leave request</div>
+{% if '0' == leaveRequests|length %}
+<h5>
+    You have no leave request notifications.
+</h5>
+{% endif %}
+{% for lrNotification in leaveRequests %}
+    <div class="notification {% if 2 == lrNotification.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ lrNotification.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ lrNotification.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ lrNotification.id }}">
+            {% set msg = lrNotification.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': lrNotification.leaveRequest.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

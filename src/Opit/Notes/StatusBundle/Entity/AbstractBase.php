@@ -9,7 +9,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\TravelBundle\Entity;
+namespace Opit\Notes\StatusBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -23,7 +23,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage TravelBundle
+ * @subpackage StatusBundle
  * 
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()

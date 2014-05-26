@@ -6,6 +6,7 @@
     {{ parent() }}
     {% javascripts
         '@OpitNotesLeaveBundle/Resources/public/js/showLeaveRequest.coffee'
+        '@OpitNotesLeaveBundle/Resources/public/js/main.coffee'
     output='js/opitnotesleave/show_leave_request.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
@@ -20,18 +21,48 @@
 {% block body %}
     <h1>{% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request</h1>
 
+    <div id="changeStateWrapper">
+        <h3 class="display-inline-block margin-top-0">Change status: </h3>
+        {% if isStatusLocked %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ leaveRequestStates|first }}</option>
+        </select>
+        {% else %}
+        <select class="changeState " data-lr="{{ leaveRequest.id }}">
+            {% for key, value in leaveRequestStates %}
+                <option data-id="{{ key }}" value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+    </div>
+    
     <div class="dialog-description default-border-radius">
         Leave requests can be added or edited from here.
     </div>
-    
+        
     <div id="reply-message" class="alert-message error-message display-none">
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
     </div>
     
-    {{ form(form) }}
+    {% if isEditLocked == '1' %}
+        {% set disabled = 'disabled' %}
+    {% else %}
+        {% set disabled = '' %}
+    {% endif %}
+    {{ form(form, {
+        'action': (path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')})),
+        'method': 'POST',
+        'attr':{'id': 'leaveRequestForm', 'class': disabled}
+       })
+    }}
+    
     <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
         <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave requests</h3>
         <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave request</a>
+    </div>
+    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Required approvals</h3>
+        <div id="required-approvals" class="margin-left-1-em"></div>
     </div>
     <a href="{{ path('OpitNotesLeaveBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
 {% endblock %}

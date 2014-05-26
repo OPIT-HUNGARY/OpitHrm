@@ -19,6 +19,7 @@ use Opit\Notes\TravelBundle\Entity\Token;
 use Opit\Notes\StatusBundle\Manager\StatusManager;
 use Opit\Notes\TravelBundle\Model\TravelExpenseService;
 use Symfony\Component\Routing\Router;
+use Opit\Component\Email\EmailManager;
 
 /**
  * Description of TravelStatusManager
@@ -35,16 +36,16 @@ class TravelStatusManager extends StatusManager
     protected $factory;
     protected $router;
     protected $teService;
-    
+
     /**
      * 
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param type $factory
      * @param \Symfony\Component\Routing\Router $router
      * @param \Opit\Notes\TravelBundle\Model\TravelExpenseService $teService
-     * @param object $mailer
+     * @param \Opit\Component\Email\EmailManager $mailer
      */
-    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, $mailer)
+    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, EmailManager $mailer)
     {
         $this->entityManager = $entityManager;
         $this->factory = $factory;
@@ -58,7 +59,7 @@ class TravelStatusManager extends StatusManager
      * 
      * @param integer $id
      */
-    public function removeTravelTokens($id)
+    public function removeTokens($id)
     {
         $tokens = $this->entityManager->getRepository('OpitNotesTravelBundle:Token')
             ->findBy(array('travelId' => $id));

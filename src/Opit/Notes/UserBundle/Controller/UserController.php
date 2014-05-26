@@ -362,6 +362,38 @@ class UserController extends Controller
         return new JsonResponse(array('ldap_enabled' => $user->isldapEnabled()));
     }
 
+    /* Moveable */
+    /**
+     * @Route("/secured/user/search", name="OpitNotesUserBundle_user_search")
+     * @Method({"GET"})
+     * @Secure(roles="ROLE_USER")
+     */
+    public function userSearchAction()
+    {
+        $userNames = array();
+        $request = $this->getRequest();
+        $term = $request->query->get('term');
+        $role = strtoupper('role' . '_' . $request->query->get('role'));
+        $users = $this->getDoctrine()->
+                        getRepository('OpitNotesUserBundle:User')->
+                        findUserByEmployeeNameUsingLike($term);
+
+        foreach ($users as $user) {
+            $groups = $user->getGroups();
+            foreach ($groups as $group) {
+                if ('ALL' === $role || $group->getRole() === $role) {
+                    $userNames[] = array(
+                        'value'=>$user->getEmployee()->getEmployeeName(),
+                        'label'=>$user->getEmployee()->getEmployeeName(),
+                        'id'=>$user->getId()
+                    );
+                }
+            }
+        }
+        
+        return new JsonResponse($userNames);
+    }    
+    
     /**
      * Gets a user object
      *

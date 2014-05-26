@@ -14,8 +14,7 @@
     margin:4em auto;
 }
 
-#travelStatus{
-    width:500px;
+#request-status{
     background-color: $defaultLightColor;
     padding:10px;
     @include border-radius(5px);

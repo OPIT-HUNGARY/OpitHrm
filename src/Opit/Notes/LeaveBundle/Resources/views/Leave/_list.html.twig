@@ -10,9 +10,11 @@
             <i class="fa fa-sort default-right" data-field="endDate"></i>
             <span class="order-text cursor-pointer">Leave dates</span>
         </th>
+        <th>Leave request status</th>
         <th>Actions</th>
     </tr>
     {% for leaveRequest in leaveRequests %}
+    {% set id = leaveRequest.id %}
     <tr>
         <td><input type="checkbox" class="deleteMultipleLeaveRequest" name="deleteMultipleLeaveRequest[]" value="{{ leaveRequest.id }}" /></td>
         <td class="text-decoration-underline">
@@ -24,12 +26,33 @@
             {% endfor %}
         </td>
         <td>
-            <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': leaveRequest.id}) }}" title="Edit leave request">
+            {% if not listingRights['isLocked'][id]['isStatusLocked'] %}
+            <select data-lr="{{ id }}" class="changeState">
+            {% for key, value in listingRights['leaveRequestStates'][id] %}
+                <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+            </select>
+            {% else %}
+            <select class="changeState dropdown-disabled" disabled="disabled">
+                <option>{{ listingRights['leaveRequestStates'][id]|first }}</option>
+            </select>
+            {% endif %}
+        </td>
+        <td>
+            {% if not listingRights['isLocked'][id]['isEditLocked'] %}
+            <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="Edit leave request">
                 <i class="fa fa-pencil-square-o fa-1x"></i>
             </a>
-            <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ leaveRequest.id }}" class="delete-leave-request">
+            {% else %}
+            <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="View leave request">
+                <i class="fa fa-list-alt fa-1x"></i>
+            </a>
+            {% endif %}
+            {% if not isGeneralManager %}
+            <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
                 <i class="fa fa-trash-o fa-1x"></i>
             </a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}

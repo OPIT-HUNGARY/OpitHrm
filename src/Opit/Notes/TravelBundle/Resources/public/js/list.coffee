@@ -59,7 +59,7 @@ $(document).ready ->
     $travelList = $('#travel_list')
     $travelList.on 'change.tr_status', '.changeState', ->
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId, 'travel'
             
     $travelList.on 'click', '.order-text', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'

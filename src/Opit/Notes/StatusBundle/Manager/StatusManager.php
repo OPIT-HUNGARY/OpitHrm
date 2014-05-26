@@ -49,8 +49,8 @@ abstract class StatusManager
         $nextStates = array();
         $instanceS =
             new \ReflectionClass('Opit\Notes\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's');
-        
-        $this->removeTravelTokens($resource->getId());
+
+        $this->removeTokens($resource->getId());
 
         // check if the state the resource will be set to is the parent of the current status of the resource
         foreach ($this->getNextStates($status) as $key => $value) {
@@ -62,6 +62,7 @@ abstract class StatusManager
         }
 
         $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
+
         $this->entityManager->flush();
         
         return $status;
@@ -159,6 +160,7 @@ abstract class StatusManager
         $valid = false;
         
         $currentStatus = $this->getCurrentStatus($resource);
+        
         $availableStateIds = array_keys($this->getNextStates($currentStatus));
         
         // Set validity true if current status does not match new status

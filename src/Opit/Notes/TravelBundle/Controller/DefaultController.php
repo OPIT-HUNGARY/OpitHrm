@@ -17,11 +17,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Opit\Notes\TravelBundle\Entity\Token;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Opit\Notes\TravelBundle\Entity\TRNotification;
-use Opit\Notes\TravelBundle\Entity\TENotification;
-
-use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
 
 /**
  * DefaultController
@@ -36,7 +31,7 @@ class DefaultController extends Controller
     /**
      * Method to change the status of the travel request or travel expense
      *
-     * @Route("/changestatus/{gmId}/{travelType}/{status}/{token}", name="OpitNotesTravelBundle_change_status", requirements={ "status" = "\d+", "gmId" = "\d+" })
+     * @Route("/change/travelstatus/{gmId}/{travelType}/{status}/{token}", name="OpitNotesTravelBundle_change_status", requirements={ "status" = "\d+", "gmId" = "\d+" })
      * @Template()
      * @throws CreateNotFoundException
      */
@@ -117,88 +112,5 @@ class DefaultController extends Controller
                 'travelExpenseStates' => $travelExpenseStates
             )
         );
-    }
-    
-    /**
-     * Method to get number of unread notifications
-     *
-     * @Route("/secured/notifications/unread", name="OpitNotesTravelBundle_notifications_unread_count")
-     * @Template()
-     * @Method({"POST"})
-     */
-    public function getUnreadNotificationsCountAction()
-    {
-        $currentUser = $this->get('security.context')->getToken()->getUser();
-        $notificationManager = $this->get('opit.manager.travel_notification_manager');
-        $unreadCount = count($notificationManager->getUnreadNotifications($currentUser));
-        return new JsonResponse($unreadCount);
-    }
-    
-    /**
-     * Method to get all notifications
-     *
-     * @Route("/secured/notifications/all", name="OpitNotesTravelBundle_notifications_all")
-     * @Template()
-     * @Method({"POST"})
-     */
-    public function getAllNotificationsAction()
-    {
-        $currentUser = $this->get('security.context')->getToken()->getUser();
-        $notificationManager = $this->get('opit.manager.travel_notification_manager');
-        $notifications = $notificationManager->getAllNotifications($currentUser);
-        $travelExpenses = array();
-        $travelRequests = array();
-        
-        foreach ($notifications as $notification) {
-            if ($notification instanceof TENotification) {
-                $travelExpenses[] = $notification;
-            } elseif ($notification instanceof TRNotification) {
-                $travelRequests[] = $notification;
-            }
-        }
-        
-        return $this->render(
-            'OpitNotesTravelBundle:Shared:notifications.html.twig',
-            array(
-                'travelRequests' => $travelRequests,
-                'travelExpenses' => $travelExpenses
-            )
-        );
-    }
-    
-    /**
-     * Method to change the read state of one notification
-     *
-     * @Route("/secured/notifications/state/change", name="OpitNotesTravelBundle_notifications_state_change")
-     * @Template()
-     * @Method({"POST"})
-     */
-    public function changeNotificationStateAction(Request $request)
-    {
-        $notificationId = $request->request->get('id');
-        $entityManager = $this->getDoctrine()->getManager();
-        $notification = $entityManager->getRepository('OpitNotesNotificationBundle:Notification')->find($notificationId);
-        $notificationManager = $this->get('opit.manager.travel_notification_manager');
-        $notification = $notificationManager->setNotificationStatus($notification, NotificationStatus::READ);
-        $entityManager->persist($notification);
-        $entityManager->flush();
-
-        return new JsonResponse(array('success' => ($notification->getRead()->getId() === NotificationStatus::READ)));
-    }
-    
-    /**
-     * Method to delete a notification
-     *
-     * @Route("/secured/notification/delete", name="OpitNotesTravelBundle_notification_delete")
-     * @Template()
-     * @Method({"POST"})
-     */
-    public function deleteNotificationAction(Request $request)
-    {
-        $notificationId = $request->request->get('id');
-        $notificationManager = $this->get('opit.manager.travel_notification_manager');
-        $notificationManager->deleteNotification($notificationId);
-        
-        return new JsonResponse(array('deleted' => true));
     }
 }

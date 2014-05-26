@@ -43,6 +43,7 @@ class UserFixtures extends AbstractDataFixture
         $employee->setDateOfBirth(new \DateTime('1990-02-01'));
         $employee->setJoiningDate(new \DateTime('2009-03-01'));
         $employee->setNumberOfChildren(0);
+        $employee->setWorkingHours(8);
         $employee->setEmployeeName('employee');
         $employee->setWorkingHours(8);
 
@@ -71,6 +72,7 @@ class UserFixtures extends AbstractDataFixture
             $employee2->setDateOfBirth(new \DateTime('1990-02-01'));
             $employee2->setJoiningDate(new \DateTime('2009-03-01'));
             $employee2->setNumberOfChildren(0);
+            $employee2->setWorkingHours(12);
             $employee2->setEmployeeName('employee2');
             $employee2->setWorkingHours(6);
 
