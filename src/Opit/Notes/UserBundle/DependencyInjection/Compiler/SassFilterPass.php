@@ -30,8 +30,11 @@ class SassFilterPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $sassFilterDefinition = $container->getDefinition('assetic.filter.sass');
+        if (!$container->hasDefinition('assetic.filter.sass')) {
+            return;
+        }
 
+        $sassFilterDefinition = $container->getDefinition('assetic.filter.sass');
 
         // <call method="setCacheLocation"><argument>%kernel.cache_dir%/sass</argument></call>
         $sassFilterDefinition->addMethodCall('setCacheLocation', array('%kernel.cache_dir%/sass'));
