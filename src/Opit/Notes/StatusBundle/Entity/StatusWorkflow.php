@@ -24,6 +24,9 @@ use Opit\Notes\StatusBundle\Entity\Status;
  *
  * @ORM\Table(name="notes_status_workflow")
  * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusWorkflowRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"default" = "StatusWorkflow"})
  */
 class StatusWorkflow
 {
