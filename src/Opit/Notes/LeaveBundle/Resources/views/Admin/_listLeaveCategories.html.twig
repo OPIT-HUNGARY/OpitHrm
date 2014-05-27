@@ -17,6 +17,10 @@
                 {{ orderIcon }}
                 <span class="order-text cursor-pointer">Description</span>
             </th>
+            <th>
+                {{ orderIcon }}
+                <span class="order-text cursor-pointer">Leave duration</span>
+            </th>
             <th>Actions</th>
         </tr>
         {% for holidayCategory in holidayCategories %}
@@ -27,6 +31,7 @@
             <td data-tr-id='{{ holidayCategory.id }}'>{{ holidayCategory.id }}</td>
             <td><span class="list-holidaycategory clickable" data-id="{{ holidayCategory.id }}">{{ holidayCategory.name }}</span></td>
             <td>{{ holidayCategory.description|slice(0,80) }}{% if holidayCategory.description|length > 80 %}{{ '...' }}{% endif %}</td>
+            <td><span class="list-holidaycategory clickable">{{ holidayCategory.leaveDuration.leaveDurationName }}</span></td>
             <td>
                 <a href="#" class="list-holidaycategory" data-id="{{ holidayCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
                 <a href="#" data-id="{{ holidayCategory.id }}" class="delete-single-holidaycategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>

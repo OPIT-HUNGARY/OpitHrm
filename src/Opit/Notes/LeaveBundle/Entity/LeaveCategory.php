@@ -49,6 +49,15 @@ class LeaveCategory
      * @ORM\OneToMany(targetEntity="LeaveRequest", mappedBy="category", cascade={"persist"})
      */
     protected $requests;
+    
+    /**
+     * 
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveDuration")
+     * @ORM\JoinColumn(referencedColumnName="id")
+     */
+    protected $leaveDuration;
 
     /**
      * Constructor
@@ -168,5 +177,28 @@ class LeaveCategory
     public function getRequests()
     {
         return $this->requests;
+    }
+
+    /**
+     * Set leaveDuration
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveDuration $leaveDuration
+     * @return LeaveCategory
+     */
+    public function setLeaveDuration(\Opit\Notes\LeaveBundle\Entity\LeaveDuration $leaveDuration = null)
+    {
+        $this->leaveDuration = $leaveDuration;
+
+        return $this;
+    }
+
+    /**
+     * Get leaveDuration
+     *
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveDuration 
+     */
+    public function getLeaveDuration()
+    {
+        return $this->leaveDuration;
     }
 }

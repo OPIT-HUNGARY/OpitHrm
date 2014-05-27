@@ -36,36 +36,35 @@
 namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\LeaveBundle\Entity\LeaveGroup;
+use Opit\Notes\LeaveBundle\Entity\LeaveType;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of LeaveGroupsFixtures
+ * Description of LeaveTypesFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage LeaveBundle
  */
-class LeaveGroupsFixtures extends AbstractDataFixture
+class LeaveTypesFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
     public function doLoad(ObjectManager $manager)
     {
-        $groups = array(
-            'Age',
-            'Children',
-            'Illness'
+        $types = array(
+            'Bank holidays',
+            'Weekend working days'
         );
 
-        foreach ($groups as $group) {
-            $leaveGroup = new LeaveGroup();
-            $leaveGroup->setName($group);
-            $manager->persist($leaveGroup);
+        foreach ($types as $type) {
+            $holidayType = new LeaveType();
+            $holidayType->setName($type);
+            $manager->persist($holidayType);
 
-            $this->addReference(strtolower($group), $leaveGroup);
+            $this->addReference($type, $holidayType);
         }
 
         $manager->flush();

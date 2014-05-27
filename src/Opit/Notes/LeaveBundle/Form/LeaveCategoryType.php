@@ -65,6 +65,10 @@ class LeaveCategoryType extends AbstractType
             'max_length' => 255,
             'placeholder' => 'Description'
         )));
+        $builder->add('leaveDuration', 'entity', array(
+            'class' => 'OpitNotesLeaveBundle:LeaveDuration',
+            'property' => 'leaveDurationName',
+        ));
         $builder->add($builder->create('id', 'hidden', array('mapped' => false)));
     }
 

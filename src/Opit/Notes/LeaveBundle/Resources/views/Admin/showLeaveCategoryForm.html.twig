@@ -30,6 +30,15 @@
                 {{ form_errors(form.description) }}
             </div>
         </div>
+        <div class="float-left width-30">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+                {{ form_label(form.leaveDuration) }}
+            </div>
+            <div class="vertical-align-top item-input-box height-60 float-left margin-bottom-10 padding-3">
+                {{ form_widget(form.leaveDuration, {'attr': {'class': 'width-96 default-border-radius'}}) }}
+                {{ form_errors(form.leaveDuration) }}
+            </div>
+        </div>
     </div>
     {{ form_end(form) }}
 </form>

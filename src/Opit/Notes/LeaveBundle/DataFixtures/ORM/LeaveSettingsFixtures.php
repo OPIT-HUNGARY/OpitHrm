@@ -40,12 +40,12 @@ use Opit\Notes\LeaveBundle\Entity\LeaveSetting;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of LeaveGroupFixtures
+ * Description of LeaveSettingsFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage LeaveRateBundle
+ * @subpackage LeaveBundle
  */
 class LeaveSettingsFixtures extends AbstractDataFixture
 {

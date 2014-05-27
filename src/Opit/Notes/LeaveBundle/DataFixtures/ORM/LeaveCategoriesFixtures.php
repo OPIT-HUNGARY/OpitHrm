@@ -36,35 +36,42 @@
 namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\LeaveBundle\Entity\LeaveType;
+use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
+use Opit\Notes\LeaveBundle\Entity\LeaveDuration;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of PerDiemFixtures
+ * Description of LeaveCategoriesFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage CurrencyRateBundle
+ * @subpackage LeaveBundle
  */
-class LeaveTypesFixtures extends AbstractDataFixture
+class LeaveCategoriesFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
     public function doLoad(ObjectManager $manager)
     {
-        $types = array(
-            'Bank holidays',
-            'Weekend working days'
+        $fullDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveDuration')->find(LeaveDuration::FULLDAY);
+        $halfDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveDuration')->find(LeaveDuration::HALFDAY);
+        
+        $categories = array(
+            'Full day' => array('description' => 'Employee takes full day off.', 'duration' => $fullDay),
+            'Morning half day' => array('description' => 'Employee takes morning half day off.', 'duration' => $halfDay),
+            'Afternoon half day' => array('description' => 'Employee takes afternoon half day off.', 'duration' => $halfDay),
+            'Sick leave' => array('description' => 'Employee takes sick leave.', 'duration' => $fullDay),
+            'Unpaid leave' => array('description' => 'Employee takes unpaid leave.', 'duration' => $fullDay)
         );
 
-        foreach ($types as $type) {
-            $holidayType = new LeaveType();
-            $holidayType->setName($type);
-            $manager->persist($holidayType);
-
-            $this->addReference($type, $holidayType);
+        foreach ($categories as $key => $value) {
+            $holidayCategory = new LeaveCategory();
+            $holidayCategory->setName($key);
+            $holidayCategory->setDescription($value['description']);
+            $holidayCategory->setLeaveDuration($value['duration']);
+            $manager->persist($holidayCategory);
         }
 
         $manager->flush();
@@ -75,7 +82,7 @@ class LeaveTypesFixtures extends AbstractDataFixture
      */
     public function getOrder()
     {
-        return 10; // the order in which fixtures will be loaded
+        return 14; // the order in which fixtures will be loaded
     }
     
     /**

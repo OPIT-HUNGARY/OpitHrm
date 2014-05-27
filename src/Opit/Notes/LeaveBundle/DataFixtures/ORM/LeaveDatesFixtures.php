@@ -36,37 +36,57 @@
 namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
+use Opit\Notes\LeaveBundle\Entity\LeaveDate;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of PerDiemFixtures
+ * Description of LeaveDatesFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage CurrencyRateBundle
+ * @subpackage LeaveBundle
  */
-class LeaveCategoriesFixtures extends AbstractDataFixture
+class LeaveDatesFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
     public function doLoad(ObjectManager $manager)
     {
-        $categories = array(
-            'Full day' => 'Employee takes full day off.',
-            'Morning half day' => 'Employee takes morning half day off.',
-            'Afternoon half day' => 'Employee takes afternoon half day off.',
-            'Sick leave' => 'Employee takes sick leave.',
-            'Unpaid leave' => 'Employee takes unpaid leave.',
+        $dates = array(
+            '2014-01-01' => 'Bank holidays',
+            '2014-03-15' => 'Bank holidays',
+            '2014-04-21' => 'Bank holidays',
+            '2014-05-01' => 'Bank holidays',
+            '2014-05-02' => 'Bank holidays',
+            '2014-06-09' => 'Bank holidays',
+            '2014-08-20' => 'Bank holidays',
+            '2014-10-23' => 'Bank holidays',
+            '2014-10-24' => 'Bank holidays',
+            '2014-11-01' => 'Bank holidays',
+            '2014-12-24' => 'Bank holidays',
+            '2014-12-25' => 'Bank holidays',
+            '2014-12-26' => 'Bank holidays',
+            '2014-05-10' => 'Weekend working days',
+            '2014-10-18' => 'Weekend working days',
+            '2014-12-13' => 'Weekend working days',
+            '2013-01-01' => 'Bank holidays',
+            '2013-03-15' => 'Bank holidays',
+            '2013-05-01' => 'Bank holidays',
+            '2013-08-20' => 'Bank holidays',
+            '2013-10-23' => 'Bank holidays',
+            '2013-11-01' => 'Bank holidays',
+            '2013-12-24' => 'Bank holidays',
+            '2013-12-25' => 'Bank holidays',
+            '2013-12-26' => 'Bank holidays',
         );
 
-        foreach ($categories as $key => $value) {
-            $holidayCategory = new LeaveCategory();
-            $holidayCategory->setName($key);
-            $holidayCategory->setDescription($value);
-            $manager->persist($holidayCategory);
+        foreach ($dates as $key => $value) {
+            $holidayDate = new LeaveDate();
+            $holidayDate->setHolidayDate(new \DateTime($key));
+            $holidayDate->setHolidayType($this->getReference($value));
+            $manager->persist($holidayDate);
         }
 
         $manager->flush();
@@ -77,7 +97,7 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
      */
     public function getOrder()
     {
-        return 10; // the order in which fixtures will be loaded
+        return 11; // the order in which fixtures will be loaded
     }
     
     /**
