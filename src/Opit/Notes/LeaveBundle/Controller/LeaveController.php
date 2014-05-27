@@ -230,7 +230,8 @@ class LeaveController extends Controller
      * @Secure(roles="ROLE_USER")
      * @Template()
      */
-    public function employeeLeavesinfoBoardAction(){
+    public function employeeLeavesinfoBoardAction()
+    {
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
 
@@ -241,20 +242,27 @@ class LeaveController extends Controller
         //get leave categories
         $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
 
-        //TODO : get leave request breakup count
+        //total leave request count
+        $totalLeaveRequestCount = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')
+                ->findEmployeesLRCount($user->getEmployee()->getID(), date(date('Y') . '-01' . '-01'), date(date('Y') . '-12' . '-31'));
 
-        //remaning leaves count
-        //TODO: modify once status workflow implemented
-        $remaniningLeavesCount = '';
+        //finalized leave request count
+        $finalizedLeaveRequestCount = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')
+                ->findEmployeesLRCount($user->getEmployee()->getID(),  date(date('Y') . '-01' . '-01'), date(date('Y') . '-12' . '-31'), true);
 
         //pending leave request count
-        //TODO: modify once status workflow implemented
-        $pendingLeaveRequestCount = count($user->getEmployee()->getLeaveRequests());
+        $pendingLeaveRequestCount = $totalLeaveRequestCount - $finalizedLeaveRequestCount;
 
-        return $this->render('OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig', array('empLeaveEntitlement'=> $empLeaveEntitlement,
-            'leaveCategories'=> $leaveCategories,
-            'pendingLeaveRequestCount' => $pendingLeaveRequestCount
-                ));
+        //remaning leaves count
+        $leftToAvail = '';
 
+        return $this->render('OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig', array('empLeaveEntitlement' => $empLeaveEntitlement,
+                    'leaveCategories' => $leaveCategories,
+                    'pendingLeaveRequestCount' => $pendingLeaveRequestCount,
+                    'finalizedLeaveRequestCount' => $finalizedLeaveRequestCount,
+                    'leftToAvail' => $leftToAvail,
+                    'totalLeaveRequestCount' => $totalLeaveRequestCount
+        ));
     }
+
 }

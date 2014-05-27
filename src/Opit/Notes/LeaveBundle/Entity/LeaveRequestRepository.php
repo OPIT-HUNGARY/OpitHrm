@@ -126,4 +126,37 @@ class LeaveRequestRepository extends EntityRepository
 
         return $dq->getQuery()->getResult();
     }
+
+    /**
+     * Total employee leave request
+     *
+     * @param type $employeeId
+     * @param date $startDate
+     * @param date $endDate
+     * @param boolean $finalizedOnly , returns total request count by default
+     * @return type
+     */
+    public function findEmployeesLRCount($employeeId, $startDate = '', $endDate = '', $finalizedOnly = false)
+    {
+        $dq = $this->createQueryBuilder('lr');
+        $dq->select('count(lr)')
+                ->where('lr.employee = :employee')
+                ->andwhere('l.startDate > :startDate')
+                ->andWhere('l.endDate < :endDate');
+        if ($finalizedOnly) {
+            $status = array(Status::APPROVED, Status::PAID, Status::REJECTED);
+            $dq->andWhere($dq->expr()->In('s.status', ':states'));
+            $dq->setParameter(':states', $status);
+            $dq->innerJoin('lr.states', 's');
+        }
+        $dq->innerJoin('lr.leaves', 'l')
+                ->innerJoin('lr.employee', 'e')
+                ->setParameter('employee', $employeeId)
+                ->setParameter('startDate', $startDate)
+                ->setParameter('endDate', $endDate);
+        $q = $dq->getQuery();
+
+        return $q->getSingleScalarResult();
+    }
+
 }
