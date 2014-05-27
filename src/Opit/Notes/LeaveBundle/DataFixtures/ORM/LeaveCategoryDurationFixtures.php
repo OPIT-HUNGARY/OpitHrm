@@ -36,32 +36,32 @@
 namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\LeaveBundle\Entity\LeaveDuration;
+use Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * Description of LeaveDurationFixtures
+ * Description of LeaveCategoryDurationFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage LeaveBundle
  */
-class LeaveDurationFixtures extends AbstractDataFixture
+class LeaveCategoryDurationFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
     public function doLoad(ObjectManager $manager)
     {
-        $leaveDurationFullDay = new LeaveDuration();
-        $leaveDurationFullDay->setLeaveDurationName('Full day working hours');
-        $leaveDurationFullDay->setId(LeaveDuration::FULLDAY);
+        $leaveDurationFullDay = new LeaveCategoryDuration();
+        $leaveDurationFullDay->setLeaveCategoryDurationName('Full day working hours');
+        $leaveDurationFullDay->setId(LeaveCategoryDuration::FULLDAY);
         $manager->persist($leaveDurationFullDay);
         
-        $leaveDurationHalfDay = new LeaveDuration();
-        $leaveDurationHalfDay->setLeaveDurationName('Half day working hours');
-        $leaveDurationHalfDay->setId(LeaveDuration::HALFDAY);
+        $leaveDurationHalfDay = new LeaveCategoryDuration();
+        $leaveDurationHalfDay->setLeaveCategoryDurationName('Half day working hours');
+        $leaveDurationHalfDay->setId(LeaveCategoryDuration::HALFDAY);
         $manager->persist($leaveDurationHalfDay);
 
         $manager->flush();

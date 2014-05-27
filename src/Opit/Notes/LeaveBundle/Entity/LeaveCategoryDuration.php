@@ -14,17 +14,17 @@ namespace Opit\Notes\LeaveBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Leave duration
+ * Leave category duration
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage LeavenBundle
  *
- * @ORM\Table(name="notes_leave_duration")
+ * @ORM\Table(name="notes_leave_category_duration")
  * @ORM\Entity()
  */
-class LeaveDuration
+class LeaveCategoryDuration
 {
     const FULLDAY = 1;
     const HALFDAY = 2;
@@ -40,15 +40,15 @@ class LeaveDuration
     /**
      * @var string
      *
-     * @ORM\Column(name="leave_duration_name", type="string", length=255)
+     * @ORM\Column(name="leave__category_duration_name", type="string", length=255)
      */
-    protected $leaveDurationName;
+    protected $leaveCategoryDurationName;
 
     /**
      * Set id
      *
      * @param integer $id
-     * @return LeaveDuration
+     * @return LeaveCategoryDuration
      */
     public function setId($id)
     {
@@ -68,25 +68,25 @@ class LeaveDuration
     }
 
     /**
-     * Set leaveDurationName
+     * Set leaveCategoryDurationName
      *
-     * @param string $leaveDurationName
-     * @return LeaveDuration
+     * @param string $leaveCategoryDurationName
+     * @return LeaveCategoryDuration
      */
-    public function setLeaveDurationName($leaveDurationName)
+    public function setLeaveCategoryDurationName($leaveCategoryDurationName)
     {
-        $this->leaveDurationName = $leaveDurationName;
+        $this->leaveCategoryDurationName = $leaveCategoryDurationName;
 
         return $this;
     }
 
     /**
-     * Get leaveDurationName
+     * Get leaveCategoryDurationName
      *
      * @return string 
      */
-    public function getLeaveDurationName()
+    public function getLeaveCategoryDurationName()
     {
-        return $this->leaveDurationName;
+        return $this->leaveCategoryDurationName;
     }
 }

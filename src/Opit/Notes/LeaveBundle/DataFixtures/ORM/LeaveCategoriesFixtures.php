@@ -37,7 +37,7 @@ namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
-use Opit\Notes\LeaveBundle\Entity\LeaveDuration;
+use Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration;
 use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
@@ -55,8 +55,8 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
-        $fullDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveDuration')->find(LeaveDuration::FULLDAY);
-        $halfDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveDuration')->find(LeaveDuration::HALFDAY);
+        $fullDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::FULLDAY);
+        $halfDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::HALFDAY);
         
         $categories = array(
             'Full day' => array('description' => 'Employee takes full day off.', 'duration' => $fullDay),
@@ -70,7 +70,7 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
             $holidayCategory = new LeaveCategory();
             $holidayCategory->setName($key);
             $holidayCategory->setDescription($value['description']);
-            $holidayCategory->setLeaveDuration($value['duration']);
+            $holidayCategory->setLeaveCategoryDuration($value['duration']);
             $manager->persist($holidayCategory);
         }
 

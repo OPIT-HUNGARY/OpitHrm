@@ -54,11 +54,10 @@ class LeaveCategory
      * 
      * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveDuration")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration")
      * @ORM\JoinColumn(referencedColumnName="id")
      */
-    protected $leaveDuration;
-
+    protected $leaveCategoryDuration;
     /**
      * Constructor
      */
@@ -180,25 +179,25 @@ class LeaveCategory
     }
 
     /**
-     * Set leaveDuration
+     * Set leaveCategoryDuration
      *
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveDuration $leaveDuration
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration $leaveCategoryDuration
      * @return LeaveCategory
      */
-    public function setLeaveDuration(\Opit\Notes\LeaveBundle\Entity\LeaveDuration $leaveDuration = null)
+    public function setLeaveCategoryDuration(\Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration $leaveCategoryDuration = null)
     {
-        $this->leaveDuration = $leaveDuration;
+        $this->leaveCategoryDuration = $leaveCategoryDuration;
 
         return $this;
     }
 
     /**
-     * Get leaveDuration
+     * Get leaveCategoryDuration
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveDuration 
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration 
      */
-    public function getLeaveDuration()
+    public function getLeaveCategoryDuration()
     {
-        return $this->leaveDuration;
+        return $this->leaveCategoryDuration;
     }
 }
