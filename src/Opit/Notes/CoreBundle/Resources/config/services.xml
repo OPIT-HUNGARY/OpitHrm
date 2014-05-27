@@ -5,10 +5,14 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
+        <parameter key="opit.twig.core_extension.class">Opit\Notes\CoreBundle\Twig\CoreExtension</parameter>
         <parameter key="opit.core.email_manager.class">Opit\Notes\CoreBundle\Email\EmailManager</parameter>
     </parameters>
     
     <services>
+        <service id="opit.twig.core_extension" class="%opit.twig.core_extension.class%">
+            <tag name="twig.extension" />
+        </service>
         <service id="opit.component.email_manager" class="%opit.core.email_manager.class%">
             <argument type="service" id="mailer" />
             <argument type="service" id="templating" />

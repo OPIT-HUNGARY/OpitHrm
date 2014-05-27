@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Opit\Notes\CurrencyRateBundle\Tests\Helper;
+namespace Opit\Notes\CoreBundle\Tests\Helper;
 
 use Opit\Component\Utils\Utils;
 
 /**
  * Description of UtilsTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -30,10 +30,10 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     {
         $utils = new Utils();
         $result = Utils::getClassBasename($utils);
-        
+
         $this->assertEquals('Utils', $result, 'Getting class\'s name.');
     }
-    
+
     /**
      * testing validateDate method.
      */
@@ -52,7 +52,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
             'ValidateDate: The given date and its format are covenant.'
         );
     }
-    
+
     /**
      * testing validateCurrencyCodeString method.
      */

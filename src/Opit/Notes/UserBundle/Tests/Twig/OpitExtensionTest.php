@@ -19,8 +19,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Notes
- * @subpackage UserBundle
+ * @package Opit
+ * @subpackage Notes
  */
 class OpitExtensionTest extends WebTestCase
 {
@@ -55,98 +55,25 @@ class OpitExtensionTest extends WebTestCase
     }
     
     /**
-     * testing humanizeFilter method.
+     * testing get globals method.
      */
-    public function testHumanizeFilter()
+    public function testGetGlobals()
     {
-        $this->assertEquals(
-            'Lower Case And Underscored Word',
-            $this->opitExtension->humanizeFilter('lower_case_and_underscored_word'),
-            'testHumanizeFilter: The string is not humanized.'
-        );
-    }
-    
-    /**
-     * testing camelizeFilter method.
-     */
-    public function testCamelizeFilter()
-    {
-        $this->assertEquals(
-            'LowerCaseAndUnderscoredWord',
-            $this->opitExtension->camelizeFilter('lower_case_and_underscored_word'),
-            'testCamelizeFilter: The string is not camelized.'
-        );
-    }
-    
-    /**
-     * testing underscoreFilter method.
-     */
-    public function testUnderscoreFilter()
-    {
-        $this->assertEquals(
-            '_lower_case_and_underscored_word',
-            $this->opitExtension->underscoreFilter('LowerCaseAndUnderscoredWord'),
-            'testUnderscoreFilter: The string is not underscored.'
-        );
-    }
-    
-    /**
-     * testing strpos method.
-     */
-    public function testStrpos()
-    {
-        $this->assertEquals(
-            '9',
-            $this->opitExtension->strpos('LowerCaseAndUnderscoredWord', 'And'),
-            'testUnderscoreFilter: The expected and the given index of the searched string are not equal.'
-        );
-    }
-    
-    /**
-     * testing splitText method.
-     */
-    public function testSplitText()
-    {
-        $this->assertEquals(
-            'Underscored',
-            $this->opitExtension->splitText('Lower,Case,And,Underscored,Word', ',', 3),
-            'testSplitText: The expected and the given splited text are not equal.'
-        );
-    }
-    
-    /**
-     * testing getFunctions method.
-     */
-    public function testGetFunctions()
-    {
-        $result = $this->opitExtension->getFunctions();
+        $result = $this->opitExtension->getGlobals();
         
         $this->assertTrue(
             is_array($result),
             'testGetFunctions: The result is not an array.'
         );
         $this->assertArrayHasKey(
-            'strpos',
+            'ldap_enabled',
             $result,
-            'testGetFunctions: Missing strpos array key.'
+            'testGetGlobals: Missing ldap_enabled array key.'
         );
         $this->assertArrayHasKey(
-            'splitText',
+            'security_roles',
             $result,
-            'testGetFunctions: Missing splitText array key.'
-        );
-    }
-    
-    /**
-     * testing getFilters method.
-     */
-    public function testGetFilters()
-    {
-        $result = $this->opitExtension->getFilters();
-        
-        $this->assertTrue(
-            is_array($result),
-            'testGetFilters: The result is not an array.'
+            'testGetGlobals: Missing security_roles array key.'
         );
     }
 }

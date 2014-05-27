@@ -14,6 +14,9 @@
     bootstrap                   = "bootstrap.php.cache" >
 
     <testsuites>
+         <testsuite name="Core Bundle Test Suite">
+            <directory>../src/*/CoreBundle/Tests</directory>
+        </testsuite>
         <testsuite name="Currency Rate Bundle Test Suite">
             <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateDiffCommandTest.php</file>
             <file>../src/*/CurrencyRateBundle/Tests/Command/ExchangeRateInsertCommandTest.php</file>
