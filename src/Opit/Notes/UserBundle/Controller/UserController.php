@@ -54,7 +54,7 @@ class UserController extends Controller
         $showList = $request->request->get('showList');
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
-        $config = $this->container->getParameter('opit_notes_user');
+        $config = $this->container->getParameter('pager_config');
 
         if ($isSearch) {
             $allRequests = $request->request->all();
@@ -93,7 +93,7 @@ class UserController extends Controller
         $propertyNames = array("username", "email", "employeeName", "isActive", "ldapEnabled", "roles");
         
         $templateVars['numberOfPages'] = $numberOfPages;
-        $templateVars['maxPages'] = $config['max_pager_pages'];
+        $templateVars['maxPages'] = $config['max_pages'];
         if (!$request->request->get('incrementOffset')) {
             $templateVars['offset'] = $offset + 1;
         } else {

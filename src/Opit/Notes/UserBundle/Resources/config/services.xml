@@ -6,7 +6,6 @@
 
     <parameters>
         <parameter key="opit.twig.opit_extension.class">Opit\Notes\UserBundle\Twig\OpitExtension</parameter>
-        <parameter key="opit.component.email_manager.class">Opit\Component\Email\EmailManager</parameter>
         <parameter key="opit.model.user.class">Opit\Notes\UserBundle\Model\UserService</parameter>
         <parameter key="opit.listener.first_login.class">Opit\Notes\UserBundle\EventListener\FirstLoginListener</parameter>
         <parameter key="opit.security.ldap_authenticator.class">Opit\Notes\UserBundle\Security\Ldap\LdapAuthenticator</parameter>

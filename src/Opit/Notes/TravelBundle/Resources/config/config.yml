@@ -1,12 +1,6 @@
-imports:
-    - { resource: parameters.yml }
-
-opit_notes_travel:
-    mail_sender: %mail_sender%
-    max_results: %max_results%
-    max_pager_pages: %max_pager_pages%
-    
 twig:
     form:
         resources:
             - 'OpitNotesTravelBundle:Form:fields.html.twig'
+
+opit_notes_travel:

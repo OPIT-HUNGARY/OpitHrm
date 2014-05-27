@@ -1,3 +1,16 @@
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+OpitNotesCoreBundle:
+    resource: "@OpitNotesCoreBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+opit_notes_user:
+    resource: "@OpitNotesUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 opit_notes_notification:
     resource: "@OpitNotesNotificationBundle/Controller/"
     type:     annotation
@@ -18,16 +31,8 @@ opit_notes_currency_rate:
     type:     annotation
     prefix:   /
 
-fos_js_routing:
-    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
-
 opit_notes_travel:
     resource: "@OpitNotesTravelBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
-opit_notes_user:
-    resource: "@OpitNotesUserBundle/Controller/"
     type:     annotation
     prefix:   /
 

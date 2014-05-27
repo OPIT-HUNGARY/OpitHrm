@@ -19,8 +19,9 @@ parameters:
     monolog_mail_from: portal@opit.hu
     monolog_mail_to:   ~
 
+    # Pager
     max_results: 25
-    max_pager_pages: 3
+    max_pages: 3
 
     default_currency:   EUR
     version_number: '1.1.0-beta'
@@ -32,3 +33,5 @@ parameters:
     leave_default_days: ~
     arrival_time: ~
     lunch_time_in_minutes: ~
+
+    mail_sender: 'noreply@application'

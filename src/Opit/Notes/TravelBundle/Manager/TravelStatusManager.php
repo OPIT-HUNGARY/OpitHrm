@@ -19,7 +19,7 @@ use Opit\Notes\TravelBundle\Entity\Token;
 use Opit\Notes\StatusBundle\Manager\StatusManager;
 use Opit\Notes\TravelBundle\Model\TravelExpenseService;
 use Symfony\Component\Routing\Router;
-use Opit\Component\Email\EmailManager;
+use Opit\Component\Email\EmailManagerInterface;
 use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
 
 /**
@@ -46,7 +46,7 @@ class TravelStatusManager extends StatusManager
      * @param \Opit\Notes\TravelBundle\Model\TravelExpenseService $teService
      * @param \Opit\Component\Email\EmailManager $mailer
      */
-    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, EmailManager $mailer)
+    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, EmailManagerInterface $mailer)
     {
         $this->entityManager = $entityManager;
         $this->factory = $factory;

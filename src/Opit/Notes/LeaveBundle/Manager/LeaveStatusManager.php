@@ -19,7 +19,7 @@ use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Core\SecurityContext;
-use Opit\Component\Email\EmailManager;
+use Opit\Component\Email\EmailManagerInterface;
 use Opit\Component\Utils\Utils;
 use Opit\Notes\LeaveBundle\Entity\Token;
 use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
@@ -51,7 +51,7 @@ class LeaveStatusManager extends StatusManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManager $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;

@@ -5,8 +5,6 @@ parameters:
 
 opit_notes_user:
     min_php_version: 5.4.0
-    max_results: %max_results%
-    max_pager_pages: %max_pager_pages%
     ldap:
         enabled: false
         host: %ldap_host%

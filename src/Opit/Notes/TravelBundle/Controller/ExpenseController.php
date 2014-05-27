@@ -200,7 +200,7 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense();
         }
         
-        $currencyCongif = $this->container->getParameter('exchange_rate');
+        $currencyCongif = $this->container->getParameter('currency_config');
         
         return array(
             'travelExpense' => $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense),
@@ -343,7 +343,7 @@ class ExpenseController extends Controller
      */
     protected function getTravelExpensePage($travelExpenseId)
     {
-        $currencyConfig = $this->container->getParameter('exchange_rate');
+        $currencyConfig = $this->container->getParameter('currency_config');
         $travelExpenseService = $this->get('opit.model.travel_expense');
         
         $travelExpense = $this->getTravelExpense($travelExpenseId);

@@ -9,7 +9,6 @@
         <parameter key="opit.model.travel_expense.class">Opit\Notes\TravelBundle\Model\TravelExpenseService</parameter>
         <parameter key="opit.model.travel_request.class">Opit\Notes\TravelBundle\Model\TravelRequestService</parameter>
         <parameter key="opit.manager.travel_status_manager.class">Opit\Notes\TravelBundle\Manager\TravelStatusManager</parameter>
-        <parameter key="opit.component.email_manager.class">Opit\Component\Email\EmailManager</parameter>
         <parameter key="opit.manager.travel_notification_manager.class">Opit\Notes\TravelBundle\Manager\TravelNotificationManager</parameter>
         <parameter key="opit.manager.pdf_manager.class">Opit\Notes\TravelBundle\Manager\PDFManager</parameter>
         <parameter key="opit.security.acl.voter.class">Opit\Notes\TravelBundle\Manager\AclManager</parameter>
@@ -21,7 +20,7 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="rate.exchange_service" />
-            <argument>%exchange_rate%</argument>
+            <argument>%currency_config%</argument>
         </service>
         <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
             <argument type="service" id="security.context" />
@@ -36,16 +35,9 @@
             <argument type="service" id="router" />
             <argument type="service" id="opit.model.travel_expense" />
             <argument type="service" id="opit.component.email_manager" />
-            <argument>%opit_notes_travel%</argument>
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
-        </service>
-        <service id="opit.component.email_manager" class="%opit.component.email_manager.class%">
-            <argument type="service" id="mailer" />
-            <argument type="service" id="templating" />
-            <argument type="service" id="logger" on-invalid="null" />
-            <argument>%opit_notes_travel%</argument>
         </service>
         <service id="opit.manager.pdf_manager" class="%opit.manager.pdf_manager.class%"></service>
         <service id="rate.exchange_service" alias="opit.service.exchange_rates" />

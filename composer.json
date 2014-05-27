@@ -65,9 +65,6 @@
         "incenteev-parameters": [
             {
                 "file": "app/config/parameters.yml"
-            },
-            {
-                "file": "src/Opit/Notes/TravelBundle/Resources/config/parameters.yml"
             }
         ],
         "branch-alias": {

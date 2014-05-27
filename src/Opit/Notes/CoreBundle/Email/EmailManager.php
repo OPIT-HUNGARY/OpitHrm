@@ -9,10 +9,12 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Component\Email;
+namespace Opit\Notes\CoreBundle\Email;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Opit\Component\Email\EmailManagerInterface;
+use Opit\Component\Email\Exception\ConfigurationException;
 
 /**
  * Description of EmailManager
@@ -58,7 +60,7 @@ class EmailManager implements EmailManagerInterface
     protected function validateConfig()
     {
         if (!array_key_exists('mail_sender', $this->config)) {
-            throw new Exception\ConfigurationException('No mail sender found in config.');
+            throw new ConfigurationException('No mail sender found in config.');
         }
     }
 

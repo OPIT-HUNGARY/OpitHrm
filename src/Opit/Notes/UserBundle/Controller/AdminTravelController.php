@@ -231,7 +231,7 @@ class AdminTravelController extends Controller
         $em = $this->getDoctrine()->getManager();
         $result = array();
         $result['status'] = 200;
-        $config = $this->container->getParameter('opit_notes_user');
+        $config = $this->container->getParameter('currency_config');
         $currencyCode = $config['default_currency'];
         
         //If it is a new per diem create, else modify it.

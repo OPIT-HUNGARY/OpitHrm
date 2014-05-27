@@ -38,7 +38,7 @@ class LeaveController extends Controller
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
         $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
 
-        $config = $this->container->getParameter('opit_notes_leave');
+        $config = $this->container->getParameter('pager_config');
         $maxResults = $config['max_results'];
         $offset = $request->request->get('offset');
         $pagnationParameters = array(
@@ -73,7 +73,7 @@ class LeaveController extends Controller
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
-                'maxPages' => $config['max_pager_pages'],
+                'maxPages' => $config['max_pages'],
                 'listingRights' => $listingRights,
                 'isGeneralManager' => $isGeneralManager
             )

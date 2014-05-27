@@ -42,7 +42,7 @@ class TravelController extends Controller
     {
         $showList = $request->request->get('showList');
         $securityContext = $this->get('security.context');
-        $config = $this->container->getParameter('opit_notes_travel');
+        $config = $this->container->getParameter('pager_config');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
@@ -81,7 +81,7 @@ class TravelController extends Controller
             'isLocked' => $isLocked,
             'currentStatusNames' => $currentStatusNames,
             'numberOfPages' => $numberOfPages,
-            'maxPages' => $config['max_pager_pages'],
+            'maxPages' => $config['max_pages'],
             'offset' => ($offset + 1),
             'isFirstLogin' => $user->getIsFirstLogin(),
             'states' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->getStatusNameId()
@@ -122,13 +122,13 @@ class TravelController extends Controller
         $estimatedCosts = $this->get('opit.model.travel_expense')
             ->getTRCosts($travelRequest);
         
-        $currencyCongif = $this->container->getParameter('exchange_rate');
+        $currencyConfig = $this->container->getParameter('currency_config');
         
         return array(
             'travelRequest' => $travelRequest,
             'estimatedCostsEUR' => $estimatedCosts['EUR'],
             'estimatedCostsHUF' => ceil($estimatedCosts['HUF']),
-            'currencyFormat' => $currencyCongif['currency_format']
+            'currencyFormat' => $currencyConfig['currency_format']
         );
     }
     

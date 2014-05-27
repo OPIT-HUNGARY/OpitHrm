@@ -1,6 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: "@OpitNotesCoreBundle/Resources/config/config.yml" }
     - { resource: "@OpitNotesUserBundle/Resources/config/config.yml" }
     - { resource: "@OpitNotesTravelBundle/Resources/config/config.yml" }
     - { resource: "@OpitNotesCurrencyRateBundle/Resources/config/config.yml" }
@@ -82,12 +83,6 @@ doctrine:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
                 enabled: true
                 
-services:
-    opit.listener.leave_request_post_listener:
-        class: Opit\Notes\LeaveBundle\EventListener\LeaveRequestPostListener
-        tags:
-            - { name: doctrine.event_listener, event: postPersist }
-
 # Swiftmailer Configuration
 swiftmailer:
     transport:  %mailer_transport%
@@ -109,13 +104,3 @@ stof_doctrine_extensions:
             softdeleteable: true
             timestampable: true
             blameable:     true
-            
-opit_notes_user:
-    default_currency:   %default_currency%
-    
-opit_notes_currency_rate:
-    default_currency:   %default_currency%
-    currency_format:
-        decimals:       2
-        dec_point:      ','
-        thousands_sep:  ' '

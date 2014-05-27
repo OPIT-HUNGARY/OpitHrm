@@ -9,10 +9,13 @@
         <parameter key="opit.manager.leave_status_manager.class">Opit\Notes\LeaveBundle\Manager\LeaveStatusManager</parameter>
         <parameter key="opit.manager.leave_notification_manager.class">Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager</parameter>
         <parameter key="opit.model.leave_request.class">Opit\Notes\LeaveBundle\Model\LeaveRequestService</parameter>
-        <parameter key="opit.component.email_manager.class">Opit\Component\Email\EmailManager</parameter>
+        <parameter key="opit.listener.leave_request_post_listener.class">Opit\Notes\LeaveBundle\EventListener\LeaveRequestPostListener</parameter>
     </parameters>
 
     <services>
+        <service id="opit.listener.leave_request_post_listener" class="%opit.listener.leave_request_post_listener.class%">
+            <tag name="doctrine.event_listener" event="postPersist" />
+        </service>
         <service id="opit_notes_leave.leave_calculation_service" lazy="true" class="%opit_notes_leave.leave_calculation_service.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%leave_calculation_options%</argument>
@@ -38,12 +41,6 @@
             <argument type="service" id="opit.manager.leave_status_manager" />
             <argument type="service" id="opit.security.acl.manager" />
         </service>
-        <service id="opit.component.email_manager" class="%opit.component.email_manager.class%">
-            <argument type="service" id="mailer" />
-            <argument type="service" id="templating" />
-            <argument type="service" id="logger" on-invalid="null" />
-            <argument>%opit_notes_travel%</argument>
-        </service>        
     </services>
 
 </container>
