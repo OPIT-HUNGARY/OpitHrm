@@ -17,6 +17,12 @@ class Version20140527110938 extends AbstractMigration
         
         $this->addSql("ALTER TABLE notes_leave_categories DROP FOREIGN KEY FK_13F3CE3762F1818F");
         $this->addSql("CREATE TABLE notes_leave_category_duration (id INT NOT NULL, leave__category_duration_name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        
+        // Copy existing data to new tables
+        $this->addSql(
+            'INSERT INTO notes_leave_category_duration (id, leave__category_duration_name) '
+            . 'SELECT id, leave_duration_name FROM notes_leave_duration');
+        
         $this->addSql("DROP TABLE notes_leave_duration");
         $this->addSql("DROP INDEX IDX_13F3CE3762F1818F ON notes_leave_categories");
         $this->addSql("ALTER TABLE notes_leave_categories CHANGE leaveduration_id leaveCategoryDuration_id INT DEFAULT NULL");
@@ -31,6 +37,12 @@ class Version20140527110938 extends AbstractMigration
         
         $this->addSql("ALTER TABLE notes_leave_categories DROP FOREIGN KEY FK_13F3CE37DBBBAF56");
         $this->addSql("CREATE TABLE notes_leave_duration (id INT NOT NULL, leave_duration_name VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        
+        // Copy existing data to new tables
+        $this->addSql(
+            'INSERT INTO notes_leave_duration (id, leave_duration_name) '
+            . 'SELECT id, leave__category_duration_name FROM notes_leave_category_duration');
+        
         $this->addSql("DROP TABLE notes_leave_category_duration");
         $this->addSql("DROP INDEX IDX_13F3CE37DBBBAF56 ON notes_leave_categories");
         $this->addSql("ALTER TABLE notes_leave_categories CHANGE leavecategoryduration_id leaveDuration_id INT DEFAULT NULL");
