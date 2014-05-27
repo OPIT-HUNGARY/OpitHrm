@@ -9,10 +9,11 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\CurrencyRateBundle\Entity;
+namespace Opit\Notes\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * AbstractBase class is sharing properties equal for all entities
@@ -22,8 +23,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * 
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Notes
- * @subpackage CurrencyRateBundle
+ * @package Opit
+ * @subpackage Notes
  * 
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
@@ -43,14 +44,14 @@ abstract class AbstractBase
     private $updated;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Symfony\Component\Security\Core\User\UserInterface")
      * @ORM\JoinColumn(name="created_user_id", referencedColumnName="id")
      * @Gedmo\Blameable(on="create")
      */
     private $createdUser;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Symfony\Component\Security\Core\User\UserInterface")
      * @ORM\JoinColumn(name="updated_user_id", referencedColumnName="id")
      * @Gedmo\Blameable(on="update")
      */
@@ -105,10 +106,10 @@ abstract class AbstractBase
     /**
      * Set createdUser
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $createdUser
-     * @return AbstractBase
+     * @param object $createdUser
+     * @return object
      */
-    public function setCreatedUser(\Opit\Notes\UserBundle\Entity\User $createdUser = null)
+    public function setCreatedUser(UserInterface $createdUser = null)
     {
         $this->createdUser = $createdUser;
 
@@ -118,7 +119,7 @@ abstract class AbstractBase
     /**
      * Get createdUser
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return object User
      */
     public function getCreatedUser()
     {
@@ -128,10 +129,10 @@ abstract class AbstractBase
     /**
      * Set updatedUser
      *
-     * @param \Opit\Notes\UserBundle\Entity\User $updatedUser
-     * @return AbstractBase
+     * @param object $updatedUser
+     * @return object
      */
-    public function setUpdatedUser(\Opit\Notes\UserBundle\Entity\User $updatedUser = null)
+    public function setUpdatedUser(UserInterface $updatedUser = null)
     {
         $this->updatedUser = $updatedUser;
 
@@ -141,7 +142,7 @@ abstract class AbstractBase
     /**
      * Get updatedUser
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return object User
      */
     public function getUpdatedUser()
     {

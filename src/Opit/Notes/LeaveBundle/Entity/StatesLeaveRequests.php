@@ -14,6 +14,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 
 /**
  * This class is a container for the Travel Expense Status model

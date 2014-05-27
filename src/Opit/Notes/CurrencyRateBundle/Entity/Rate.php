@@ -12,7 +12,7 @@
 namespace Opit\Notes\CurrencyRateBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Opit\Notes\CurrencyRateBundle\Entity\AbstractBase;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 
 /**
  * Rate

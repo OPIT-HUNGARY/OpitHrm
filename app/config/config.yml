@@ -74,6 +74,7 @@ doctrine:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
         resolve_target_entities:
+            Symfony\Component\Security\Core\User\UserInterface: Opit\Notes\UserBundle\Entity\User
             Opit\Notes\TravelBundle\Model\TravelRequestUserInterface: Opit\Notes\UserBundle\Entity\User
             Opit\Notes\TravelBundle\Model\TravelStatusInterface: Opit\Notes\StatusBundle\Entity\Status
             Opit\Notes\TravelBundle\Model\TravelCurrencyInterface: Opit\Notes\CurrencyRateBundle\Entity\Currency

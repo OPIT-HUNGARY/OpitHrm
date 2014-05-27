@@ -13,7 +13,7 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\StatusBundle\Entity\Status;
-use Opit\Notes\StatusBundle\Entity\AbstractBase;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 
 /**
