@@ -12,8 +12,6 @@
 namespace Opit\Notes\UserBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Opit\Notes\UserBundle\DependencyInjection\Compiler\SassFilterPass;
 
 /**
  * Description of OpitNotesUserBundle
@@ -25,9 +23,4 @@ use Opit\Notes\UserBundle\DependencyInjection\Compiler\SassFilterPass;
  */
 class OpitNotesUserBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
-    {
-        $container->addCompilerPass(new SassFilterPass());
-    }
-
 }
