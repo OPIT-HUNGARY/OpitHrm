@@ -14,7 +14,7 @@ namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Opit\Notes\UserBundle\Entity\Employee;
-use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of User

@@ -37,7 +37,7 @@ namespace Opit\Notes\LeaveBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration;
-use Opit\Notes\LeaveBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of LeaveCategoryDurationFixtures

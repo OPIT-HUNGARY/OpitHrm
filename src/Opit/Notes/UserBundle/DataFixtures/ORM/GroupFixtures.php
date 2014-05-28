@@ -13,6 +13,7 @@ namespace Opit\Notes\UserBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\UserBundle\Entity\Groups;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of GroupFixtures

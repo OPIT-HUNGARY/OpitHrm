@@ -11,11 +11,9 @@
 
 namespace Opit\Notes\CurrencyRateBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\CurrencyRateBundle\Entity\Currency;
-use Opit\Notes\CurrencyRateBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of PerDiemFixtures

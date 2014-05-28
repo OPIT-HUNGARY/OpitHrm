@@ -13,7 +13,7 @@ namespace Opit\Notes\NotificationBundle\DataFixtures\ORM;
 
 use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\Notes\NotificationBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of NotificationStatusFixtures

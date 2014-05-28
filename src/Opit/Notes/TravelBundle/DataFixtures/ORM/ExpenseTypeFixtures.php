@@ -13,7 +13,7 @@ namespace Opit\Notes\TravelBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Opit\Notes\TravelBundle\Entity\TEExpenseType;
-use Opit\Notes\UserBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
  * Description of ExpenseTypeFixtures
