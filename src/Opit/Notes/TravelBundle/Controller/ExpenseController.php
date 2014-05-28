@@ -345,17 +345,19 @@ class ExpenseController extends Controller
     {
         $currencyConfig = $this->container->getParameter('currency_config');
         $travelExpenseService = $this->get('opit.model.travel_expense');
+        $statusManager = $this->get('opit.manager.travel_status_manager');
         
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
         $generalManager = $travelRequest->getGeneralManager()->getEmployee()->getEmployeeName();
         $employee = $travelRequest->getUser()->getEmployee()->getEmployeeName();
-        $dateTimeNow = date("Y-m-d H:i");
+
+        $teStatus = $statusManager->getCurrentStatusMetaData($travelExpense);
+        $createDateTime = $teStatus->getCreated();
 
         $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
         $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
         $perDiem =  $travelExpenseService->calculatePerDiem(
-            $this->getDoctrine()->getManager(),
             $arrivalDateTime,
             $departureDateTime
         );
@@ -376,7 +378,7 @@ class ExpenseController extends Controller
                 'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
                 'advancesPayback' => $advanceAmounts,
                 'totalAmountPayableInHUF' => $totalAmountPayableInHUF,
-                'employee' => $employee, 'datetime' => $dateTimeNow,
+                'employee' => $employee, 'datetime' => $createDateTime,
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
                 'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],
@@ -493,6 +495,6 @@ class ExpenseController extends Controller
         
         // send a new notification when travel request or expense status changes
         $notificationManager = $this->container->get('opit.manager.travel_notification_manager');
-        $notificationManager->addNewNotification($travelExpense, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+        $notificationManager->addNewTravelNotification($travelExpense, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
     }
 }

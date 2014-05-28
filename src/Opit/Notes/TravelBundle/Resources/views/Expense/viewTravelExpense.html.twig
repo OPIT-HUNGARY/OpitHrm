@@ -1,7 +1,7 @@
 {% block stylesheets %}
     {% stylesheets
         'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-        '@OpitNotesTravel/Resources/public/css/travelExpensePrintView.scss'
+        '@OpitNotesTravelBundle/Resources/public/css/travelExpensePrintView.scss'
         output='css/opitnotestravel/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
         {% set printAsset = asset_url|split('?') %}
@@ -229,7 +229,7 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime }}.
+    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
 </div>
 
 {% if travelExpense.userPaidExpenses is defined %}
@@ -279,7 +279,7 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime }}.
+    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
 </div>
 {% endif %}
 {% endif %}
@@ -331,7 +331,7 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime }}.
+    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
 </div>
 {% endif %}
 {% endif %}

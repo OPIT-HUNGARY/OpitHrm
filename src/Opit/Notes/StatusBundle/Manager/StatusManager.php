@@ -75,6 +75,19 @@ abstract class StatusManager implements StatusManagerInterface
     {
         $status = null;
 
+        $currentStatus = $this->getCurrentStatusMetaData($resource);
+
+        if (null === $currentStatus) {
+            $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->findStatusCreate();
+        } else {
+            $status = $currentStatus->getStatus();
+        }
+
+        return $status;
+    }
+
+    public function getCurrentStatusMetaData($resource)
+    {
         if (null === $resource) {
             return null;
         }
@@ -84,13 +97,7 @@ abstract class StatusManager implements StatusManagerInterface
             ->getRepository($this->request->attributes->get('_template')->get('bundle') . ':States' . $className . 's')
             ->getCurrentStatus($resource->getId());
 
-        if (null === $currentStatus) {
-            $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->findStatusCreate();
-        } else {
-            $status = $currentStatus->getStatus();
-        }
-
-        return $status;
+        return $currentStatus;
     }
 
     /**
