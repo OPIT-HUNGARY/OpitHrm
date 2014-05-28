@@ -11,6 +11,7 @@
     
     <services>
         <service id="opit.twig.core_extension" class="%opit.twig.core_extension.class%">
+            <argument type="service" id="service_container" />
             <tag name="twig.extension" />
         </service>
         <service id="opit.component.email_manager" class="%opit.core.email_manager.class%">

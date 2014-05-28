@@ -11,6 +11,8 @@
 
 namespace Opit\Notes\CoreBundle\Twig;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Twig CoreExtension class
  *
@@ -21,6 +23,13 @@ namespace Opit\Notes\CoreBundle\Twig;
  */
 class CoreExtension extends \Twig_Extension
 {
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function getFilters()
     {
         return array(
