@@ -3,28 +3,55 @@
     <tr>
         <th>
             <i class="fa fa-sort default-right" data-field="category"></i>
-            <span class="order-text cursor-pointer">Month</span>
+            <span class="order-text cursor-pointer">Year / Month</span>
         </th>
-        <th>Time sheet status</th>
-        <th>Actions</th>
+        <th class="width-40">Actions</th>
+        <th>Information</th>
     </tr>
-    {% for monthNumber, monthName in availableMonths %}
+    {% for monthNumber, timesheetDateTime in availableMonths %}
     <tr>
         <td>
-            <span>{{ monthName }}</span>
+            <span>{{ timesheetDateTime|date('Y F') }}</span>
         </td>
         <td>
-            {# loop through all statuses and display them in a dropdown #}
-            <select class="changeState {% if monthNumber < date()|date('m')%} dropdown-disabled" disabled="disabled" {% else %} {{'"'}} {% endif %}>
-                <option>Created</option>
-                <option {% if monthNumber < date()|date('m')%} selected="selected" {% endif %}>Approved</option>
-            </select>
+            <div class="display-inline-block width-24">
+                <a href="{{ path('OpitNotesLeaveBundle_timesheet_generate', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}" target="_blank" class="small-button print-view">
+                    <i class="fa fa-print"></i>
+                    <span>
+                        Print / View
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][1] is defined%}
+                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][1] }}]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
+            <div class="display-inline-block width-24">
+                <a class="download-pdf small-button" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                    <i class="fa fa-file-pdf-o"></i>
+                    <span>
+                        Download PDF
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][2] is defined%}
+                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][2] }}]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
+            <div class="display-inline-block width-24">
+                <a class="send-email small-button" href="{{ path('OpitNotesLeaveBundle_timesheet_sendmail', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                    <i class="fa fa-envelope-o"></i>
+                    <span>
+                        Send Email
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][3] is defined%}
+                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][3] }}]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
         </td>
         <td>
-            <a href="{{ path('OpitNotesLeaveBundle_timesheet_generate', { 'year': date()|date('Y'), 'month': monthNumber }) }}" class="small-button print-view">
-                <i class="fa fa-print"></i>
-                <span>Print</span>
-            </a>
+            {% if logTimesheets[timesheetDateTime|date('Y-m-01')]['inSync'] is defined and logTimesheets[timesheetDateTime|date('Y-m-01')]['inSync'] == false %}
+                <i class="fa fa-warning"></i> Emailed timesheet out of sync.
+            {% endif %}
         </td>
     </tr>
     {% endfor %}

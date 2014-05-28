@@ -29,10 +29,16 @@ namespace Opit\Notes\LeaveBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Component\Utils\Utils;
+use Opit\Notes\LeaveBundle\Entity\LogTimesheet;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Description of TimeSheetController
@@ -47,41 +53,84 @@ class TimeSheetController extends Controller
     /**
      * To list time sheets in Notes
      *
-     * @Route("/secured/timesheet/list", name="OpitNotesLeaveBundle_timesheet_list")
-     * @Secure(roles="ROLE_USER")
+     * @Route("/secured/timesheet/lists", name="OpitNotesLeaveBundle_timesheet_list")
+     * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function listsTimeSheetAction(Request $request)
+    public function listsTimeSheetAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $maxMonth = date('n');
         $availableMonths = array();
+        $logTimesheets = array();
 
+        // Generating the current month.
         if ($showList) {
             ++$maxMonth;
         }
 
         // Generate the pervious months with the numeric and name represantions.
         for ($i = --$maxMonth; $i > 0; $i--) {
-            $availableMonths[$i] = date('Y F', mktime(0, 0, 0, $i, 1));
+            $availableMonths[$i] = new \DateTime(date('Y-m', mktime(0, 0, 0, $i, 1)));
+
+            // Get the leave data
+            $leaveData = $this->getLeaveData(date('Y'), $i);
+            $leaveIds = $leaveData['leaveIds'];
+
+            // Generate hash id.
+            $hashId = $this->generateHashIdForData($leaveIds, 'json');
+
+            $logTimesheetList = $em->getRepository('OpitNotesLeaveBundle:LogTimesheet')->findBy(
+                array('timesheetDate' => new \DateTime(date('Y-'.$i.'-01'))),
+                array('id' => 'ASC')
+            );
+
+            foreach ($logTimesheetList as $logTimesheet) {
+
+                if (!isset($logTimesheets[$logTimesheet->getTimesheetDate()->format('Y-m-d')][$logTimesheet->getAction()])) {
+                    $logTimesheets[$logTimesheet->getTimesheetDate()->format('Y-m-d')][$logTimesheet->getAction()] = 1;
+                } else {
+                    $logTimesheets[$logTimesheet->getTimesheetDate()->format('Y-m-d')][$logTimesheet->getAction()]++;
+                }
+                // Compare the hash ids.
+                if (LogTimesheet::EMAILED === $logTimesheet->getAction()) {
+                    $logTimesheets[$logTimesheet->getTimesheetDate()->format('Y-m-d')]['inSync'] =
+                        ($hashId == $logTimesheet->getHashId());
+                }
+            }
         }
 
         return $this->render(
             'OpitNotesLeaveBundle:TimeSheet:' . ($showList ? '_' : '') . 'listTimeSheet.html.twig',
-            array('availableMonths' => $availableMonths)
+            array('availableMonths' => $availableMonths, 'logTimesheets' => $logTimesheets)
         );
     }
 
     /**
      * To list time sheets in Notes
      *
-     * @Route("/secured/timesheet/generate", name="OpitNotesLeaveBundle_timesheet_generate")
-     * @Secure(roles="ROLE_USER")
+     * @Route("/secured/timesheet/generate/{token}", name="OpitNotesLeaveBundle_timesheet_generate")
+     * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function generateTimeSheetAction(Request $request)
+    public function generateTimeSheetAction($token)
     {
-        $page = $this->getTimeSheetPage($request);
+        $page = $this->getTimeSheetPage(LogTimesheet::PRINTED, $token);
+
+        return $page;
+    }
+
+    /**
+     * To list time sheets in Notes
+     *
+     * @Route("/customer/timesheet/generate/{token}", name="OpitNotesLeaveBundle_customer_timesheet_generate")
+     * @Template()
+     */
+    public function generateTimeSheetForCustomerAction($token)
+    {
+        $page = $this->getTimeSheetPage(LogTimesheet::PRINTED, $token);
 
         return $page;
     }
@@ -89,15 +138,17 @@ class TimeSheetController extends Controller
     /**
      * Method to export time sheet to pdf
      *
-     * @Route("/secured/timesheet/export/", name="OpitNotesLeavelBundle_timesheet_export")
+     * @Route("/secured/timesheet/export/{token}", name="OpitNotesLeavelBundle_timesheet_export")
      * @Template()
      */
-    public function exportTimeSheetToPDFAction(Request $request)
+    public function exportTimeSheetToPDFAction($token)
     {
-        $year = $request->query->get('year');
-        $month = $request->query->get('month');
-        $pdfFileName = $year . '-' . $month . '_Time_Sheet_Report.pdf';
-        $pdfContent = $this->getTimeSheetPage($request)->getContent();
+        $requestQuery = base64_decode($token);
+        $tokenArray = explode('|', $requestQuery);
+        $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
+
+        $pdfFileName = $dateArray['year'] . '-' . $dateArray['month'] . '_Time_Sheet_Report.pdf';
+        $pdfContent = $this->getTimeSheetPage(LogTimesheet::DOWNLOADED, $token)->getContent();
         $pdf = $this->get('opit.manager.pdf_manager');
         $pdf->exportToPdf(
             $pdfContent,
@@ -115,7 +166,68 @@ class TimeSheetController extends Controller
         return new JsonResponse();
     }
 
-    private function getTimeSheetPage($request)
+    /**
+     * To list time sheets in Notes
+     *
+     * @Route("/secured/timesheet/sendmail/{token}", name="OpitNotesLeaveBundle_timesheet_sendmail")
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function sendEmailAction($token)
+    {
+        $requestQuery = base64_decode($token);
+        $tokenArray = explode('|', $requestQuery);
+        $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
+        $year = $dateArray['year'];
+        $month = $dateArray['month'];
+        $mailer = $this->get('opit.component.email_manager');
+        $em = $this->getDoctrine()->getManager();
+        $dateTime = new \DateTime();
+        $dateTime->setDate($year, $month, 1);
+        $action = LogTimesheet::EMAILED;
+
+        $url = $this->generateUrl(
+            'OpitNotesLeaveBundle_customer_timesheet_generate',
+            array('token' => base64_encode($year.'|'.$month)),
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        // Get the payrolls.
+        $payrolls = $em->getRepository('OpitNotesUserBundle:Groups')->findOneByRole('ROLE_PAYROLL');
+        $payrollAddresses = array();
+        // Get the email addresses of payrolls.
+        foreach ($payrolls->getUsers() as $user) {
+            $payrollAddresses[] = $user->getEmail();
+        }
+        // Prepare and send email to payroll(s).
+        $mailer->setRecipient($payrollAddresses);
+        $mailer->setSubject(
+            '[NOTES] - ' . $year . '-' . $month . ' timesheet is available'
+        );
+
+        $mailer->setBodyByTemplate(
+            'OpitNotesLeaveBundle:Mail:timesheet.html.twig',
+            array('url' => $url, 'dateTime' => $dateTime)
+        );
+
+        $sendingResult = $mailer->sendMail();
+
+        // For the serialization.
+        $leaveData = $this->getLeaveData($year, $month);
+        $leaveIds = $leaveData['leaveIds'];
+
+        $this->syncLeaves($leaveIds, $year, $month, $action);
+
+        return $this->listsTimeSheetAction();
+    }
+
+    /**
+     * Get the timesheet page fly on mode.
+     * The generated timesheets are not saved.
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return resource the html page.
+     */
+    private function getTimeSheetPage($action, $token)
     {
         $em = $this->getDoctrine()->getManager();
         $config = $this->container->getParameter('opit_notes_leave');
@@ -129,10 +241,15 @@ class TimeSheetController extends Controller
         if (false === strrpos($arrivalTime, ':')) {
             $arrivalTime = $arrivalTime. ':00';
         }
+
+        $requestQuery = base64_decode($token);
+        $tokenArray = explode('|', $requestQuery);
+        $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
+
         // If the year and month parameters are exist then set them.
-        if (null !== $request->query->get('year') && null !== $request->query->get('month')) {
-            $year = $request->query->get('year');
-            $month = $request->query->get('month');
+        if (isset($dateArray['year']) && isset($dateArray['month'])) {
+            $year = $dateArray['year'];
+            $month = $dateArray['month'];
             $startDate->setDate($year, $month, 1);
         }
         $leaveDatesOfMonth = array();
@@ -148,24 +265,13 @@ class TimeSheetController extends Controller
         // Grouping users into subarrays.
         $groupedUsers = Utils::groupingArrayByCounter($users, $divison);
 
-        // Get the leave requests
-        $leaveRequests = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')->findLeaveRequestsByDates(
-            date($year.'-'.$month.'-01'),
-            date($year.'-'.$month.'-31')
-        );
-        $leaveDays = array();
+        // Get the leave data
+        $leaveData = $this->getLeaveData($year, $month);
+        $leaveIds = $leaveData['leaveIds'];
+        $leaveDays = $leaveData['leaveDays'];
 
-        // Fetch leaves for every leave day.
-        foreach ($leaveRequests as $leaveRequest) {
-            foreach ($leaveRequest->getLeaves() as $leave) {
-                $days = Utils::diff_days($leave->getStartDate(), $leave->getEndDate());
-                // Fetch leave days by employee id and category name
-                foreach ($days as $day) {
-                    $leaveDays[$day->format('Y-m-d')][$leaveRequest->getEmployee()->getId()] =
-                        $leave->getCategory()->getName();
-                }
-            }
-        }
+        $this->syncLeaves($leaveIds, $year, $month, $action);
+
         // Get the days of the actual month.
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval("P1M"));
@@ -185,5 +291,113 @@ class TimeSheetController extends Controller
                 'month' => $month
             )
         );
+    }
+
+    /**
+     * Sync the leaves by the leave id.
+     * Generate hash id, and refresh the log for timesheets.
+     *
+     * @param array $leaveIds
+     * @param integer $year
+     * @param integer $month
+     * @param string $action
+     * @return boolean
+     */
+    private function syncLeaves($leaveIds, $year, $month, $action = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        // Generate hash id.
+        $hashId = $this->generateHashIdForData($leaveIds, 'json');
+
+        // Get the log of current timesheet.
+        $logTimeSheet = $em->getRepository('OpitNotesLeaveBundle:LogTimesheet')->findOneBy(array(
+            'timesheetDate' => new \DateTime(date($year.'-'.$month.'-01')),
+            'action' => $action
+        ));
+        // Update the log for current timesheet.
+        $result = $this->updateLogTimesheet($logTimeSheet, $hashId, array('year' => $year, 'month' => $month), $action);
+
+        return $result;
+    }
+
+    /**
+     * Get the leave days and leave ids.
+     *
+     * @param integer $year
+     * @param integer $month
+     * @return array of leave data
+     */
+    private function getLeaveData($year, $month)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $leaveData['leaveDays'] = array();
+        $leaveData['leaveIds'] = array();
+        // Get the leave requests
+        $leaveRequests = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')->findLeaveRequestsByDates(
+            date($year.'-'.$month.'-01'),
+            date($year.'-'.$month.'-31')
+        );
+        // Fetch leaves for every leave day.
+        foreach ($leaveRequests as $leaveRequest) {
+            foreach ($leaveRequest->getLeaves() as $leave) {
+                // Fetch leave ids to the serialization.
+                $leaveData['leaveIds'][$leaveRequest->getId()][] = $leave->getId();
+
+                $days = Utils::diff_days($leave->getStartDate(), $leave->getEndDate());
+                // Fetch leave days by employee id and category name
+                foreach ($days as $day) {
+                    $leaveData['leaveDays'][$day->format('Y-m-d')][$leaveRequest->getEmployee()->getId()] =
+                        $leave->getCategory()->getName();
+                }
+            }
+        }
+
+        return $leaveData;
+    }
+
+    /**
+     * Update the log for timesheet
+     * If the hash ids are different then update it for the current timesheet.
+     * If the timesheet log does not exist then create one for it.
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LogTimesheet $logTimeSheet
+     * @param string $hashId
+     * @return boolean
+     */
+    private function updateLogTimesheet($logTimeSheet, $hashId, $dates, $action)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        // Create new logTimesheet object.
+        $logTimeSheet = new LogTimesheet();
+        $logTimeSheet->setHashId($hashId);
+        $logTimeSheet->setTimesheetDate(new \DateTime(date($dates['year'].'-'.$dates['month'].'-01')));
+        $logTimeSheet->setAction($action);
+
+        $em->persist($logTimeSheet);
+        $em->flush();
+
+        // If the hash ids are different then return true, else false.
+        return true;
+    }
+
+    /**
+     * Generating hash id for the given data.
+     *
+     * @param mixed $data for generating the hash id.
+     * @param string $format the type of the encoding. The json and xml format is avaliable.
+     * @return string generated hash id
+     */
+    private function generateHashIdForData($data, $format)
+    {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new GetSetMethodNormalizer());
+        // Create serializer object.
+        $serializer = new Serializer($normalizers, $encoders);
+
+        // Return the generated hash id.
+        return md5($serializer->serialize($data, $format));
     }
 }

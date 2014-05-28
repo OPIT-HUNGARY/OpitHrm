@@ -48,7 +48,8 @@ class CoreExtension extends \Twig_Extension
         return array(
             'strpos' => new \Twig_Function_Method($this, 'strpos'),
             'splitText' => new \Twig_Function_Method($this, 'splitText'),
-            'bundleExist' => new \Twig_Function_Method($this, 'bundleExist')
+            'bundleExist' => new \Twig_Function_Method($this, 'bundleExist'),
+            'base64Encode' => new \Twig_Function_Method($this, 'base64Encode')
         );
     }
 
@@ -132,6 +133,17 @@ class CoreExtension extends \Twig_Extension
             return true;
         }
         return false;
+    }
+
+    /**
+     * Encoding to base 64
+     *
+     * @param  string $data
+     * @return boolean
+     */
+    public function base64Encode($data)
+    {
+        return base64_encode($data);
     }
 
     /**

@@ -1,11 +1,10 @@
 $.extend true, $(document).data('notes'),
-    funcs:        
-        changeLeaveRequestStatus: (statusId, leaveRequestId, $spinner) ->
-            console.log 'changestate'
+    funcs:
+        changeTimeSheetStatus: (statusId, timeSheetStatusId, $spinner) ->
             $.ajax
                 method: 'POST'
-                url: Routing.generate 'OpitNotesLeaveBundle_leave_request_state'
-                data: {'statusId': statusId, 'leaveRequestId': leaveRequestId}
+                url: Routing.generate 'OpitNotesTravelBundle_timesheet_state'
+                data: {'statusId': statusId, 'timeSheetStatusId': timeSheetStatusId}
                 global: false
             .done (data) ->
                 location.reload()
@@ -13,7 +12,7 @@ $.extend true, $(document).data('notes'),
                 $spinner.remove()
             .fail (data) ->
                 $spinner.remove()
-                $changeState = $('.changeState[data-tr="' + leaveRequestId + '"]')
+                $changeState = $('.changeState[data-tr="' + timeSheetStatusId + '"]')
                                 .removeClass('dropdown-disabled')
                                 .prop 'selectedIndex', 0
                 $('<div id="dialog-tr-error"></div>').html 'Status could not be changed due to an error.'

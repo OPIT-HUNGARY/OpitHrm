@@ -10,8 +10,8 @@
     {% endstylesheets %}
 {% endblock %}
 <div id="export_buttons" class="background-color-white padding-5 position-fixed fix-top-20 fix-right-15 box-shadow-1-darkgray border-radius-5">
-    <a id="download-pdf" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'year': year, 'month': month }) }}">
-        <i class="fa fa-file-pdf-o fa-2x icons"></i>
+    <a id="download-pdf" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'token': base64Encode(year ~ '|' ~ month)  }) }}">
+        <i class="fa fa-file-pdf-o fa-2x icons color-red"></i>
     </a>
     <i class="fa fa-print fa-2x icons"></i>
 </div>

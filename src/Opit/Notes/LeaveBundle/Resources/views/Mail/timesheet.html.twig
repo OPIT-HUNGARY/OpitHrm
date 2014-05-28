@@ -1,0 +1,7 @@
+<div style="width:650px;">
+    <h3>Timesheet {{ templateVars['dateTime']|date('M') }} {{ templateVars['dateTime']|date('Y') }}</h3>
+    <div>
+        The {{ templateVars['dateTime']|date('M') }} {{ templateVars['dateTime']|date('Y') }} timesheet is available.
+        You can download it using <a href="{{ templateVars['url'] }}">this link.</a>
+    </div>
+</div>

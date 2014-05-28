@@ -13,7 +13,9 @@ security:
             iterations:       1
 
     role_hierarchy:
-        ROLE_USER: ~
+        ROLE_CUSTOMER: ~
+        ROLE_USER: ROLE_CUSTOMER
+        ROLE_PAYROLL: ROLE_CUSTOMER
         ROLE_TEAM_MANAGER: ROLE_USER
         ROLE_GENERAL_MANAGER: [ROLE_TEAM_MANAGER, ROLE_USER]
         ROLE_ADMIN:       [ROLE_USER, ROLE_TEAM_MANAGER, ROLE_GENERAL_MANAGER]
@@ -39,6 +41,7 @@ security:
 
         secured_area:
             pattern:    ^/secured/
+            provider: administrators
             simple_form:
                 authenticator: ldap
                 check_path: OpitNotesUserBundle_check
@@ -47,12 +50,15 @@ security:
             logout:
                 path:   OpitNotesUserBundle_logout
                 target: OpitNotesUserBundle_security_login
-            #anonymous: ~
-            #http_basic:
-            #    realm: "Secured Demo Area"
+
+        customer:
+            pattern: ^/customer/
+            http_basic:
+                realm: "Secured Customer Area"
 
     access_control:
         - { path: ^/secured, roles: ROLE_USER }
+        - { path: ^/customer, roles: ROLE_CUSTOMER }
         #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
 
     acl:
