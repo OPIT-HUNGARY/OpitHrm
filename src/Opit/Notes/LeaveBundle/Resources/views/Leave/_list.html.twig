@@ -21,9 +21,13 @@
             <span class="cursor-pointer clickable">{{ leaveRequest.leaveRequestId }}</span>
         </td>
         <td>
+            <ul class="no-style leave-dates">
             {% for leave in leaveRequest.leaves %}
-                {{ leave.startDate|date('d  F  Y (D)') }} - {{ leave.endDate|date('d  F  Y (D)') }},<br />
+                <li data-start-date="{{leave.startDate|date('Y-m-d')}}" data-end-date="{{leave.endDate|date('Y-m-d')}}">
+                    <span class="padding-2">{{ leave.startDate|date('d  F  Y (D)') }} - {{ leave.endDate|date('d  F  Y (D)') }}</span>
+                </li>
             {% endfor %}
+            </ul>
         </td>
         <td>
             {% if not listingRights['isLocked'][id]['isStatusLocked'] %}

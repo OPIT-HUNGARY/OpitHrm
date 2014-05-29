@@ -13,6 +13,9 @@ $('#searchButton').click (event) ->
         $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()
+
+        # Trigger optional callback if set
+        $(document).data('notes').funcs.searchCallback? $form
         return
     return
 

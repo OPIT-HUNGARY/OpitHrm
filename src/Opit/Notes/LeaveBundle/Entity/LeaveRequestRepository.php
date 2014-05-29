@@ -48,12 +48,12 @@ class LeaveRequestRepository extends EntityRepository
         $dq = $this->createQueryBuilder('lr')->join('lr.leaves', 'l');
         
         if (isset($parameters['startDate']) && $parameters['startDate'] !== '') {
-            $dq->andWhere('l.startDate > :startDate');
+            $dq->andWhere('l.startDate >= :startDate');
             $dq->setParameter(':startDate', $parameters['startDate']);
         }
         
         if (isset($parameters['endDate']) && $parameters['endDate'] !== '') {
-            $dq->andWhere('l.endDate < :endDate');
+            $dq->andWhere('l.endDate <= :endDate');
             $dq->setParameter(':endDate', $parameters['endDate']);
         }
         

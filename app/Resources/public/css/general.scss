@@ -516,3 +516,15 @@ footer{
         margin-top: 2px;
     }
 }
+
+ul {
+    &.no-style {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        > li {
+            margin-bottom: 3px;
+        }
+    }
+}

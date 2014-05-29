@@ -476,6 +476,10 @@
     @include border-radius(5px);
 }
 
+.border-radius-2{
+    @include border-radius(2px);
+}
+
 .round-border{
     @include border-radius(100%);
 }
