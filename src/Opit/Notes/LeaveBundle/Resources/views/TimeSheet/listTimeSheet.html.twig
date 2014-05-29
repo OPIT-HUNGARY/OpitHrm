@@ -9,13 +9,6 @@
 
 {% block body %}
     <h1>Time sheet list</h1>
-    <table>
-        <tr>
-            <td class="padding-0">
-                <a href=""><button id="generate" class="button"><i class="fa fa-plus-square fa-1x"></i>Generate current month</button></a>
-            </td>
-        </tr>
-    </table>
     <div id="list-reply-message"></div>
     <div id="leave_list">
         {% include 'OpitNotesLeaveBundle:TimeSheet:_listTimeSheet.html.twig' %}

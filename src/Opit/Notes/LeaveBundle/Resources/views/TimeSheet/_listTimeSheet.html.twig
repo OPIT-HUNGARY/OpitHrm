@@ -20,7 +20,7 @@
                     <span>
                         Print / View
                         {% if logTimesheets[timesheetDateTime|date('Y-m-01')][1] is defined%}
-                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][1] }}]
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][1] }}</span>]
                         {% endif %}
                     </span>
                 </a>
@@ -31,7 +31,7 @@
                     <span>
                         Download PDF
                         {% if logTimesheets[timesheetDateTime|date('Y-m-01')][2] is defined%}
-                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][2] }}]
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][2] }}</span>]
                         {% endif %}
                     </span>
                 </a>
@@ -42,7 +42,7 @@
                     <span>
                         Send Email
                         {% if logTimesheets[timesheetDateTime|date('Y-m-01')][3] is defined%}
-                            &nbsp;[{{ logTimesheets[timesheetDateTime|date('Y-m-01')][3] }}]
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][3] }}</span>]
                         {% endif %}
                     </span>
                 </a>

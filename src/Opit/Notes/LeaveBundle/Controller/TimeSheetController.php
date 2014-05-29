@@ -29,7 +29,6 @@ namespace Opit\Notes\LeaveBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -66,13 +65,8 @@ class TimeSheetController extends Controller
         $availableMonths = array();
         $logTimesheets = array();
 
-        // Generating the current month.
-        if ($showList) {
-            ++$maxMonth;
-        }
-
         // Generate the pervious months with the numeric and name represantions.
-        for ($i = --$maxMonth; $i > 0; $i--) {
+        for ($i = $maxMonth; $i > 0; $i--) {
             $availableMonths[$i] = new \DateTime(date('Y-m', mktime(0, 0, 0, $i, 1)));
 
             // Get the leave data
@@ -209,7 +203,7 @@ class TimeSheetController extends Controller
             array('url' => $url, 'dateTime' => $dateTime)
         );
 
-        $sendingResult = $mailer->sendMail();
+        $mailer->sendMail();
 
         // For the serialization.
         $leaveData = $this->getLeaveData($year, $month);
@@ -217,14 +211,16 @@ class TimeSheetController extends Controller
 
         $this->syncLeaves($leaveIds, $year, $month, $action);
 
-        return $this->listsTimeSheetAction();
+        // Redirect to the list page.
+        return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_timesheet_list'));
     }
 
     /**
      * Get the timesheet page fly on mode.
      * The generated timesheets are not saved.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param string $action the action's name.
+     * @param string $token query parameters.
      * @return resource the html page.
      */
     private function getTimeSheetPage($action, $token)
@@ -297,10 +293,10 @@ class TimeSheetController extends Controller
      * Sync the leaves by the leave id.
      * Generate hash id, and refresh the log for timesheets.
      *
-     * @param array $leaveIds
-     * @param integer $year
-     * @param integer $month
-     * @param string $action
+     * @param array $leaveIds the ids of leaves.
+     * @param integer $year year
+     * @param integer $month month
+     * @param string $action action's name
      * @return boolean
      */
     private function syncLeaves($leaveIds, $year, $month, $action = null)
@@ -324,8 +320,8 @@ class TimeSheetController extends Controller
     /**
      * Get the leave days and leave ids.
      *
-     * @param integer $year
-     * @param integer $month
+     * @param integer $year year
+     * @param integer $month month
      * @return array of leave data
      */
     private function getLeaveData($year, $month)

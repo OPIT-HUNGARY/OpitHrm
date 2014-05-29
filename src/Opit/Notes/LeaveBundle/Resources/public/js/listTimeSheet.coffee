@@ -1,16 +1,6 @@
-# Get the dates of the year
-$('#generate').click (event) ->
-    event.preventDefault()
-    $(@).attr 'disabled', 'disabled'
-    $(@).addClass 'button-disabled'
-
-    $.ajax
-        method: 'POST'
-        url: Routing.generate 'OpitNotesLeaveBundle_timesheet_list'
-        data: 'showList' : 1
-    .done (data) ->
-        $('#leave_list').html data
-        return
+$('#list-table').on 'click', '.small-button', ->
+    counter = $(@).find('.click-counter')
+    counter.html(parseInt(counter.text()) + 1)
 
 inverse = false
 $('form').on 'click', '.fa-sort', ->
