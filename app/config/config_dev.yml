@@ -27,5 +27,9 @@ monolog:
 assetic:
     use_controller: true
 
-#swiftmailer:
+# Delivery is disabled by default. When testing real mail delivery, delivery_address can be
+# used instead to redirect any emails to a particular recipient. A X-Swift-To header with
+# the real address will be added.
+swiftmailer:
+    disable_delivery: true
 #    delivery_address: me@example.com
