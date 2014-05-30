@@ -1,33 +1,34 @@
 {% extends 'OpitNotesUserBundle::layout.html.twig' %}
 {% block title %}
-    Administrative Leave/Working Day list - {{ parent() }}
+    Administrative leave/working day list - {{ parent() }}
 {% endblock %}
 
 {% block stylesheets %}
     {% include '::_stylesheets.html.twig' %}
+    {% stylesheets
+        '@OpitNotesLeaveBundle/Resources/public/css/listLeaveDates.scss'
+    output='css/opitnotesleave/list_leave_dates.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 
 {% block body %}
-<h1>Administrative Leave/Working Day list</h1>
+<h1>Administrative leave/working day list</h1>
 <div  id="list">
+    {% include 'OpitNotesLeaveBundle:Admin:_searchForm.html.twig' with { 'order_field': 'id' } %}
+    
     <table>
         <tr>
             <td class="padding-0">
-                <button id="addHolidayDate" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="addLeaveDate" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
                 <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
             </td>
         </tr>
     </table>
-<section id="pager" class="align-center background-color-lightest-grey margin-bottom-20 padding-10 border-radius-5">
-    {% for year in years %}
-        <span class="year cursor-pointer" data-year="{{ year }}"><strong>{{ year }}</strong></span>
-    {% endfor %}
-</section>
+    
     <div id="list-reply-message"></div>
-    <form  class="form-holidaydate">
-        <div id="list-table">
-            {% include 'OpitNotesLeaveBundle:Admin:_listLeaveDates.html.twig' %}
-        </div>
+    <form id="form-leavedate">
+        {% include 'OpitNotesLeaveBundle:Admin:_listLeaveDates.html.twig' %}
     </form>
 </div>
 {% endblock %}

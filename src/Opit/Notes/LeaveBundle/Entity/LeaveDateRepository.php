@@ -34,25 +34,28 @@ use Doctrine\ORM\EntityRepository;
 class LeaveDateRepository extends EntityRepository
 {
     /**
-     * Find all leave dates by date
-     * 
-     * @param integer $year
-     * @param integer $month
-     * @return array of \Opit\Notes\LeaveBundle\Entity\LeaveDate objects
+     * Find all leave dates by parameters
+     *
+     * @param array $searchParams
+     * @return array \Opit\Notes\LeaveBundle\Entity\LeaveDate objects
      */
-    public function findAllByYearAndMonth($year, $month = null)
+    public function findAllFiltered($searchParams = array())
     {
-        // Set the first day of the year.
+        $start = $end = date('Y');
+
+        $qb = $this->createQueryBuilder('ld');
+        // Get the date range
+        if (isset($searchParams['year'])) {
+            sort($searchParams['year'], SORT_NUMERIC);
+            $start = reset($searchParams['year']);
+            $end = end($searchParams['year']);
+        }
+
         $firstDayOfYear = new \DateTime();
-        $firstDayOfYear->setDate($year, 01, 01);
+        $firstDayOfYear->setDate($start, 01, 01);
         // Set the last day of the year.
         $lastDayOfYear = new \DateTime();
-        $lastDayOfYear->setDate($year, 12, 31);
-
-        if (null !== $month) {
-            $firstDayOfYear->setDate($year, $month, 01);
-            $lastDayOfYear->setDate($year, $month, 31);
-        }
+        $lastDayOfYear->setDate($end, 12, 31);
 
         // Set the parameters.
         $parameters = array(
@@ -60,23 +63,28 @@ class LeaveDateRepository extends EntityRepository
             'lastDayOfYear' => $lastDayOfYear->format('Y-m-d')
         );
 
-        $leaveDate = $this->createQueryBuilder('ld');
+        $qb->where($qb->expr()->gte('ld.holidayDate', ':firstDayOfYear'))
+            ->andWhere($qb->expr()->lte('ld.holidayDate', ':lastDayOfYear'));
 
-        $leaveDate
-            ->where($leaveDate->expr()->gte('ld.holidayDate', ':firstDayOfYear'))
-            ->andWhere($leaveDate->expr()->lte('ld.holidayDate', ':lastDayOfYear'))
-            ->orderBy('ld.holidayDate', 'ASC')
-            ->setParameters($parameters);
+        if (isset($searchParams['type'])) {
+            $qb->andWhere(
+                $qb->expr()->in('ld.holidayType', $searchParams['type'])
+            );
 
-        return $leaveDate->getQuery()->getResult();
+        }
+
+        $qb->setParameters($parameters)
+            ->orderBy('ld.holidayDate', 'ASC');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
      * Get the all avaliable years in the leave dates.
-     * 
+     *
      * @return array of years
      */
-    public function getYears()
+    public function findAllYears()
     {
         $leaveDate = $this->createQueryBuilder('ld');
         $leaveDate

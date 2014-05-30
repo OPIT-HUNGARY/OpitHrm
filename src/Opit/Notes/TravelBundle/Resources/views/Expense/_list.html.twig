@@ -14,7 +14,7 @@
         </tr>
         {% for travelExpense in travelExpenses %}
         <tr class="clickableTableRow">
-            <td><input type="checkbox" class="deleteMultipleTravelExpense" name="deleteMultipleTravelExpense[]" value="{{ travelExpense.id }}" /></td>
+            <td><input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" value="{{ travelExpense.id }}" /></td>
             <td>
                 {% if travelExpense.user is not null %}
                     {{ travelExpense.user.employee.employeeName }}

@@ -57,14 +57,13 @@ $.extend true, $(document).data('notes'),
             $('#list-table input[type="checkbox"]').on 'change', ->
                 $(document).data('notes').funcs.changeDeleteButton()
         
+        # TODO: Remove any component specific code and make the API fully reusable.
         initListPageListeners: () ->
             $('.icon-disabled').on 'click', (event)->
                 event.preventDefault()
 
             $('#list-table th .fa-trash-o').click ->
-                $('.deleteMultipleTravelRequest').checkAll()
-                $('.deleteMultipleTravelExpense').checkAll()
-                $('.deleteMultipleLeaveRequest').checkAll()
+                $('.deleteMultiple').checkAll()
                 return
 
             $('#list-table .deleteSingeTravelRequest').click (event) ->
@@ -80,13 +79,13 @@ $.extend true, $(document).data('notes'),
                     return false
                 else if $('#travel_list').length is 1
                     warningMessage = 'Are you sure you want to delete the selected travel requests?'
-                    checkBoxClass = '.deleteMultipleTravelRequest'
+                    checkBoxClass = '.deleteMultiple'
                     url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
                     title = 'Travel request removal'
                     errorText = 'The travel request could not be deleted due to an error.'
                 else if $('#leave_list').length is 1
                     warningMessage = 'Are you sure you want to delete the selected leave requests?'
-                    checkBoxClass = '.deleteMultipleLeaveRequest'
+                    checkBoxClass = '.deleteMultiple'
                     url = Routing.generate 'OpitNotesLeaveBundle_leaverequest_delete'
                     title = 'Leave request removal'
                     errorText = 'The leave request could not be deleted due to an error.'

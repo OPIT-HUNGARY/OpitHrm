@@ -29,7 +29,7 @@
     {% for travelRequest in travelRequests %}
     {# check if travel request needs to be shown #}
     <tr class="clickableTableRow">
-        <td><input type="checkbox" class="deleteMultipleTravelRequest" name="deleteMultipleTravelRequest[]" value="{{ travelRequest.id }}" /></td>
+        <td><input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" value="{{ travelRequest.id }}" /></td>
         <td class="clickable text-decoration-underline cursor-pointer" data-tr-id="{{ travelRequest.id }}">{{ travelRequest.travelRequestId }}</td>
         <td>{{ travelRequest.user.employee.employeeName }}</td>
         <td>{{ travelRequest.departureDate|date('d  F  Y (D)') }}</td>

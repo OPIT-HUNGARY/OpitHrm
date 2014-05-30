@@ -16,7 +16,7 @@
     {% for leaveRequest in leaveRequests %}
     {% set id = leaveRequest.id %}
     <tr>
-        <td><input type="checkbox" class="deleteMultipleLeaveRequest" name="deleteMultipleLeaveRequest[]" value="{{ leaveRequest.id }}" /></td>
+        <td><input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" value="{{ leaveRequest.id }}" /></td>
         <td class="text-decoration-underline">
             <span class="cursor-pointer clickable">{{ leaveRequest.leaveRequestId }}</span>
         </td>

@@ -77,6 +77,7 @@ $.extend true, $(document).data('notes'),
                           $('<div></div>').html('The '+message+' could not be deleted due to an error.').dialog
                               title: 'Error'
                       $(document).data('notes').funcs.initListPageListeners()
+                      $(document).data('notes').funcs.initDeleteMultipleListener()
                       $(document).data('notes').funcs.initPager()
                       $(@).dialog 'close'
                       return

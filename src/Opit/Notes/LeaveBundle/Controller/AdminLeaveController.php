@@ -212,27 +212,25 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
-        $years = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->getYears();
+        $isSearch = (bool) $request->request->get('issearch', 0);
+        $years = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllYears();
+        $types = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findAll();
         $leaveDates = array();
 
         // Check it is an ajax call to view the specific year's leave/working dates
-        if ($showList) {
-            // Set the year
-            $year = $request->request->get('year');
-            // If the year is not setted then it will be the current year
-            if (null === $year) {
-                $year = date('Y');
-            }
+        if ($showList || $isSearch) {
+            $searchProperties = $request->request->get('search');
+
              // Get the leave dates of the searched year.
-            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYearAndMonth($year);
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllFiltered($searchProperties);
         } else {
              // Get the leave dates of the current year.
-             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYearAndMonth(date('Y'));
+             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllFiltered();
         }
 
         return $this->render(
-            'OpitNotesLeaveBundle:Admin:' . ($showList ? '_' : '') . 'listLeaveDates.html.twig',
-            array('years' => $years, 'leaveDates' => $leaveDates)
+            'OpitNotesLeaveBundle:Admin:' . ($showList || $isSearch ? '_' : '') . 'listLeaveDates.html.twig',
+            array('years' => $years, 'leaveDates' => $leaveDates, 'types' => $types)
         );
     }
 
@@ -347,7 +345,7 @@ class AdminLeaveController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $ids = (array) $request->request->get('delete-holidaydate');
+        $ids = (array) $request->request->get('delete-leavedate');
         $result = array('response' => 'error');
 
         if (!is_array($ids)) {

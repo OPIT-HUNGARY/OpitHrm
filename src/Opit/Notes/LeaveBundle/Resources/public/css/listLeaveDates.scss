@@ -1,0 +1,33 @@
+/* 
+    Created on : May 29, 2014, 3:14:01 PM
+    Author     : OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+*/
+
+@import '_defaults';
+
+#searchFormWrapper {
+    #searchFormProperties {
+        .searchProperty {
+            width: auto;
+            margin-right: 15px;
+            
+            > label {
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+            
+            > ul {
+                max-height: 70px;
+                overflow: hidden;
+                padding: 5px 0 5px 5px;
+                border: 1px solid $lightGrayColorFull;
+                background-color: $darkerSnowColor;
+                @include border-radius(5px);
+                
+                .mCS_no_scrollbar {
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}

@@ -44,12 +44,13 @@
             width:15%;
             margin:5px;
             display:inline-block;
+            vertical-align: top;
 
             input[type="text"], input[type="date"]{
                 width:100%;
             }
             
-            label{
+            > label{
                 display:block;
             }
         }
