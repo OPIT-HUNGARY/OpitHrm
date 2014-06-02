@@ -1,5 +1,5 @@
-<form  class="form-holidaycategory">
-    <table id="list-table" class="width-100">
+<div id="list-table">
+    <table class="width-100">
         <tr>
             <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
             {% set orderIcon %}
@@ -21,22 +21,41 @@
                 {{ orderIcon }}
                 <span class="order-text cursor-pointer">Duration</span>
             </th>
+            <th>
+                <span>Assigned to leave requests</span>
+            </th>
             <th>Actions</th>
         </tr>
-        {% for holidayCategory in holidayCategories %}
+        {% for leaveCategory in leaveCategories %}
+            {% if numberOfRelations is defined and leaveCategory.id in numberOfRelations|keys %}
+                {% set disabledLeaveCategory = 'true'  %}
+            {% else %}
+                {% set disabledLeaveCategory = 'false'  %}
+            {% endif %}
         <tr class="clickableTableRow">
             <td>
-                <input name="delete-holidaycategory[]" type="checkbox" class="list-delete-holidaycategory" value="{{ holidayCategory.id }}">
+                <input name="delete-leavecategory[]" type="checkbox" class="list-delete-leavecategory deleteMultiple" value="{{ leaveCategory.id }}" {% if 'true' == disabledLeaveCategory %} {{ 'disabled="disabled"' }}  {% endif %}>
             </td>
-            <td data-tr-id='{{ holidayCategory.id }}'>{{ holidayCategory.id }}</td>
-            <td><span class="list-holidaycategory clickable" data-id="{{ holidayCategory.id }}">{{ holidayCategory.name }}</span></td>
-            <td>{{ holidayCategory.description|slice(0,80) }}{% if holidayCategory.description|length > 80 %}{{ '...' }}{% endif %}</td>
-            <td><span class="list-holidaycategory clickable">{{ holidayCategory.leaveCategoryDuration.leaveCategoryDurationName }}</span></td>
+            <td data-tr-id='{{ leaveCategory.id }}'>{{ leaveCategory.id }}</td>
+            <td><span class="list-leavecategory clickable" data-id="{{ leaveCategory.id }}">{{ leaveCategory.name }}</span></td>
+            <td>{{ leaveCategory.description|slice(0,80) }}{% if leaveCategory.description|length > 80 %}{{ '...' }}{% endif %}</td>
+            <td><span class="list-leavecategory clickable">{{ leaveCategory.leaveCategoryDuration.leaveCategoryDurationName }}</span></td>
             <td>
-                <a href="#" class="list-holidaycategory" data-id="{{ holidayCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
-                <a href="#" data-id="{{ holidayCategory.id }}" class="delete-single-holidaycategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>
+                <span>
+                    {% if 'true' == disabledLeaveCategory %}
+                        {{ attribute(numberOfRelations, leaveCategory.id) }}
+                    {% endif %}
+                </span>
+            </td>
+            <td>
+                <a href="#" class="list-leavecategory" data-id="{{ leaveCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
+                {% if 'false' == disabledLeaveCategory %}
+                    <a href="#" data-id="{{ leaveCategory.id }}" class="delete-single-leavecategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>
+                {% else %}
+                    <span class="float-left width-15-fix">&nbsp;</span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
-</form>
+</div>

@@ -65,14 +65,26 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
-        $holidayCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
+        $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
+        $numberOfRelations = array();
+
+        foreach ($leaveCategories as $leaveCategory) {
+            $leaves = $em->getRepository('OpitNotesLeaveBundle:Leave')->findBy(array('category' => $leaveCategory->getId()));
+
+            if (0 !== count($leaves)) {
+                $numberOfRelations[$leaveCategory->getId()] = count($leaves);
+            }
+        }
 
         return $this->render(
             'OpitNotesLeaveBundle:Admin:' . ($showList ? '_' : '') . 'listLeaveCategories.html.twig',
-            array('holidayCategories' => $holidayCategories)
+            array(
+                'leaveCategories' => $leaveCategories,
+                'numberOfRelations' => $numberOfRelations
+            )
         );
     }
-    
+
     /**
      * To generate add/edit leave category form
      *
@@ -89,25 +101,25 @@ class AdminLeaveController extends Controller
         $result = array('response' => 'error');
 
         if ($id) {
-            $holidayCategory = $this->getLeaveCategory($request->attributes->get('id'));
+            $leaveCategory = $this->getLeaveCategory($request->attributes->get('id'));
         } else {
-            $holidayCategory = new LeaveCategory();
+            $leaveCategory = new LeaveCategory();
         }
 
-        $form = $this->createForm(new LeaveCategoryType(), $holidayCategory);
+        $form = $this->createForm(new LeaveCategoryType(), $leaveCategory);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em->persist($holidayCategory);
+                $em->persist($leaveCategory);
                 $em->flush();
 
                 $result['response'] = 'success';
             }
 
             $validator = $this->get('validator');
-            $errors = $validator->validate($holidayCategory);
+            $errors = $validator->validate($leaveCategory);
 
             if (count($errors) > 0) {
                 foreach ($errors as $e) {
@@ -118,7 +130,7 @@ class AdminLeaveController extends Controller
         }
         return new JsonResponse(array($result));
     }
-    
+
     /**
      * To generate show leave category form
      *
@@ -132,22 +144,22 @@ class AdminLeaveController extends Controller
         $id = $request->attributes->get('id');
 
         if ($id) {
-            $holidayCategory = $this->getLeaveCategory($id);
+            $leaveCategory = $this->getLeaveCategory($id);
         } else {
-            $holidayCategory = new LeaveCategory();
+            $leaveCategory = new LeaveCategory();
         }
 
         $form = $this->createForm(
             new LeaveCategoryType(),
-            $holidayCategory
+            $leaveCategory
         );
-        
+
         return $this->render(
             'OpitNotesLeaveBundle:Admin:showLeaveCategoryForm.html.twig',
             array('form' => $form->createView())
         );
     }
-    
+
     /**
      * To delete leave categories in Notes
      *
@@ -158,7 +170,7 @@ class AdminLeaveController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $ids = (array) $request->request->get('delete-holidaycategory');
+        $ids = (array) $request->request->get('delete-leavecategory');
         $result = array('response' => 'error');
 
         if (!is_array($ids)) {
@@ -166,15 +178,20 @@ class AdminLeaveController extends Controller
         }
 
         foreach ($ids as $id) {
-            $holidayCategory = $this->getLeaveCategory($id);
-            $em->remove($holidayCategory);
+            $leaves = $em->getRepository('OpitNotesLeaveBundle:Leave')->findBy(array('category' => $id));
+
+            // If the leave cateogry does not assigned to any leaves.
+            if (0 === count($leaves)) {
+                $leaveCategory = $this->getLeaveCategory($id);
+                $em->remove($leaveCategory);
+            }
         }
         $em->flush();
         $result['response'] = 'success';
 
         return new JsonResponse(array('code' => 200, $result));
     }
-    
+
     /**
      * Returns a leave category object
      *
@@ -182,24 +199,24 @@ class AdminLeaveController extends Controller
      * @return mixed  leaveCategory object or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    protected function getLeaveCategory($holidayCategoryId = null)
+    protected function getLeaveCategory($leaveCategoryId = null)
     {
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $holidayCategoryId) {
-            $holidayCategoryId = $request->request->get('id');
+        if (null === $leaveCategoryId) {
+            $leaveCategoryId = $request->request->get('id');
         }
 
-        $holidayCategory = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->find($holidayCategoryId);
+        $leaveCategory = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->find($leaveCategoryId);
 
-        if (!$holidayCategory) {
-            throw $this->createNotFoundException('Missing job title for id "' . $holidayCategoryId . '"');
+        if (!$leaveCategory) {
+            throw $this->createNotFoundException('Missing job title for id "' . $leaveCategoryId . '"');
         }
 
-        return $holidayCategory;
+        return $leaveCategory;
     }
-    
+
     /**
      * To generate list Administrative Leave/Working Day
      *
@@ -262,7 +279,7 @@ class AdminLeaveController extends Controller
             array('form' => $form->createView())
         );
     }
-    
+
     /**
      * Returns a leave date object
      *
@@ -287,7 +304,7 @@ class AdminLeaveController extends Controller
 
         return $leaveDate;
     }
-    
+
     /**
      * To generate add/edit Administrative Leave/Working Day form
      *
@@ -334,7 +351,7 @@ class AdminLeaveController extends Controller
 
         return new JsonResponse(array($result));
     }
-    
+
     /**
      * To delete Administrative Leave/Working Day in Notes
      *
@@ -361,7 +378,7 @@ class AdminLeaveController extends Controller
 
         return new JsonResponse(array('code' => 200, $result));
     }
-    
+
     /**
      * To generate list Administrative Leave/Working Day types
      *
@@ -374,14 +391,26 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
-        $holidayTypes = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findAll();
+        $leaveTypes = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findAll();
+        $numberOfRelations = array();
+
+        foreach ($leaveTypes as $leaveType) {
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(array('holidayType' => $leaveType->getId()));
+
+            if (0 !== count($leaveDates)) {
+                $numberOfRelations[$leaveType->getId()] = count($leaveDates);
+            }
+        }
 
         return $this->render(
             'OpitNotesLeaveBundle:Admin:' . ($showList ? '_' : '') . 'listLeaveTypes.html.twig',
-            array('holidayTypes' => $holidayTypes)
+            array(
+                'leaveTypes' => $leaveTypes,
+                'numberOfRelations' => $numberOfRelations
+            )
         );
     }
-    
+
     /**
      * To generate show Administrative Leave/Working Day type form
      *
@@ -395,14 +424,14 @@ class AdminLeaveController extends Controller
         $id = $request->attributes->get('id');
 
         if ($id) {
-            $holidayType = $this->getHolidayType($id);
+            $leaveType = $this->getLeaveType($id);
         } else {
-            $holidayType = new LeaveType();
+            $leaveType = new LeaveType();
         }
 
         $form = $this->createForm(
             new LeaveTypeType(),
-            $holidayType
+            $leaveType
         );
 
         return $this->render(
@@ -410,7 +439,7 @@ class AdminLeaveController extends Controller
             array('form' => $form->createView())
         );
     }
-    
+
     /**
      * Returns a Administrative Leave/Working Day type object
      *
@@ -418,24 +447,24 @@ class AdminLeaveController extends Controller
      * @return mixed  leaveType object or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    protected function getLeaveType($holidayTypeId = null)
+    protected function getLeaveType($leaveTypeId = null)
     {
         $request = $this->getRequest();
         $em = $this->getDoctrine()->getManager();
 
-        if (null === $holidayTypeId) {
-            $holidayTypeId = $request->request->get('id');
+        if (null === $leaveTypeId) {
+            $leaveTypeId = $request->request->get('id');
         }
 
-        $holidayType = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->find($holidayTypeId);
+        $leaveType = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->find($leaveTypeId);
 
-        if (!$holidayType) {
-            throw $this->createNotFoundException('Missing leave type for id "' . $holidayTypeId . '"');
+        if (!$leaveType) {
+            throw $this->createNotFoundException('Missing leave type for id "' . $leaveTypeId . '"');
         }
 
-        return $holidayType;
+        return $leaveType;
     }
-    
+
     /**
      * To generate add/edit Administrative Leave/Working Day type form
      *
@@ -452,25 +481,25 @@ class AdminLeaveController extends Controller
         $result = array('response' => 'error');
 
         if ($id) {
-            $holidayType = $this->getHolidayType($request->attributes->get('id'));
+            $leaveType = $this->getLeaveType($request->attributes->get('id'));
         } else {
-            $holidayType = new LeaveType();
+            $leaveType = new LeaveType();
         }
 
-        $form = $this->createForm(new LeaveTypeType(), $holidayType);
+        $form = $this->createForm(new LeaveTypeType(), $leaveType);
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em->persist($holidayType);
+                $em->persist($leaveType);
                 $em->flush();
 
                 $result['response'] = 'success';
             }
 
             $validator = $this->get('validator');
-            $errors = $validator->validate($holidayType);
+            $errors = $validator->validate($leaveType);
 
             if (count($errors) > 0) {
                 foreach ($errors as $e) {
@@ -482,7 +511,7 @@ class AdminLeaveController extends Controller
 
         return new JsonResponse(array($result));
     }
-    
+
     /**
      * To delete Administrative Leave/Working Day types in Notes
      *
@@ -493,7 +522,7 @@ class AdminLeaveController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
-        $ids = (array) $request->request->get('delete-holidaytype');
+        $ids = (array) $request->request->get('delete-leavetype');
         $result = array('response' => 'error');
 
         if (!is_array($ids)) {
@@ -501,15 +530,19 @@ class AdminLeaveController extends Controller
         }
 
         foreach ($ids as $id) {
-            $holidayType = $this->getHolidayType($id);
-            $em->remove($holidayType);
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(array('holidayType' => $id));
+
+            if (0 === count($leaveDates)) {
+                $leaveType = $this->getLeaveType($id);
+                $em->remove($leaveType);
+            }
         }
         $em->flush();
         $result['response'] = 'success';
 
         return new JsonResponse(array('code' => 200, $result));
     }
-    
+
     /**
      * To generate list leave options
      *
@@ -543,7 +576,7 @@ class AdminLeaveController extends Controller
             array('groupedLeaveSettings' => $groupedLeaveSettings, 'leaveGroups' => $leaveGroups, 'isEnabled' => $isEnabled)
         );
     }
-    
+
     /**
      * To show leave option
      *
@@ -563,7 +596,7 @@ class AdminLeaveController extends Controller
             $leaveSetting = $this->getLeaveSetting($id);
         }
 
-        
+
         $form = $this->createForm(
             new LeaveSettingType(),
             $leaveSetting
@@ -573,7 +606,7 @@ class AdminLeaveController extends Controller
             array('form' => $form->createView(), 'index' => $index)
         );
     }
-    
+
     /**
      * To save leave setting
      *
@@ -591,7 +624,7 @@ class AdminLeaveController extends Controller
 
         //If it was a post
         if ($request->isMethod('POST')) {
-            
+
             $leaveSettingList = $em->getRepository('OpitNotesLeaveBundle:LeaveSetting')->findAll();
             $ids = Utils::arrayValueRecursive('id', $data);
 
@@ -619,7 +652,7 @@ class AdminLeaveController extends Controller
         }
         return new JsonResponse(array('code' => $status, $result));
     }
-    
+
     /**
      * Set the leave setting entity
      *
@@ -632,7 +665,7 @@ class AdminLeaveController extends Controller
         $em = $this->getDoctrine()->getManager();
         $result = array();
         $result['status'] = 200;
-        
+
         //If it is a new leave setting create, else modify it.
         if (false === $leaveSetting) {
             // Create a new leave setting and save it.
@@ -643,7 +676,7 @@ class AdminLeaveController extends Controller
         // get the leave group entity by id
         $leaveGroup = $em->getRepository('OpitNotesLeaveBundle:LeaveGroup')->find((integer)$data['leaveGroup']);
         $leaveSetting->setLeaveGroup($leaveGroup);
-        
+
         $validator = $this->get('validator');
         $errors = $validator->validate($leaveSetting);
         // If the validation failed
@@ -660,7 +693,7 @@ class AdminLeaveController extends Controller
         }
         return $result;
     }
-    
+
     /**
      * Returns a Leave Option request object
      *
@@ -678,7 +711,7 @@ class AdminLeaveController extends Controller
         }
 
         $leaveSetting = $em->getRepository('OpitNotesLeaveBundle:LeaveSetting')->find($leaveSettingId);
-        
+
         if (!$leaveSetting || null === $leaveSetting) {
             //If this method throws error or just return with false value.
             if (true === $throwError) {

@@ -1,9 +1,9 @@
-$("#addHolidayType").click ->
+$("#addLeaveType").click ->
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitNotesLeaveBundle_admin_show_leave_type', id: 0
     .done (data) ->
-        $('<div id="dialog-editholidaytype"></div>').html(data)
+        $('<div id="dialog-editleavetype"></div>').html(data)
             .dialog
                 title: '<i class="fa fa-list-alt"></i> Create Administrative Leave/Working Day type'
                 width: 750
@@ -14,7 +14,7 @@ $("#addHolidayType").click ->
                             type: 'POST'
                             global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_type', id: 0
-                            data: $('#addholidaytype_frm').serialize()
+                            data: $('#addleavetype_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
@@ -23,23 +23,25 @@ $("#addHolidayType").click ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_types'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Holiday type created successfully"
+                                $('#form-leavetype').html data
+                                $(document).data('notes').funcs.initListPageListeners()
+                                $(document).data('notes').funcs.initDeleteMultipleListener()
+                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave type created successfully"
                                 if validationResult is true
-                                    $('#dialog-editholidaytype').dialog "destroy"
+                                    $('#dialog-editleavetype').dialog "destroy"
                     Close: ->
-                        $('#dialog-editholidaytype').dialog "destroy"
+                        $('#dialog-editleavetype').dialog "destroy"
                         return
             return
         return
 
-$("#list-table").on "click", ".list-holidaytype", ->
+$("#list-table").on "click", ".list-leavetype", ->
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitNotesLeaveBundle_admin_show_leave_type', id: id
     .done (data) ->
-        $('<div id="dialog-editholidaytype"></div>').html(data)
+        $('<div id="dialog-editleavetype"></div>').html(data)
             .dialog
                 title: '<i class="fa fa-list-alt"></i> Edit Administrative Leave/Working Day type'
                 width: 750
@@ -50,7 +52,7 @@ $("#list-table").on "click", ".list-holidaytype", ->
                             type: 'POST'
                             global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_type', id: id
-                            data: $('#addholidaytype_frm').serialize()
+                            data: $('#addleavetype_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
@@ -59,33 +61,33 @@ $("#list-table").on "click", ".list-holidaytype", ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_types'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
+                                $('#form-leavetype').html data
+                                $(document).data('notes').funcs.initListPageListeners()
+                                $(document).data('notes').funcs.initDeleteMultipleListener()
                                 validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day type modified successfully"
                                 if validationResult is true
-                                    $('#dialog-editholidaytype').dialog "destroy"
+                                    $('#dialog-editleavetype').dialog "destroy"
                     Close: ->
-                        $('#dialog-editholidaytype').dialog "destroy"
+                        $('#dialog-editleavetype').dialog "destroy"
                         return
             return
         return
 
 # Delete button
 $('#delete').click ->
-    deleteHolidayType()
+    do deleteLeaveType
 
 # Delete icon in the table row
-$('#list-table').on "click", ".delete-single-holidaytype", ->
+$('#form-leavetype').on "click", ".delete-single-leavetype", (event) ->
+    event.preventDefault()
     $checkbox = $(@).closest('tr').find(':checkbox')
     $checkbox.prop 'checked', true
-    deleteHolidayType()
+    do deleteLeaveType
 
 # Call the deleteAction from the app main.js
-deleteHolidayType = () ->
+deleteLeaveType = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_type'
-    $(document).data('notes').funcs.deleteAction('Holiday type delete', 'holiday type(s)', url, '.list-delete-holidaytype')
-
-$('#list-table').on "click", "th .fa-trash-o", ->
-      $('.list-delete-holidaytype').filter(() -> return not @.disabled).checkAll()
+    $(document).data('notes').funcs.deleteAction('Leave type delete', 'leave type(s)', url, '.list-delete-leavetype')
 
 inverse = false
 $('form').on 'click', '.fa-sort', ->

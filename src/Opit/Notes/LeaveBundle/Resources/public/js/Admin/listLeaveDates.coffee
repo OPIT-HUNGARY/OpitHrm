@@ -24,7 +24,7 @@ $("#addLeaveDate").click ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_dates'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
+                                $('#form-leavedate').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
                                 validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day created successfully"
@@ -64,7 +64,7 @@ $("#form-leavedate").on "click", ".list-leavedate", (event) ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_dates'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
+                                $('#form-leavedate').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
                                 validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day modified successfully"

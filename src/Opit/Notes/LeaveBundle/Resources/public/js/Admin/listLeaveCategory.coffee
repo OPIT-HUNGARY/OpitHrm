@@ -1,9 +1,9 @@
-$("#addHolidayCategory").click ->
+$("#addLeaveCategory").click ->
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitNotesLeaveBundle_admin_show_leave_category', id: 0
     .done (data) ->
-        $('<div id="dialog-editholidaycategory"></div>').html(data)
+        $('<div id="dialog-editleavecategory"></div>').html(data)
             .dialog
                 title: '<i class="fa fa-list-alt"></i> Create leave category'
                 width: 750
@@ -14,7 +14,7 @@ $("#addHolidayCategory").click ->
                             type: 'POST'
                             global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_category', id: 0
-                            data: $('#addholidaycategory_frm').serialize()
+                            data: $('#addleavecategory_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
@@ -23,23 +23,23 @@ $("#addHolidayCategory").click ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_categories'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
+                                $('#form-leavecategory').html data
                                 validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category created successfully"
                                 if validationResult is true
-                                    $('#dialog-editholidaycategory').dialog "destroy"
+                                    $('#dialog-editleavecategory').dialog "destroy"
                     Close: ->
-                        $('#dialog-editholidaycategory').dialog "destroy"
+                        $('#dialog-editleavecategory').dialog "destroy"
                         return
             return
         return
 
-$("#list-table").on "click", ".list-holidaycategory", ->
+$("#list-table").on "click", ".list-leavecategory", ->
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitNotesLeaveBundle_admin_show_leave_category', id: id
     .done (data) ->
-        $('<div id="dialog-editholidaycategory"></div>').html(data)
+        $('<div id="dialog-editleavecategory"></div>').html(data)
             .dialog
                 title: '<i class="fa fa-list-alt"></i> Edit leave category'
                 width: 750
@@ -50,7 +50,7 @@ $("#list-table").on "click", ".list-holidaycategory", ->
                             type: 'POST'
                             global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_category', id: id
-                            data: $('#addholidaycategory_frm').serialize()
+                            data: $('#addleavecategory_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
@@ -59,33 +59,31 @@ $("#list-table").on "click", ".list-holidaycategory", ->
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_categories'
                                 data: "showList" : 1
                             .done (data)->
-                                $('#list-table').html data
+                                $('#form-leavecategory').html data
                                 validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category modified successfully"
                                 if validationResult is true
-                                    $('#dialog-editholidaycategory').dialog "destroy"
+                                    $('#dialog-editleavecategory').dialog "destroy"
                     Close: ->
-                        $('#dialog-editholidaycategory').dialog "destroy"
+                        $('#dialog-editleavecategory').dialog "destroy"
                         return
             return
         return
 
 # Delete button
 $('#delete').click ->    
-    deleteHolidayCategory()
+    do deleteLeaveCategory
 
 # Delete icon in the table row
-$('#list-table').on "click", ".delete-single-holidaycategory", ->
-    $checkbox = $(@).closest('tr').find(':checkbox')
+$('#form-leavecategory').on "click", ".delete-single-leavecategory", ->
+    event.preventDefault()
+    $checkbox = $(@).closest('tr').find ':checkbox'
     $checkbox.prop 'checked', true
-    deleteHolidayCategory()
+    do deleteLeaveCategory
 
 # Call the deleteAction from the app main.js
-deleteHolidayCategory = () ->  
+deleteLeaveCategory = () ->  
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_category'
-    $(document).data('notes').funcs.deleteAction('Holiday category delete', 'holiday category(s)', url, '.list-delete-holidaycategory')
-
-$('#list-table').on "click", "th .fa-trash-o", ->
-      $('.list-delete-holidaycategory').filter(() -> return not @.disabled).checkAll()
+    $(document).data('notes').funcs.deleteAction('Leave category delete', 'leave category(s)', url, '.list-delete-leavecategory')
 
 inverse = false
 $('form').on 'click', '.fa-sort', ->

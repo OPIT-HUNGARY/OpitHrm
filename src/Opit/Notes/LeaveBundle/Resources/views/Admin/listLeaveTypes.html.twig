@@ -13,19 +13,21 @@
     <table>
         <tr>
             <td class="padding-0">
-                <button id="addHolidayType" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="addLeaveType" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
                 <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
             </td>
         </tr>
     </table>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesLeaveBundle:Admin:_listLeaveTypes.html.twig' %}
+    <form id="form-leavetype">
+       {% include 'OpitNotesLeaveBundle:Admin:_listLeaveTypes.html.twig' %}
+    </form>
 </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesLeaveBundle/Resources/public/js/Admin/type.coffee'
+        '@OpitNotesLeaveBundle/Resources/public/js/Admin/listLeaveType.coffee'
         '@OpitNotesUserBundle/Resources/public/js/list.coffee'
     output='js/opitnotesleave/admin/list_leave_types.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
