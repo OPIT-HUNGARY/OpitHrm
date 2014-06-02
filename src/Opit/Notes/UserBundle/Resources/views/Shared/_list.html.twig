@@ -3,16 +3,17 @@
     {% if propertyNames is defined %}
         <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
         {% for propertyName in propertyNames %}
-        {% if 'role' != propertyName %}
+        {% set displayName = (strpos(propertyName, '.') > 0) ? propertyName|slice(strpos(propertyName, '.')+1) : propertyName  %}
+        {% if 'role' != displayName %}
         <th>
-            {% if propertyName == 'roles' %}
+            {% if displayName == 'roles' %}
                 <span class="order-text cursor-pointer">
-                    {{ propertyName|underscore|humanize }}
+                    {{ displayName|underscore|humanize }}
                 </span>
             {% else %}
                 <i class="fa fa-sort default-right" data-field="{{ propertyName }}"></i>
                 <span class="order-text cursor-pointer">
-                {{ propertyName|underscore|humanize }}
+                {{ displayName|underscore|humanize }}
                 </span>
             {% endif %}
         </th>
@@ -22,7 +23,7 @@
         <th>Assigned Users</th>
         {% endif %}
         <th><span>Actions</span></th>
-        {% for key,value in propertyValues %}
+        {% for key, value in propertyValues %}
             <tr>
                 <td class="width-24-fix">
                     {% if attribute(value, 'Role') is defined %}
@@ -38,6 +39,7 @@
                     {% endif %}
                 </td>
             {% for propertyName in propertyNames %}
+                {% set propertyName = (strpos(propertyName, '.') > 0) ? propertyName|slice(strpos(propertyName, '.')+1) : propertyName  %}
                 {% if propertyName == 'roles' %}
                     <td>
                         {{ attribute(value, propertyName)|join(', ') }}

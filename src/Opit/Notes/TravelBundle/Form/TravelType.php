@@ -48,7 +48,8 @@ class TravelType extends AbstractType
         
         $userAcOptions = array();
         
-        // if travel request user exists
+        // Disable employee form if access is not granted
+        // Currently access is only granted for ROLE_ADMIN.
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
             if (false === $this->isGranted) {
                 $userAcOptions['disabled'] = true;
@@ -60,7 +61,6 @@ class TravelType extends AbstractType
             'label' => 'Employee name',
             'data' => ($user = $options['data']->getUser()) ? $user->getEmployee()->getEmployeeName() . ' <'. $user->getEmail() .'>' : null,
             'mapped' => false,
-            'disabled' => true,
             'attr' => array('placeholder' => 'Employee name', 'class' => 'width-300')
         ), $userAcOptions));
         $builder->add('departure_date', 'date', array(

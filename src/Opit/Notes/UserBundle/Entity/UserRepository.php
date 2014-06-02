@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of User
@@ -74,14 +75,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $this->createQueryBuilder('u');
 
         if (isset($data['id']) && $data['id']>0) {
-            $qb->leftJoin('u.employee', 'e', 'WITH')
+            $qb->leftJoin('u.employee', 'e')
             ->where('(u.username = :username OR u.email = :email OR e.employeeName = :employeeName) AND u.id != :id')
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
             ->setParameter('employeeName', $data['employeeName'])
             ->setParameter('id', $data['id']);
         } else {
-            $qb->leftJoin('u.employee', 'e', 'WITH')
+            $qb->leftJoin('u.employee', 'e')
             ->where('u.username = :username OR u.email = :email OR e.employeeName = :employeeName')
             ->setParameter('username', $data['username'])
             ->setParameter('email', $data['email'])
@@ -145,17 +146,10 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $this->createQueryBuilder('u');
         $params = array();
         $andx = array();
-        $whereParams = $parameters['search'];
         $oderParams = isset($parameters['order']) ? $parameters['order'] : array();
 
-        foreach ($whereParams as $key => $value) {
-            // To workaround empty form posts for search criteria expecting no values, the "NULL" value can be used.
-            // Posted NULL values will be excluded from search.
-            if ($value != '' && $value != 'NULL') {
-                $params[':'.$key] = '%'.$value.'%';
-                $andx[] = $qb->expr()->andX($qb->expr()->like('u.'.$key, ':'.$key));
-            }
-        }
+        // Build the query from posted search parameters
+        Utils::buildDoctrineQuery($qb, $parameters['search'], $params, $andx);
 
         // Only apply where if parameters are given
         if (count($andx) > 0) {
@@ -164,7 +158,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         }
 
         if (isset($oderParams['field']) && $oderParams['field'] && isset($oderParams['dir']) && $oderParams['dir']) {
-            $qb->orderBy('u.'.$oderParams['field'], $oderParams['dir']);
+            $qb->orderBy($oderParams['field'], $oderParams['dir']);
         }
 
         $qb->setFirstResult($firstResult);
@@ -217,10 +211,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function findUserByEmployeeNameUsingLike($chunk)
     {
         $q = $this->createQueryBuilder('u')
-                ->leftJoin('u.employee', 'e', 'WITH')
+                ->leftJoin('u.employee', 'e')
                 ->where('e.employeeName LIKE :employeeName')
-                ->setParameter(':employeeName', "%{$chunk}%")
+                ->setParameter('employeeName', "%{$chunk}%")
                 ->getQuery();
+
         return $q->getResult();
     }
 

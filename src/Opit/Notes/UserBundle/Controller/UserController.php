@@ -90,7 +90,8 @@ class UserController extends Controller
         }
         
         $numberOfPages = ceil(count($users) / $config['max_results']);
-        $propertyNames = array("username", "email", "employeeName", "isActive", "ldapEnabled", "roles");
+        // Used by _list template. Alias is needed for odering but cut of for displaying
+        $propertyNames = array("u.username", "u.email", "e.employeeName", "u.isActive", "u.ldapEnabled", "u.roles");
         
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $config['max_pages'];

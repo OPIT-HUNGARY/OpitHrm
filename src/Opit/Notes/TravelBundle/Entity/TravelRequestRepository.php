@@ -48,8 +48,9 @@ class TravelRequestRepository extends EntityRepository
         }
         if (isset($whereParams['employeeName']) && $whereParams['employeeName'] != "") {
             $params['employeeName'] = '%'.$whereParams['employeeName'].'%';
-            $qb->innerJoin('tr.user', 'u', 'WITH')
-                ->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
+            $qb->innerJoin('tr.user', 'u')
+                ->innerJoin('u.employee', 'e')
+                ->andWhere($qb->expr()->like('e.employeeName', ':employeeName'));
         }
         if (isset($whereParams['customerName']) && $whereParams['customerName'] != "") {
             $params['customerName'] = '%' . $whereParams['customerName'] . '%';
@@ -57,7 +58,7 @@ class TravelRequestRepository extends EntityRepository
         }
         if (isset($whereParams['destinationName']) && $whereParams['destinationName'] != "") {
             $params['destinationName'] = '%' . $whereParams['destinationName'] . '%';
-            $qb->leftJoin('tr.destinations', 'd', 'WITH');
+            $qb->innerJoin('tr.destinations', 'd');
             $qb->andWhere($qb->expr()->like('d.name', ':destinationName'));
         }
         if (isset($whereParams['departureDateFrom']) && $whereParams['departureDateFrom'] != "") {
@@ -88,7 +89,7 @@ class TravelRequestRepository extends EntityRepository
                 ),
                 $qb->expr()->eq('tr.user', ':user')
             );
-            $qb->leftJoin('tr.states', 's', 'WITH')
+            $qb->leftJoin('tr.states', 's')
                 ->andWhere($statusExpr);
         } else {
             $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
@@ -121,7 +122,7 @@ class TravelRequestRepository extends EntityRepository
         $qb = $this->createQueryBuilder('tr');
         
         if ("user"===$field) {
-            $qb->leftJoin('tr.user', 'u', 'WITH');
+            $qb->leftJoin('tr.user', 'u');
             $qb->orderBy('u.employeeName', $order);
         } else {
              $qb->orderBy('tr.'.$field, $order);

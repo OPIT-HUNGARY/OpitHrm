@@ -9,7 +9,7 @@
 {% endblock %}
 {% block body %}
 <h1>User list</h1>
-    {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' with { 'order_field': 'id' } %}
+    {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' with { 'order_field': 'u.id' } %}
     <div id="userlistWrapper">
         <table>
             <tr>

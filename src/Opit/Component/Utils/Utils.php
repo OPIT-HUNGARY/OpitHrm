@@ -176,4 +176,34 @@ class Utils
 
         return $days;
     }
+
+    /**
+     * Builds/extends a doctrine query based on params
+     *
+     * @param \Doctrine\ORM\QueryBuilder $qb
+     * @param array $input The input query params
+     * @param array $params The generated query params
+     * @param array $andX An array of query expressions
+     * @param string|null $alias The alias used for properties
+     */
+    public static function buildDoctrineQuery(\Doctrine\ORM\QueryBuilder $qb, array $input, array &$params, array &$andx, $alias = null)
+    {
+        if (null === $alias) {
+            $alias = current($qb->getRootAliases());
+        }
+
+        foreach ($input as $key => $value) {
+            if (is_array($value)) {
+                $qb->leftJoin("{$alias}.{$key}", $key[0]);
+                self::buildDoctrineQuery($qb, $value, $params, $andx, $key[0]);
+            } else {
+                // To workaround empty form posts for search criteria expecting no values, the "NULL" value can be used.
+                // Posted NULL values will be excluded from search.
+                if ($value != '' && $value != 'NULL') {
+                    $params[':'.$key] = '%'.$value.'%';
+                    $andx[] = $qb->expr()->andX($qb->expr()->like("{$alias}.{$key}", ':'.$key));
+                }
+            }
+        }
+    }
 }

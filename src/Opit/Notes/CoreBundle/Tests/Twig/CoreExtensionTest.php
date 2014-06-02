@@ -12,6 +12,7 @@
 namespace Opit\Notes\UserBundle\Tests\Twig;
 
 use Opit\Notes\CoreBundle\Twig\CoreExtension;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of CoreExtensionTest
@@ -21,7 +22,7 @@ use Opit\Notes\CoreBundle\Twig\CoreExtension;
  * @package Opit
  * @subpackage Notes
  */
-class CoreExtensionTest extends \PHPUnit_Framework_TestCase
+class CoreExtensionTest extends WebTestCase
 {
     /**
      * @var \Opit\Notes\CoreBundle\Twig\CoreExtension
@@ -33,7 +34,12 @@ class CoreExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->coreExtension = new CoreExtension();
+        $client = static::createClient(array(), array(
+            'PHP_AUTH_USER' => 'admin',
+            'PHP_AUTH_PW'   => 'admin',
+        ));
+
+        $this->coreExtension = new CoreExtension($client->getContainer());
     }
 
     /**

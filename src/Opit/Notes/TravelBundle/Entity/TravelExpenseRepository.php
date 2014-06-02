@@ -39,10 +39,11 @@ class TravelExpenseRepository extends EntityRepository
          */
         $params = array();
 
-        if ($parameters['employeeName']!="") {
-            $qb->leftJoin('te.user', 'u', 'WITH');
+        if ($parameters['employeeName'] != "") {
+            $qb->innerJoin('te.user', 'u')
+                ->innerJoin('u.employee', 'e')
+                ->andWhere($qb->expr()->like('e.employeeName', ':employeeName'));
             $params['employeeName'] = '%'.$parameters['employeeName'].'%';
-            $qb->andWhere($qb->expr()->like('u.employeeName', ':employeeName'));
         }
         if ($parameters['departureCountry']!="") {
             $params['departureCountry'] = '%'.$parameters['departureCountry'].'%';

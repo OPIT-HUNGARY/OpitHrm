@@ -56,7 +56,7 @@ class ExpenseType extends AbstractType
             $bankAccountNumber =
                 ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getBankAccountNumber();
             $employeeName =
-                ($eName = $options['data']->getUser()->getEmployee()->getEmployeeName()) ? $eName : $user->getEmployeeName();
+                ($eName = $options['data']->getUser()->getEmployee()->getEmployeeName()) ? $eName : $user->getEmployee()->getEmployeeName();
         }
         
         if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
