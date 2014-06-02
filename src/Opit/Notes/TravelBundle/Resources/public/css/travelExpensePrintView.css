@@ -1,0 +1,45 @@
+/*  Created on : Jan 9, 2014, 3:14:17 PM Author     : OPIT\NOTES
+*/
+.fa-print { float: right; }
+
+.bold { font-weight: bold; }
+
+h3 { margin: 0.4em 0 0.4em 0; }
+
+.bordered td { padding: 3.5px; }
+
+.signiture { display: none; margin: 0 20px 0 0; }
+
+.position-fixed { position: fixed; }
+
+.fix-right-10 { right: 10px; }
+
+.fix-right-50 { right: 50px; }
+
+.width-15-percent { width: 15%; }
+
+.icons:hover { cursor: pointer; }
+
+.icons { float: right; width: 36px; height: 36px; margin: 0 0 0 5px; }
+
+#opitLogo { width: 100px; height: 23px; display: none; }
+
+.width-315 { width: 315px; }
+
+.white-space-nowrap { white-space: nowrap; }
+
+.width-100 { width: 100px; }
+
+table { width: 650px; border-collapse: collapse; border-spacing: 0; border-color: black; }
+table tr td { border: solid 1px black; }
+table tr .incrementation { width: 20px; min-width: 20px; text-align: center; }
+table .table-title { background-color: lightgrey; padding: 0 0 0 5px; font-weight: bold; height: 25px; line-height: 25px; text-align: left; }
+
+.page-break-after { page-break-after: always; }
+
+.height-20 { height: 20px; }
+
+@media print { .icons { display: none; }
+  .signiture { display: inline-block; }
+  #opitLogo { display: block; }
+  a { display: none; } }

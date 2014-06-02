@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -32,9 +32,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 {
     /**
      * Method required and called by custom authentication provider
-     * 
+     *
      * @param string $username The username to look for
-     * 
+     *
      * @return User $user An user object
      * @throws UsernameNotFoundException
      */
@@ -94,7 +94,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
     /**
      * Method used by custom authentication provider
-     * 
+     *
      * @param \Symfony\Component\Security\Core\User\UserInterface $user
      * @return User An user object
      * @throws UnsupportedUserException
@@ -116,7 +116,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
     /**
      * Method used by custom authentication provider
-     * 
+     *
      * @param object $class The class to validate
      * @return boolean Returns true if class is supported
      */
@@ -124,7 +124,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         return $this->getEntityName() === $class || is_subclass_of($class, $this->getEntityName());
     }
-    
+
     /**
      * Get all Users from
      *
@@ -134,9 +134,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         return $this->findBy(array(), array('username' => 'ASC'));
     }
-    
+
     /**
-     * 
+     *
      * @param type $parameters key value pairs, parameter name and value
      * @return type
      */
@@ -147,7 +147,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $andx = array();
         $whereParams = $parameters['search'];
         $oderParams = isset($parameters['order']) ? $parameters['order'] : array();
-        
+
         foreach ($whereParams as $key => $value) {
             // To workaround empty form posts for search criteria expecting no values, the "NULL" value can be used.
             // Posted NULL values will be excluded from search.
@@ -156,20 +156,20 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 $andx[] = $qb->expr()->andX($qb->expr()->like('u.'.$key, ':'.$key));
             }
         }
-        
+
         // Only apply where if parameters are given
         if (count($andx) > 0) {
             $qb->where(call_user_func_array(array($qb->expr(), "andX"), $andx))
                 ->setParameters($params);
         }
-        
+
         if (isset($oderParams['field']) && $oderParams['field'] && isset($oderParams['dir']) && $oderParams['dir']) {
             $qb->orderBy('u.'.$oderParams['field'], $oderParams['dir']);
         }
-        
+
         $qb->setFirstResult($firstResult);
         $qb->setMaxResults($maxResults);
-        
+
         return new Paginator($qb->getQuery(), true);
     }
 
@@ -207,7 +207,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         return $q->getResult();
     }
-    
+
     /**
      * Finds users by employee name
      *
@@ -223,14 +223,21 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 ->getQuery();
         return $q->getResult();
     }
-    
+
+    /**
+     * Get Pagination
+     *
+     * @param integer $firstResult
+     * @param integer $maxResults
+     * @return \Doctrine\ORM\Tools\Pagination\Paginator
+     */
     public function getPaginaton($firstResult, $maxResults)
     {
         $users = $this->createQueryBuilder('user')
             ->setFirstResult($firstResult)
             ->setMaxResults($maxResults)
             ->getQuery();
-        
+
         return new Paginator($users, $fetchJoinCollection = true);
     }
 }

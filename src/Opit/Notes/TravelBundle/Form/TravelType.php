@@ -58,9 +58,10 @@ class TravelType extends AbstractType
         $builder->add($builder->create('user', 'hidden')->addModelTransformer($transformer));
         $builder->add('user_ac', 'text', array_merge(array(
             'label' => 'Employee name',
-            'data' => ($user = $options['data']->getUser()) ? $user->getEmployee()->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getUser()) ? $user->getEmployee()->getEmployeeName() . ' <'. $user->getEmail() .'>' : null,
             'mapped' => false,
-            'attr' => array('placeholder' => 'Employee name')
+            'disabled' => true,
+            'attr' => array('placeholder' => 'Employee name', 'class' => 'width-300')
         ), $userAcOptions));
         $builder->add('departure_date', 'date', array(
             'widget' => 'single_text',
@@ -106,19 +107,19 @@ class TravelType extends AbstractType
         );
         $builder->add('team_manager_ac', 'text', array(
             'label' => 'Team manager',
-            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeNameFormatted() : null,
             'mapped' => false,
             'required' => false,
-            'attr' => array('placeholder' => 'Team manager')
+            'attr' => array('placeholder' => 'Team manager', 'class' => 'width-300')
         ));
         $builder->add(
             $builder->create('general_manager', 'hidden')->addModelTransformer($transformer)
         );
         $builder->add('general_manager_ac', 'text', array(
             'label' => 'General manager',
-            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeNameFormatted() : null,
             'mapped' => false,
-            'attr' => array('placeholder' => 'General manager')
+            'attr' => array('placeholder' => 'General manager', 'class' => 'width-300')
         ));
         
         $builder->add('add_travel_request', 'submit', array(

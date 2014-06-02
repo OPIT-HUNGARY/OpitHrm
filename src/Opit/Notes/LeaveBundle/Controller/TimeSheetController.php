@@ -61,12 +61,12 @@ class TimeSheetController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
-        $maxMonth = date('n');
+        $currentMonth = date('n');
         $availableMonths = array();
         $logTimesheets = array();
 
         // Generate the pervious months with the numeric and name represantions.
-        for ($i = $maxMonth; $i > 0; $i--) {
+        for ($i = $currentMonth; $i > 0; $i--) {
             $availableMonths[$i] = new \DateTime(date('Y-m', mktime(0, 0, 0, $i, 1)));
 
             // Get the leave data
@@ -249,7 +249,9 @@ class TimeSheetController extends Controller
             $startDate->setDate($year, $month, 1);
         }
         $leaveDatesOfMonth = array();
-        $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllByYearAndMonth($year, $month);
+        $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllFiltered(
+            array('year' => array($year), 'month' => array($month))
+        );
 
         // Grouping the leave dates by the date.
         foreach ($leaveDates as $leaveDate) {
@@ -276,6 +278,7 @@ class TimeSheetController extends Controller
         return $this->render(
             'OpitNotesLeaveBundle:TimeSheet:showTimeSheet.html.twig',
             array(
+                'action' => $action,
                 'groupedUsers' => $groupedUsers,
                 'daysOfMonth' => $daysOfMonth,
                 'leaveDatesOfMonth' => $leaveDatesOfMonth,

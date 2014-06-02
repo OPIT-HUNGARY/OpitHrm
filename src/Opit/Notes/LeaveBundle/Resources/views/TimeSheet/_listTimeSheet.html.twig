@@ -5,7 +5,7 @@
             <i class="fa fa-sort default-right" data-field="category"></i>
             <span class="order-text cursor-pointer">Year / Month</span>
         </th>
-        <th class="width-40">Actions</th>
+        <th>Actions</th>
         <th>Information</th>
     </tr>
     {% for monthNumber, timesheetDateTime in availableMonths %}
@@ -15,7 +15,7 @@
         </td>
         <td>
             <div class="display-inline-block width-24">
-                <a href="{{ path('OpitNotesLeaveBundle_timesheet_generate', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}" target="_blank" class="small-button print-view">
+                <a class="small-button print-view white-space-nowrap" href="{{ path('OpitNotesLeaveBundle_timesheet_generate', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}" target="_blank">
                     <i class="fa fa-print"></i>
                     <span>
                         Print / View
@@ -26,7 +26,7 @@
                 </a>
             </div>
             <div class="display-inline-block width-24">
-                <a class="download-pdf small-button" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                <a class="download-pdf small-button white-space-nowrap-32" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
                     <i class="fa fa-file-pdf-o"></i>
                     <span>
                         Download PDF
@@ -37,7 +37,7 @@
                 </a>
             </div>
             <div class="display-inline-block width-24">
-                <a class="send-email small-button" href="{{ path('OpitNotesLeaveBundle_timesheet_sendmail', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                <a class="send-email small-button white-space-nowrap-32" href="{{ path('OpitNotesLeaveBundle_timesheet_sendmail', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
                     <i class="fa fa-envelope-o"></i>
                     <span>
                         Send Email

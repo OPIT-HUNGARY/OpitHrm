@@ -1,13 +1,18 @@
 {% block stylesheets %}
-    {% stylesheets
-        '../app/Resources/public/css/main.scss'
-        'bundles/bmatznerfontawesome/css/font-awesome.min.css'
-        '@OpitNotesLeaveBundle/Resources/public/css/timeSheetPrintView.scss'
-    output='css/opitnotesleave/print.css' filter='?yui_css,cssrewrite' %}
+    {% if action is defined and action == 2 %}
+        {# The generated CSS file needs for the TCPDF #}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
-        {% set printAsset = asset_url|split('?') %}
-        <link rel="stylesheet" type="text/css" media="all" href="{{ printAsset[0] }}" />
-    {% endstylesheets %}
+        {% set printAsset = asset('bundles/opitnotesleave/css/timeSheetPrintView.css')|split('?') %}
+        <link rel="stylesheet" type="text/css" media="print" href="{{ printAsset[0] }}" />
+    {% else %}
+        {% stylesheets
+            '../app/Resources/public/css/main.scss'
+            'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+            '@OpitNotesLeaveBundle/Resources/public/css/timeSheetPrintView.scss'
+        output='css/opitnotesleave/print.css' filter='?yui_css,cssrewrite' %}
+            <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endif %}
 {% endblock %}
 <div id="export_buttons" class="background-color-white padding-5 position-fixed fix-top-20 fix-right-15 box-shadow-1-darkgray border-radius-5">
     <a id="download-pdf" href="{{ path('OpitNotesLeavelBundle_timesheet_export', { 'token': base64Encode(year ~ '|' ~ month)  }) }}">
@@ -23,9 +28,9 @@
         <tr>
             <td class="background-color-light-grey padding-2 border-solid-1-black">Days</td>
             {% for user in users %}
-                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black"><strong>{{ user.employee.employeeName }}</strong></td>
-                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black">In</td>
-                <td class="background-color-light-grey padding-2 white-space-nowrap border-solid-1-black">Out</td>
+                <td class="background-color-light-grey padding-2 white-space-nowrap export-width-120-fix border-solid-1-black"><strong>{{ user.employee.employeeName }}</strong><br />({{ user.email }})</td>
+                <td class="background-color-light-grey padding-2 white-space-nowrap export-width-40-fix border-solid-1-black">In</td>
+                <td class="background-color-light-grey padding-2 white-space-nowrap export-width-40-fix border-solid-1-black">Out</td>
                 <td class="background-color-light-grey padding-2 border-right-3-black border-solid-1-black">Signature</td>
             {% endfor %}
         </tr>

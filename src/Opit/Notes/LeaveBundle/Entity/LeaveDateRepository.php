@@ -41,30 +41,38 @@ class LeaveDateRepository extends EntityRepository
      */
     public function findAllFiltered($searchParams = array())
     {
-        $start = $end = date('Y');
+        $startYear = $endYear = date('Y');
+        $startMonth = 1;
+        $endMonth = 12;
 
         $qb = $this->createQueryBuilder('ld');
         // Get the date range
         if (isset($searchParams['year'])) {
             sort($searchParams['year'], SORT_NUMERIC);
-            $start = reset($searchParams['year']);
-            $end = end($searchParams['year']);
+            $startYear = reset($searchParams['year']);
+            $endYear = end($searchParams['year']);
+        }
+        if (isset($searchParams['month'])) {
+            sort($searchParams['month'], SORT_NUMERIC);
+            $startMonth = reset($searchParams['month']);
+            $endMonth = end($searchParams['month']);
         }
 
-        $firstDayOfYear = new \DateTime();
-        $firstDayOfYear->setDate($start, 01, 01);
-        // Set the last day of the year.
-        $lastDayOfYear = new \DateTime();
-        $lastDayOfYear->setDate($end, 12, 31);
+        // Set the first day of the filtered date.
+        $startDate = new \DateTime();
+        $startDate->setDate($startYear, $startMonth, 01);
+        // Set the last day of the filtered date.
+        $endDate = new \DateTime();
+        $endDate->setDate($endYear, $endMonth, 31);
 
         // Set the parameters.
         $parameters = array(
-            'firstDayOfYear' => $firstDayOfYear->format('Y-m-d'),
-            'lastDayOfYear' => $lastDayOfYear->format('Y-m-d')
+            'startDate' => $startDate->format('Y-m-d'),
+            'endDate' => $endDate->format('Y-m-d')
         );
 
-        $qb->where($qb->expr()->gte('ld.holidayDate', ':firstDayOfYear'))
-            ->andWhere($qb->expr()->lte('ld.holidayDate', ':lastDayOfYear'));
+        $qb->where($qb->expr()->gte('ld.holidayDate', ':startDate'))
+            ->andWhere($qb->expr()->lte('ld.holidayDate', ':endDate'));
 
         if (isset($searchParams['type'])) {
             $qb->andWhere(

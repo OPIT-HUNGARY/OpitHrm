@@ -74,19 +74,19 @@ class LeaveRequestType extends AbstractType
         );
         $builder->add('team_manager_ac', 'text', array(
             'label' => 'Team manager',
-            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getTeamManager()) ? $user->getEmployee()->getEmployeeNameFormatted() : null,
             'mapped' => false,
             'required' => false,
-            'attr' => array('placeholder' => 'Team manager')
+            'attr' => array('placeholder' => 'Team manager', 'class' => 'width-300')
         ));
         $builder->add(
             $builder->create('general_manager', 'hidden')->addModelTransformer($userTransformer)
         );
         $builder->add('general_manager_ac', 'text', array(
             'label' => 'General manager',
-            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeName() : null,
+            'data' => ($user = $options['data']->getGeneralManager()) ? $user->getEmployee()->getEmployeeNameFormatted() : null,
             'mapped' => false,
-            'attr' => array('placeholder' => 'General manager')
+            'attr' => array('placeholder' => 'General manager', 'class' => 'width-300')
         ));        
         
         $builder->add('create_leave_request', 'submit', array(

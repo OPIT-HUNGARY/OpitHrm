@@ -29,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\LeaveBundle\Model\LeaveEntitlementEmployeeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Description of Employee
@@ -51,12 +52,12 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-    
+
     /**
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     private $deletedAt;
-    
+
     /**
      * @var \DateTime
      *
@@ -89,10 +90,10 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * )
      */
     protected $numberOfChildren;
-    
+
     /**
-     * @var integer 
-     * 
+     * @var integer
+     *
      * @ORM\Column(name="working_hours", type="integer")
      * @Assert\NotBlank(message="Working hours cannot be empty.", groups={"user"})
      * @Assert\Range(
@@ -104,26 +105,31 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * )
      */
     protected $workingHours;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="employee")
      * @ORM\JoinTable(name="notes_employees_teams")
      */
     protected $teams;
-    
+
     /**
      * Employee leave requests
-     * 
+     *
      * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="employee")
      * @Assert\Valid
      */
     protected $leaveRequests;
-    
+
     /**
      * @ORM\Column(type="string", length=25)
      * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
      */
     protected $employeeName;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User", mappedBy="employee")
+     */
+    protected $user;
 
     /**
      * Constructor
@@ -137,7 +143,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -160,7 +166,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -183,7 +189,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get dateOfBirth
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDateOfBirth()
     {
@@ -206,7 +212,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get joiningDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getJoiningDate()
     {
@@ -229,13 +235,13 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get numberOfChildren
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumberOfChildren()
     {
         return $this->numberOfChildren;
     }
-    
+
     /**
      * Set working hours
      *
@@ -285,7 +291,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get teams
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTeams()
     {
@@ -319,13 +325,13 @@ class Employee implements LeaveEntitlementEmployeeInterface
     /**
      * Get leaveRequests
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLeaveRequests()
     {
         return $this->leaveRequests;
     }
-    
+
     /**
      * @inheritDoc
      */
@@ -333,17 +339,45 @@ class Employee implements LeaveEntitlementEmployeeInterface
     {
         return $this->employeeName;
     }
-    
+
+     public function getEmployeeNameFormatted()
+    {
+        return $this->employeeName . ' <' . $this->getUser()->getEmail() . '>';
+    }
+
     /**
      * Set employee name
      *
      * @param  string $employeeName
-     * @return User
+     * @return Employee
      */
     public function setEmployeeName($employeeName)
     {
         $this->employeeName = $employeeName;
 
         return $this;
+    }
+
+    /**
+     * Set user
+     *
+     * @param UserInterface $user
+     * @return Employee
+     */
+    public function setUser(UserInterface $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return User object
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

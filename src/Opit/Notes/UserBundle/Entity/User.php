@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -57,9 +57,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
      */
     protected $username;
-    
+
     /**
-     * @ORM\OneToOne(targetEntity="Employee", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="Employee", inversedBy="user", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
      * @Assert\Valid
      */
@@ -167,7 +167,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @ORM\OneToMany(targetEntity="\Opit\Notes\TravelBundle\Entity\TravelRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmTravelRequests;
-    
+
     /**
      * General manager leave requests
      * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="generalManager", cascade={"remove"})
@@ -179,7 +179,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @ORM\OneToMany(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveRequest", mappedBy="teamManager", cascade={"remove"})
      */
     protected $tmLeaveRequests;
-    
+
     /**
      * Notifications sent by user
      * @ORM\OneToMany(targetEntity="\Opit\Notes\NotificationBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
@@ -196,7 +196,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @ORM\Column(name="is_first_login", type="boolean")
      */
     protected $isFirstLogin;
-    
+
     /**
      * @ORM\Column(name="entitled_leaves", type="integer", nullable=true)
      * @Assert\Range(
@@ -565,15 +565,15 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     public function setEmployee($employee)
     {
         $this->employee = $employee;
-        
+
         return $this;
     }
-    
+
     public function getEmployee()
     {
         return $this->employee;
     }
-    
+
     /**
      * Set ldapEnabled
      *
@@ -613,7 +613,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     /**
      * Get entitledLeaves
      *
-     * @return integer 
+     * @return integer
      */
     public function getEntitledLeaves()
     {

@@ -304,7 +304,7 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense($travelExpenseId);
             $travelRequest = $travelExpense->getTravelRequest();
             $pdfFileName = $travelRequest->getTravelRequestId() . '_Travel_Expense_Report.pdf';
-            $pdfContent = $this->getTravelExpensePage($travelExpenseId)->getContent();
+            $pdfContent = $this->getTravelExpensePage($travelExpenseId, 'export')->getContent();
             $pdf = $this->get('opit.manager.pdf_manager');
             $pdf->exportToPdf(
                 $pdfContent,
@@ -338,10 +338,11 @@ class ExpenseController extends Controller
      * Returns viewTravelExpense page rendered
      * 
      * @param integer $travelExpenseId
+     * @param string $action name of action
      * @return mixed \Opit\Notes\TravelBundle\Entity\TravelRequest or null
      * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    protected function getTravelExpensePage($travelExpenseId)
+    protected function getTravelExpensePage($travelExpenseId, $action = null)
     {
         $currencyConfig = $this->container->getParameter('currency_config');
         $travelExpenseService = $this->get('opit.model.travel_expense');
@@ -375,6 +376,7 @@ class ExpenseController extends Controller
         return $this->render(
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
+                'action' => $action,
                 'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
                 'advancesPayback' => $advanceAmounts,
                 'totalAmountPayableInHUF' => $totalAmountPayableInHUF,

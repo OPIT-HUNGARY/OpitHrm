@@ -53,6 +53,7 @@ class CalendarController extends Controller
      */
     public function showTeamLeavesCalendarAction($partial=false)
     {
+        $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
         $teamsEmployees = $this->getTeamsEmployees($securityContext->getToken()->getUser()->getEmployee());
         
@@ -65,8 +66,10 @@ class CalendarController extends Controller
                 // set employee properties
                 $employeeId = $employee['id'];
                 $employeeName = $employee['employeeName'];
+                $user = $entityManager->getRepository('OpitNotesUserBundle:User')->findOneByEmployee($employee);
                 $employees[$employeeId] = array(
                     'name' => strtoupper($employee['employeeName']),
+                    'email' => $user->getEmail(),
                     'class' => str_replace(' ', '_', $employeeName . '-' . $employeeId)
                 );
             }

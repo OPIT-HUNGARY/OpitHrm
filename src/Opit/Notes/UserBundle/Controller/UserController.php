@@ -382,9 +382,10 @@ class UserController extends Controller
             $groups = $user->getGroups();
             foreach ($groups as $group) {
                 if ('ALL' === $role || $group->getRole() === $role) {
+                    $userUniqueIdentifier = $user->getEmployee()->getEmployeeNameFormatted();
                     $userNames[] = array(
-                        'value'=>$user->getEmployee()->getEmployeeName(),
-                        'label'=>$user->getEmployee()->getEmployeeName(),
+                        'value' => $userUniqueIdentifier,
+                        'label' => $userUniqueIdentifier,
                         'id'=>$user->getId()
                     );
                 }
