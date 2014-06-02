@@ -1,3 +1,9 @@
+# Listener to set end date to start date if empty
+$('form#leaveRequestForm').on 'focus', '.end-date', ->
+    $startDateInput = $(@).closest('div').prev().find 'input.start-date'
+
+    $(@).val $startDateInput.val() if $(@).val() is ''
+
 $(document).ready ->
     $('.changeState').on 'change', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'

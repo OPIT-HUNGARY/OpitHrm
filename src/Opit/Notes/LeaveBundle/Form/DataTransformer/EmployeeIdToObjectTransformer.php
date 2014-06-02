@@ -20,8 +20,8 @@ use Opit\Notes\UserBundle\Entity\Employee;
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Notes
- * @subpackage LeaveBundle
+ * @package Opit
+ * @subpackage Notes
  */
 class EmployeeIdToObjectTransformer implements DataTransformerInterface
 {
