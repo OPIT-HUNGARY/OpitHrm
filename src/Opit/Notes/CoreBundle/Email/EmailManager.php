@@ -33,6 +33,7 @@ class EmailManager implements EmailManagerInterface
     private $mailBody;
     private $recipient;
     private $emailFormat = 'text';
+    private $attachment;
 
     /**
      * Constructor of email manager component.
@@ -48,6 +49,7 @@ class EmailManager implements EmailManagerInterface
         $this->templating = $templating;
         $this->logger = $logger;
         $this->config = $config;
+        $this->attachment = null;
 
         $this->validateConfig();
     }
@@ -100,6 +102,35 @@ class EmailManager implements EmailManagerInterface
 
     /**
      * {@inheritdoc}
+     */
+    public function addAttachment(array $attachment, $dynamic = false)
+    {
+        // Adding existing file or generated content.
+        if (isset($attachment['path'])) {
+            // add existing file
+            $this->attachment = \Swift_Attachment::fromPath($attachment['path']);
+
+            // set filename
+            if (isset($attachment['filename'])) {
+                $this->attachment->setFilename($attachment['filename']);
+            }
+        } elseif (true === $dynamic && isset($attachment['content'])) {
+            // add dynamic content
+            $this->attachment = \Swift_Attachment::newInstance($attachment['content']);
+
+            // set content-type
+            if (isset($attachment['type'])) {
+                $this->attachment->setContentType($attachment['type']);
+            }
+            // set filename
+            if (isset($attachment['filename'])) {
+                $this->attachment->setFilename($attachment['filename']);
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
      *
      * @throws \RuntimeException
      */
@@ -119,6 +150,10 @@ class EmailManager implements EmailManagerInterface
             ->setTo($this->recipient)
             ->setBody($this->mailBody, $this->emailFormat);
 
+        // add attachment
+        if (null !== $this->attachment) {
+            $message->attach($this->attachment);
+        }
         // send the message
         $result = $this->swiftMailer->send($message);
 

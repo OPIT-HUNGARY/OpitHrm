@@ -137,25 +137,8 @@ class TimeSheetController extends Controller
      */
     public function exportTimeSheetToPDFAction($token)
     {
-        $requestQuery = base64_decode($token);
-        $tokenArray = explode('|', $requestQuery);
-        $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
-
-        $pdfFileName = $dateArray['year'] . '-' . $dateArray['month'] . '_Time_Sheet_Report.pdf';
-        $pdfContent = $this->getTimeSheetPage(LogTimesheet::DOWNLOADED, $token)->getContent();
-        $pdf = $this->get('opit.manager.pdf_manager');
-        $pdf->exportToPdf(
-            $pdfContent,
-            $pdfFileName,
-            'NOTES',
-            'Time Sheet',
-            'Time Sheet details',
-            array('leave', 'time sheet', 'notes'),
-            12,
-            array(),
-            'L',
-            'A4'
-        );
+        // Downloading the generated pdf.
+        $this->generateTimesheetPDF($token, 'D');
 
         return new JsonResponse();
     }
@@ -203,6 +186,16 @@ class TimeSheetController extends Controller
             array('url' => $url, 'dateTime' => $dateTime)
         );
 
+        // Add attachment, the PDF is generated at runtime.
+        $mailer->addAttachment(
+            // S parameter means returning the PDF file content as a string in the generateTimesheetPDF method.
+            array(
+                'content' => $this->generateTimesheetPDF($token, 'S'),
+                'filename' => $year . '-' . $month . '_Time_Sheet_Report.pdf',
+                'type' => 'application/pdf'
+            ),
+            true
+        );
         $mailer->sendMail();
 
         // For the serialization.
@@ -290,6 +283,39 @@ class TimeSheetController extends Controller
                 'month' => $month
             )
         );
+    }
+
+    /**
+     * Generate timesheet pdf
+     *
+     * @param string $token query parameters.
+     * @param string $outputType
+     * @return string the pdf file.
+     */
+    private function generateTimesheetPDF($token, $outputType)
+    {
+        $requestQuery = base64_decode($token);
+        $tokenArray = explode('|', $requestQuery);
+        $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
+
+        $pdfFileName = $dateArray['year'] . '-' . $dateArray['month'] . '_Time_Sheet_Report.pdf';
+        $pdfContent = $this->getTimeSheetPage(LogTimesheet::DOWNLOADED, $token)->getContent();
+        $pdf = $this->get('opit.manager.pdf_manager');
+        $pdfFile = $pdf->exportToPdf(
+            $pdfContent,
+            $pdfFileName,
+            'NOTES',
+            'Time Sheet',
+            'Time Sheet details',
+            array('leave', 'time sheet', 'notes'),
+            12,
+            array(),
+            'L',
+            'A4',
+            $outputType
+        );
+
+        return $pdfFile;
     }
 
     /**

@@ -54,6 +54,7 @@ class PDFManager
         array $margins,
         $type = 'P',
         $pageSize = 'A4',
+        $outputType = 'D',
         $setHeader = false,
         $setFooter = false,
         $autoPageBreak = true
@@ -79,7 +80,7 @@ class PDFManager
         $pdf->writeHTML($content, true, true, false, '');
         $pdf->lastPage();
 
-        $pdf->Output($filename, 'D');
+        return $pdf->Output($filename, $outputType);
     }
     
     /**
