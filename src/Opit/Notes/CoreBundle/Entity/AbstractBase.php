@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -20,12 +20,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * There is a problem for the mapped superclass not considering properties which are not set as
  * "private" members. Ensure all superclass properties are set as private!
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
  * @subpackage Notes
- * 
+ *
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
@@ -36,7 +36,7 @@ abstract class AbstractBase
      * @Gedmo\Timestampable(on="create")
      */
     private $created;
-    
+
     /**
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="update")
@@ -49,14 +49,24 @@ abstract class AbstractBase
      * @Gedmo\Blameable(on="create")
      */
     private $createdUser;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Symfony\Component\Security\Core\User\UserInterface")
      * @ORM\JoinColumn(name="updated_user_id", referencedColumnName="id")
      * @Gedmo\Blameable(on="update")
      */
     private $updatedUser;
-    
+
+     /**
+      * @ORM\Column(type="boolean", options={"default" = false})
+      */
+    private $system;
+
+    public function __construct()
+    {
+        $this->setSystem(false);
+    }
+
     /**
      * Set created
      *
@@ -73,7 +83,7 @@ abstract class AbstractBase
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -96,7 +106,7 @@ abstract class AbstractBase
     /**
      * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdated()
     {
@@ -147,5 +157,28 @@ abstract class AbstractBase
     public function getUpdatedUser()
     {
         return $this->updatedUser;
+    }
+
+    /**
+     * Set system
+     *
+     * @param boolean $system
+     * @return AbstractBase
+     */
+    public function setSystem($system)
+    {
+        $this->system = $system;
+
+        return $this;
+    }
+
+    /**
+     * Get system
+     *
+     * @return boolean
+     */
+    public function getSystem()
+    {
+        return $this->system;
     }
 }

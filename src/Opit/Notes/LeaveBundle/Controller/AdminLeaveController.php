@@ -65,11 +65,17 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
         $em = $this->getDoctrine()->getManager();
-        $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
+        // Order by system property to place the system categories on the top of list.
+        $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findBy(
+            array(),
+            array('system' => 'DESC')
+        );
         $numberOfRelations = array();
 
         foreach ($leaveCategories as $leaveCategory) {
-            $leaves = $em->getRepository('OpitNotesLeaveBundle:Leave')->findBy(array('category' => $leaveCategory->getId()));
+            $leaves = $em->getRepository('OpitNotesLeaveBundle:Leave')->findBy(
+                array('category' => $leaveCategory->getId())
+            );
 
             if (0 !== count($leaves)) {
                 $numberOfRelations[$leaveCategory->getId()] = count($leaves);
@@ -80,7 +86,7 @@ class AdminLeaveController extends Controller
             'OpitNotesLeaveBundle:Admin:' . ($showList ? '_' : '') . 'listLeaveCategories.html.twig',
             array(
                 'leaveCategories' => $leaveCategories,
-                'numberOfRelations' => $numberOfRelations
+                'numberOfRelations' => $numberOfRelations,
             )
         );
     }
@@ -183,7 +189,10 @@ class AdminLeaveController extends Controller
             // If the leave cateogry does not assigned to any leaves.
             if (0 === count($leaves)) {
                 $leaveCategory = $this->getLeaveCategory($id);
-                $em->remove($leaveCategory);
+                // If the leave category is not a system category then it can be removed
+                if (false === $leaveCategory->getSystem()) {
+                    $em->remove($leaveCategory);
+                }
             }
         }
         $em->flush();
@@ -395,7 +404,11 @@ class AdminLeaveController extends Controller
         $numberOfRelations = array();
 
         foreach ($leaveTypes as $leaveType) {
-            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(array('holidayType' => $leaveType->getId()));
+            $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(
+                array(
+                    'holidayType' => $leaveType->getId()
+                )
+            );
 
             if (0 !== count($leaveDates)) {
                 $numberOfRelations[$leaveType->getId()] = count($leaveDates);

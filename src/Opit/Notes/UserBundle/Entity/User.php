@@ -223,6 +223,8 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
         $this->gmLeaveRequests = new ArrayCollection();
         $this->userTravelExpenses = new ArrayCollection();
         $this->setSalt("");
+        // Set ldap required to handle the default values mapped to not null properties.
+        $this->setLdapEnabled(false);
     }
 
     /**

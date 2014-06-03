@@ -34,7 +34,11 @@
             {% endif %}
         <tr class="clickableTableRow">
             <td>
-                <input name="delete-leavecategory[]" type="checkbox" class="list-delete-leavecategory deleteMultiple" value="{{ leaveCategory.id }}" {% if 'true' == disabledLeaveCategory %} {{ 'disabled="disabled"' }}  {% endif %}>
+                {% if leaveCategory.system == true %}
+                    <i class="fa fa-cog darker-gray-color" title="System role"></i>
+                {% else %}
+                    <input name="delete-leavecategory[]" type="checkbox" class="list-delete-leavecategory deleteMultiple" value="{{ leaveCategory.id }}" {% if 'true' == disabledLeaveCategory %} {{ 'disabled="disabled"' }}  {% endif %}>
+                {% endif %}
             </td>
             <td data-tr-id='{{ leaveCategory.id }}'>{{ leaveCategory.id }}</td>
             <td><span class="list-leavecategory clickable" data-id="{{ leaveCategory.id }}">{{ leaveCategory.name }}</span></td>
@@ -48,11 +52,13 @@
                 </span>
             </td>
             <td>
-                <a href="#" class="list-leavecategory" data-id="{{ leaveCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
-                {% if 'false' == disabledLeaveCategory %}
-                    <a href="#" data-id="{{ leaveCategory.id }}" class="delete-single-leavecategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>
-                {% else %}
-                    <span class="float-left width-15-fix">&nbsp;</span>
+                {% if leaveCategory.system == false %}
+                    <a href="#" class="list-leavecategory" data-id="{{ leaveCategory.id }}" title="Edit leave category"><i class="fa fa-pencil-square-o"></i></a>
+                    {% if 'false' == disabledLeaveCategory %}
+                        <a href="#" data-id="{{ leaveCategory.id }}" class="delete-single-leavecategory" title="Delete leave category"><i class="fa fa-trash-o"></i></a>
+                    {% else %}
+                        <span class="float-left width-15-fix">&nbsp;</span>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>

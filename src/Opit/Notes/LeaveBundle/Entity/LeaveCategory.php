@@ -5,6 +5,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 
 /**
  * LeaveCategory
@@ -13,7 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @ORM\Entity
  */
-class LeaveCategory
+class LeaveCategory extends AbstractBase
 {
     /**
      * @var integer
@@ -28,7 +29,7 @@ class LeaveCategory
      * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
      */
     private $deletedAt;
-    
+
     /**
      * @var string
      *
@@ -44,32 +45,34 @@ class LeaveCategory
      * @Assert\NotBlank(message="The description may not be blank.")
      */
     private $description;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="LeaveRequest", mappedBy="category", cascade={"persist"})
      */
     protected $requests;
-    
+
     /**
-     * 
+     *
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="\Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration")
      * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $leaveCategoryDuration;
+
     /**
      * Constructor
      */
     public function __construct()
     {
+        parent::__construct();
         $this->requests = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -92,7 +95,7 @@ class LeaveCategory
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -115,7 +118,7 @@ class LeaveCategory
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -138,7 +141,7 @@ class LeaveCategory
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -171,7 +174,7 @@ class LeaveCategory
     /**
      * Get requests
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRequests()
     {
@@ -194,7 +197,7 @@ class LeaveCategory
     /**
      * Get leaveCategoryDuration
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration 
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration
      */
     public function getLeaveCategoryDuration()
     {
