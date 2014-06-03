@@ -163,9 +163,8 @@ class TravelStatusManager extends StatusManager
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-            $subjectTravelType .
-            ' (' . $travelRequest->getTravelRequestId() . ') status changed to ' .
-            strtolower($statusName)
+           '[NOTES] - ' .$subjectTravelType
+            . ' status changed - ' . $statusName .' ('. $travelRequest->getTravelRequestId().')'
         );
 
         $this->mailer->setBodyByTemplate(

@@ -45,10 +45,10 @@ class UserService
      */
     public function sendNewPasswordMail(UserInterface $user, $isReset = false)
     {
-        $subject = 'Account for NOTES has been created';
+        $subject = '[NOTES] - New account created';
         $template = 'newAccount';
         if ($isReset) {
-            $subject = 'Password for NOTES has been reset';
+            $subject = '[NOTES] - Password reset';
             $template = 'passwordReset';
         }
         
