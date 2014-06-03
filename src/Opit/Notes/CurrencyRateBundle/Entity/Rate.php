@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -21,7 +21,7 @@ use Opit\Notes\CoreBundle\Entity\AbstractBase;
  * @version 1.0
  * @package Notes
  * @subpackage CurrencyRateBundle
- * 
+ *
  * @ORM\Table(name="notes_rates")
  * @ORM\Entity(repositoryClass="Opit\Notes\CurrencyRateBundle\Entity\RateRepository")
  */
@@ -51,10 +51,15 @@ class Rate extends AbstractBase
      */
     private $rate;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -70,14 +75,14 @@ class Rate extends AbstractBase
     public function setCurrencyCode($currencyCode)
     {
         $this->currencyCode = $currencyCode;
-    
+
         return $this;
     }
 
     /**
      * Get currencyCode
      *
-     * @return string 
+     * @return string
      */
     public function getCurrencyCode()
     {
@@ -93,14 +98,14 @@ class Rate extends AbstractBase
     public function setRate($rate)
     {
         $this->rate = $rate;
-    
+
         return $this;
     }
 
     /**
      * Get rate
      *
-     * @return float 
+     * @return float
      */
     public function getRate()
     {

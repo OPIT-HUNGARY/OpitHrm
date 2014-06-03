@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the LeaveBundle.
- * 
+ *
  *  (c) Expression license_company is undefined on line 6, column 24 in file:///home/likewise-open/OPIT/bota/NetBeansProjects/notes/nbproject/licenseheader.txt.
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -30,7 +30,7 @@ class LogTimesheet extends AbstractBase
     const PRINTED = 1;
     const DOWNLOADED = 2;
     const EMAILED = 3;
-    
+
     /**
      * @var integer
      *
@@ -61,10 +61,15 @@ class LogTimesheet extends AbstractBase
      */
     private $action;
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -87,7 +92,7 @@ class LogTimesheet extends AbstractBase
     /**
      * Get hashId
      *
-     * @return string 
+     * @return string
      */
     public function getHashId()
     {
@@ -110,13 +115,13 @@ class LogTimesheet extends AbstractBase
     /**
      * Get timesheetDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getTimesheetDate()
     {
         return $this->timesheetDate;
     }
-    
+
     /**
      * Set action
      *
@@ -133,7 +138,7 @@ class LogTimesheet extends AbstractBase
     /**
      * Get action
      *
-     * @return string 
+     * @return string
      */
     public function getAction()
     {

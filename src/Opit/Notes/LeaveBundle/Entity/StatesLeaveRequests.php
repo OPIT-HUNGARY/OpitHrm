@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -50,6 +50,7 @@ class StatesLeaveRequests extends AbstractBase
 
     public function __construct(Status $status = null, LeaveRequest $leaveRequest = null)
     {
+        parent::__construct();
         $this->setStatus($status);
         $this->setLeaveRequest($leaveRequest);
     }
@@ -57,7 +58,7 @@ class StatesLeaveRequests extends AbstractBase
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -80,7 +81,7 @@ class StatesLeaveRequests extends AbstractBase
     /**
      * Get leaveRequest
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest 
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest
      */
     public function getLeaveRequest()
     {
@@ -103,7 +104,7 @@ class StatesLeaveRequests extends AbstractBase
     /**
      * Get status
      *
-     * @return \Opit\Notes\StatusBundle\Entity\Status 
+     * @return \Opit\Notes\StatusBundle\Entity\Status
      */
     public function getStatus()
     {
