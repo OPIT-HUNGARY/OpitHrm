@@ -4,6 +4,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * LeaveRequest
@@ -27,40 +28,40 @@ class LeaveRequest
      * @Assert\Valid
      */
     protected $leaves;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\Employee", inversedBy="leaveRequests")
      * @Assert\NotBlank(message="Employee cannot be empty.", groups={"user"})
      */
     protected $employee;
-    
+
     /**
      * @var text
      * @ORM\Column(name="leave_request_id", type="string", length=11, nullable=true)
      */
     protected $leaveRequestId;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="StatesLeaveRequests", mappedBy="leaveRequest", cascade={"persist", "remove"})
      */
     protected $states;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="gmLeaveRequests")
      * @Assert\NotBlank(message="General manager cannot be empty.")
      */
     private $generalManager;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="tmLeaveRequests")
      */
     private $teamManager;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
      */
     protected $notifications;
-    
+
     /**
      * Constructor
      */
@@ -73,30 +74,30 @@ class LeaveRequest
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
    /**
      * Set leaveRequestId
-     
+
      * @param string $leaveRequestId
      * @return LeaveRequest
      */
     public function setLeaveRequestId($leaveRequestId = null)
     {
         $this->leaveRequestId = $leaveRequestId;
-        
+
         return $this;
     }
-    
+
     /**
      * Get leave request id
      *
-     * @return string 
+     * @return string
      */
     public function getLeaveRequestId()
     {
@@ -130,7 +131,7 @@ class LeaveRequest
     /**
      * Get leaves
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLeaves()
     {
@@ -153,13 +154,13 @@ class LeaveRequest
     /**
      * Get employee
      *
-     * @return \Opit\Notes\UserBundle\Entity\Employee 
+     * @return \Opit\Notes\UserBundle\Entity\Employee
      */
     public function getEmployee()
     {
         return $this->employee;
     }
-    
+
     /**
      * Add states
      *
@@ -193,7 +194,7 @@ class LeaveRequest
     {
         return $this->states;
     }
-    
+
     /**
      * Get generalManager
      *
@@ -203,7 +204,7 @@ class LeaveRequest
     {
         return $this->generalManager;
     }
-    
+
     /**
      * Set generalManager
      *
@@ -213,10 +214,10 @@ class LeaveRequest
     public function setGeneralManager(\Opit\Notes\UserBundle\Entity\User $generalManager = null)
     {
         $this->generalManager = $generalManager;
-    
+
         return $this;
     }
-    
+
     /**
      * Get generalManager
      *
@@ -226,7 +227,7 @@ class LeaveRequest
     {
         return $this->teamManager;
     }
-    
+
     /**
      * Set generalManager
      *
@@ -236,10 +237,10 @@ class LeaveRequest
     public function setTeamManager(\Opit\Notes\UserBundle\Entity\User $teamManager = null)
     {
         $this->teamManager = $teamManager;
-    
+
         return $this;
     }
-    
+
     /**
      * Add notifications
      *
@@ -250,7 +251,7 @@ class LeaveRequest
     {
         $this->notifications[] = $notifications;
         $notifications->setLeaveRequest($this);
-    
+
         return $this;
     }
 
@@ -267,10 +268,48 @@ class LeaveRequest
     /**
      * Get notifications
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNotifications()
     {
         return $this->notifications;
+    }
+
+    /**
+     * validate leave dates overlapping
+     * An existing groups option must use in the assert annotation.
+     * This groups must on a property in order to this assert callback works
+     *
+     * @Assert\Callback(groups={"user"})
+     */
+    public function validateLeaveDates(ExecutionContextInterface $context)
+    {
+        $collection = $this->leaves;
+        $overlappingDates = array();
+
+        // Checking the date overlapping
+        foreach ($collection as $element) {
+            $current = $element;
+
+            foreach ($collection as $otherElement) {
+
+                if ($current !== $otherElement) {
+                    // Checking the date overlapping with other leaves.
+                    if (($current->getStartDate() <= $otherElement->getEndDate()) &&
+                        ($otherElement->getStartDate() <= $current->getEndDate())) {
+                        $overlappingDates[] = array(
+                            $otherElement->getStartDate(),
+                            $otherElement->getEndDate());
+                        break;
+                    }
+                }
+            }
+        }
+        // Error messages.
+        foreach ($overlappingDates as $dates) {
+            $context->addViolation(
+                sprintf('Leave dates are overlapping: %s and %s', $dates[0]->format('Y-m-d'), $dates[1]->format('Y-m-d'))
+            );
+        }
     }
 }

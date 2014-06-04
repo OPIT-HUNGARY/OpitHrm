@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\LeaveBundle\Form\LeaveRequestType;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
 use Opit\Notes\StatusBundle\Entity\Status;
+use Opit\Component\Utils\Utils;
 
 class LeaveController extends Controller
 {
@@ -33,7 +34,7 @@ class LeaveController extends Controller
         $employee = $user->getEmployee();
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
-        
+
         // Calculating the leave days for the current employee.
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
         $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
@@ -49,23 +50,23 @@ class LeaveController extends Controller
             'employee' => $employee,
             'user' => $user
         );
-        
+
         if ($isSearch) {
             $searchRequests = $request->request->get('search');
         }
-        
+
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
-        
+
         $listingRights = $this->get('opit.model.leave_request')
             ->setLeaveRequestListingRights($leaveRequests);
-        
+
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesLeaveBundle:Leave:_list.html.twig';
         } else {
             $template = 'OpitNotesLeaveBundle:Leave:list.html.twig';
         }
-        
+
         return $this->render(
             $template,
             array(
@@ -79,7 +80,7 @@ class LeaveController extends Controller
             )
         );
     }
-    
+
     /**
      * To add/edit leave in Notes
      *
@@ -96,18 +97,19 @@ class LeaveController extends Controller
         $securityContext = $this->container->get('security.context');
         $token = $securityContext->getToken();
         $leaveRequestService = $this->get('opit.model.leave_request');
-        
+        $errors = array();
+
         if ($isNewLeaveRequest) {
             $employee = $token->getUser()->getEmployee();
             $leaveRequest = new LeaveRequest();
             $leaveRequest->setEmployee($employee);
         } else {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
-            
+
             if (null === $leaveRequest) {
                 throw $this->createNotFoundException('Missing leave request.');
             }
-            
+
             if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() &&
                 !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
                 !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER')) {
@@ -116,24 +118,23 @@ class LeaveController extends Controller
                 );
             }
         }
-        
+
         $statusManager = $this->get('opit.manager.leave_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
         $leaveRequestStates = $statusManager->getNextStates($currentStatus);
-        
+
         $children = new ArrayCollection();
         $form = $this->createForm(
             new LeaveRequestType($isNewLeaveRequest),
             $leaveRequest,
             array('em' => $entityManager, 'validation_groups' => array('user'))
         );
-        
+
         if (null !== $leaveRequest) {
             foreach ($leaveRequest->getLeaves() as $leave) {
                 $children->add($leave);
             }
         }
-                
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             if ($form->isValid()) {
@@ -143,18 +144,20 @@ class LeaveController extends Controller
                         $entityManager->remove($child);
                     }
                 }
-                
+
                 $entityManager->persist($leaveRequest);
                 $entityManager->flush();
-                
+
                 if ($isNewLeaveRequest) {
                     $statusManager->changeStatus($leaveRequest, Status::CREATED, true);
                 }
-                
+
                 return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
+            } else {
+                $errors = Utils::getErrorMessages($form);
             }
         }
-        
+
         return $this->render(
             'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig',
             array_merge(
@@ -162,7 +165,8 @@ class LeaveController extends Controller
                     'form' => $form->createView(),
                     'isNewLeaveRequest' => $isNewLeaveRequest,
                     'leaveRequestStates' => $leaveRequestStates,
-                    'leaveRequest' => $leaveRequest
+                    'leaveRequest' => $leaveRequest,
+                    'errors' => $errors
                 ),
                 $isNewLeaveRequest ? array('isStatusLocked' => true, 'isEditLocked'=> false) : $leaveRequestService->setLeaveRequestAccessRights($leaveRequest, $currentStatus)
             )
@@ -184,11 +188,11 @@ class LeaveController extends Controller
         $token = $securityContext->getToken();
         $entityManager = $this->getDoctrine()->getManager();
         $ids = $request->request->get('id');
-        
+
         if (!is_array($ids)) {
             $ids = array($ids);
         }
-        
+
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
 
@@ -200,12 +204,12 @@ class LeaveController extends Controller
             }
             $entityManager->remove($leaveRequest);
         }
-        
+
         $entityManager->flush();
-        
+
         return new JsonResponse('$userNames');
     }
-    
+
     /**
      * Method to change state of leave request
      *
@@ -218,7 +222,7 @@ class LeaveController extends Controller
         $leaveRequestId = $request->request->get('leaveRequestId');
         $entityManager = $this->getDoctrine()->getManager();
         $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
-        
+
         return $this->get('opit.manager.leave_status_manager')
             ->changeStatus($leaveRequest, $statusId);
     }
@@ -263,6 +267,52 @@ class LeaveController extends Controller
                     'leftToAvail' => $leftToAvail,
                     'totalLeaveRequestCount' => $totalLeaveRequestCount
         ));
+    }
+
+    /**
+     * Validate the leaves' dates
+     *
+     * @param Doctrine\Common\Collections\ArrayCollection $collection
+     * @return boolean true if valid
+     */
+    private function validLeaveDates($collection)
+    {
+        // Checking the date overlapping
+        foreach ($collection as $element) {
+            $current = $element;
+
+            foreach ($collection as $otherElement) {
+
+                if ($current !== $otherElement) {
+                    // Checking the date overlapping with other leaves.
+                    $result = $this->checkDateOverlapping(
+                        $current->getStartDate(),
+                        $current->getEndDate(),
+                        $otherElement->getStartDate(),
+                        $otherElement->getEndDate()
+                    );
+                    if (true === $result) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checking the dates overlapping
+     *
+     * @param \DateTime $currentStart
+     * @param \DateTime $currentEnd
+     * @param \DateTime $otherStart
+     * @param \DateTime $otherEnd
+     * @return boolean true if dates are overlapped
+     */
+    private function checkDateOverlapping($currentStart, $currentEnd, $otherStart, $otherEnd)
+    {
+        return ($currentStart <= $otherEnd) && ($otherStart <= $currentEnd);
     }
 
 }

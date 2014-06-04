@@ -4,6 +4,64 @@ $('form#leaveRequestForm').on 'focus', '.end-date', ->
 
     $(@).val $startDateInput.val() if $(@).val() is ''
 
+# Check the leave dates overlapping
+$('form#leaveRequestForm').on 'change', '.start-date', ->
+    checkDatesOverlapping $(@)
+
+$('form#leaveRequestForm').on 'change', '.end-date', ->
+    checkDatesOverlapping $(@)
+
+# Cechking dates overlapping on the current date input field.
+checkDatesOverlapping = ($self) ->
+    $formFieldset = $self.closest('.formFieldsetChild')
+    $currentStartDate = $formFieldset.find '.start-date'
+    $currentEndDate = $formFieldset.find '.end-date'
+    # Call the validator to check dates overlapping.
+    validateDatesOverlapping $currentStartDate, $currentEndDate, $self
+
+# Validate the leave dates overlapping
+validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
+    isValid = true
+
+    # Iterate the leave requests
+    $('.formFieldsetChild').each (index, element) ->
+        $startDate = $(element).find '.start-date'
+        $endDate = $(element).find '.end-date'
+        # Removing error labels from other elements.
+        $startDate.removeClass 'error'
+        $startDate.parent().find('label.error').remove()
+        $endDate.removeClass 'error'
+        $endDate.parent().find('label.error').remove()
+        $(element).find('label.error').remove()
+
+        # Check DOMs are notthe same (checking the DOM level) in order to avoid to compoare itself values.
+        # Compare the Dom's first element show the level. Otherwise it will not work.
+        if $startDate[0] != $currentStartDate[0]
+            # Check dates overlapping.
+            if ($currentStartDate.val() <= $endDate.val()) and ($startDate.val() <= $currentEndDate.val())
+                # Check there is an error class or not
+                # Prevent to add more error class on the element
+                if $self.hasClass('error') is no
+                    $self.addClass 'error'
+                    $errorLabel = $('<label>').addClass('error').html 'Dates are overlapping: ' + $startDate.val() + ' and ' + $endDate.val()
+                    $errorLabel.attr('data-start-date', $startDate.val())
+                    $errorLabel.attr('data-end-date', $endDate.val())
+                    $self.parent().append $errorLabel
+                else
+                    $errorLabel = $self.parent().find 'label.error'
+                    # Refresh the dates of error message
+                    if ($errorLabel.data 'start-date' != $startDate) and ($errorLabel.data 'end-date' != $endDate)
+                        $errorLabel.html 'Date overlapping with: ' + $startDate.val() + ' ' + $endDate.val()
+                isValid = false
+                # Breaking out the loop!
+                # In jQuery it breaks the loop and not go out from the method!
+                return false
+            else
+                # If there is not overlapping remove the error class
+                $self.removeClass 'error'
+                $self.parent().find('label.error').remove()
+    return isValid
+
 $(document).ready ->
     $('.changeState').on 'change', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
@@ -88,8 +146,8 @@ $(document).ready ->
         
         $requestContainer.insertBefore $('.addFormFieldsetChild')
         $collectionHolder.data('index', index + 1)
-        return        
-        
+        return
+
     validateDates = () ->
         valid = yes
         $('.formFieldsetChild').each (index) ->
@@ -100,7 +158,7 @@ $(document).ready ->
             $endDate = $(@).find('.end-date')
             $endDateParent = $endDate.parent()
             endDateVal = $endDate.val()
-            
+
             $startDate.removeClass 'error'
             $startDateParent.find('label.error').remove()
             
@@ -126,6 +184,10 @@ $(document).ready ->
                         $errorLabel = $('<label>').addClass('error').html 'Start date should be bigger than end date.'
                         $startDateParent.append $errorLabel
                     valid = no
+
+            # validate leave dates overlapping
+            valid = validateDatesOverlapping $startDate, $endDate, $(@).children()
+
         return valid
     
     $collectionHolder.children().each (index) ->
