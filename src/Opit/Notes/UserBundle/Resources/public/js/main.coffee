@@ -25,6 +25,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                       .done (data, textStatus, jqXHR)->
                           url = Routing.generate 'OpitNotesUserBundle_user_list'
                           offset = $('.selected-page').data('offset')
+                          # Check if current page matches user list and update content (edit user can be triggered from several pages)
                           if url is window.location.pathname and jqXHR.getResponseHeader("content-type").indexOf('html')
                             response = data
                             $.ajax

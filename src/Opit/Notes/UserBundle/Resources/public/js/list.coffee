@@ -32,9 +32,9 @@ $(document).ready ->
                       if typeof response is 'string'
                           response = $.parseJSON response
                       $(document).data('notes').funcs.showAlert response, 'create','Error'
-                 Close: ->
-                   $('#dialog-edititem').dialog 'destroy'
-                   return
+                Close: ->
+                    $('#dialog-edititem').dialog 'destroy'
+                    return
           return
         return
 

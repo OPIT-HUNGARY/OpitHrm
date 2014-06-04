@@ -169,7 +169,7 @@ $.extend true, $(document).data('notes'),
  * jQuery datepicker extension
  * Datepicker extended by custom rendering possibility
  *
- * @author Sven Henneböle <henneboele@opit.hu>
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @depends jQuery
  *
@@ -199,14 +199,28 @@ $.fn.datepicker = (options) ->
         $self.prev().append defaultOptions.indicatorIcon
     return $self
 
-# Fix to allow dialog to pass html strings for title option
+###
+ * jQuery dialog extension
+ * Title attribute extended to support html chunks
+ * Close function overwritten to destory by default
+ *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @depends jQuery
+ *
+###
 $.widget "ui.dialog", $.extend {}, $.ui.dialog.prototype, {
+    # Fix to allow dialog to pass html strings for title option
     _title: (title) ->
         if not @options.title
             title.html "&#160;"
         else
             title.html @options.title
         return
+
+    # Enforce dialog destroy on close
+    close: ->
+        $.ui.dialog.prototype.destroy.call(this);
 }
 
 __dialog = $.fn.dialog
@@ -217,7 +231,8 @@ $.fn.dialog = (options) ->
     # to update scrollbar if element is resized
     $(@).on 'dialogresizestop', (event, ui) ->
         $(@).mCustomScrollbar 'update'
-        
+
+# Prototype extensions
 String.prototype.capitalize = () ->
     return @.charAt(0).toUpperCase() + @.slice(1)
 
