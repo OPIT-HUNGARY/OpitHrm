@@ -1,27 +1,12 @@
 <?php
 
 /*
- * The MIT License
+ *  This file is part of the {Bundle}.
  *
- * Copyright 2014 OPIT\bota.
+ *  (c) Opit Consulting Kft. <info@opit.hu>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\LeaveBundle\Entity;
@@ -44,6 +29,7 @@ class LeaveDateRepository extends EntityRepository
         $startYear = $endYear = date('Y');
         $startMonth = 1;
         $endMonth = 12;
+
 
         $qb = $this->createQueryBuilder('ld');
         // Get the date range
@@ -109,5 +95,56 @@ class LeaveDateRepository extends EntityRepository
         }
 
         return $result;
+    }
+
+    /**
+     * Count leave working days between date range
+     * 
+     * @param Datetime $startDate
+     * @param Datetime $endDate
+     * @param integer $category
+     * @return type
+     */
+    public function countLWDBWDateRange($startDate, $endDate, $category)
+    {
+        $qb = $this->createQueryBuilder('ld');
+        $qb->select('count(ld.id)')
+            ->where($qb->expr()->gte('ld.holidayDate', ':startDate'))
+            ->andWhere($qb->expr()->lte('ld.holidayDate', ':endDate'))
+            ->innerJoin('ld.holidayType', 'lc')
+            ->andWhere($qb->expr()->eq('lc.isWorkingDay', ($category ? '1': '0')));
+        $qb->setParameters(
+            array(
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            )
+        );
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Get administrative leave between dates
+     * 
+     * @param Datetime $startDate
+     * @param Datetime $endDate
+     * @return type
+     */
+    public function getAdminLeavesInDateRange($startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('ld');
+        $qb->select('ld.holidayDate')
+            ->where($qb->expr()->gte('ld.holidayDate', ':startDate'))
+            ->andWhere($qb->expr()->lte('ld.holidayDate', ':endDate'))
+            ->innerJoin('ld.holidayType', 'lc')
+            ->andWhere($qb->expr()->eq('lc.isWorkingDay', '0'));
+        $qb->setParameters(
+            array(
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            )
+        );
+
+        return $qb->getQuery()->getResult();
     }
 }

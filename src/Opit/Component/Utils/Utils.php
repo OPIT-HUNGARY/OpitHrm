@@ -204,4 +204,25 @@ class Utils
             }
         }
     }
+
+    /**
+     * Count weekend days in a date range
+     *
+     * @param TimeStamp $start
+     * @param TimeStamp $end
+     * @return integer
+     */
+    public static function countWeekendDays($start, $end)
+    {
+        $count = 0;
+
+        for ($i = $start; $i <= $end; $i = $i + 86400) {
+            if (Date('D', $i) == 'Sat' || Date('D', $i) == 'Sun') {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+    
 }

@@ -32,6 +32,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of LeaveRequestService
@@ -181,4 +182,38 @@ class LeaveRequestService
         
         return $lrSelectableStates;
     }
+    /**
+     * Count the number of leave days
+     *
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return integer
+     */
+    public function countLeaveDays($startDate, $endDate)
+    {
+        $start = $startDate->getTimestamp();
+        $end = $endDate->getTimestamp();
+        $administrativeLeavesCount = 0;
+
+        $administrativeLeaves = $this->entityManager->getRepository('OpitNotesLeaveBundle:LeaveDate')->getAdminLeavesInDateRange($startDate, $endDate);
+
+        // Count administrative leaves
+        foreach ($administrativeLeaves as $date) {
+            if ($date['holidayDate']->format('D') != 'Sat' && $date['holidayDate']->format('D') != 'Sun') {
+                $administrativeLeavesCount++;
+            }
+        }
+
+        // Count administrative working days
+        $administrativeWorkingDays = $this->entityManager->getRepository('OpitNotesLeaveBundle:LeaveDate')->countLWDBWDateRange($startDate, $endDate, true);
+        // Count total days
+        $totalDays = $endDate->diff($startDate)->format("%a") + 1;
+        // Count total weekend days
+        $totalWeekendDays = Utils::countWeekendDays($start, $end);
+        // Count total leave days
+        $totalLeaveDays = $totalDays - $totalWeekendDays - $administrativeLeavesCount + $administrativeWorkingDays;
+
+        return $totalLeaveDays;
+    }
+    
 }

@@ -1,27 +1,12 @@
 <?php
 
 /*
- * The MIT License
+ *  This file is part of the {Bundle}.
  *
- * Copyright 2014 Marton Kaufmann <kaufmann@opit.hu>.
+ *  (c) Opit Consulting Kft. <info@opit.hu>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\LeaveBundle\Entity;
@@ -46,25 +31,25 @@ class LeaveRequestRepository extends EntityRepository
     public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
         $dq = $this->createQueryBuilder('lr')->join('lr.leaves', 'l');
-        
+
         if (isset($parameters['startDate']) && $parameters['startDate'] !== '') {
             $dq->andWhere('l.startDate >= :startDate');
             $dq->setParameter(':startDate', $parameters['startDate']);
         }
-        
+
         if (isset($parameters['endDate']) && $parameters['endDate'] !== '') {
             $dq->andWhere('l.endDate <= :endDate');
             $dq->setParameter(':endDate', $parameters['endDate']);
         }
-        
+
         if (isset($parameters['leaveId']) && $parameters['leaveId'] !== '') {
             $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
             $dq->setParameter(':leaveId', '%'.$parameters['leaveId'].'%');
-        }   
-        
+        }
+
         if ($pagnationParameters['isAdmin']) {
             $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
-        } else if ($pagnationParameters['isGeneralManager']) {
+        } elseif ($pagnationParameters['isGeneralManager']) {
             $statusExpr = $dq->expr()->orX(
                 $dq->expr()->andX(
                     $dq->expr()->notIn('s.status', ':status'),
@@ -74,21 +59,21 @@ class LeaveRequestRepository extends EntityRepository
             );
             $dq->leftJoin('lr.states', 's', 'WITH')
                 ->andWhere($statusExpr);
-            
-            $dq->setParameter(':user', $pagnationParameters['user']);   
-            $dq->setParameter(':status', Status::CREATED);   
+
+            $dq->setParameter(':user', $pagnationParameters['user']);
+            $dq->setParameter(':status', Status::CREATED);
         } else {
             $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
         }
-        
-        $dq->setParameter(':employee', $pagnationParameters['employee']);            
- 
+
+        $dq->setParameter(':employee', $pagnationParameters['employee']);
+
         $dq->setFirstResult($pagnationParameters['firstResult']);
         $dq->setMaxResults($pagnationParameters['maxResults']);
-                
+
         return new Paginator($dq->getQuery(), true);
     }
-    
+
     public function findEmployeesLeaveRequests($employeeIds, $startDate = '', $endDate = '')
     {
         $dq = $this->createQueryBuilder('lr')
@@ -102,7 +87,7 @@ class LeaveRequestRepository extends EntityRepository
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
             ->getQuery();
-        
+
         return $dq->getResult();
     }
 
@@ -157,6 +142,40 @@ class LeaveRequestRepository extends EntityRepository
         $q = $dq->getQuery();
 
         return $q->getSingleScalarResult();
+    }
+
+    /**
+     * Summarize number of leave days an employee has took
+     * 
+     * @param integer $employeeId
+     * @return type
+     */
+    public function totalCountedLeaveDays($employeeId)
+    {
+        $q = $this->createQueryBuilder('lr');
+        $q->select('lr.id')
+            ->where($q->expr()->eq('s.status', ':status'))
+            ->innerJoin('lr.states', 's')
+            ->setParameter('status', Status::REJECTED);
+
+        $rejectedLeaveRequestIds = $q->getQuery()->getScalarResult();
+
+        $dq = $this->createQueryBuilder('lr');
+        $dq->select('sum(l.numberOfDays)')
+            ->where('lr.employee = :employee')
+            ->andWhere($dq->expr()->eq('c.isCountedAsLeave', ':countAsLeave'))
+            ->innerJoin('lr.leaves', 'l')
+            ->innerJoin('lr.states', 's')
+            ->innerJoin('l.category', 'c')
+            ->setParameter('employee', $employeeId)
+            ->setParameter('countAsLeave', 1);
+
+        if (!empty($rejectedLeaveRequestIds)) {
+            $dq->andWhere($dq->expr()->notIn('lr.id', ':lrIds'));
+            $dq->setParameter('lrIds', $rejectedLeaveRequestIds);
+        }
+
+        return $dq->getQuery()->getSingleScalarResult();
     }
 
 }
