@@ -51,15 +51,13 @@ class Utils
     public static function groupingArrayByCounter($collection, $division)
     {
         $result = array();
-        $counter = 0;
-        $index = 0;
+        $counter = $i = 0;
 
         // Grouping collection by counter
         // The elements of collection will be ordered into subarrays by the division number.
         foreach ($collection as $data) {
-
             if ($counter % $division == 0) {
-                ++$index;
+                $index = $i++;
             }
             $result[$index][] = $data;
             $counter++;
@@ -162,7 +160,7 @@ class Utils
      * @param  \DateTime $eDate the end date
      * @return array     of datetimes
      */
-    public static function diff_days($sDate, $eDate)
+    public static function diffDays($sDate, $eDate)
     {
         $startDate = clone $sDate;
         $endDate = clone $eDate;
@@ -200,7 +198,7 @@ class Utils
                 // To workaround empty form posts for search criteria expecting no values, the "NULL" value can be used.
                 // Posted NULL values will be excluded from search.
                 if ($value != '' && $value != 'NULL') {
-                    $params[':'.$key] = '%'.$value.'%';
+                    $params[$key] = '%'.$value.'%';
                     $andx[] = $qb->expr()->andX($qb->expr()->like("{$alias}.{$key}", ':'.$key));
                 }
             }

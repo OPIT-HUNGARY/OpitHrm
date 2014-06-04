@@ -266,7 +266,7 @@ class TimeSheetController extends Controller
         // Get the days of the actual month.
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval("P1M"));
-        $daysOfMonth = Utils::diff_days($startDate, $endDate);
+        $daysOfMonth = Utils::diffDays($startDate, $endDate);
 
         return $this->render(
             'OpitNotesLeaveBundle:TimeSheet:showTimeSheet.html.twig',
@@ -370,7 +370,7 @@ class TimeSheetController extends Controller
                 // Fetch leave ids to the serialization.
                 $leaveData['leaveIds'][$leaveRequest->getId()][] = $leave->getId();
 
-                $days = Utils::diff_days($leave->getStartDate(), $leave->getEndDate());
+                $days = Utils::diffDays($leave->getStartDate(), $leave->getEndDate());
                 // Fetch leave days by employee id and category name
                 foreach ($days as $day) {
                     $leaveData['leaveDays'][$day->format('Y-m-d')][$leaveRequest->getEmployee()->getId()] =
