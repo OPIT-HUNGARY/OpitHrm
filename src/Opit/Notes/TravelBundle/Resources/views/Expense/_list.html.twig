@@ -33,4 +33,7 @@
         </tr>
         {% endfor %}
     </table>
+    
+    {# Display a no results message #}
+    {% include 'OpitNotesCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': travelExpenses } %}
 </form>

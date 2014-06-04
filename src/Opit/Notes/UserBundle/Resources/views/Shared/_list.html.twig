@@ -1,28 +1,31 @@
 <form  class="delete-checkbox-form">
-<table id="list-table" class="width-100">
+    <table id="list-table" class="width-100">
     {% if propertyNames is defined %}
-        <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
-        {% for propertyName in propertyNames %}
-        {% set displayName = (strpos(propertyName, '.') > 0) ? propertyName|slice(strpos(propertyName, '.')+1) : propertyName  %}
-        {% if 'role' != displayName %}
-        <th>
-            {% if displayName == 'roles' %}
-                <span class="order-text cursor-pointer">
+        <thead>
+            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
+            {% for propertyName in propertyNames %}
+            {% set displayName = (strpos(propertyName, '.') > 0) ? propertyName|slice(strpos(propertyName, '.')+1) : propertyName  %}
+            {% if 'role' != displayName %}
+            <th>
+                {% if displayName == 'roles' %}
+                    <span class="order-text cursor-pointer">
+                        {{ displayName|underscore|humanize }}
+                    </span>
+                {% else %}
+                    <i class="fa fa-sort default-right" data-field="{{ propertyName }}"></i>
+                    <span class="order-text cursor-pointer">
                     {{ displayName|underscore|humanize }}
-                </span>
-            {% else %}
-                <i class="fa fa-sort default-right" data-field="{{ propertyName }}"></i>
-                <span class="order-text cursor-pointer">
-                {{ displayName|underscore|humanize }}
-                </span>
+                    </span>
+                {% endif %}
+            </th>
             {% endif %}
-        </th>
-        {% endif %}
-        {% endfor %}
-        {% if numberOfRelations is defined %}
-        <th>Assigned Users</th>
-        {% endif %}
-        <th><span>Actions</span></th>
+            {% endfor %}
+            {% if numberOfRelations is defined %}
+            <th>Assigned Users</th>
+            {% endif %}
+            <th><span>Actions</span></th>
+        </thead>
+        <tbody>
         {% for key, value in propertyValues %}
             <tr>
                 <td class="width-24-fix">
@@ -38,7 +41,7 @@
                         <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" >
                     {% endif %}
                 </td>
-            {% for propertyName in propertyNames %}
+                {% for propertyName in propertyNames %}
                 {% set propertyName = (strpos(propertyName, '.') > 0) ? propertyName|slice(strpos(propertyName, '.')+1) : propertyName  %}
                 {% if propertyName == 'roles' %}
                     <td>
@@ -59,7 +62,7 @@
                         <td>{{ attribute(value, propertyName) }}</td>
                     {% endif %}
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
                 {% if numberOfRelations is defined %}
                 <td>
                     {{ numberOfRelations[attribute(value, 'id')] }}
@@ -83,7 +86,7 @@
                            <i class="fa fa-trash-o"></i>
                         </span>
                     {% endset %}
-                    
+
                     {% if attribute(value, 'Role') is defined %}
                         {% if attribute(value, 'Role') not in security_roles|merge(['ROLE_STAKEHOLDER', 'ROLE_PAYROLL', 'ROLE_FINANCE']) and
                             attribute(value, 'id') not in disabledRoles %}
@@ -107,16 +110,21 @@
                 </td>
             </tr>
         {% endfor %}
+        </tbody>
     {% endif %}
-</table>
-{% if numberOfPages is defined and numberOfPages > 0 %}
-{% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
-    {
-        'numberOfPages': numberOfPages,
-        'maxPages': maxPages,
-        'offset': offset,
-        'url': path('OpitNotesUserBundle_user_list')
-    }
-%}
-{% endif %}
+    </table>
+
+    {# Display a no results message #}
+    {% include 'OpitNotesCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': propertyValues } %}
+
+    {% if numberOfPages is defined and numberOfPages > 0 %}
+        {% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
+            {
+                'numberOfPages': numberOfPages,
+                'maxPages': maxPages,
+                'offset': offset,
+                'url': path('OpitNotesUserBundle_user_list')
+            }
+        %}
+    {% endif %}
 </form>
