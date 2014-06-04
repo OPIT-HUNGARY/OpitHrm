@@ -36,27 +36,38 @@ class LeaveType extends AbstractType
         $builder->add('startDate', 'date', array(
             'widget' => 'single_text',
             'label'=>'Start date',
-            'attr' => array('placeholder' => 'Start date', 'class' => 'start-date')
+            'attr' => array(
+                'required' => 'required',
+                'placeholder' => 'Start date',
+                'class' => 'start-date',
+                'required' => 'required'
+            )
         ));
 
         $builder->add('endDate', 'date', array(
             'widget' => 'single_text',
             'label'=>'End date',
-            'attr' => array('placeholder' => 'End date', 'class' => 'end-date')
+            'attr' => array(
+                'required' => 'required',
+                'placeholder' => 'End date',
+                'class' => 'end-date',
+                'required' => 'required'
+            )
         ));
 
         $builder->add('description', 'textarea', array(
             'label'=>'Description',
             'attr' => array(
                 'placeholder' => 'Description',
-                'class' => 'textarea-non-resizeable width-280',
+                'class' => 'textarea-non-resizeable width-280 description',
                 'maxlength' => '100'
             )
         ));
 
         $builder->add('category', 'entity', array(
             'class'=>'OpitNotesLeaveBundle:LeaveCategory',
-            'property' => 'name'
+            'property' => 'name',
+            'attr' => array('class' => 'leave-category')
         ));
     }
 

@@ -21,6 +21,10 @@
     display: none;
 }
 
+.display-none-important {
+    display: none !important;
+}
+
 .display-inline{
     display: inline;
 }
@@ -324,6 +328,10 @@
     width: 280px;
 }
 
+.width-500{
+    width: 500px;
+}
+
 .max-width-150{
     max-width: 150px;
 }
@@ -416,6 +424,10 @@
 
 .height-60{
     height: 60px;
+}
+
+.height-100{
+    height: 100px;
 }
 
 /* Right properties */

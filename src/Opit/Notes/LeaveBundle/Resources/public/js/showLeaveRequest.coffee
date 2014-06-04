@@ -63,6 +63,95 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
     return isValid
 
 $(document).ready ->
+    createErrorLabel = (errorMessage) ->
+        $errorLabel = $('<label>')
+        $errorLabel
+            .addClass 'error'
+            .html errorMessage
+
+        return $errorLabel
+
+    compareLeaveDates = () ->
+        isValid = yes
+        $('.formFieldsetChild').each (index) ->
+            $startDate = $(@).find('.start-date')
+            $startDateParent = $startDate.parent()
+            startDateVal = $startDate.val()
+            
+            $endDate = $(@).find('.end-date')
+            endDateVal = $endDate.val()
+            
+            if startDateVal > endDateVal
+                isValid = no
+                if $startDateParent.children('label.error').length is 0
+                    $startDateParent.append createErrorLabel('Start date should not be bigger than end date.')
+                    $startDate.addClass 'error'
+            else
+                $startDateParent.find('label.error').remove()
+                $startDate.removeClass 'error'
+            
+        return isValid
+        
+    validateNumberOfLeaves = () ->
+        isValid = yes
+        if $('.formFieldsetChild').length <= 0
+            isValid = no
+            if $('.leave-error').length <= 0
+                $errorContainer = $('#reply-message')
+                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No leave date added.')
+                $errorContainer
+                    .append $errorMessage
+                    .removeClass 'display-none'
+        else
+            $('#reply-message').addClass 'display-none'
+            $('.leave-error').remove()
+            
+        return isValid
+            
+    # method to create button to delete a leave
+    createLeaveDeleteButton = () ->
+        $deleteButtonWrapper = $('<div>')
+            .addClass 'deleteFormFieldsetChild formFieldsetButton form-fieldset-delete-button'
+            .html '<i class="fa fa-minus-square"></i>Delete'
+            .on 'click', ->
+                $(@).closest('.formFieldsetChild').remove()
+            
+        return $deleteButtonWrapper
+        
+    # function to create and insert a leave into the interface
+    createLeave = ($leave) ->
+        if typeof $leave is 'object'
+            $leave.find('.start-date').parent().addClass 'display-inline-block'
+            $leave.find('.end-date').parent().addClass 'display-inline-block margin-left-5'
+            
+        index = $collectionHolder.data 'index'
+        $collectionHolder.data('index', index + 1)
+        $leaveWrapper = $('<div>').addClass 'formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
+        if $leave is undefined
+            $leave = $(prototype.replace /__name__/g, index)
+            $leaveWrapper.append $leave
+
+            # init datepicker plugin
+            $(document).data('notes').funcs.initDateInputs $leave
+        else
+            $leaveWrapper.append $leave
+
+        $leave.append createLeaveDeleteButton()
+        
+        $errorList = $leave.find('ul')
+        $errorListParent = $errorList.parent()
+        if $errorList.length > 0
+            $errorListParent.append $('<label>').addClass('error').html($errorList.find('li:first').html())
+            $input = $errorListParent.find 'input'
+            $input.addClass 'error'
+            
+            $errorList.remove()
+
+        $leave.find('.description').removeAttr 'required'
+    
+        $leaveWrapper.insertBefore $('.addFormFieldsetChild')
+        return $leave
+
     $('.changeState').on 'change', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
         
@@ -78,7 +167,21 @@ $(document).ready ->
         minLength: 2
         select: (event, ui) ->
             $('#leave_request_general_manager').val ui.item.id
-            return        
+            return
+            
+    $forAll = $('#forAll')
+    $companyEmployees = $('.company-employees')
+            
+    $forAll.on 'change', ->
+        $companyEmployees.checkAll()
+            
+    $companyEmployees.on 'change', ->
+        selectedEmployeesLength = $('.company-employees:checked').length
+        if selectedEmployeesLength > 0
+            if selectedEmployeesLength < $companyEmployees.length
+                $forAll.prop 'checked', false
+            else
+                $forAll.prop 'checked', true
 
     $('#leave_request').find('label:first').remove()
     $collectionHolder = $('#leave_request_leaves')
@@ -88,141 +191,84 @@ $(document).ready ->
     $prototype = $(prototype)
     $prototype.find('.start-date').parent().addClass('display-inline-block')
     $prototype.find('.end-date').parent().addClass('display-inline-block margin-left-5')
-    prototype = $prototype.html()
-    prototype = prototype.replace '<label class="required">__name__label__</label>', ''
+    prototype = $prototype.html().replace '<label class="required">__name__label__</label>', ''
     
     $form = $collectionHolder.closest 'form'
     $form.prepend $('.formFieldset')
     $form.find('#leave_request_create_leave_request').parent().append $('#cancel-button')
-    
-    $requiredApprovals = $('#required-approvals')
-    $requiredApprovals.append($('#leave_request_team_manager_ac').parent().addClass('display-inline-block vertical-align-top margin-right-1-em'))
-    $requiredApprovals.append($('#leave_request_general_manager_ac').parent().addClass('display-inline-block vertical-align-top margin-right-1-em'))
-    
+
     $employeeError = $('#leave_request').find('ul')
     if $employeeError.length > 0
-        $alertMessage = $('.alert-message')
-        $alertMessage.removeClass 'display-none'
-        $alertMessage.append $employeeError
-    
-    createDeleteButton = () ->
-        $deleteButtonWrapper = $('<div>').addClass 'deleteFormFieldsetChild formFieldsetButton form-fieldset-delete-button'
-        $deleteButtonWrapper.html '<i class="fa fa-minus-square"></i>Delete'
-        $deleteButtonWrapper.on 'click', ->
-            $(@).closest('.formFieldsetChild').remove()
-            
-        return $deleteButtonWrapper
-        
-    createHolidayRequest = ($holidayRequest) ->
-        if typeof $holidayRequest is 'object'
-            $holidayRequest.find('.start-date').parent().addClass 'display-inline-block'
-            $holidayRequest.find('.end-date').parent().addClass 'display-inline-block margin-left-5'
-            
-        index = $collectionHolder.data 'index'
-        $requestContainer = $('<div>').addClass 'formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
-        if $holidayRequest is undefined
-            $holidayRequest = $(prototype.replace /__name__/g, index)
-            $requestContainer.append $holidayRequest
+        $('.alert-message')
+            .removeClass 'display-none'
+            .append $employeeError
+        valid = validateDatesOverlapping $startDate, $endDate, $(@).children()
 
-            # init datepicker plugin
-            $(document).data('notes').funcs.initDateInputs $holidayRequest
-        else
-            $requestContainer.append $holidayRequest
 
-        $holidayRequest.append createDeleteButton()
-        
-        $errorList = $holidayRequest.find('ul')
-        $errorListParent = $errorList.parent()
-        if $errorList.length > 0
-            $errorListParent.append $('<label>').addClass('error').html($errorList.find('li:first').html())
-            $input = $errorListParent.find 'input'
-            $input.addClass 'error'
-            
-            $errorList.remove()
-            
-        $holidayRequest.find('.start-date').removeAttr 'required'
-        $holidayRequest.find('.end-date').removeAttr 'required'
-            
-        
-        $requestContainer.insertBefore $('.addFormFieldsetChild')
-        $collectionHolder.data('index', index + 1)
-        return
-
-    validateDates = () ->
-        valid = yes
-        $('.formFieldsetChild').each (index) ->
-            $startDate = $(@).find('.start-date')
-            $startDateParent = $startDate.parent()
-            startDateVal = $startDate.val()
-            
-            $endDate = $(@).find('.end-date')
-            $endDateParent = $endDate.parent()
-            endDateVal = $endDate.val()
-
-            $startDate.removeClass 'error'
-            $startDateParent.find('label.error').remove()
-            
-            $endDate.removeClass 'error'
-            $endDateParent.find('label.error').remove()            
-            
-            if startDateVal == ''
-                $errorLabel = $('<label>').addClass('error').html 'Start date cannot be empty'
-                $startDate.addClass 'error'
-                $startDateParent.append $errorLabel
-                valid = no
-                
-            if endDateVal == ''
-                $errorLabel = $('<label>').addClass('error').html 'End date cannot be empty'
-                $endDate.addClass 'error'
-                $endDateParent.append $errorLabel                
-                valid = no
-            
-            if valid is yes
-                if startDateVal > endDateVal
-                    if $startDate.hasClass('error') is no
-                        $startDate.addClass 'error'
-                        $errorLabel = $('<label>').addClass('error').html 'Start date should be bigger than end date.'
-                        $startDateParent.append $errorLabel
-                    valid = no
-
-            # validate leave dates overlapping
-            valid = validateDatesOverlapping $startDate, $endDate, $(@).children()
-
-        return valid
-    
     $collectionHolder.children().each (index) ->
         $(@).find('label:first').remove()
-        createHolidayRequest($(@))
+        createLeave($(@))
     
     $('.addFormFieldsetChild').on 'click', ->    
-        createHolidayRequest()
+        createLeave()
         
-    $('.disabled .deleteFormFieldsetChild').each ->
+    $('.disabled .deleteFormFieldsetChild, .disabled .addFormFieldsetChild').each ->
         $(@).remove()
         
     $('.disabled select, .disabled input, .disabled textarea').each ->
         $(@).attr 'disabled', 'disabled'
         
-    $('.disabled #leave_request_create_leave_request').addClass 'button-disabled'
+    $('.disabled #leave_request_create_leave_request')
+        .addClass 'button-disabled'
+        .attr 'disabled', 'disabled'
+        
     $('.disabled #leave_request_create_leave_request').attr 'disabled', 'disabled'
-    $('.disabled').find('.addFormFieldsetChild').remove()        
 
+    $leaveRequestUser = $('#leave_request_user_ac')
+    $addFormFieldset = $('.addFormFieldsetChild')
+    $employeeSelector = $('#employee-selector')
+    if $('#employee-selector').length != 0
+        $leaveRequestUser.parent().addClass('display-inline-block display-none-important')
+        $addFormFieldset.addClass 'display-none-important'
+
+    $('.leave-request-owner').on 'change', ->
+        $('.formFieldsetChild').remove()
+        displayNone = 'display-none-important'
+        if $(@).val() is 'for-employees'
+            $leaveRequestUser.parent().addClass displayNone
+            $addFormFieldset.addClass displayNone
+            $employeeSelector.removeClass displayNone
+            
+            $employeeSelector.removeAttr 'disabled'
+
+            $leave = createLeave()
+            $leave.find('.deleteFormFieldsetChild').remove()
+            $leave.find('.leave-category').parent().remove()
+        else if $(@).val() is 'own'
+            $employeeSelector.addClass displayNone
+            $leaveRequestUser.parent().removeClass displayNone
+            $addFormFieldset.removeClass displayNone
+            
+            $employeeSelector.attr 'disabled', 'disabled'
+
+    $.validator.addMethod 'checkGM', (value, element) ->
+        $gmName = $(element)
+        $gmName.addClass 'error'
+        gmNameFieldId = $gmName.attr 'id'
+        $gmId = $('#'+gmNameFieldId.substr(0, gmNameFieldId.length-3))
+        if $gmName.val()
+            if not $gmId.val() then return false else return true
+        else return false
+    , 'This field is required'
+
+    $form.validate
+        ignore: []
+        rules:
+            "leave_request[general_manager_ac]": "checkGM"
+    
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        isValid = yes
-        if $('.formFieldsetChild').length <= 0
-            isValid = no
-            $errorContainer = $('#reply-message')
-            $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No leave date added.')
-            $errorContainer.append $errorMessage
-            $errorContainer.removeClass 'display-none'
-        else
-            $('#reply-message').addClass 'display-none'
-            $('.leave-error').remove()
-            
-        if validateDates() is no
-            isValid = no
-            
-        if isValid is yes
-            $form.submit()
+        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and $form.valid() is yes
+            $('#leaveRequestForm').submit()
+            return
         

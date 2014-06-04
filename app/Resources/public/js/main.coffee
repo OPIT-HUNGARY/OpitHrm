@@ -233,6 +233,16 @@ $.fn.dialog = (options) ->
         $(@).mCustomScrollbar 'update'
 
 # Prototype extensions
+        
+$.fn.checkAll = (callback, selector) ->
+    $el = if selector then $(selector) else $(@)
+    checkAll = if $el.filter(':checked').length is $el.length then false else true
+    $el.each ->
+        $(@).prop 'checked', checkAll
+
+    if callback
+        callback()
+        
 String.prototype.capitalize = () ->
     return @.charAt(0).toUpperCase() + @.slice(1)
 

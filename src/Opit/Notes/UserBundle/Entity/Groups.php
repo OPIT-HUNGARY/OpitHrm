@@ -63,6 +63,11 @@ class Groups implements RoleInterface
         return $this->role;
     }
     
+    /**
+     * 
+     * @param type $role
+     * @return \Opit\Notes\UserBundle\Entity\Groups
+     */
     public function setRole($role)
     {
         $this->role = $role;

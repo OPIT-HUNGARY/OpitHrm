@@ -137,26 +137,25 @@ class LeaveStatusManager extends StatusManager
      *
      * @param \Opit\Notes\StatusBundle\Entity\Status $status
      * @param array $nextStates
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $resource
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param type $requiredStatus
      */
-    protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus)
+    protected function prepareEmail(Status $status, array $nextStates, $leaveRequest, $requiredStatus)
     {
         // get template name by converting entity name first letter to lower
-        $className = Utils::getClassBasename($resource);
-        // lowercase first character of string
-        $template = lcfirst($className);
+        $className = Utils::getClassBasename($leaveRequest);
         $statusName = $status->getName();
         $statusId = $status->getId();
         // split class name at uppercase letters
         $subjectType = preg_split('/(?=[A-Z])/', $className);
-        $generalManager = $resource->getGeneralManager();
+        $generalManager = $leaveRequest->getGeneralManager();
         // create string for email travel type e.g.(Travel expense, Travel request)
         $subjectTravelType = $subjectType[1] . ' ' . strtolower($subjectType[2]);
         $stateChangeLinks = array();
 
+        // Check if leave request status is for approval and send email to gm, if not send to employee
         if (Status::FOR_APPROVAL === $statusId) {
-            $leaveToken = $this->setLeaveToken($resource->getId());
+            $leaveToken = $this->setLeaveToken($leaveRequest->getId());
 
             foreach ($nextStates as $key => $value) {
                 if ($key !== $requiredStatus) {
@@ -175,7 +174,7 @@ class LeaveStatusManager extends StatusManager
                 'stateChangeLinks' => $stateChangeLinks
             );
         } else {
-            $employee = $resource->getEmployee();
+            $employee = $leaveRequest->getEmployee();
             $user = $this->entityManager->getRepository('OpitNotesUserBundle:User')->findByEmployee($employee);
             $recipient = $user[0]->getEmail();
             $templateVariables = array(
@@ -198,12 +197,12 @@ class LeaveStatusManager extends StatusManager
             }
         }
         $templateVariables['currentState'] = $statusName;
-        $templateVariables['employee'] = $resource->getEmployee();
-        $templateVariables[$template] = $resource;
+        $templateVariables['employee'] = $leaveRequest->getEmployee();
+        $templateVariables['leaveRequest'] = $leaveRequest;
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-            '[NOTES] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $resource->getLeaveRequestId() . ')'
+            '[NOTES] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
         );
 
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:leaveRequest.html.twig', $templateVariables);

@@ -63,7 +63,7 @@ $.extend true, $(document).data('notes'),
                 event.preventDefault()
 
             $('#list-table th .fa-trash-o').click ->
-                $('.deleteMultiple').checkAll()
+                $('.deleteMultiple').checkAll $(document).data('notes').funcs.changeDeleteButton
                 return
 
             $('#list-table .deleteSingeTravelRequest').click (event) ->

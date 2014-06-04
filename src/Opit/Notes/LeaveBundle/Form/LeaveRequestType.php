@@ -47,6 +47,14 @@ class LeaveRequestType extends AbstractType
         $employeeTransformer = new EmployeeIdToObjectTransformer($entityManager);
         $userTransformer = new UserIdToObjectTransformer($entityManager);
         $builder->add($builder->create('employee', 'hidden')->addModelTransformer($employeeTransformer));
+        
+        $builder->add('user_ac', 'text', array(
+            'label' => '',
+            'data' => ($employee = $options['data']->getEmployee()) ? $employee->getEmployeeName() . ' <' . $employee->getUser()->getEmail() . '>' : null,
+            'mapped' => false,
+            'disabled' => true,
+            'attr' => array('placeholder' => 'Employee name', 'class' => 'width-300')
+        ));
 
         $builder->add('leaves', 'collection', array(
             'type'         => new LeaveType(),

@@ -174,13 +174,6 @@ $.fn.extend
             if $(@).attr('type') != 'hidden'
                 exists = yes if($(@).val())
         return exists
-  
-    checkAll: (selector) ->
-        $el = if selector then $(selector) else $(@)
-        checkAll = if $el.filter(':checked').length is $el.length then false else true
-        $el.each ->
-            $(@).prop 'checked', checkAll
-        $(document).data('notes').funcs.changeDeleteButton()
 
 initMenu = ->
     $menu = $('#menu:first')

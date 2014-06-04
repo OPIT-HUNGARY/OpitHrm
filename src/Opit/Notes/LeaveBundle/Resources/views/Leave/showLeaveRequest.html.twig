@@ -9,6 +9,30 @@
         '@OpitNotesLeaveBundle/Resources/public/js/main.coffee'
     output='js/opitnotesleave/show_leave_request.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
+        <script type="text/javascript">
+            {% if unpaidLeaveDetails|length > 0 %}
+                var html = 'Unpaid leaves created for some employees, kindly check for details in the email following this request.';
+                (function() {
+                  $('<div></div>').html(html).dialog({
+                    title: 'Notification',
+                    width: 550,
+                    buttons: {
+                      'OK': function() {
+                        window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
+                        $(this).dialog('close');
+                      }
+                    },
+                    close: function() {
+                        window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
+                        $(this).dialog('destroy');
+                    }
+                  });
+
+                  return;
+
+                }).call(this);
+            {% endif %}
+        </script>
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
@@ -49,20 +73,60 @@
     {% else %}
         {% set disabled = '' %}
     {% endif %}
-    {{ form(form, {
-        'action': (path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')})),
-        'method': 'POST',
-        'attr':{'id': 'leaveRequestForm', 'class': disabled}
-       })
-    }}
-    
-    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
-        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave dates</h3>
-        <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave request</a>
-    </div>
-    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
-        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Approvers</h3>
-        <div id="required-approvals" class="margin-left-1-em"></div>
-    </div>
-    <a href="{{ path('OpitNotesLeaveBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
+    <form action="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{{ disabled }}">
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Request for</h3>
+            {% if isGeneralManager %}
+            <div class="margin-left-1-em margin-bottom-10 background-color-grey display-inline-block padding-10 border-radius-5 bold vertical-align-top">
+                <div class="display-block">
+                    <input type="radio" name="leave-request-owner" class="leave-request-owner" value="own" />
+                    <span>Own</span>
+                </div>
+                <div class="display-block">
+                    <input type="radio" name="leave-request-owner" class="leave-request-owner" value="for-employees" />
+                    <span>Other employees</span>
+                </div>
+            </div>
+            <div class="margin-left-1-em width-200 margin-bottom-5 display-inline-block display-none-important" id="employee-selector">
+                <div class="vertical-align-top item-input-box-header height-20 color-white background-section-color-grey bold padding-4">
+                    <input type="checkbox" id="forAll" name="forAll" class="margin-top-2" /> Check all
+                </div>
+                <div class="vertical-align-top item-input-box height-100 padding-3">
+                    {% for employee in employees %}
+                    <div class="display-block">
+                        <input type="checkbox" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top">  <span class="vertical-align-top">{{ employee.employeeName }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <div class="margin-left-1-em">
+            {{ form_widget(form.user_ac) }}
+            </div>
+        </div>
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave dates</h3>
+            <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave date</a>
+        </div>
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Approvers</h3>
+            <div id="required-approvals" class="margin-left-1-em">
+                <div class="display-inline-block width-300 margin-right-5">
+                {{ form_label(form.team_manager_ac) }}
+                {{ form_widget(form.team_manager_ac) }}
+                </div>
+                <div class="display-inline-block width-500">
+                {{ form_label(form.general_manager_ac) }}
+                {{ form_widget(form.general_manager_ac) }}
+                </div>
+                {{ form_widget(form.general_manager) }}
+                {{ form_widget(form.team_manager) }}
+            </div>
+        </div>
+        {{ form_widget(form.leaves) }}
+        {{ form_widget(form.employee) }}
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.create_leave_request) }}
+        <a href="{{ path('OpitNotesLeaveBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
+    </form>    
 {% endblock %}
