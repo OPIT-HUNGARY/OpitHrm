@@ -39,6 +39,24 @@
                 {{ form_errors(form.leaveCategoryDuration) }}
             </div>
         </div>
+        <div class="float-left width-24">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+                {{ form_label(form.isPaid) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.isPaid, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.isPaid) }}
+            </div>
+        </div>
+        <div class="float-left width-24">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+                {{ form_label(form.isCountedAsLeave) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.isCountedAsLeave, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.isCountedAsLeave) }}
+            </div>
+        </div>
     </div>
     {{ form_end(form) }}
 </form>

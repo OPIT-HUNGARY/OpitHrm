@@ -20,7 +20,7 @@ class LeaveType
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -28,7 +28,14 @@ class LeaveType
      * @ORM\Column(name="name", type="string", length=100)
      * @Assert\NotBlank(message="The name may not be blank.")
      */
-    private $name;
+    protected $name;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_working_day", type="boolean")
+     */
+    protected $isWorkingDay;
 
     public function __toString()
     {
@@ -38,7 +45,7 @@ class LeaveType
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,10 +68,33 @@ class LeaveType
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set isWorkingDay
+     *
+     * @param boolean $isWorkingDay
+     * @return LeaveType
+     */
+    public function setIsWorkingDay($isWorkingDay)
+    {
+        $this->isWorkingDay = $isWorkingDay;
+
+        return $this;
+    }
+
+    /**
+     * Get isWorkingDay
+     *
+     * @return boolean
+     */
+    public function getIsWorkingDay()
+    {
+        return $this->isWorkingDay;
     }
 }

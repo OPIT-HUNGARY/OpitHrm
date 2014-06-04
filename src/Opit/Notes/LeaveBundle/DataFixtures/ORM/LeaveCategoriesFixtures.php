@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -33,24 +33,58 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
     {
         $fullDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::FULLDAY);
         $halfDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::HALFDAY);
-        
+
         $categories = array(
-            'Full day' => array('description' => 'Employee takes full day off.', 'duration' => $fullDay, 'system' => true),
-            'Morning half day' => array('description' => 'Employee takes morning half day off.', 'duration' => $halfDay),
-            'Afternoon half day' => array('description' => 'Employee takes afternoon half day off.', 'duration' => $halfDay),
-            'Sick leave' => array('description' => 'Employee takes sick leave.', 'duration' => $fullDay),
-            'Unpaid leave' => array('description' => 'Employee takes unpaid leave.', 'duration' => $fullDay, 'system' => true)
+            LeaveCategory::FULL_DAY => array(
+                'description' => 'Employee takes full day off.',
+                'duration' => $fullDay,
+                'isPaid' => 1,
+                'isCountedAsLeave' => 1,
+                'system' => true
+            ),
+            'Morning half day' => array(
+                'description' => 'Employee takes morning half day off.',
+                'duration' => $halfDay,
+                'isPaid' => 1,
+                'isCountedAsLeave' => 1
+            ),
+            'Afternoon half day' => array(
+                'description' => 'Employee takes afternoon half day off.',
+                'duration' => $halfDay,
+                'isPaid' => 1,
+                'isCountedAsLeave' => 1
+            ),
+            'Sick leave' => array(
+                'description' => 'Employee takes sick leave.',
+                'duration' => $fullDay,
+                'isPaid' => 1,
+                'isCountedAsLeave' => 0
+            ),
+            LeaveCategory::UNPAID => array(
+                'description' => 'Employee takes unpaid leave.',
+                'duration' => $fullDay,
+                'isPaid' => 0,
+                'isCountedAsLeave' => 1,
+                'system' => true
+            )
         );
 
         foreach ($categories as $key => $value) {
-            $holidayCategory = new LeaveCategory();
-            $holidayCategory->setName($key);
-            $holidayCategory->setDescription($value['description']);
-            $holidayCategory->setLeaveCategoryDuration($value['duration']);
+            $leaveCategory = new LeaveCategory();
+            $leaveCategory->setName($key);
+            $leaveCategory->setIsPaid($value['isPaid']);
+            $leaveCategory->setIsCountedAsLeave($value['isCountedAsLeave']);
+            $leaveCategory->setDescription($value['description']);
+            $leaveCategory->setLeaveCategoryDuration($value['duration']);
+            
             if (isset($value['system'])) {
-                $holidayCategory->setSystem($value['system']);
+                $leaveCategory->setSystem($value['system']);
             }
-            $manager->persist($holidayCategory);
+
+            if (array_key_exists('key', $value)) {
+                $leaveCategory->setCategoryKey($value['key']);
+            }
+            $manager->persist($leaveCategory);
         }
 
         $manager->flush();
@@ -63,9 +97,9 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
     {
         return 14; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()

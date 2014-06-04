@@ -30,7 +30,7 @@ class Leave
      * @Assert\Date()
      */
     protected $startDate;
-    
+
     /**
      * @var \DateTime
      *
@@ -39,28 +39,35 @@ class Leave
      * @Assert\Date()
      */
     protected $endDate;
-    
+
     /**
      * @var \Text
      *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="LeaveCategory", inversedBy="requests")
      */
     protected $category;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="LeaveRequest", inversedBy="leaves")
      */
     protected $leaveRequest;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="number_of_days", type="integer")
+     */
+    protected $numberOfDays;
+
+    /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -83,7 +90,7 @@ class Leave
     /**
      * Get startDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartDate()
     {
@@ -106,13 +113,13 @@ class Leave
     /**
      * Get endDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEndDate()
     {
         return $this->endDate;
     }
-    
+
     /**
      * Set description
      *
@@ -129,7 +136,7 @@ class Leave
     /**
      * Get description
      *
-     * @return \Text $description 
+     * @return \Text $description
      */
     public function getDescription()
     {
@@ -152,7 +159,7 @@ class Leave
     /**
      * Get category
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveCategory 
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveCategory
      */
     public function getCategory()
     {
@@ -175,10 +182,33 @@ class Leave
     /**
      * Get leaveRequest
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest 
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest
      */
     public function getLeaveRequest()
     {
         return $this->leaveRequest;
+    }
+
+    /**
+     * Set numberOfDays
+     *
+     * @param integer $numberOfDays
+     * @return Leave
+     */
+    public function setNumberOfDays($numberOfDays)
+    {
+        $this->numberOfDays = $numberOfDays;
+
+        return $this;
+    }
+
+    /**
+     * Get numberOfDays
+     *
+     * @return integer
+     */
+    public function getNumberOfDays()
+    {
+        return $this->numberOfDays;
     }
 }

@@ -21,6 +21,16 @@
                 {{ form_errors(form.name) }}
             </div>
         </div>
+            
+        <div class="float-left width-32">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+                {{ form_label(form.isWorkingDay) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.isWorkingDay, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.isWorkingDay) }}
+            </div>
+        </div>
     </div>
     {{ form_end(form) }}
 </form>

@@ -16,6 +16,9 @@ use Opit\Notes\CoreBundle\Entity\AbstractBase;
  */
 class LeaveCategory extends AbstractBase
 {
+    const FULL_DAY = 'Full day';
+    const UNPAID = 'Unpaid leave';
+    
     /**
      * @var integer
      *
@@ -59,6 +62,21 @@ class LeaveCategory extends AbstractBase
      * @ORM\JoinColumn(referencedColumnName="id")
      */
     protected $leaveCategoryDuration;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_paid", type="boolean")
+     */
+    protected $isPaid;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_counted_as_leave", type="boolean")
+     */
+    protected $isCountedAsLeave;
+
 
     /**
      * Constructor
@@ -202,5 +220,51 @@ class LeaveCategory extends AbstractBase
     public function getLeaveCategoryDuration()
     {
         return $this->leaveCategoryDuration;
+    }
+
+    /**
+     * Set isPaid
+     *
+     * @param boolean $isPaid
+     * @return LeaveCategory
+     */
+    public function setIsPaid($isPaid)
+    {
+        $this->isPaid = $isPaid;
+
+        return $this;
+    }
+
+    /**
+     * Get isPaid
+     *
+     * @return boolean
+     */
+    public function getIsPaid()
+    {
+        return $this->isPaid;
+    }
+
+    /**
+     * Set isCountedAsLeave
+     *
+     * @param boolean $isCountedAsLeave
+     * @return LeaveCategory
+     */
+    public function setIsCountedAsLeave($isCountedAsLeave)
+    {
+        $this->isCountedAsLeave = $isCountedAsLeave;
+
+        return $this;
+    }
+
+    /**
+     * Get isCountedAsLeave
+     *
+     * @return boolean
+     */
+    public function getIsCountedAsLeave()
+    {
+        return $this->isCountedAsLeave;
     }
 }

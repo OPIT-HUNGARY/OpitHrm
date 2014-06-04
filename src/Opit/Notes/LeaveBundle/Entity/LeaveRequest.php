@@ -4,6 +4,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * @ORM\Table(name="notes_leave_request")
  * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\LeaveRequestRepository")
  */
-class LeaveRequest
+class LeaveRequest extends AbstractBase
 {
     /**
      * @var integer
@@ -21,7 +22,7 @@ class LeaveRequest
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\OneToMany(targetEntity="Leave", mappedBy="leaveRequest", cascade={"persist", "remove"})
@@ -50,12 +51,12 @@ class LeaveRequest
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="gmLeaveRequests")
      * @Assert\NotBlank(message="General manager cannot be empty.")
      */
-    private $generalManager;
+    protected $generalManager;
 
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="tmLeaveRequests")
      */
-    private $teamManager;
+    protected $teamManager;
 
     /**
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
@@ -67,6 +68,7 @@ class LeaveRequest
      */
     public function __construct()
     {
+        parent::__construct();
         $this->leaves = new \Doctrine\Common\Collections\ArrayCollection();
         $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
     }

@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -35,8 +35,13 @@ class LeaveTypeType extends AbstractType
             'max_length' => 100,
             'placeholder' => 'Name'
         )));
+
+        $builder->add('isWorkingDay', 'choice', array(
+            'choices' => array('0' => 'Leave', '1' => 'Working day'),
+            'label' => 'Category'
+        ));
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */

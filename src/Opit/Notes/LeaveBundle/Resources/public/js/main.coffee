@@ -7,7 +7,7 @@ $.extend true, $(document).data('notes'),
                 data: {'statusId': statusId, 'leaveRequestId': leaveRequestId}
                 global: false
             .done (data) ->
-                location.reload()
+                $spinner.remove()
             .complete () ->
                 $spinner.remove()
             .fail (data) ->

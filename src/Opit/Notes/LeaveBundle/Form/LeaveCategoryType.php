@@ -2,9 +2,18 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
+ */
+
+/*
+ *  This file is part of the {Bundle}.
+ *
+ *  (c) Opit Consulting Kft. <info@opit.hu>
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -46,6 +55,14 @@ class LeaveCategoryType extends AbstractType
             'class' => 'OpitNotesLeaveBundle:LeaveCategoryDuration',
             'property' => 'leaveCategoryDurationName',
             'label' => 'Duration'
+        ));
+        $builder->add('isPaid', 'choice', array(
+            'choices' => array('0' => 'No', '1' => 'Yes'),
+            'label' => 'Paid'
+        ));
+        $builder->add('isCountedAsLeave', 'choice', array(
+            'choices' => array('0' => 'No', '1' => 'Yes'),
+            'label' => 'Subtract from annual entitlement'
         ));
         $builder->add($builder->create('id', 'hidden', array('mapped' => false)));
     }

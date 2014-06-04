@@ -51,7 +51,6 @@ $(document).ready ->
                         return
                         
     $('#leave_list').on 'change', '.changeState', ->
-        console.log 'change'
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'        
 
 inverse = false
