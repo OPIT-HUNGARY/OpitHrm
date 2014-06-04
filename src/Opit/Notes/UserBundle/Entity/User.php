@@ -54,7 +54,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(message="The username may not be blank.", groups={"user"})
+     * @Assert\NotBlank(message="The username can not be blank.", groups={"user"})
      */
     protected $username;
 
@@ -72,7 +72,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
 
     /**
      * @ORM\Column(type="string", length=64)
-     * @Assert\NotBlank(message="The password may not be blank.", groups={"password"})
+     * @Assert\NotBlank(message="The password can not be blank.", groups={"password"})
      * @Assert\Length(
      *      min = "6",
      *      max = "50",
@@ -85,7 +85,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
 
     /**
      * @ORM\Column(type="string", length=60)
-     * @Assert\NotBlank(message="The email may not be blank.", groups={"password"})
+     * @Assert\NotBlank(message="The email can not be blank.", groups={"password"})
      * @Assert\Email(message = "The email '{{ value }}' is not a valid email address.", groups={"user"})
      */
     protected $email;
@@ -105,14 +105,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @var string
      *
      * @ORM\Column(name="bank_account_number", type="string", length=50)
-     * @Assert\NotBlank(message="The Bank account may not be blank.", groups={"user"})
-     * @Assert\Length(
-     *      min = "16",
-     *      max = "34",
-     *      minMessage = "The Bank account number must be greater equal {{ limit }} characters",
-     *      maxMessage = "The Bank account number must be less equal {{ limit }} characters",
-     *      groups={"user"}
-     * )
+     * @Assert\NotBlank(message="The Bank account can not be blank.", groups={"user"})
      */
     protected $bankAccountNumber;
 
@@ -120,7 +113,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=30)
-     * @Assert\NotBlank(message="The bank name may not be blank.", groups={"user"})
+     * @Assert\NotBlank(message="The bank name can not be blank.", groups={"user"})
      * @Assert\Length(
      *      max = "34",
      *      maxMessage = "The bank name must be less equal {{ limit }} characters.",
@@ -134,13 +127,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
      *
      * @ORM\Column(name="tax_identification", type="bigint", nullable=true)
      * @Assert\NotBlank(message="The tax identification can not be blank.", groups={"user"})
-     * @Assert\Range(
-     *      min = "1000000000",
-     *      max = "9999999999",
-     *      minMessage = "The tax identification should be greater than 1000000000.",
-     *      maxMessage = "The tax identification should be less than 9999999999.",
-     *      groups={"user"}
-     * )
+     * @Assert\Type(type="integer", message="The value {{ value }} is not a valid {{ type }}.", groups={"user"})
      */
     protected $taxIdentification;
 

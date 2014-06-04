@@ -48,7 +48,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var \DateTime
      *
      * @ORM\Column(name="date_of_birth", type="date")
-     * @Assert\NotBlank(message="Date of birth cannot be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Date of birth can not be empty.", groups={"user"})
      * @Assert\Date()
      */
     protected $dateOfBirth;
@@ -57,7 +57,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var \DateTime
      *
      * @ORM\Column(name="joining_date", type="date")
-     * @Assert\NotBlank(message="Joining date cannot be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Joining date can not be empty.", groups={"user"})
      * @Assert\Date()
      */
     protected $joiningDate;
@@ -66,7 +66,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var integer
      *
      * @ORM\Column(name="number_of_children", type="integer")
-     * @Assert\NotBlank(message="Number of Children cannot be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Number of Children can not be empty.", groups={"user"})
      * @Assert\Range(
      *      min = "0",
      *      max = "30",
@@ -81,7 +81,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var integer
      *
      * @ORM\Column(name="working_hours", type="integer")
-     * @Assert\NotBlank(message="Working hours cannot be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Working hours can not be empty.", groups={"user"})
      * @Assert\Range(
      *      min = "0",
      *      max = "24",
@@ -108,7 +108,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(message="The employee name may not be blank.", groups={"user"})
+     * @Assert\NotBlank(message="The employee name can not be blank.", groups={"user"})
      */
     protected $employeeName;
 
