@@ -220,6 +220,31 @@ $.validator.addMethod 'checkId', (value, element) ->
 
 , 'This field is required.'
 
+# Validate all cost fields.
+validateAllCosts = ->
+    isCostValid = true
+    $('.formFieldsetChild').each ->
+        CostField = $(@).find('.cost')
+        #validate the current cost filed.
+        validateCost(CostField)
+        # Check if there is a label error
+        if CostField.parent().children('.custom-label-error').length > 0
+            isCostValid = false
+            return
+    return isCostValid
+
+# Validate cost field
+validateCost = (self) ->
+    cost = self.val()
+    regexp = /^[0-9]+([\,\.][0-9]+)?$/;
+    # Check if the cost is a number or not.
+    if !regexp.test(cost)
+        if self.parent().children('.custom-label-error').length < 1
+            self.addClass 'display-inline-block'
+            self.parent().append $('<label>').addClass('custom-label-error').text 'Invalid number.'
+    else
+        self.parent().children().remove('.custom-label-error')
+
 # assing custom validation rules to arrival date, user, general manager
 $form.validate
     ignore: []
@@ -232,7 +257,7 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
     event.preventDefault()
 
 #    validate form on client side
-    if $form.valid() and compareDays()
+    if $form.valid() and compareDays() and validateAllCosts()
         # if form is valid post ajax request to get the preview
         $.ajax
             method: 'POST'

@@ -59,7 +59,7 @@ class TravelType extends AbstractType
         $builder->add($builder->create('user', 'hidden')->addModelTransformer($transformer));
         $builder->add('user_ac', 'text', array_merge(array(
             'label' => 'Employee name',
-            'data' => ($user = $options['data']->getUser()) ? $user->getEmployee()->getEmployeeName() . ' <'. $user->getEmail() .'>' : null,
+            'data' => ($user = $options['data']->getUser()) ? $user->getEmployee()->getEmployeeNameFormatted() : null,
             'mapped' => false,
             'attr' => array('placeholder' => 'Employee name', 'class' => 'width-300')
         ), $userAcOptions));

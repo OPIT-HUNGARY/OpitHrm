@@ -51,9 +51,11 @@ class AccomodationType extends AbstractType
             )
         ));
         $builder->add('cost', 'number', array('attr' => array(
-            'class' => 'cost display-inline-block-important width-80',
-            'placeholder' => 'Cost'
-        )));
+                'class' => 'cost display-inline-block-important width-80',
+                'placeholder' => 'Cost'
+            ),
+            'pattern' => "^[0-9]+([\,\.][0-9]+)?$"
+        ));
         $builder->add('currency', 'entity', array('attr' => array(
                 'class' => 'currency display-inline-block margin-left-5'
             ),

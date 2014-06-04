@@ -12,6 +12,7 @@
 namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TRAccomodation
@@ -46,6 +47,7 @@ class TRAccomodation
      * @var decimal
      *
      * @ORM\Column(name="cost", type="decimal", scale=2)
+     * @Assert\Type(type="number", message="The cost should be number.")
      */
     private $cost;
 
