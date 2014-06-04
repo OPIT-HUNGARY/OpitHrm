@@ -26,7 +26,7 @@ $("#addLeaveType").click ->
                                 $('#form-leavetype').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave type created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavetype'), response, "create", "Leave type created successfully"
                                 if validationResult is true
                                     $('#dialog-editleavetype').dialog "destroy"
                     Close: ->
@@ -64,7 +64,7 @@ $("#list-table").on "click", ".list-leavetype", ->
                                 $('#form-leavetype').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day type modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavetype'), response, "create", "Administrative Leave/Working Day type modified successfully"
                                 if validationResult is true
                                     $('#dialog-editleavetype').dialog "destroy"
                     Close: ->

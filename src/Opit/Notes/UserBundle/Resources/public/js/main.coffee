@@ -13,6 +13,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                   title: '<i class="fa fa-list-alt"></i> Edit User'
                   modal: on
                   width: 710
+                  maxHeight: 600
                   open: ->
                     $(document).data('notes').funcs.initDateInputs $(@)
                   buttons:
@@ -39,13 +40,13 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                               $('.selected-page').each ->
                                   $(@).removeClass 'selected-page'
                               $('[data-offset="'+offset+'"]').addClass 'selected-page'
-                              postActions = successCallback response, "update","User modified successfully" if successCallback?
+                              postActions = successCallback $('#dialog-edititem'), response, "update", "User modified successfully" if successCallback?
                               $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
                           else
                             $('#dialog-edititem').dialog 'destroy'
                           return
                       .fail (data) ->
-                        successCallback $.parseJSON(data.responseText), "update","Error"
+                        successCallback $('#dialog-edititem'), $.parseJSON(data.responseText), "update", "Error"
                     Close: ->
                        $('#dialog-edititem').dialog "destroy"
                        return
@@ -275,10 +276,10 @@ $(document).ready ->
                                 data: $('#changePassword_frm').serialize()
                             .done (data)->
                                 $('#password-dialog').dialog 'destroy'
-                                $(document).data('notes').funcs.showAlert data, 'update', 'Password successfully changed'
+                                $(document).data('notes').funcs.showAlert $('#password-dialog'), data, 'update', 'Password successfully changed'
                             .fail (data) ->
                                 data = $.parseJSON data.responseText
-                                $(document).data('notes').funcs.showAlert data, 'update','Password reset successfully'
+                                $(document).data('notes').funcs.showAlert $('#password-dialog'), data, 'update', 'Password reset successfully'
                         Close: ->
                             $('#password-dialog').dialog 'destroy'
                             return

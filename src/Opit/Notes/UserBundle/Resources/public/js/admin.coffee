@@ -24,7 +24,7 @@ $("#addJobTitle").click ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Job title created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editjobtitle'), response, "create", "Job title created successfully"
                                 if validationResult is true
                                     $('#dialog-editjobtitle').dialog "destroy"
                     Close: ->
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-jobtitle", ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Job title modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editjobtitle'), response, "create", "Job title modified successfully"
                                 if validationResult is true
                                     $('#dialog-editjobtitle').dialog "destroy"
                     Close: ->

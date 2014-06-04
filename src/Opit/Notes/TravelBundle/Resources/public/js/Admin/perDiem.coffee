@@ -123,13 +123,13 @@ $('#save').click (event) ->
                 data: "showList" : 1
             .done (data)->
                 $('.container').html data
-                $(document).data('notes').funcs.showAlert response, "create", "Per diems saved successfully!"
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Per diems saved successfully!"
                 isHadChild = $('.container').children('.formFieldsetChild').length > 0
             .fail (data) ->
-                $(document).data('notes').funcs.showAlert response, "create", "Error", true
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
             return
         .fail (data) ->
-                $(document).data('notes').funcs.showAlert response, "create", "Error", true
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
         return
     else
         disableSaveButton(false)

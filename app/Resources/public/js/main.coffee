@@ -89,24 +89,30 @@ $.extend true, $(document).data('notes'),
                   $(@).dialog 'destroy'
                   return
                 
-        showAlert: (response, actionType, message, forceClass) ->
-            $('#reply-message').addClass "alert-message"
-            
+        showAlert: ($owner, response, actionType, message, forceClass) ->
+            $errorContainer = $owner.find '#reply-message'
+            $relatedContainer = $('#list-reply-message')
+
+            if $errorContainer.length is 0
+                return off
+
+            $errorContainer.addClass "alert-message"
+
             if typeof response is not "string"
                 response = $.parseJSON response
-                
+
             if response[0]? and response[0].response == 'error'
               if "update" == actionType or "create" == actionType
                 errorString = "<ul>"
                 for i in response[0].errorMessage
                   errorString += "<li>"+i+"</li>"
                 errorString += "</ul>"
-                $('#reply-message')
+                $errorContainer
                   .html("<i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>"+errorString)
                   .removeClass('success-message')
                   .addClass('error-message')
               else if "delete" == actionType
-                $('#list-reply-message')
+                $relatedContainer
                   .html("<i class='fa fa-exclamation-triangle'></i> Error, while tried to delete the user(s)! <i class='float-right fa fa-chevron-circle-up'></i> ")
                   .removeClass('success-message')
                   .addClass('error-message')
@@ -115,20 +121,23 @@ $.extend true, $(document).data('notes'),
                   .slideUp(1000)
               returnVal = off
             else
-                $('#list-reply-message')
+                $relatedContainer
                   .html("<i class='fa fa-check-square'></i> "+message+"! <i class='float-right fa fa-chevron-circle-up'></i> ")
                   .addClass("alert-message")
                   .addClass('success-message')
                   .fadeIn(200)
                   .delay(2000)
                   .slideUp(1000)
-                $('#reply-message')
+                $errorContainer
                   .removeClass('alert-message error-message')
                   .empty()
                 returnVal = on
               
               if forceClass
-                $('#list-reply-message').removeClass('success-message').addClass('error-message')
+                $relatedContainer.removeClass('success-message').addClass('error-message')
+
+            # Update custom scrollbar
+            $owner.mCustomScrollbar 'update' if $owner?
 
             return returnVal
             

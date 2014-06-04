@@ -41,13 +41,20 @@ class EmployeeType extends AbstractType
             'label' => 'Teams',
             'class' => 'OpitNotesUserBundle:Team',
             'property' => 'teamName',
+            'required' => false,
             'multiple' => true,
             'expanded' => true
         ));
         
-        $builder->add('numberOfChildren', 'number', array('attr' => array(
-            'placeholder' => 'Number of children'
-        )));
+        $builder->add('numberOfChildren', 'integer', array(
+            'label' => 'No. Of Children (< 30)',
+            'invalid_message' => 'No. of children can only contain integer values.',
+            'attr' => array(
+                'min' => 0,
+                'max' => 30,
+                'placeholder' => 'Number of children'
+            )
+        ));
         
         $builder->add('joiningDate', 'date', array(
             'widget' => 'single_text',
@@ -64,6 +71,7 @@ class EmployeeType extends AbstractType
         ));
 
         $builder->add('workingHours', 'integer', array(
+            'invalid_message' => 'Working hours can only contain integer values.',
             'attr' => array(
                 'min' => 0,
                 'max' => 24,

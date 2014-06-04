@@ -19,10 +19,10 @@ showRoleDialog = (id, name, description, url, title, flashMessage) ->
                         data: 'value': value
                     .done (data)->
                         if data.duplicate
-                            $(document).data('notes').funcs.showAlert data, 'create', "#{ propertyName } already exists", true
+                            $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "#{ propertyName } already exists", true
                         else
                             $('#list-table').replaceWith data
-                            $(document).data('notes').funcs.showAlert data, 'create', flashMessage
+                            $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', flashMessage
                         $selfDialog.dialog 'destroy'
                 else
                     $selfDialog.find('#reply-message').css display:'block'
@@ -47,10 +47,10 @@ deleteGroup = (id, name) ->
                         data: id: id
                     .done (data)->
                         if data.userRelated
-                            $(document).data('notes').funcs.showAlert data, 'create', "Deletion not allowed for #{ propertyName }(s) with relations", true
+                            $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "Deletion not allowed for #{ propertyName }(s) with relations", true
                         else
                             $('#list-table').replaceWith data
-                            $(document).data('notes').funcs.showAlert data, 'create', "#{ propertyNameCapital }(s) successfully deleted!"
+                            $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "#{ propertyNameCapital }(s) successfully deleted!"
                     $selfDialog.dialog 'destroy'
                 Cancel: ->
                     $('#list-table').find('input:checkbox').each ->

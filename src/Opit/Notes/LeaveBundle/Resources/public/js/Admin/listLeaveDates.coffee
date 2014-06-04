@@ -27,7 +27,7 @@ $("#addLeaveDate").click ->
                                 $('#form-leavedate').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), response, "create", "Administrative Leave/Working Day created successfully"
                                 if validationResult is true
                                     $('#dialog-editleavedate').dialog "destroy"
                     Close: ->
@@ -67,7 +67,7 @@ $("#form-leavedate").on "click", ".list-leavedate", (event) ->
                                 $('#form-leavedate').html data
                                 $(document).data('notes').funcs.initListPageListeners()
                                 $(document).data('notes').funcs.initDeleteMultipleListener()
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Administrative Leave/Working Day modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), response, "create", "Administrative Leave/Working Day modified successfully"
                                 if validationResult is true
                                     $('#dialog-editleavedate').dialog "destroy"
                     Close: ->

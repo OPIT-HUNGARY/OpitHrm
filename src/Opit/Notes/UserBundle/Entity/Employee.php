@@ -71,7 +71,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      *      min = "0",
      *      max = "30",
      *      minMessage = "The number of children should be greater or equal 0.",
-     *      maxMessage = "The number of children should be less than 30.",
+     *      maxMessage = "The number of children should be less or equal 30.",
      *      groups={"user"}
      * )
      */

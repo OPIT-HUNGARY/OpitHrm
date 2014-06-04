@@ -9,6 +9,9 @@ $(document).ready ->
               title: '<i class="fa fa-list-alt"></i> Create User'
               dialogClass: 'popup-dialog'
               width: 750
+              maxHeight: 600
+              open: ->
+                $(document).data('notes').funcs.initDateInputs $(@)
               modal: on
               buttons:
                 Create: ->
@@ -25,13 +28,13 @@ $(document).ready ->
                           data: "showList" : 1
                       .done (data)->
                           $('#user-list').html data
-                          $(document).data('notes').funcs.showAlert response, 'create', 'User created successfully'
+                          $(document).data('notes').funcs.showAlert $('#dialog-edititem'), response, 'create', 'User created successfully'
                           $('#dialog-edititem').dialog "destroy"
                   .fail (data) ->
                       response = data.responseText
                       if typeof response is 'string'
                           response = $.parseJSON response
-                      $(document).data('notes').funcs.showAlert response, 'create','Error'
+                      $(document).data('notes').funcs.showAlert $('#dialog-edititem'), response, 'create', 'Error'
                 Close: ->
                     $('#dialog-edititem').dialog 'destroy'
                     return

@@ -85,7 +85,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
 
     /**
      * @ORM\Column(type="string", length=60)
-     * @Assert\NotBlank(message="The email can not be blank.", groups={"password"})
+     * @Assert\NotBlank(message="The email can not be blank.", groups={"user", "password"})
      * @Assert\Email(message = "The email '{{ value }}' is not a valid email address.", groups={"user"})
      */
     protected $email;

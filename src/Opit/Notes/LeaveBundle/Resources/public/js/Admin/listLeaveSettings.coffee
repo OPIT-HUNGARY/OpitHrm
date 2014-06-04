@@ -50,13 +50,13 @@ $('#save').click (event) ->
                 data: "showList" : 1
             .done (data)->
                 $('#list-settings').html data
-                $(document).data('notes').funcs.showAlert response, "create", "Holiday settings saved successfully!"
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Entitlement configuration saved successfully!"
                 isHadChild = $('.container').children('.formFieldsetChild').length > 0
             .fail (data) ->
-                $(document).data('notes').funcs.showAlert response, "create", "Error", true
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
             return
         .fail (data) ->
-                $(document).data('notes').funcs.showAlert response, "create", "Error", true
+                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
         return
     else
         disableSaveButton(false)

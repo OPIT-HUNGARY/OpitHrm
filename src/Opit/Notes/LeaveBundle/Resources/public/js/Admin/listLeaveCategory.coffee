@@ -24,7 +24,7 @@ $("#addLeaveCategory").click ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#form-leavecategory').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category created successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavecategory'), response, "create", "Leave category created successfully"
                                 if validationResult is true
                                     $('#dialog-editleavecategory').dialog "destroy"
                     Close: ->
@@ -60,7 +60,7 @@ $("#list-table").on "click", ".list-leavecategory", ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#form-leavecategory').html data
-                                validationResult = $(document).data('notes').funcs.showAlert response, "create", "Leave category modified successfully"
+                                validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavecategory'), response, "create", "Leave category modified successfully"
                                 if validationResult is true
                                     $('#dialog-editleavecategory').dialog "destroy"
                     Close: ->
