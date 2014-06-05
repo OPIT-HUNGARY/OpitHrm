@@ -527,4 +527,21 @@ ul {
             margin-bottom: 3px;
         }
     }
+    
+    &.option-list-scrollable {
+        max-height: 70px;
+        overflow: hidden;
+        padding: 5px 0 5px 5px;
+        border: 1px solid $lightGrayColorFull;
+        background-color: $darkerSnowColor;
+        @include border-radius(5px);
+
+        .mCS_no_scrollbar {
+            margin-right: 5px;
+        }
+        
+        label{
+            display: inline;
+        }
+    }
 }

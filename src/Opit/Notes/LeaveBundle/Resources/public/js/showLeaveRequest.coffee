@@ -11,6 +11,8 @@ $('form#leaveRequestForm').on 'change', '.start-date', ->
 $('form#leaveRequestForm').on 'change', '.end-date', ->
     checkDatesOverlapping $(@)
 
+$('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
+
 # Cechking dates overlapping on the current date input field.
 checkDatesOverlapping = ($self) ->
     $formFieldset = $self.closest('.formFieldsetChild')
@@ -156,14 +158,16 @@ $(document).ready ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
         
     $('#leave_request_team_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'team_manager'
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_team_manager'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#leave_request_team_manager').val ui.item.id
             return
 
     $('#leave_request_general_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'general_manager'
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_general_manager'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#leave_request_general_manager').val ui.item.id
@@ -171,17 +175,19 @@ $(document).ready ->
             
     $forAll = $('#forAll')
     $companyEmployees = $('.company-employees')
-            
-    $forAll.on 'change', ->
-        $companyEmployees.checkAll()
+    
+    changeLabel = (list) ->
+        if $(list).filter(':checked').length is list.length
+            $forAll.html('Uncheck all')
+        else
+            $forAll.html('Check all')
+    
+    $forAll.on 'click', ->
+        $companyEmployees.checkAll (list) =>
+            changeLabel list
             
     $companyEmployees.on 'change', ->
-        selectedEmployeesLength = $('.company-employees:checked').length
-        if selectedEmployeesLength > 0
-            if selectedEmployeesLength < $companyEmployees.length
-                $forAll.prop 'checked', false
-            else
-                $forAll.prop 'checked', true
+        changeLabel $companyEmployees
 
     $('#leave_request').find('label:first').remove()
     $collectionHolder = $('#leave_request_leaves')
@@ -227,6 +233,7 @@ $(document).ready ->
     $leaveRequestUser = $('#leave_request_user_ac')
     $addFormFieldset = $('.addFormFieldsetChild')
     $employeeSelector = $('#employee-selector')
+    $employeeSelector.addClass 'display-none-important'
     if $('#employee-selector').length != 0
         $leaveRequestUser.parent().addClass('display-inline-block display-none-important')
         $addFormFieldset.addClass 'display-none-important'

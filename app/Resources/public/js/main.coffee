@@ -250,7 +250,7 @@ $.fn.checkAll = (callback, selector) ->
         $(@).prop 'checked', checkAll
 
     if callback
-        callback()
+        callback($el)
         
 String.prototype.capitalize = () ->
     return @.charAt(0).toUpperCase() + @.slice(1)

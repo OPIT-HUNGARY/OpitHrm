@@ -365,32 +365,26 @@ class UserController extends Controller
 
     /* Moveable */
     /**
-     * @Route("/secured/user/search", name="OpitNotesUserBundle_user_search")
-     * @Method({"GET"})
+     * @Route("/secured/user/search/{role}", name="OpitNotesUserBundle_user_search", defaults={"role"="ROLE_USER"})
+     * @Method({"POST"})
      * @Secure(roles="ROLE_USER")
      */
     public function userSearchAction()
     {
         $userNames = array();
         $request = $this->getRequest();
-        $term = $request->query->get('term');
-        $role = strtoupper('role' . '_' . $request->query->get('role'));
+        $term = $request->request->get('term');
         $users = $this->getDoctrine()->
                         getRepository('OpitNotesUserBundle:User')->
-                        findUserByEmployeeNameUsingLike($term);
+                        findUserByEmployeeNameUsingLike($term, $request->attributes->get('role'));
 
         foreach ($users as $user) {
-            $groups = $user->getGroups();
-            foreach ($groups as $group) {
-                if ('ALL' === $role || $group->getRole() === $role) {
-                    $userUniqueIdentifier = $user->getEmployee()->getEmployeeNameFormatted();
-                    $userNames[] = array(
-                        'value' => $userUniqueIdentifier,
-                        'label' => $userUniqueIdentifier,
-                        'id'=>$user->getId()
-                    );
-                }
-            }
+            $userUniqueIdentifier = $user->getEmployee()->getEmployeeNameFormatted();
+            $userNames[] = array(
+                'value' => $userUniqueIdentifier,
+                'label' => $userUniqueIdentifier,
+                'id'=>$user->getId()
+            );
         }
         
         return new JsonResponse($userNames);

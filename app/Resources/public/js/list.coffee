@@ -41,12 +41,11 @@ $.extend true, $(document).data('notes'),
         
         changeDeleteButton: (disableInputCheck = false) ->
             $deleteButton = $('#delete').addClass('button-disabled').attr 'disabled', 'disabled'
-            if disableInputCheck is false
-                $('#list-table tr td input[type=checkbox]').each ->
-                    if $(@).prop 'checked'
-                        $deleteButton.removeClass 'button-disabled'
-                        $deleteButton.removeAttr 'disabled'
-                        return false
+            $('#list-table tr td input[type=checkbox]').each ->
+                if $(@).prop 'checked'
+                    $deleteButton.removeClass 'button-disabled'
+                    $deleteButton.removeAttr 'disabled'
+                    return false
         
         initDeleteMultipleListener: () ->
             $deleteButton = $('#delete')

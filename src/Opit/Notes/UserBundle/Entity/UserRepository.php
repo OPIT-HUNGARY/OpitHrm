@@ -208,14 +208,17 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      * @param type $chunk part of the employee name
      * @return type object
      */
-    public function findUserByEmployeeNameUsingLike($chunk)
+    public function findUserByEmployeeNameUsingLike($chunk, $role)
     {
         $q = $this->createQueryBuilder('u')
-                ->leftJoin('u.employee', 'e')
-                ->where('e.employeeName LIKE :employeeName')
-                ->setParameter('employeeName', "%{$chunk}%")
-                ->getQuery();
-
+            ->leftJoin('u.employee', 'e')
+            ->innerJoin('u.groups', 'g')
+            ->where('e.employeeName LIKE :employeeName')
+            ->andWhere('g.role = :role')
+            ->setParameter('employeeName', "%{$chunk}%")
+            ->setParameter('role', strtoupper($role))
+            ->getQuery();
+            
         return $q->getResult();
     }
 

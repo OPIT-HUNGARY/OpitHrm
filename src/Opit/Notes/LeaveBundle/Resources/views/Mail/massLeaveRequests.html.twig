@@ -52,7 +52,7 @@
             </tr>
         {% endfor %}
     </table>    
-    {% if templateVars['unpaidLeaveDetails'] is defined %}
+    {% if templateVars['unpaidLeaveDetails'] is defined and templateVars['unpaidLeaveDetails']|length > 0 %}
     <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
         <tr>
             <td colspan="2">
@@ -67,10 +67,12 @@
                         <td style="color:#94c11c;"><strong>Unpaid leave days</strong></td>                
                     </tr>
                     {% for unpaidLeaveDetail in templateVars['unpaidLeaveDetails'] %}
-                    <tr>
-                        <td style="font-weight:bold; width: 80%;"><strong>{{ unpaidLeaveDetail.employee.employeeName }} < {{ unpaidLeaveDetail.employee.user.email }} ></strong></td>
-                        <td>{{ unpaidLeaveDetail.unpaid }}</td>                
-                    </tr>
+                        {% if unpaidLeaveDetail.unpaid > 0 %}
+                        <tr>
+                            <td style="font-weight:bold; width: 80%;"><strong>{{ unpaidLeaveDetail.employee.employeeName }} < {{ unpaidLeaveDetail.employee.user.email }} ></strong></td>
+                            <td>{{ unpaidLeaveDetail.unpaid }}</td>
+                        </tr>
+                        {% endif %}
                     {% endfor %}
                 </table>
             </td>
@@ -91,7 +93,7 @@
                     Kindly contact your general manager for this leave request in next 5 days. Incase of no contact by employee the company hold the rights to approve the leave request.
                 </td>
             </tr>
-        </table>    
+        </table>
         {% endif %}
     {% endif %}
     <p>

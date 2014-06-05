@@ -108,23 +108,24 @@ $(document).ready ->
         $departureDate.val $departureDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
         
     $('#travelRequest_user_ac').autocomplete
-        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'all'
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search'), request, (data) -> response(data)
         minLength: 2
-        response: (event, ui) ->
-            return
         select: (event, ui) ->
             $('#travelRequest_user').val ui.item.id
             return
 
     $('#travelRequest_team_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'team_manager'
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_team_manager'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#travelRequest_team_manager').val ui.item.id
             return
 
     $('#travelRequest_general_manager_ac').autocomplete
-        source: Routing.generate 'OpitNotesUserBundle_user_search', role: 'general_manager'
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_general_manager'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#travelRequest_general_manager').val ui.item.id

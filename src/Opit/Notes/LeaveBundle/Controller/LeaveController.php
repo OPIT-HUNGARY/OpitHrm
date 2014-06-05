@@ -112,9 +112,9 @@ class LeaveController extends Controller
         $employee = $securityContext->getToken()->getUser()->getEmployee();
         $leaveRequestService = $this->get('opit.model.leave_request');
         $errors = array();
-        $isGeneralManager = $securityContext->isGranted('ROLE_ADMIN') ? false : $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $unpaidLeaveDetails = array();
-
+        
         if ($isNewLeaveRequest) {
             $leaveRequest = new LeaveRequest();
             $leaveRequest->setEmployee($employee);
@@ -125,9 +125,7 @@ class LeaveController extends Controller
                 throw $this->createNotFoundException('Missing leave request.');
             }
 
-            if ($employee !== $leaveRequest->getEmployee() &&
-                !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
-                !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER')) {
+            if ($employee !== $leaveRequest->getEmployee() && !$isGeneralManager) {
                 throw new AccessDeniedException(
                     'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
                 );
@@ -314,7 +312,7 @@ class LeaveController extends Controller
     {
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
         $leaveRequestService = $this->get('opit.model.leave_request');
-        $unpaidLeaveDetails = array('unpaidLeaveDetails' => array());
+        $unpaidLeaveDetails = array();
         $unpaidLeaveLength = 0;
         
         $fullDayCategory = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findOneByName(LeaveCategory::FULL_DAY);
@@ -369,7 +367,7 @@ class LeaveController extends Controller
                     $leaveForApprovalStartDate = date_add(clone $leaveEndDate, date_interval_create_from_date_string('1 day'));
                     
                     // get the length of the leave days
-                    $unpaidLeaveLength = $leaveForApprovalLength = $leaveRequestService->countLeaveDays($leaveForApprovalStartDate, $leaveForApprovalEndDate);
+                    $unpaidLeaveLength = $leaveRequestService->countLeaveDays($leaveForApprovalStartDate, $leaveForApprovalEndDate);
 
                     // create a new leave request instance
                     $LRForApproval = $leaveRequestService->createLRInstance($lr, $employee);
@@ -379,7 +377,7 @@ class LeaveController extends Controller
                         $leave,
                         $LRForApproval,
                         $unpaidCategory,
-                        $leaveForApprovalLength,
+                        $unpaidLeaveLength,
                         $leaveForApprovalStartDate,
                         $leaveForApprovalEndDate
                     );
@@ -391,9 +389,11 @@ class LeaveController extends Controller
                     $entityManager->persist($LRForApproval);
                     $this->setLRStatusSendNotificationEmail($LRForApproval, $employee, $statusForApproval, $leaveRequestService);
                 } else {
+                    $unpaidLeaveLength = $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
+                    
                     // set leave category to unpaid
                     $leave->setCategory($unpaidCategory);
-                    $leave->setNumberOfDays($leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate()));
+                    $leave->setNumberOfDays($unpaidLeaveLength);
                     $lr->addLeaf($leave);
                     
                     // details of unpaid leaves
@@ -441,17 +441,17 @@ class LeaveController extends Controller
      * 
      * @param \Opit\Notes\LeaveBundle\Entity\Leave $leave
      * @param \Opit\Notes\LeaveBundle\Model\LeaveRequestService $leaveRequestService
-     * @param type $leftToAvail
+     * @param integer $leftToAvail
      * @return DateTime
      */
     protected function calculateLeaveEndDate(Leave $leave, LeaveRequestService $leaveRequestService, $leftToAvail)
     {
         $leaveStartDate = $leave->getStartDate();
-        $leaveEndDate = clone $leave->getStartDate();
-        $newCountLeaveDays = $leaveRequestService->countLeaveDays($leaveStartDate, $leaveEndDate);
-        while ($newCountLeaveDays !== $leftToAvail) {
+        $leaveEndDate = clone $leaveStartDate;
+        $countLeaveDays = $leaveRequestService->countLeaveDays($leaveStartDate, $leaveEndDate);
+        while ($countLeaveDays !== $leftToAvail) {
             $leaveEndDate = date_add($leaveEndDate, date_interval_create_from_date_string('1 day'));
-            $newCountLeaveDays = $leaveRequestService->countLeaveDays($leaveStartDate, $leaveEndDate);
+            $countLeaveDays = $leaveRequestService->countLeaveDays($leaveStartDate, $leaveEndDate);
         }
 
         return $leaveEndDate;
