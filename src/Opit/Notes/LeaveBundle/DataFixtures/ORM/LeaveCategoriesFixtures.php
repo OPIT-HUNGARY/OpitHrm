@@ -64,7 +64,7 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
                 'description' => 'Employee takes unpaid leave.',
                 'duration' => $fullDay,
                 'isPaid' => 0,
-                'isCountedAsLeave' => 1,
+                'isCountedAsLeave' => 0,
                 'system' => true
             )
         );
