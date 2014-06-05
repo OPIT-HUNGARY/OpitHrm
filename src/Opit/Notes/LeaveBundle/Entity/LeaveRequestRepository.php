@@ -148,9 +148,10 @@ class LeaveRequestRepository extends EntityRepository
      * Summarize number of leave days an employee has took
      * 
      * @param integer $employeeId
+     * @param bool $incNonAnnualEntLeaves decides to include or not leaves not to be subtracted from annual leaves
      * @return type
      */
-    public function totalCountedLeaveDays($employeeId)
+    public function totalCountedLeaveDays($employeeId, $incNonAnnualEntLeaves = false)
     {
         $q = $this->createQueryBuilder('lr');
         $q->select('lr.id')
@@ -162,13 +163,15 @@ class LeaveRequestRepository extends EntityRepository
 
         $dq = $this->createQueryBuilder('lr');
         $dq->select('sum(l.numberOfDays)')
-            ->where('lr.employee = :employee')
-            ->andWhere($dq->expr()->eq('c.isCountedAsLeave', ':countAsLeave'))
-            ->innerJoin('lr.leaves', 'l')
+            ->where('lr.employee = :employee');
+            if(!$incNonAnnualEntLeaves){
+                $dq->andWhere($dq->expr()->eq('c.isCountedAsLeave', ':countAsLeave'))
+                ->setParameter('countAsLeave', 1);
+            }
+            $dq->innerJoin('lr.leaves', 'l')
             ->innerJoin('lr.states', 's')
             ->innerJoin('l.category', 'c')
-            ->setParameter('employee', $employeeId)
-            ->setParameter('countAsLeave', 1);
+            ->setParameter('employee', $employeeId);
 
         if (!empty($rejectedLeaveRequestIds)) {
             $dq->andWhere($dq->expr()->notIn('lr.id', ':lrIds'));

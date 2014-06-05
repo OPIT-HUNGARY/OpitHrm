@@ -2,8 +2,13 @@
 <div class="float-left width-290 summary-box margin-right-5">
     <h3><i class="fa fa-user"></i>  Leave Info </h3>
     <div class="float-left">
-        Entitlement: {{empLeaveEntitlement}}<br>
-        Left to Avail:<br><br>
+        <b>Entitlement: {{empLeaveEntitlement}}</b><br>
+        Left to avail: {{leftToAvail}}<br>
+        Entitled Applied: {{empLeaveEntitlement - leftToAvail}}<br>
+        Not Entitled Applied: {{availedLeaveDays - empLeaveEntitlement}}<br>
+        Total applied: {{availedLeaveDays}}<br><br>
+    </div>
+    <div class="float-right">
         <b>Leave Request</b><br>
         Total : {{totalLeaveRequestCount}}<br>
         Finalized : {{finalizedLeaveRequestCount}}<br>

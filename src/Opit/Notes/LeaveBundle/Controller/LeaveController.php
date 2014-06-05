@@ -260,7 +260,7 @@ class LeaveController extends Controller
     }
 
     /**
-     * To send employee leave summary
+     * To send employee leave summary on Info Board
      *
      * @Route("/secured/leaves/employeesummary", name="OpitNotesLeaveBundle_leaves_employeesummary")
      * @Secure(roles="ROLE_USER")
@@ -270,6 +270,10 @@ class LeaveController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
+        $leaveRequestRepository = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest');
+        $employeeID =  $user->getEmployee()->getID();
+        $yearFirstDate = date(date('Y') . '-01' . '-01');
+        $yearLastDate = date(date('Y') . '-12' . '-31');
 
         // entitled leaves count
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
@@ -279,24 +283,24 @@ class LeaveController extends Controller
         $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findAll();
 
         //total leave request count
-        $totalLeaveRequestCount = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')
-                ->findEmployeesLRCount($user->getEmployee()->getID(), date(date('Y') . '-01' . '-01'), date(date('Y') . '-12' . '-31'));
+        $totalLeaveRequestCount = $leaveRequestRepository->findEmployeesLRCount($employeeID, $yearFirstDate, $yearLastDate);
 
         //finalized leave request count
-        $finalizedLeaveRequestCount = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')
-                ->findEmployeesLRCount($user->getEmployee()->getID(),  date(date('Y') . '-01' . '-01'), date(date('Y') . '-12' . '-31'), true);
+        $finalizedLeaveRequestCount = $leaveRequestRepository->findEmployeesLRCount($employeeID,  $yearFirstDate, $yearLastDate, true);
 
         //pending leave request count
         $pendingLeaveRequestCount = $totalLeaveRequestCount - $finalizedLeaveRequestCount;
 
-        //remaning leaves count
-        $leftToAvail = '';
+        //remaning and availed leaves count
+        $availedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID,true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID,true) : 0);
+        $leftToAvail = ($empLeaveEntitlement > $availedLeaveDays ? $empLeaveEntitlement - $availedLeaveDays : 0);
 
         return $this->render('OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig', array('empLeaveEntitlement' => $empLeaveEntitlement,
                     'leaveCategories' => $leaveCategories,
                     'pendingLeaveRequestCount' => $pendingLeaveRequestCount,
                     'finalizedLeaveRequestCount' => $finalizedLeaveRequestCount,
                     'leftToAvail' => $leftToAvail,
+                    'availedLeaveDays' => $availedLeaveDays,
                     'totalLeaveRequestCount' => $totalLeaveRequestCount
         ));
     }
