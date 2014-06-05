@@ -27,6 +27,7 @@ use Opit\Component\Utils\Utils;
 use Opit\Notes\LeaveBundle\Entity\Leave;
 use Opit\Notes\LeaveBundle\Model\LeaveRequestService;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
+use Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup;
 use Opit\Notes\UserBundle\Entity\Employee;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -114,7 +115,7 @@ class LeaveController extends Controller
         $errors = array();
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $unpaidLeaveDetails = array();
-        
+
         if ($isNewLeaveRequest) {
             $leaveRequest = new LeaveRequest();
             $leaveRequest->setEmployee($employee);
@@ -154,8 +155,10 @@ class LeaveController extends Controller
                 $employees = $request->request->get('employee');
 
                 if ($isGeneralManager && count($employees) > 0) {
+                    // Createing mass leave requests.
                     $unpaidLeaveDetails = $this->createEmployeeLeaveRequests($leaveRequest, $entityManager, $employees);
                 } else {
+                    // Creating single leave request.
                     foreach ($children as $child) {
                         if (false === $leaveRequest->getLeaves()->contains($child)) {
                             $child->setLeaveRequest();
@@ -326,27 +329,30 @@ class LeaveController extends Controller
         $leaveRequestService = $this->get('opit.model.leave_request');
         $unpaidLeaveDetails = array();
         $unpaidLeaveLength = 0;
-        
+
         $fullDayCategory = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findOneByName(LeaveCategory::FULL_DAY);
         $unpaidCategory = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findOneByName(LeaveCategory::UNPAID);
-        
+
         $statusApproved = $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::APPROVED);
         $statusForApproval = $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::FOR_APPROVAL);
 
+        $leaveRequestGroup = new LeaveRequestGroup();
+        $entityManager->persist($leaveRequestGroup);
+
         foreach ($employees as $employee) {
             $employee = $entityManager->getRepository('OpitNotesUserBundle:Employee')->find($employee);
-            
+
             // get leave from leave request
             $leave = current(current($leaveRequest->getLeaves()));
             $startDate = clone $leave->getStartDate();
             $endDate = clone $leave->getEndDate();
-            
+
             // create new leave request instace to not overwrite old one
-            $lr = $leaveRequestService->createLRInstance($leaveRequest, $employee);
-            
+            $lr = $leaveRequestService->createLRInstance($leaveRequest, $leaveRequestGroup, $employee);
+
             // create new instance of leave
             $leave = $leaveRequestService->createLeaveInstance($leave, $lr, $fullDayCategory, 0, $startDate, $endDate);
-            
+
             // leave entitlement for an employee
             $leaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($employee);
 
@@ -364,26 +370,26 @@ class LeaveController extends Controller
                 if (0 < $leftToAvail) {
                     // calculate the end date of the leave using the days left to avail
                     $leaveEndDate = $this->calculateLeaveEndDate($leave, $leaveRequestService, $leftToAvail);
-                    
+
                     // assign current end date of leave to a variable
                     $leaveForApprovalEndDate = clone $leave->getEndDate();
                     $leave->setEndDate($leaveEndDate);
                     $leave->setCategory($fullDayCategory);
                     $leave->setNumberOfDays($leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate()));
                     $lr->addLeaf($leave);
-                    
+
                     $entityManager->persist($lr);
                     $this->setLRStatusSendNotificationEmail($lr, $employee, $statusApproved, $leaveRequestService);
-                    
+
                     // add one day to the end date of the approved request
                     $leaveForApprovalStartDate = date_add(clone $leaveEndDate, date_interval_create_from_date_string('1 day'));
-                    
+
                     // get the length of the leave days
                     $unpaidLeaveLength = $leaveRequestService->countLeaveDays($leaveForApprovalStartDate, $leaveForApprovalEndDate);
 
                     // create a new leave request instance
-                    $LRForApproval = $leaveRequestService->createLRInstance($lr, $employee);
-                    
+                    $LRForApproval = $leaveRequestService->createLRInstance($lr, $leaveRequestGroup, $employee);
+
                     // create a new leave instance
                     $leaveForApproval = $leaveRequestService->createLeaveInstance(
                         $leave,
@@ -397,20 +403,20 @@ class LeaveController extends Controller
 
                     // details of unpaid leaves
                     $unpaidLeaveDetails['unpaidLeaveDetails'][] = array('employee' => $employee, 'unpaid' => $unpaidLeaveLength);
-                    
+
                     $entityManager->persist($LRForApproval);
                     $this->setLRStatusSendNotificationEmail($LRForApproval, $employee, $statusForApproval, $leaveRequestService);
                 } else {
                     $unpaidLeaveLength = $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
-                    
+
                     // set leave category to unpaid
                     $leave->setCategory($unpaidCategory);
                     $leave->setNumberOfDays($unpaidLeaveLength);
                     $lr->addLeaf($leave);
-                    
+
                     // details of unpaid leaves
                     $unpaidLeaveDetails['unpaidLeaveDetails'][] = array('employee' => $employee, 'unpaid' => $unpaidLeaveLength);
-                    
+
                     $entityManager->persist($lr);
                     $this->setLRStatusSendNotificationEmail($lr, $employee, $statusForApproval, $leaveRequestService);
                 }
@@ -427,13 +433,13 @@ class LeaveController extends Controller
         }
         // Sends a single email to the gm containing leave request summary, and unpaid leave details(employee, email, leave days count)
         $leaveRequestService->prepareMassLREmail($lr, $leaveRequest->getGeneralManager()->getEmail(), $unpaidLeaveDetails);
-        
+
         return $unpaidLeaveDetails;
     }
 
     /**
      * Set the status of the leave request, send an email about its summary and set the notification for it
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $lr
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @param \Opit\Notes\StatusBundle\Entity\Status $status
@@ -450,7 +456,7 @@ class LeaveController extends Controller
 
     /**
      * Get the last day from date range
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\Leave $leave
      * @param \Opit\Notes\LeaveBundle\Model\LeaveRequestService $leaveRequestService
      * @param integer $leftToAvail

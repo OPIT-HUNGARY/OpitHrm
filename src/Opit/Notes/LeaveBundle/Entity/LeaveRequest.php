@@ -31,6 +31,12 @@ class LeaveRequest extends AbstractBase
     protected $leaves;
 
     /**
+     * @ORM\ManyToOne(targetEntity="LeaveRequestGroup", inversedBy="leaveRequests")
+     * @ORM\JoinColumn(name="leave_request_group_id", referencedColumnName="id")
+     */
+    protected $leaveRequestGroup;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\Employee", inversedBy="leaveRequests")
      * @Assert\NotBlank(message="Employee cannot be empty.", groups={"user"})
      */
@@ -313,5 +319,28 @@ class LeaveRequest extends AbstractBase
                 sprintf('Leave dates are overlapping: %s and %s', $dates[0]->format('Y-m-d'), $dates[1]->format('Y-m-d'))
             );
         }
+    }
+
+    /**
+     * Set leaveRequestGroup
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup
+     * @return LeaveRequest
+     */
+    public function setLeaveRequestGroup(\Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup = null)
+    {
+        $this->leaveRequestGroup = $leaveRequestGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get leaveRequestGroup
+     *
+     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup
+     */
+    public function getLeaveRequestGroup()
+    {
+        return $this->leaveRequestGroup;
     }
 }

@@ -13,6 +13,7 @@
                 <i class="fa fa-sort default-right" data-field="endDate"></i>
                 <span class="order-text cursor-pointer">Dates</span>
             </th>
+            <th>Created By</th>
             <th>
                 Leave days
                 <i class="fa fa-info-circle cursor-pointer margin-left-5" title="Administrative holidays - Excluded Administrative working days - Included"></i>
@@ -49,19 +50,24 @@
                 </ul>
             </td>
             <td>
+                <span>{{ leaveRequest.createdUser.Employee.EmployeeName }}</span>
+            </td>
+            <td>
                 {{ numberOfDays }}
             </td>
             <td>
-                {% if not listingRights['isLocked'][id]['isStatusLocked'] %}
-                <select data-lr="{{ id }}" class="changeState">
-                {% for key, value in listingRights['leaveRequestStates'][id] %}
-                    <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
-                </select>
-                {% else %}
-                <select class="changeState dropdown-disabled" disabled="disabled">
-                    <option>{{ listingRights['leaveRequestStates'][id]|first }}</option>
-                </select>
+                {% if leaveRequest.leaveRequestGroup is defined and leaveRequest.leaveRequestGroup is null %}
+                    {% if not listingRights['isLocked'][id]['isStatusLocked'] %}
+                    <select data-lr="{{ id }}" class="changeState">
+                    {% for key, value in listingRights['leaveRequestStates'][id] %}
+                        <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                    </select>
+                    {% else %}
+                    <select class="changeState dropdown-disabled" disabled="disabled">
+                        <option>{{ listingRights['leaveRequestStates'][id]|first }}</option>
+                    </select>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>

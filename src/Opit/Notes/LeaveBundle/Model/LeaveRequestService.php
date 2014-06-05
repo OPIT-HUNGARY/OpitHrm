@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
+use Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup;
 use Opit\Notes\UserBundle\Entity\Employee;
 use Opit\Notes\LeaveBundle\Entity\Leave;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
@@ -182,7 +183,7 @@ class LeaveRequestService
 
     /**
      * Create new instance of leave
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\Leave $leave
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveCategory $leaveCategory
@@ -198,23 +199,25 @@ class LeaveRequestService
         $l->setLeaveRequest($leaveRequest);
         $l->setNumberOfDays($leaveLength);
         $l->setCategory($leaveCategory);
-        
+
         return $l;
     }
 
     /**
      * Create a new instance of a leave request
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest
      */
-    public function createLRInstance(LeaveRequest $leaveRequest, Employee $employee)
+    public function createLRInstance(LeaveRequest $leaveRequest, LeaveRequestGroup $leaveRequestGroup, Employee $employee)
     {
         $lr = new LeaveRequest();
         $lr->setEmployee($employee);
         $lr->setGeneralManager($leaveRequest->getGeneralManager());
         $lr->setTeamManager($leaveRequest->getTeamManager());
+        $lr->setLeaveRequestGroup($leaveRequestGroup);
 
         return $lr;
     }
@@ -252,10 +255,10 @@ class LeaveRequestService
 
         return $totalLeaveDays;
     }
-    
+
     /**
      * Send email about the leave request if it has been created by gm
-     * 
+     *
      * @param LeaveRequest $leaveRequest
      * @param string $recipient
      * @param array $unpaidLeaveDetails
@@ -265,9 +268,9 @@ class LeaveRequestService
     {
         $templateVariables = array();
         $templateVariables['leaveRequest'] = $leaveRequest;
-        
+
         $this->mailer->setRecipient($recipient);
-        
+
         if (null === $status) {
             $this->mailer->setSubject(
                 '[NOTES] - System leave requests created'
@@ -275,7 +278,7 @@ class LeaveRequestService
         } else {
             $templateVariables['statusName'] = $status->getName();
             $templateVariables['isForApproval'] = Status::FOR_APPROVAL === $status->getId() ? true : false;
-            
+
             $this->mailer->setSubject(
                 '[NOTES] - System leave request - ' . $status->getName() . ' (' . $leaveRequest->getLeaveRequestId() . ')'
             );
