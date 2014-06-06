@@ -363,4 +363,7 @@ $(document).ready ->
     $(document).data('notes').funcs.initDateInputs()
     # init tooltips
     $('[title]').each ->
-        $(@).tipsy()
+        if $(@).hasClass 'tipsy-notification'
+            $('.tipsy-notification').tipsy({className: 'tipsy-notification-style', opacity: 1});
+        else
+            $(@).tipsy()

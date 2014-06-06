@@ -10,6 +10,7 @@
         <parameter key="opit.manager.leave_notification_manager.class">Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager</parameter>
         <parameter key="opit.model.leave_request.class">Opit\Notes\LeaveBundle\Model\LeaveRequestService</parameter>
         <parameter key="opit.listener.leave_request_post_listener.class">Opit\Notes\LeaveBundle\EventListener\LeaveRequestPostListener</parameter>
+        <parameter key="opit.twig.opit_leave_bundle_extension.class">Opit\Notes\LeaveBundle\Twig\OpitExtension</parameter>
     </parameters>
 
     <services>
@@ -41,6 +42,9 @@
             <argument type="service" id="opit.manager.leave_status_manager" />
             <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="opit.component.email_manager" />
+        </service>
+        <service id="opit.twig.opit_leave_bundle_extension.class" class="%opit.twig.opit_leave_bundle_extension.class%">
+            <tag name="twig.extension" />
         </service>
     </services>
 

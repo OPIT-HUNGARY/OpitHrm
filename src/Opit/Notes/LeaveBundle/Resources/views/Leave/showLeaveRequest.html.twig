@@ -65,6 +65,16 @@
     <div class="dialog-description default-border-radius">
         Leave requests can be added or edited from here.
     </div>
+    
+    {% if leaveRequest.createdUser.id is defined %}
+        {% set lastContactDate = getLRLastNoticeDate(leaveRequest.created) %}
+        {% set lrInfo = 'Kindly contact general manager assigned for this leave request until ' ~ lastContactDate ~ '. Incase of no contact by employee the company hold the rights to approve the leave request.' %}
+        {% if "now"|date("Y-m-d") <= lastContactDate and leaveRequest.createdUser.id != leaveRequest.employee.user.id and isForApproval %}
+            <div class="dialog-description default-border-radius" style="background: #F70D1A;">
+            {{ lrInfo }}
+            </div>
+        {% endif %}
+    {% endif %}
         
     <div id="reply-message" class="alert-message error-message display-none">
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
@@ -78,7 +88,7 @@
     <form action="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{{ disabled }}">
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Request for</h3>
-            {% if isGeneralManager %}
+            {% if isGeneralManager and isEditLocked != '1' %}
             <div class="margin-left-1-em display-inline-block vertical-align-top">
                 <label class="padding-bottom-5 bold">Select</label>
                 <ul class="no-style option-list-scrollable">
@@ -104,7 +114,7 @@
                 </ul>
             </div>
             {% endif %}
-            <div class="margin-left-1-em {% if isGeneralManager %}display-none-important{% endif %}">
+            <div class="margin-left-1-em {% if isGeneralManager and isEditLocked != '1' %}display-none-important{% endif %}">
             {{ form_widget(form.user_ac) }}
             </div>
         </div>

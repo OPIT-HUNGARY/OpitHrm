@@ -184,7 +184,9 @@ class LeaveController extends Controller
                 }
             }
         }
-
+        
+        $isForApproval = $currentStatus->getId() === Status::FOR_APPROVAL;
+        
         return $this->render(
             'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig',
             array_merge(
@@ -195,7 +197,8 @@ class LeaveController extends Controller
                     'leaveRequest' => $leaveRequest,
                     'errors' => $errors,
                     'isGeneralManager' => $isGeneralManager,
-                    'unpaidLeaveDetails' => $unpaidLeaveDetails
+                    'unpaidLeaveDetails' => $unpaidLeaveDetails,
+                    'isForApproval' => $isForApproval
                 ),
                 $isNewLeaveRequest ? array('isStatusLocked' => true, 'isEditLocked'=> false) : $leaveRequestService->setLeaveRequestAccessRights($leaveRequest, $currentStatus),
                 $isGeneralManager ? array('employees' => $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAll()) : array()
@@ -225,10 +228,11 @@ class LeaveController extends Controller
 
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
-
+            
             if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() &&
                 !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
-                !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER')) {
+                !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER') &&
+                $leaveRequest->getCreatedUser()->getId() !== $token->getUser()->getId()) {
                 throw new AccessDeniedException(
                     'Access denied for leave.'
                 );

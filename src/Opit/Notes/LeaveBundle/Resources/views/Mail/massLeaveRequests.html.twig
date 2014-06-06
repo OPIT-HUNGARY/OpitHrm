@@ -82,6 +82,7 @@
     
     {% if templateVars['isForApproval'] is defined %}
         {% if templateVars['isForApproval'] %}
+        {% set lastContactDate = getLRLastNoticeDate(leaveRequest.created) %}
         <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
             <tr>
                 <td colspan="2">
@@ -90,7 +91,7 @@
             </tr>
             <tr>      
                 <td colspan="2">
-                    Kindly contact your general manager for this leave request in next 5 days. Incase of no contact by employee the company hold the rights to approve the leave request.
+                    Kindly contact general manager assigned for this leave request until {{ lastContactDate }}. Incase of no contact by employee the company hold the rights to approve the leave request.
                 </td>
             </tr>
         </table>

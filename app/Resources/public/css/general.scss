@@ -545,3 +545,11 @@ ul {
         }
     }
 }
+
+.tipsy-notification-style {
+    .tipsy-inner { background-color: #F70D1A;color: #FFF;font-size: 1.1em; max-width: 200px; padding: 5px 8px 4px 8px; text-align: center; }
+    .tipsy-arrow-n { border-bottom-color: #F70D1A; }
+    .tipsy-arrow-s { border-top-color: #F70D1A; }
+    .tipsy-arrow-e { border-left-color: #F70D1A; }
+    .tipsy-arrow-w { border-right-color: #F70D1A; }
+}

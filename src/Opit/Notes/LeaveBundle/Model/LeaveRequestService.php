@@ -66,6 +66,7 @@ class LeaveRequestService
         $leaveRequestStates = array();
         $isLocked = array();
         $isDeleteable = array();
+        $isForApproval = array();
 
         foreach ($leaveRequests as $leaveRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($leaveRequest);
@@ -79,13 +80,16 @@ class LeaveRequestService
             $isLocked[$leaveRequest->getId()] = $isTRLocked;
 
             $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest);
+            
+            $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
         }
 
         return array(
             'leaveRequestStates' => $leaveRequestStates,
             'currentStatusNames' => $currentStatusNames,
             'isLocked' => $isLocked,
-            'isDeleteable' => $isDeleteable
+            'isDeleteable' => $isDeleteable,
+            'isForApproval' => $isForApproval
         );
     }
 
