@@ -299,7 +299,7 @@ class UserController extends Controller
                 $user->setIsFirstLogin(0);
                 $this->setUserPassword($user);
                 
-                return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
+                return $this->redirect($this->generateUrl('OpitNotesUserBundle_user_show_infoboard'));
             }
         }
         
