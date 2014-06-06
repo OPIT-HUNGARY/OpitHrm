@@ -299,13 +299,17 @@ class LeaveController extends Controller
         $availedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID,true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID,true) : 0);
         $leftToAvail = ($empLeaveEntitlement > $availedLeaveDays ? $empLeaveEntitlement - $availedLeaveDays : 0);
 
+        //not entitled leave days count
+        $nonEntLeaveDaysCount = ($availedLeaveDays > $empLeaveEntitlement ? $availedLeaveDays - $empLeaveEntitlement : 0);
+
         return $this->render('OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig', array('empLeaveEntitlement' => $empLeaveEntitlement,
                     'leaveCategories' => $leaveCategories,
                     'pendingLeaveRequestCount' => $pendingLeaveRequestCount,
                     'finalizedLeaveRequestCount' => $finalizedLeaveRequestCount,
                     'leftToAvail' => $leftToAvail,
                     'availedLeaveDays' => $availedLeaveDays,
-                    'totalLeaveRequestCount' => $totalLeaveRequestCount
+                    'totalLeaveRequestCount' => $totalLeaveRequestCount,
+                    'nonEntLeaveDaysCount' => $nonEntLeaveDaysCount
         ));
     }
 
