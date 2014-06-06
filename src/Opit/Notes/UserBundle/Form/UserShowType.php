@@ -2,20 +2,19 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\UserBundle\Form;
 
-use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
 
 /**
  * Description of ContactType
@@ -43,11 +42,10 @@ class UserShowType extends AbstractType
     /**
      * Constructor for this class.
      *
-     * @param \Doctrine\ORM\EntityManager $em
+     * @param object $container
      */
-    public function __construct(EntityManager $em, $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->em = $em;
         $this->container = $container;
     }
 
@@ -61,9 +59,8 @@ class UserShowType extends AbstractType
     {
         $dataArr = $builder->getData();
         $config = $this->container->getParameter('opit_notes_user');
-        $leaveConfig = $this->container->getParameter('opit_notes_leave');
-        $userId = null;
         $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
+        $userId = null;
 
         // If we modify an existed user.
         if (null !== $dataArr) {
@@ -81,26 +78,6 @@ class UserShowType extends AbstractType
             'placeholder' => 'Email'
         )));
 
-        $tax = $builder->create('taxIdentification', 'integer', array(
-            'attr' => array(
-                'placeholder' => 'Tax number'
-            ),
-            'invalid_message' => 'You entered an invalid value - it should be an integer'
-        ));
-        // If the php's version is less than the required min php version then load the data transformet class.
-        if ($config['min_php_version'] > phpversion()) {
-            $tax->resetViewTransformers();
-            $tax->addViewTransformer(new SimpleIntegerToStringTransformer());
-        }
-        $builder->add($tax);
-
-        $builder->add('bankAccountNumber', 'text', array('attr' => array(
-            'placeholder' => 'Bank account number'
-        )));
-        $builder->add('bankName', 'text', array('attr' => array(
-            'placeholder' => 'Bank Name'
-        )));
-
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
 
         if (true === $isAdmin) {
@@ -109,13 +86,6 @@ class UserShowType extends AbstractType
                 'property' => 'name',
                 'multiple' => true,
                 'expanded' => true
-            ));
-
-            $builder->add('jobTitle', 'entity', array(
-                'class' => 'OpitNotesUserBundle:JobTitle',
-                'property' => 'title',
-                'multiple' => false,
-                'data' => $dataArr->getJobTitle()
             ));
 
             $builder->add('isActive', 'choice', array(
@@ -131,18 +101,10 @@ class UserShowType extends AbstractType
                     'data' => $dataArr->isLdapEnabled() || 0
                 ));
             }
-            // If the leave settings configuration is disabled then this form option will be viewed
-            if (isset($leaveConfig['leave_entitlement_plan']['enabled']) && false === $leaveConfig['leave_entitlement_plan']['enabled']) {
-                $builder->add('entitledLeaves', 'integer', array('label' => 'Yearly Leave Entitlement',
-                    'data' => $dataArr->getEntitledLeaves() ? $dataArr->getEntitledLeaves() : $leaveConfig['leave_entitlement_plan']['default_days'],
-                    'attr' => array(
-                    'placeholder' => 'Yearly leave entitlement',
-                )));
-            }
 
         }
 
-        $builder->add('employee', new EmployeeType());
+        $builder->add('employee', new EmployeeType($this->container, $dataArr->getEmployee()));
     }
     /**
      * Sets the default form options
@@ -153,7 +115,7 @@ class UserShowType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Opit\Notes\UserBundle\Entity\User',
-            'validation_groups' => array('user')
+            'validation_groups' => array('user', 'employee'),
         ));
     }
     /**

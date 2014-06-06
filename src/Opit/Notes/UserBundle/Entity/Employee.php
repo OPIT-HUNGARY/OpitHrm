@@ -13,6 +13,7 @@ namespace Opit\Notes\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Opit\Notes\LeaveBundle\Model\LeaveEntitlementEmployeeInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,6 +28,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @ORM\Table(name="notes_employees")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\EmployeeRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.", groups={"employee"})
  */
 class Employee implements LeaveEntitlementEmployeeInterface
 {
@@ -45,10 +47,46 @@ class Employee implements LeaveEntitlementEmployeeInterface
     private $deletedAt;
 
     /**
+     * @ORM\JoinColumn(name="job_title_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="JobTitle")
+     */
+    protected $jobTitle;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="bank_account_number", type="string", length=50)
+     * @Assert\NotBlank(message="The Bank account can not be blank.", groups={"employee"})
+     */
+    protected $bankAccountNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="bank_name", type="string", length=30)
+     * @Assert\NotBlank(message="The bank name can not be blank.", groups={"employee"})
+     * @Assert\Length(
+     *      max = "34",
+     *      maxMessage = "The bank name must be less equal {{ limit }} characters.",
+     *      groups={"employee"}
+     * )
+     */
+    protected $bankName;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="tax_identification", type="bigint", nullable=true)
+     * @Assert\NotBlank(message="The tax identification can not be blank.", groups={"employee"})
+     * @Assert\Type(type="integer", message="The value {{ value }} is not a valid {{ type }}.", groups={"employee"})
+     */
+    protected $taxIdentification;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="date_of_birth", type="date")
-     * @Assert\NotBlank(message="Date of birth can not be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Date of birth can not be empty.", groups={"employee"})
      * @Assert\Date()
      */
     protected $dateOfBirth;
@@ -57,7 +95,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var \DateTime
      *
      * @ORM\Column(name="joining_date", type="date")
-     * @Assert\NotBlank(message="Joining date can not be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Joining date can not be empty.", groups={"employee"})
      * @Assert\Date()
      */
     protected $joiningDate;
@@ -66,13 +104,13 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var integer
      *
      * @ORM\Column(name="number_of_children", type="integer")
-     * @Assert\NotBlank(message="Number of Children can not be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Number of Children can not be empty.", groups={"employee"})
      * @Assert\Range(
      *      min = "0",
      *      max = "30",
      *      minMessage = "The number of children should be greater or equal 0.",
      *      maxMessage = "The number of children should be less or equal 30.",
-     *      groups={"user"}
+     *      groups={"employee"}
      * )
      */
     protected $numberOfChildren;
@@ -81,19 +119,29 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @var integer
      *
      * @ORM\Column(name="working_hours", type="integer")
-     * @Assert\NotBlank(message="Working hours can not be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Working hours can not be empty.", groups={"employee"})
      * @Assert\Range(
      *      min = "0",
      *      max = "24",
      *      minMessage = "The working hours should be greater or equal 0.",
      *      maxMessage = "The working hours should be less than 24.",
-     *      groups={"user"}
+     *      groups={"employee"}
      * )
      */
     protected $workingHours;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Team", inversedBy="employee")
+     * @ORM\Column(name="entitled_leaves", type="integer", nullable=true)
+     * @Assert\Range(
+     *      min = "0",
+     *      minMessage = "The entitled leave days should be greater than 0.",
+     *      groups={"employee"}
+     * )
+     */
+    protected $entitledLeaves;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Team", inversedBy="employees")
      * @ORM\JoinTable(name="notes_employees_teams")
      */
     protected $teams;
@@ -108,7 +156,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
 
     /**
      * @ORM\Column(type="string", length=25)
-     * @Assert\NotBlank(message="The employee name can not be blank.", groups={"user"})
+     * @Assert\NotBlank(message="The employee name can not be blank.", groups={"employee"})
      */
     protected $employeeName;
 
@@ -365,5 +413,120 @@ class Employee implements LeaveEntitlementEmployeeInterface
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set bankAccountNumber
+     *
+     * @param string $bankAccountNumber
+     * @return Employee
+     */
+    public function setBankAccountNumber($bankAccountNumber)
+    {
+        $this->bankAccountNumber = $bankAccountNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get bankAccountNumber
+     *
+     * @return string
+     */
+    public function getBankAccountNumber()
+    {
+        return $this->bankAccountNumber;
+    }
+
+    /**
+     * Set bankName
+     *
+     * @param string $bankName
+     * @return Employee
+     */
+    public function setBankName($bankName)
+    {
+        $this->bankName = $bankName;
+
+        return $this;
+    }
+
+    /**
+     * Get bankName
+     *
+     * @return string
+     */
+    public function getBankName()
+    {
+        return $this->bankName;
+    }
+
+    /**
+     * Set taxIdentification
+     *
+     * @param integer $taxIdentification
+     * @return Employee
+     */
+    public function setTaxIdentification($taxIdentification)
+    {
+        $this->taxIdentification = $taxIdentification;
+
+        return $this;
+    }
+
+    /**
+     * Get taxIdentification
+     *
+     * @return integer
+     */
+    public function getTaxIdentification()
+    {
+        return $this->taxIdentification;
+    }
+
+    /**
+     * Set entitledLeaves
+     *
+     * @param integer $entitledLeaves
+     * @return Employee
+     */
+    public function setEntitledLeaves($entitledLeaves)
+    {
+        $this->entitledLeaves = $entitledLeaves;
+
+        return $this;
+    }
+
+    /**
+     * Get entitledLeaves
+     *
+     * @return integer
+     */
+    public function getEntitledLeaves()
+    {
+        return $this->entitledLeaves;
+    }
+
+    /**
+     * Set jobTitle
+     *
+     * @param \Opit\Notes\UserBundle\Entity\JobTitle $jobTitle
+     * @return Employee
+     */
+    public function setJobTitle(\Opit\Notes\UserBundle\Entity\JobTitle $jobTitle = null)
+    {
+        $this->jobTitle = $jobTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get jobTitle
+     *
+     * @return \Opit\Notes\UserBundle\Entity\JobTitle
+     */
+    public function getJobTitle()
+    {
+        return $this->jobTitle;
     }
 }

@@ -171,6 +171,8 @@ class UserRepositoryFunctionalTest extends WebTestCase
         $newEmployee->setNumberOfChildren(0);
         $newEmployee->setEmployeeName('employee');
         $newEmployee->setWorkingHours(8);
+        $newEmployee->setBankAccountNumber('00000000-11468115');
+        $newEmployee->setBankName('OTP');
 
         // Create a new user.
         $newUser = new User();
@@ -181,8 +183,7 @@ class UserRepositoryFunctionalTest extends WebTestCase
         $newUser->setPassword('test1');
         $newUser->setIsActive(1);
         $newUser->setLdapEnabled(0);
-        $newUser->setBankAccountNumber('00000000-11468115');
-        $newUser->setBankName('OTP');
+
         $newUser->setIsFirstLogin(0);
         // Save the new user into the local test database.
         $this->em->persist($newUser);

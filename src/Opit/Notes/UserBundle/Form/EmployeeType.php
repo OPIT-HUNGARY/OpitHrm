@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -13,7 +13,9 @@ namespace Opit\Notes\UserBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
 
 /**
  * Description of EmployeeType
@@ -26,6 +28,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class EmployeeType extends AbstractType
 {
     /**
+     * Container
+     * @var object of Container
+     */
+    protected $container;
+    protected $employee;
+
+    /**
+     * Constructor for this class.
+     *
+     * @param object $container
+     */
+    public function __construct(ContainerInterface $container, $employee)
+    {
+        $this->container = $container;
+        $this->employee = $employee;
+    }
+
+    /**
      * Builds a form with given fields.
      *
      * @param object  $builder A Formbuilder interface object
@@ -33,10 +53,42 @@ class EmployeeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('employeeName', 'text', array('attr' => array(
-            'placeholder' => 'Employee Name'
-        )));
-        
+        $config = $this->container->getParameter('opit_notes_user');
+        $leaveConfig = $this->container->getParameter('opit_notes_leave');
+        $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
+
+        $builder->add('employeeName', 'text', array(
+            'attr' => array(
+                'placeholder' => 'Employee Name'
+            )
+        ));
+
+        $tax = $builder->create('taxIdentification', 'integer', array(
+            'attr' => array(
+                'placeholder' => 'Tax number'
+            ),
+            'invalid_message' => 'You entered an invalid value - it should be an integer'
+        ));
+
+        // If the php's version is less than the required min php version then load the data transformer class.
+        if ($config['min_php_version'] > phpversion()) {
+            $tax->resetViewTransformers();
+            $tax->addViewTransformer(new SimpleIntegerToStringTransformer());
+        }
+        $builder->add($tax);
+
+        $builder->add('bankAccountNumber', 'text', array(
+            'attr' => array(
+                'placeholder' => 'Bank account number'
+            )
+        ));
+
+        $builder->add('bankName', 'text', array(
+            'attr' => array(
+                'placeholder' => 'Bank Name'
+            )
+        ));
+
         $builder->add('teams', 'entity', array(
             'label' => 'Teams',
             'class' => 'OpitNotesUserBundle:Team',
@@ -45,7 +97,7 @@ class EmployeeType extends AbstractType
             'multiple' => true,
             'expanded' => true
         ));
-        
+
         $builder->add('numberOfChildren', 'integer', array(
             'label' => 'No. Of Children (< 30)',
             'invalid_message' => 'No. of children can only contain integer values.',
@@ -55,14 +107,14 @@ class EmployeeType extends AbstractType
                 'placeholder' => 'Number of children'
             )
         ));
-        
+
         $builder->add('joiningDate', 'date', array(
             'widget' => 'single_text',
             'attr' => array(
                 'placeholder' => 'Joining date'
             )
         ));
-        
+
         $builder->add('dateOfBirth', 'date', array(
             'widget' => 'single_text',
             'attr' => array(
@@ -78,23 +130,44 @@ class EmployeeType extends AbstractType
                 'placeholder' => 'Working hours'
             )
         ));
+
+        // Add admin only forms
+        if (true === $isAdmin) {
+            $builder->add('jobTitle', 'entity', array(
+                'class' => 'OpitNotesUserBundle:JobTitle',
+                'property' => 'title',
+                'multiple' => false
+            ));
+
+            // If the leave settings configuration is disabled then this form option will be viewed
+            if (isset($leaveConfig['leave_entitlement_plan']['enabled']) && false === $leaveConfig['leave_entitlement_plan']['enabled']) {
+                $builder->add('entitledLeaves', 'integer', array(
+                    'label' => 'Yearly Leave Entitlement',
+                    'data' => ($entLeaves = $this->employee->getEntitledLeaves()) ? $entLeaves : $leaveConfig['leave_entitlement_plan']['default_days'],
+                    'attr' => array(
+                        'placeholder' => 'Yearly leave entitlement',
+                    )
+                ));
+            }
+        }
     }
-    
+
     /**
      * Sets the default form options
-     * 
+     *
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\UserBundle\Entity\Employee'
+            'data_class' => 'Opit\Notes\UserBundle\Entity\Employee',
+            'validation_groups' => array('employee')
         ));
     }
 
     /**
      * Get name
-     * 
+     *
      * @return string
      */
     public function getName()

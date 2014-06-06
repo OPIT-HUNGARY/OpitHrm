@@ -15,14 +15,13 @@
 </div>
 <form name="adduser_frm" id="adduser_frm" method="post">
     <div class="modalwindow width-98 default-border height-auto overflow-hidden">
+        {# form rendering is split because of subform layout nesting #}
         {% for key, value in form if key != 'employee' %}
             {{ form_row(value) }}
         {% endfor %}
-        {{ form_row(form.employee.employeeName) }}
-        {{ form_row(form.employee.numberOfChildren) }}
-        {{ form_row(form.employee.dateOfBirth) }}
-        {{ form_row(form.employee.joiningDate) }}
-        {{ form_row(form.employee.workingHours) }}
-        {{ form_row(form.employee.teams) }}
+        {# Employee related forms #}
+        {% for key, value in form.employee %}
+            {{ form_row(value) }}
+        {% endfor %}
     </div>
 </form>

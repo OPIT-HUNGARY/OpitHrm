@@ -36,7 +36,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity(fields={"username"}, message="The username is already used.", groups={"user"})
  * @UniqueEntity(fields={"email"}, message="The email is already used.", groups={"user"})
- * @UniqueEntity(fields={"taxIdentification"}, message="The tax id is already used.", groups={"user"})
  */
 class User implements UserInterface, \Serializable, TravelRequestUserInterface, NotificationUserInterface
 {
@@ -96,42 +95,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     private $isActive;
 
     /**
-     * @ORM\JoinColumn(name="job_title_id", referencedColumnName="id", nullable=true)
-     * @ORM\ManyToOne(targetEntity="JobTitle")
-     */
-    protected $jobTitle;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="bank_account_number", type="string", length=50)
-     * @Assert\NotBlank(message="The Bank account can not be blank.", groups={"user"})
-     */
-    protected $bankAccountNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="bank_name", type="string", length=30)
-     * @Assert\NotBlank(message="The bank name can not be blank.", groups={"user"})
-     * @Assert\Length(
-     *      max = "34",
-     *      maxMessage = "The bank name must be less equal {{ limit }} characters.",
-     *      groups={"user"}
-     * )
-     */
-    protected $bankName;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="tax_identification", type="bigint", nullable=true)
-     * @Assert\NotBlank(message="The tax identification can not be blank.", groups={"user"})
-     * @Assert\Type(type="integer", message="The value {{ value }} is not a valid {{ type }}.", groups={"user"})
-     */
-    protected $taxIdentification;
-
-    /**
      * @ORM\ManyToMany(targetEntity="Groups", inversedBy="users")
      * @ORM\JoinTable(name="notes_users_groups")
      */
@@ -185,16 +148,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     protected $isFirstLogin;
 
     /**
-     * @ORM\Column(name="entitled_leaves", type="integer", nullable=true)
-     * @Assert\Range(
-     *      min = "0",
-     *      minMessage = "The entitled leave days should be greater than 0.",
-     *      groups={"user"}
-     * )
-     */
-    protected $entitledLeaves;
-
-    /**
      * @ORM\Column(type="boolean", options={"default":false})
      */
     protected $ldapEnabled;
@@ -212,6 +165,16 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
         $this->setSalt("");
         // Set ldap required to handle the default values mapped to not null properties.
         $this->setLdapEnabled(false);
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -244,14 +207,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getJobTitle()
-    {
-        return $this->jobTitle;
     }
 
     /**
@@ -332,19 +287,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     }
 
     /**
-     * Set job
-     *
-     * @param  string $job
-     * @return User
-     */
-    public function setJobTitle($jobTitle)
-    {
-        $this->jobTitle = $jobTitle;
-
-        return $this;
-    }
-
-    /**
      * Set password
      *
      * @param  string $password
@@ -384,9 +326,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     }
 
     /**
-     * Set email
+     * Set role
      *
-     * @param  string $email
+     * @param  string $role
      * @return User
      */
     public function setRoles($role)
@@ -394,16 +336,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
         $this->groups[] = $role;
 
         return $this;
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -460,78 +392,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     }
 
     /**
-     * Set bankAccountNumber
-     *
-     * @param  string $bankAccountNumber
-     * @return User
-     */
-    public function setBankAccountNumber($bankAccountNumber)
-    {
-        $this->bankAccountNumber = $bankAccountNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get bankAccountNumber
-     *
-     * @return string
-     */
-    public function getBankAccountNumber()
-    {
-        return $this->bankAccountNumber;
-    }
-
-    /**
-     * Set bankName
-     *
-     * @param  string $bankName
-     * @return User
-     */
-    public function setBankName($bankName)
-    {
-        $this->bankName = $bankName;
-
-        return $this;
-    }
-
-    /**
-     * Get bankName
-     *
-     * @return string
-     */
-    public function getBankName()
-    {
-        return $this->bankName;
-    }
-
-    /**
-     * Set taxIdentification
-     *
-     * @param  integer $taxIdentification
-     * @return User
-     */
-    public function setTaxIdentification($taxIdentification)
-    {
-        $this->taxIdentification = $taxIdentification;
-
-        return $this;
-    }
-
-    /**
-     * Get taxIdentification
-     *
-     * @return integer
-     */
-    public function getTaxIdentification()
-    {
-        return $this->taxIdentification;
-    }
-
-    /**
      * Set firstLogin
      *
-     * @param  boolean $firstLogin
+     * @param  boolean $isFirstLogin
      * @return User
      */
     public function setIsFirstLogin($isFirstLogin)
@@ -549,18 +412,6 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     public function getIsFirstLogin()
     {
         return $this->isFirstLogin;
-    }
-
-    public function setEmployee($employee)
-    {
-        $this->employee = $employee;
-
-        return $this;
-    }
-
-    public function getEmployee()
-    {
-        return $this->employee;
     }
 
     /**
@@ -587,25 +438,25 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     }
 
     /**
-     * Set entitledLeaves
+     * Set employee
      *
-     * @param integer $entitledLeaves
+     * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @return User
      */
-    public function setEntitledLeaves($entitledLeaves)
+    public function setEmployee(\Opit\Notes\UserBundle\Entity\Employee $employee = null)
     {
-        $this->entitledLeaves = $entitledLeaves;
+        $this->employee = $employee;
 
         return $this;
     }
 
     /**
-     * Get entitledLeaves
+     * Get employee
      *
-     * @return integer
+     * @return \Opit\Notes\UserBundle\Entity\Employee
      */
-    public function getEntitledLeaves()
+    public function getEmployee()
     {
-        return $this->entitledLeaves;
+        return $this->employee;
     }
 }

@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @version 1.0
  * @package Notes
  * @subpackage UserBundle
- * 
+ *
  * @ORM\Table(name="notes_groups")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\GroupsRepository")
  */
@@ -62,28 +62,28 @@ class Groups implements RoleInterface
     {
         return $this->role;
     }
-    
+
     /**
-     * 
+     *
      * @param type $role
      * @return \Opit\Notes\UserBundle\Entity\Groups
      */
     public function setRole($role)
     {
         $this->role = $role;
-        
+
         return $this;
     }
-    
+
     /**
-     * 
+     *
      * @see RoleInterface
      */
     public function getName()
     {
         return $this->name;
     }
-    
+
     public function setName($name)
     {
         $this->name = $name;
@@ -91,18 +91,18 @@ class Groups implements RoleInterface
     }
 
     /**
-     * 
+     *
      * @see RoleInterface
-     */    
+     */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * 
+     *
      * @see RoleInterface
-     */     
+     */
     public function getUsers()
     {
         return $this->users;
@@ -117,7 +117,7 @@ class Groups implements RoleInterface
     public function addUser(\Opit\Notes\UserBundle\Entity\User $users)
     {
         $this->users[] = $users;
-    
+
         return $this;
     }
 

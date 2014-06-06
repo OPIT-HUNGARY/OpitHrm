@@ -135,9 +135,9 @@ class UserControllerTest extends WebTestCase
                     'username' => $this->user->getUsername(),
                     'email' => $this->user->getEmail(),
                     'employeeName' => $this->user->getEmployee()->getEmployeeName(),
-                    'taxIdentification' => $this->user->getTaxIdentification(),
-                    'bankAccountNumber' => $this->user->getBankAccountNumber(),
-                    'bankName' => $this->user->getBankName(),
+                    'taxIdentification' => $this->user->getEmployee()->getTaxIdentification(),
+                    'bankAccountNumber' => $this->user->getEmployee()->getBankAccountNumber(),
+                    'bankName' => $this->user->getEmployee()->getBankName(),
                     'userId' =>  $this->user->getId(),
                     'isActive' => $this->user->getIsActive()
                 )

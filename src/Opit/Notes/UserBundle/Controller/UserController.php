@@ -131,10 +131,7 @@ class UserController extends Controller
         }
 
         $form = $this->createForm(
-            new UserShowType(
-                $this->getDoctrine()->getManager(),
-                $this->container
-            ),
+            new UserShowType($this->container),
             $user
         );
         return $this->render('OpitNotesUserBundle:User:showUserForm.html.twig', array('form' => $form->createView()));
@@ -160,10 +157,7 @@ class UserController extends Controller
         $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
         
         $form = $this->createForm(
-            new UserShowType(
-                $this->getDoctrine()->getManager(),
-                $this->container
-            ),
+            new UserShowType($this->container),
             $user
         );
         

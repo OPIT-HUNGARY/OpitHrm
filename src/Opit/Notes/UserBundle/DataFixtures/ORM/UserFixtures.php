@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -24,12 +24,14 @@ use Opit\Notes\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
  * @version 1.0
  * @package Notes
  * @subpackage UserBundle
- * 
+ *
  * @ORM\Table(name="notes_users")
  * @ORM\Entity(repositoryClass="Opit\Notes\UserBundle\Entity\UserRepository")
  */
 class UserFixtures extends AbstractDataFixture
 {
+    private $names = array('Janessa Hargrave', 'Jackelyn Norfleet', 'Keli Everman', 'Katherina Satterthwaite', 'Alix Fury', 'Darell Briseno', 'Emmitt Quattlebaum', 'Genna Castellano', 'Delia Highland', 'Malcolm Brew', 'Iesha Mcie', 'Marceline Simonton', 'Israel Hollander', 'Curt Hower', 'Guillermina Ponte', 'Adella Manross', 'Desirae Ciesielski', 'Winnifred Iglesias', 'Selina Schroeter', 'Johnathon Bonnell');
+
     /**
      * {@inheritDoc}
      */
@@ -38,21 +40,12 @@ class UserFixtures extends AbstractDataFixture
         $factory = $this->container->get('security.encoder_factory');
         $user = new User();
         $encoder = $factory->getEncoder($user);
-        
-        $employee = new Employee();
-        $employee->setDateOfBirth(new \DateTime('1990-02-01'));
-        $employee->setJoiningDate(new \DateTime('2009-03-01'));
-        $employee->setNumberOfChildren(0);
-        $employee->setWorkingHours(8);
-        $employee->setEmployeeName('employee');
-        $employee->setWorkingHours(8);
 
         $testAdmin = new User();
         $testAdmin->setUsername('admin');
-        $testAdmin->setEmployee($employee);
+        $testAdmin->setEmployee($this->createEmployee());
         $password = $encoder->encodePassword('admin', '');
         $testAdmin->setPassword($password);
-        $testAdmin->setSalt('');
         $testAdmin->setEmail('admin@mail.com');
         $testAdmin->setIsActive(1);
         if ('test' === $this->getCurrentEnvironment()) {
@@ -62,96 +55,74 @@ class UserFixtures extends AbstractDataFixture
         }
         $testAdmin->setLdapEnabled(0);
         $testAdmin->addGroup($this->getReference('admin-group'));
-        $testAdmin->setBankAccountNumber('11112222-99999999-99999999');
-        $testAdmin->setBankName('Fictive Bank');
-        $testAdmin->setTaxIdentification('3888888888');
+
         $manager->persist($testAdmin);
-        
+
         if ('dev' === $this->getCurrentEnvironment()) {
-            $employee2 = new Employee();
-            $employee2->setDateOfBirth(new \DateTime('1990-02-01'));
-            $employee2->setJoiningDate(new \DateTime('2009-03-01'));
-            $employee2->setNumberOfChildren(0);
-            $employee2->setWorkingHours(12);
-            $employee2->setEmployeeName('employee2');
-            $employee2->setWorkingHours(6);
 
             for ($i = 0; $i < 10; $i++) {
                 $testUser = new User();
-                $testUser->setUsername('test' . $i . 'Name');
-                $testUser->setEmployee(clone $employee2);
+                $testUser->setUsername('Name ' . $i);
+                $testUser->setEmployee($this->createEmployee());
                 $password = $encoder->encodePassword('test' . $i . 'Password', '');
                 $testUser->setPassword($password);
-                $testUser->setSalt('');
                 $testUser->setLdapEnabled(0);
                 $testUser->setEmail('mymail' . $i . '@mail.com');
                 $testUser->setIsActive(1);
                 $testUser->setIsFirstLogin(1);
                 $testUser->addGroup($this->getReference('user-group'));
-                $testUser->setBankAccountNumber('11112222-22223333-4444'. $i . $i . $i . $i);
-                $testUser->setBankName('Fictive Bank');
-                $testUser->setTaxIdentification('843'. $i . $i%2 . $i%4 . '45' . $i%3 .$i%5);
+
                 $manager->persist($testUser);
             }
             $this->addReference('testUser-user', $testUser);
 
             $testTeamManager = new User();
             $testTeamManager->setUsername('teamManager');
-            $testTeamManager->setEmployee(clone $employee->setEmployeeName('teamManager'));
+            $testTeamManager->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('teamManager', '');
             $testTeamManager->setPassword($password);
-            $testTeamManager->setSalt('');
             $testTeamManager->setEmail('tm@mail.com');
             $testTeamManager->setIsActive(1);
             $testTeamManager->setIsFirstLogin(1);
             $testTeamManager->addGroup($this->getReference('team-manager-group'));
             $testTeamManager->addGroup($this->getReference('user-group'));
-            $testTeamManager->setBankAccountNumber('11112222-99999999-99999999');
-            $testTeamManager->setBankName('Fictive Bank');
             $testTeamManager->setLdapEnabled(0);
-            $testTeamManager->setTaxIdentification('8888188888');
             $manager->persist($testTeamManager);
 
             $testGeneralManager = new User();
             $testGeneralManager->setUsername('generalManager');
-            $testGeneralManager->setEmployee(clone $employee->setEmployeeName('generalManager'));
+            $testGeneralManager->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('generalManager', '');
             $testGeneralManager->setPassword($password);
-            $testGeneralManager->setSalt('');
             $testGeneralManager->setEmail('gm@mail.com');
             $testGeneralManager->setIsActive(1);
             $testGeneralManager->setIsFirstLogin(1);
             $testGeneralManager->addGroup($this->getReference('general-manager-group'));
             $testGeneralManager->addGroup($this->getReference('user-group'));
-            $testGeneralManager->setBankAccountNumber('11112222-99999999-99999999');
-            $testGeneralManager->setBankName('Fictive Bank');
             $testGeneralManager->setLdapEnabled(0);
-            $testGeneralManager->setTaxIdentification('8888888288');
+
             $manager->persist($testGeneralManager);
-            
+
             $user = new User();
             $user->setUsername('user');
-            $user->setEmployee(clone $employee->setEmployeeName('user'));
+            $user->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('user', '');
             $user->setPassword($password);
-            $user->setSalt('');
             $user->setEmail('user@mail.com');
             $user->setIsActive(1);
-            $user->setIsFirstLogin(true);
+            $user->setIsFirstLogin(1);
             $user->addGroup($this->getReference('user-group'));
-            $user->setBankAccountNumber('11112222-99999999-11999999');
-            $user->setBankName('Fictive Bank');
             $user->setLdapEnabled(0);
-            $user->setTaxIdentification('8888888211');
+
             $manager->persist($user);
-            
+
             $this->setReference('user', $user);
             $this->setReference('generalManager', $testGeneralManager);
         }
-        
+
         $manager->flush();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -159,13 +130,47 @@ class UserFixtures extends AbstractDataFixture
     {
         return 1; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()
     {
         return array('prod', 'dev', 'test');
+    }
+
+    /**
+     * Creates an employee instance
+     *
+     * @return \Opit\Notes\UserBundle\Entity\Employee
+     */
+    protected function createEmployee()
+    {
+        $birthTimestampRange= mt_rand(0, 820368000);
+        $joinTimestampRange= mt_rand(1262304000, 1388534400);
+
+        $birthDate = new \DateTime();
+        $birthDate->setTimestamp($birthTimestampRange);
+        $joinDate = new \DateTime();
+        $joinDate->setTimestamp($joinTimestampRange);
+
+        $workingHours = array(6, 8);
+
+        $pos = array_rand($this->names);
+        $name = $this->names[$pos];
+        array_splice($this->names, $pos, 1);
+
+        $employee = new Employee();
+        $employee->setEmployeeName($name);
+        $employee->setDateOfBirth($birthDate);
+        $employee->setJoiningDate($joinDate);
+        $employee->setNumberOfChildren(mt_rand(0, 4));
+        $employee->setWorkingHours($workingHours[array_rand($workingHours)]);
+        $employee->setBankAccountNumber(sprintf('%d-%d-%d', mt_rand(10000000, 99999999), mt_rand(10000000, 99999999), mt_rand(10000000, 99999999)));
+        $employee->setBankName('Fictive Bank');
+        $employee->setTaxIdentification(mt_rand(1000000000, 9999999999));
+
+        return $employee;
     }
 }

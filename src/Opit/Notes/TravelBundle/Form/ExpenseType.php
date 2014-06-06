@@ -51,10 +51,10 @@ class ExpenseType extends AbstractType
         $employeeName = null;
 
         if (null !== $user) {
-            $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getTaxIdentification();
-            $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getBankname();
+            $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getEmployee()->getTaxIdentification();
+            $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getEmployee()->getBankname();
             $bankAccountNumber =
-                ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getBankAccountNumber();
+                ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getEmployee()->getBankAccountNumber();
             $employeeName =
                 ($eName = $options['data']->getUser()->getEmployee()->getEmployeeName()) ? $eName : $user->getEmployee()->getEmployeeName();
         }

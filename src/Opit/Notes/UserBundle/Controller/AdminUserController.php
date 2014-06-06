@@ -202,7 +202,7 @@ class AdminUserController extends Controller
         $disabledJobTitles = array();
 
         foreach ($users as $u) {
-            $userJobTitle = $u->getJobTitle();
+            $userJobTitle = $u->getEmployee()->getJobTitle();
             if (null !== $userJobTitle) {
                 if (isset($disabledJobTitles[$userJobTitle->getId()])) {
                     $disabledJobTitles[$userJobTitle->getId()] += 1;
