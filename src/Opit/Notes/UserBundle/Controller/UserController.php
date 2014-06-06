@@ -429,22 +429,14 @@ class UserController extends Controller
      *
      * @Route("/secured/user/show/infoboard", name="OpitNotesUserBundle_user_show_infoboard")
      * @Method({"GET"})
+     * @Secure(roles="ROLE_USER")
      * @Template()
      */
     public function showUserSummaryAction()
     {
-
         $user = $this->container->get('security.context')->getToken()->getUser();
 
-        //get employee info
-        $employeeInfo = array(
-            'employeeName' => $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '',
-            'joiningDate' => $user->getEmployee()->getJoiningDate(),
-            'dob' => $user->getEmployee()->getDateOfBirth(),
-            'noc' => $user->getEmployee()->getNumberOfChildren(),
-        );
-
-        return $this->render('OpitNotesUserBundle:User:showUserSummary.html.twig', array('employeeInfo' => $employeeInfo));
+        return $this->render('OpitNotesUserBundle:User:showUserSummary.html.twig', array('employee' => $user->getEmployee()));
     }
 
 }

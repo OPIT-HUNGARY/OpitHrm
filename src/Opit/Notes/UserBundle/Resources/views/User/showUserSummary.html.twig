@@ -10,10 +10,44 @@
     <div id="employeeInfoWrapper" style="min-width:980px;">
         <div class="float-left width-290 summary-box margin-right-5">
             <h3><i class="fa fa-user"></i>  Employee Info </h3>
-                Name: {{ employeeInfo.employeeName|e }}<br>
-                Joining Date: {{ employeeInfo.joiningDate|date('d  F  Y') }}<br>
-                Birth Date: {{ employeeInfo.dob|date('d  F  Y') }}<br>
-                No. of Children: {{ employeeInfo.noc|e }}<br>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="33%">Name:</td>
+                    <td>{{ employee.employeeName|e }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Joining:</td>
+                    <td>{{ employee.joiningDate|date('d  F  Y') }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Birth Date:</td>
+                    <td>{{ employee.dateOfBirth|date('d  F  Y') }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Children:</td>
+                    <td>{{ employee.numberOfChildren|e }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Tax-ID:</td>
+                    <td>{{ employee.taxIdentification }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Bank Name:</td>
+                    <td>{{ employee.bankName|e }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">BAN:</td>
+                    <td>{{ employee.bankAccountNumber|e }}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Job Title:</td>
+                    <td>{%if employee.jobTitle.title is defined %}{{ employee.jobTitle.title|e }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <td width="30%">Work Hours:</td>
+                    <td>{{ employee.workingHours|e }}</td>
+                </tr>
+            </table>
         </div>
         {% if bundleExist('OpitNotesTravelBundle') %}
             {{ render(controller('OpitNotesTravelBundle:Travel:employeeTravelInfoBoard')) }}

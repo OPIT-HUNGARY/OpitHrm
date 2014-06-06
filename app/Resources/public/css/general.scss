@@ -504,7 +504,7 @@ footer{
     color: #fafafa;
     padding: 1em;
     background-color: rgba(0, 0, 0, 0.8);
-    min-height: 185px;
+    min-height: 202px;
     border-bottom: 1px solid #b6b6b6;
     margin-bottom: 3px;
     &:hover{
@@ -514,6 +514,9 @@ footer{
     h3{
         color: $lightGreen;
         margin-top: 2px;
+    }
+    table td{
+        padding: 0px 0px 0px 0px;
     }
 }
 
