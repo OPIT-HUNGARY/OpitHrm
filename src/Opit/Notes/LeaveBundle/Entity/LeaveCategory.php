@@ -18,7 +18,7 @@ class LeaveCategory extends AbstractBase
 {
     const FULL_DAY = 'Full day';
     const UNPAID = 'Unpaid leave';
-    
+
     /**
      * @var integer
      *
@@ -50,7 +50,7 @@ class LeaveCategory extends AbstractBase
     private $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="LeaveRequest", mappedBy="category", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Leave", mappedBy="category", cascade={"persist"})
      */
     protected $requests;
 
@@ -77,14 +77,14 @@ class LeaveCategory extends AbstractBase
      */
     protected $isCountedAsLeave;
 
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        parent::__construct();
         $this->requests = new \Doctrine\Common\Collections\ArrayCollection();
+
+        parent::__construct();
     }
 
     /**
@@ -167,39 +167,6 @@ class LeaveCategory extends AbstractBase
     }
 
     /**
-     * Add requests
-     *
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $requests
-     * @return LeaveCategory
-     */
-    public function addRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $requests)
-    {
-        $this->requests[] = $requests;
-
-        return $this;
-    }
-
-    /**
-     * Remove requests
-     *
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $requests
-     */
-    public function removeRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $requests)
-    {
-        $this->requests->removeElement($requests);
-    }
-
-    /**
-     * Get requests
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRequests()
-    {
-        return $this->requests;
-    }
-
-    /**
      * Set leaveCategoryDuration
      *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveCategoryDuration $leaveCategoryDuration
@@ -266,5 +233,38 @@ class LeaveCategory extends AbstractBase
     public function getIsCountedAsLeave()
     {
         return $this->isCountedAsLeave;
+    }
+
+    /**
+     * Add requests
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\Leave $requests
+     * @return LeaveCategory
+     */
+    public function addRequest(\Opit\Notes\LeaveBundle\Entity\Leave $requests)
+    {
+        $this->requests[] = $requests;
+
+        return $this;
+    }
+
+    /**
+     * Remove requests
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\Leave $requests
+     */
+    public function removeRequest(\Opit\Notes\LeaveBundle\Entity\Leave $requests)
+    {
+        $this->requests->removeElement($requests);
+    }
+
+    /**
+     * Get requests
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRequests()
+    {
+        return $this->requests;
     }
 }

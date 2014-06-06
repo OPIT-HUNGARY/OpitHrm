@@ -63,36 +63,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $user;
     }
 
-   /**
-     * Method required and called by custom authentication provider
-     *
-     * @param arry $data the data to search for user
-     *
-     * @return User $user An user object
-     */
-    public function loadUserByUniques($data)
-    {
-        $qb = $this->createQueryBuilder('u');
-
-        if (isset($data['id']) && $data['id']>0) {
-            $qb->leftJoin('u.employee', 'e')
-            ->where('(u.username = :username OR u.email = :email OR e.employeeName = :employeeName) AND u.id != :id')
-            ->setParameter('username', $data['username'])
-            ->setParameter('email', $data['email'])
-            ->setParameter('employeeName', $data['employeeName'])
-            ->setParameter('id', $data['id']);
-        } else {
-            $qb->leftJoin('u.employee', 'e')
-            ->where('u.username = :username OR u.email = :email OR e.employeeName = :employeeName')
-            ->setParameter('username', $data['username'])
-            ->setParameter('email', $data['email'])
-            ->setParameter('employeeName', $data['employeeName']);
-        }
-        $q = $qb->getQuery();
-
-        return $q->getResult();
-    }
-
     /**
      * Method used by custom authentication provider
      *

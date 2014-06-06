@@ -175,12 +175,13 @@ class AdminUserControllerTest extends WebTestCase
             'testGroupsShowAction: The content-type of a new group is not html.'
         );
         
-        // Existing role.
+        // Modify existing role.
         $createdGroup = $this->em->getRepository('OpitNotesUserBundle:Groups')->findOneByName('NEW_TEST_ROLE');
         
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/groups/show/' . $createdGroup->getId()
+            '/secured/admin/groups/show/' . $createdGroup->getId(),
+            array('value' => 'NEW_TEST_ROLE_MODIFIED')
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),

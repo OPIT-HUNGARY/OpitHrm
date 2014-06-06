@@ -17,7 +17,7 @@ use Opit\Notes\UserBundle\Entity\Employee;
 
 /**
  * Description of UserRepositoryFunctionalTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
@@ -29,12 +29,12 @@ class UserRepositoryFunctionalTest extends WebTestCase
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
-    
+
     /**
-     * @var \Symfony\Component\BrowserKit\Client 
+     * @var \Symfony\Component\BrowserKit\Client
      */
     protected $client;
-    
+
     /**
      * @var \Opit\Notes\UserBundle\Entity\User
      */
@@ -50,10 +50,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
         $this->em = $this->client->getContainer()
             ->get('doctrine')
             ->getManager();
-        
+
         $this->user = $this->em->getRepository('OpitNotesUserBundle:User')->findOneByUsername('admin');
     }
-    
+
     /**
      * test LoadUserByUsername method
      */
@@ -61,37 +61,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->loadUserByUsername('admin');
-        
+
         $this->assertNotNull($user, 'testLoadUserByUsername: The given result is null.');
     }
 
-    /**
-     * test LoadUserByUsername method
-     */
-    public function testLoadUserByUniques()
-    {
-        // Set an existing user.
-        $data1 = array(
-            'id' => '1',
-            'username' => 'admin',
-            'email' => 'admin@mail.com',
-            'employeeName' => 'admin'
-        );
-        $user1 = $this->em->getRepository("OpitNotesUserBundle:User")
-                    ->loadUserByUniques($data1);
-        $this->assertNotNull($user1, 'testLoadUserByUniques: The given result is null.');
-        
-        // Set a new user.
-        $data2 = array(
-            'username' => 'admin',
-            'email' => 'admin@mail.com',
-            'employeeName' => 'admin'
-        );
-        $user2 = $this->em->getRepository("OpitNotesUserBundle:User")
-                    ->loadUserByUniques($data2);
-        $this->assertNotNull($user2, 'testLoadUserByUniques: The given result is null.');
-    }
-    
     /**
      * test RefreshUser method
      */
@@ -99,10 +72,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->refreshUser($this->user);
-        
+
         $this->assertNotNull($user, 'testrefreshUser: The given result is null.');
     }
-    
+
     /**
      * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
      */
@@ -110,7 +83,7 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $this->em->getRepository("OpitNotesUserBundle:User")->loadUserByUsername('test');
     }
-    
+
     /**
      * test findAll method
      */
@@ -118,10 +91,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->findAll($this->user);
-        
+
         $this->assertNotNull($user, 'testfindAll: The given result is null.');
     }
-    
+
     /**
      * test findUsersByPropertyUsingLike method
      */
@@ -134,10 +107,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
         );
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->findUsersByPropertyUsingLike($parameters, 0, 1);
-        
+
         $this->assertNotNull($user, 'testFindUsersByPropertyUsingLike: The given result is null.');
     }
-    
+
     /**
      * test findUsersUsingIn method
      */
@@ -145,10 +118,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->findUsersUsingIn($this->user->getId());
-        
+
         $this->assertNotNull($user, 'testFindUsersUsingIn: The given result is null.');
     }
-    
+
     /**
      * test findUserByEmployeeNameUsingLike method
      */
@@ -156,10 +129,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->findUserByEmployeeNameUsingLike($this->user->getEmployee()->getEmployeeName());
-        
+
         $this->assertNotNull($user, 'testFindUserByEmployeeNameUsingLike: The given result is null.');
     }
-    
+
     /**
      * test findUserByEmployeeNameUsingLike method
      */
@@ -190,13 +163,13 @@ class UserRepositoryFunctionalTest extends WebTestCase
         $this->em->flush();
         // Get the saved user.
         $testUser = $this->em->getRepository("OpitNotesUserBundle:User")->findOneByUsername('test1');
-        
+
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
                     ->deleteUsersByIds($testUser->getId());
-        
+
         $this->assertNotNull($user, 'testDeleteUsersByIds: The given result is null.');
     }
-    
+
     /**
      * test getPaginaton method
      */
@@ -204,11 +177,10 @@ class UserRepositoryFunctionalTest extends WebTestCase
     {
         $user = $this->em->getRepository("OpitNotesUserBundle:User")
             ->getPaginaton(0, 1);
-        
+
         $this->assertNotNull($user, 'testGetPaginaton: The given result is null.');
     }
-       
-    
+
     /**
      * tear down
      */

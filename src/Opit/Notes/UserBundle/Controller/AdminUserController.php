@@ -239,7 +239,7 @@ class AdminUserController extends Controller
         $request = $this->getRequest();
         $groupId = $request->attributes->get('id');
         
-        $requestGroup = $request->request->get('value');
+        $requestGroup = str_replace(' ', '_', $request->request->get('value'));
         $groupRoleName = 'ROLE_' . strtoupper($requestGroup);
         $groupName = ucfirst($requestGroup);
         
@@ -255,7 +255,7 @@ class AdminUserController extends Controller
         
         $role = $this->getDoctrine()
              ->getRepository('OpitNotesUserBundle:Groups')
-             ->findOneBy(array('name' => $groupName, 'role'=>$groupRoleName));
+             ->findOneBy(array('name' => $groupName, 'role' => $groupRoleName));
 
         if (null !== $role) {
             return new JsonResponse(array('duplicate' => true));
