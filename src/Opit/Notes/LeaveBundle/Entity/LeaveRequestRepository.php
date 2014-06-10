@@ -30,7 +30,10 @@ class LeaveRequestRepository extends EntityRepository
      */
     public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
-        $dq = $this->createQueryBuilder('lr')->join('lr.leaves', 'l');
+        $dq = $this->createQueryBuilder('lr')
+            ->innerJoin('lr.leaves', 'l')
+            ->innerJoin('lr.employee', 'e')
+            ->innerJoin('e.user', 'u');
 
         if (isset($parameters['startDate']) && $parameters['startDate'] !== '') {
             $dq->andWhere('l.startDate >= :startDate');
@@ -41,15 +44,22 @@ class LeaveRequestRepository extends EntityRepository
             $dq->andWhere('l.endDate <= :endDate');
             $dq->setParameter(':endDate', $parameters['endDate']);
         }
+        
+        if (isset($parameters['email']) && $parameters['email'] !== '') {
+            $dq->andWhere('u.email LIKE :email');
+            $dq->setParameter(':email', '%' . $parameters['email']. '%');
+        }
+        if (isset($parameters['employeeName']) && $parameters['employeeName'] !== '') {
+            $dq->andWhere('e.employeeName LIKE :employeeName');
+            $dq->setParameter(':employeeName', '%' . $parameters['employeeName']. '%');
+        }
 
         if (isset($parameters['leaveId']) && $parameters['leaveId'] !== '') {
             $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
             $dq->setParameter(':leaveId', '%'.$parameters['leaveId'].'%');
         }
-
-        if ($pagnationParameters['isAdmin']) {
-            $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
-        } elseif ($pagnationParameters['isGeneralManager']) {
+        
+        if ($pagnationParameters['isGeneralManager'] && !$pagnationParameters['isAdmin']) {
             $statusExpr = $dq->expr()->orX(
                 $dq->expr()->andX(
                     $dq->expr()->notIn('s.status', ':status'),
@@ -62,11 +72,12 @@ class LeaveRequestRepository extends EntityRepository
 
             $dq->setParameter(':user', $pagnationParameters['user']);
             $dq->setParameter(':status', Status::CREATED);
-        } else {
+        $dq->setParameter(':employee', $pagnationParameters['employee']);
+        } elseif (!$pagnationParameters['isGeneralManager'] && !$pagnationParameters['isAdmin']) {
             $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
+        $dq->setParameter(':employee', $pagnationParameters['employee']);
         }
 
-        $dq->setParameter(':employee', $pagnationParameters['employee']);
 
         $dq->setFirstResult($pagnationParameters['firstResult']);
         $dq->setMaxResults($pagnationParameters['maxResults']);
@@ -180,5 +191,4 @@ class LeaveRequestRepository extends EntityRepository
 
         return $dq->getQuery()->getSingleScalarResult();
     }
-
 }

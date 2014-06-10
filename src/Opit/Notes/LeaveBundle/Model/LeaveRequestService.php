@@ -61,7 +61,7 @@ class LeaveRequestService
      * @param object $leaveRequests
      * @return array
      */
-    public function setLeaveRequestListingRights($leaveRequests)
+    public function setLeaveRequestListingRights($leaveRequests, $currentUser)
     {
         $currentStatusNames = array();
         $leaveRequestStates = array();
@@ -80,7 +80,7 @@ class LeaveRequestService
 
             $isLocked[$leaveRequest->getId()] = $isTRLocked;
 
-            $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest);
+            $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest, $currentUser);
 
             $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
         }
@@ -100,20 +100,26 @@ class LeaveRequestService
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @return boolean
      */
-    public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest)
+    public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest, $currentUser)
     {
-        if (!$this->securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$this->securityContext->isGranted('ROLE_ADMIN')) {
-            if ($leaveRequest->getCreatedUser() === $leaveRequest->getGeneralManager()) {
-                return false;
-            } elseif (Status::APPROVED === $this->statusManager->getCurrentStatus($leaveRequest)->getId()) {
-                foreach ($leaveRequest->getLeaves() as $leave) {
-                    if ($leave->getStartDate() < new \DateTime()) {
-                        return false;
-                    }
-                }
+        // if user has gm rights
+        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
+            // if user created or is general manager of lr
+            if ($leaveRequest->getCreatedUser() == $currentUser ||
+                $leaveRequest->getGeneralManager() == $currentUser) {
+                return true;
+            }
+        // if user is admin
+        } elseif ($this->securityContext->isGranted('ROLE_ADMIN')){
+            return true;
+        // if user created his own lr
+        } elseif ($leaveRequest->getEmployee() == $currentUser) {
+            if ($leaveRequest->getCreatedUser() == $currentUser ) {
+                return true;
             }
         }
-        return true;
+        
+        return false;
     }
 
     /**

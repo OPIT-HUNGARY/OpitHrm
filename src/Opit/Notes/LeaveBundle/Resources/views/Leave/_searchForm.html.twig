@@ -7,7 +7,15 @@
     <form id="searchLeaveForm" method="post" action="{{ path('OpitNotesLeaveBundle_leave_list') }}">
         <div id="searchFormProperties" class="padding-10">
             <div class="searchProperty vertical-align-top">
-                <label for="search_leave_id">ID</label>
+                <label for="search_employee_name">Employee name</label>
+                <input type="text" name="search[employeeName]" id="search_employee_name" />
+            </div>
+            <div class="searchProperty vertical-align-top">
+                <label for="search_email">Email</label>
+                <input type="text" name="search[email]" id="search_email" />
+            </div>
+            <div class="searchProperty vertical-align-top">
+                <label for="search_leave_id">Leave request id</label>
                 <input type="text" name="search[leaveId]" id="search_leave_id" />
             </div>
             <div class="searchProperty vertical-align-top">

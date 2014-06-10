@@ -72,10 +72,10 @@ class LeaveController extends Controller
 
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
-
+        
         $listingRights = $this->get('opit.model.leave_request')
-            ->setLeaveRequestListingRights($leaveRequests);
-
+            ->setLeaveRequestListingRights($leaveRequests, $user);
+        
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesLeaveBundle:Leave:_list.html.twig';
         } else {
@@ -239,7 +239,8 @@ class LeaveController extends Controller
     public function deleteLeaveRequestAction(Request $request)
     {
         $securityContext = $this->container->get('security.context');
-        $token = $securityContext->getToken();
+        $leaveRequestService = $this->get('opit.model.leave_request');
+        $currentUser = $securityContext->getToken()->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         $ids = $request->request->get('id');
 
@@ -250,20 +251,23 @@ class LeaveController extends Controller
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
 
-            if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() &&
+            if ($currentUser->getEmployee() !== $leaveRequest->getEmployee() &&
                 !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
                 !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER') &&
-                $leaveRequest->getCreatedUser()->getId() !== $token->getUser()->getId()) {
+                $leaveRequest->getCreatedUser()->getId() !== $currentUser->getId()) {
                 throw new AccessDeniedException(
                     'Access denied for leave.'
                 );
             }
-            $entityManager->remove($leaveRequest);
+            
+            if ($leaveRequestService->isLeaveRequestDeleteable($leaveRequest, $currentUser)) {
+                $entityManager->remove($leaveRequest);
+            }
         }
 
         $entityManager->flush();
 
-        return new JsonResponse('$userNames');
+        return new JsonResponse('success');
     }
 
     /**
@@ -311,13 +315,13 @@ class LeaveController extends Controller
         $totalLeaveRequestCount = $leaveRequestRepository->findEmployeesLRCount($employeeID, $yearFirstDate, $yearLastDate);
 
         //finalized leave request count
-        $finalizedLeaveRequestCount = $leaveRequestRepository->findEmployeesLRCount($employeeID,  $yearFirstDate, $yearLastDate, true);
+        $finalizedLeaveRequestCount = $leaveRequestRepository->findEmployeesLRCount($employeeID, $yearFirstDate, $yearLastDate, true);
 
         //pending leave request count
         $pendingLeaveRequestCount = $totalLeaveRequestCount - $finalizedLeaveRequestCount;
 
         //remaning and availed leaves count
-        $availedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID,true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID,true) : 0);
+        $availedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID, true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID, true) : 0);
         $leftToAvail = ($empLeaveEntitlement > $availedLeaveDays ? $empLeaveEntitlement - $availedLeaveDays : 0);
 
         //not entitled leave days count

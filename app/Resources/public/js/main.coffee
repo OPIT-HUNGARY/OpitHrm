@@ -245,9 +245,11 @@ $.fn.dialog = (options) ->
         
 $.fn.checkAll = (callback, selector) ->
     $el = if selector then $(selector) else $(@)
-    checkAll = if $el.filter(':checked').length is $el.length then false else true
+    console.log $el.not(':disabled')
+    checkAll = if $el.filter(':checked').length is $el.not(':disabled').length then false else true
     $el.each ->
-        $(@).prop 'checked', checkAll
+        if 'disabled' != $(@).attr('disabled')
+            $(@).prop 'checked', checkAll
 
     if callback
         callback($el)
