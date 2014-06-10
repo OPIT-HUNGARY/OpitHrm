@@ -38,7 +38,7 @@ class LeaveRequest extends AbstractBase
 
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\Employee", inversedBy="leaveRequests")
-     * @Assert\NotBlank(message="Employee cannot be empty.", groups={"user"})
+     * @Assert\NotBlank(message="Employee cannot be empty.")
      */
     protected $employee;
 
@@ -293,13 +293,13 @@ class LeaveRequest extends AbstractBase
      * An existing groups option must use in the assert annotation.
      * This groups must on a property in order to this assert callback works
      *
-     * @Assert\Callback(groups={"user"})
+     * @Assert\Callback
      */
     public function validateLeaveDates(ExecutionContextInterface $context)
     {
-        $collection = $this->leaves;
+        $collection = $this->getLeaves();
         $overlappingDates = array();
-
+        
         // Checking the date overlapping
         foreach ($collection as $element) {
             $current = $element;
@@ -370,25 +370,5 @@ class LeaveRequest extends AbstractBase
     public function getIsMassLeaveRequest()
     {
         return $this->isMassLeaveRequest;
-    }
-    
-    /**
-     * Validate if a leave's start, end date is in the past
-     * 
-     * @Assert\Callback(groups={"user"})
-     */    
-    public function validatePastLeaveDates(ExecutionContextInterface $context)
-    {
-        $leaves = $this->leaves;
-        $now = date('Y-m-d');
-        
-        foreach ($leaves as $leave) {
-            if ($leave->getStartDate()->format('Y-m-d') < $now) {
-                $context->addViolation(
-                    sprintf('Leave start date can not be in the past.')
-                );
-                break;
-            }
-        }
     }
 }

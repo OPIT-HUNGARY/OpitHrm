@@ -75,11 +75,10 @@
             </div>
         {% endif %}
     {% endif %}
-        
-    {% set formErrors = form_errors(form) %}
-    <div id="reply-message" class="alert-message error-message {% if 0 == formErrors|length %}display-none{% endif %}">
+
+    <div id="reply-message" class="alert-message error-message {% if 0 == form_errors(form)|length %}display-none{% endif %}">
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
-        {{ formErrors }}
+        {{ form_errors(form) }}
     </div>
     
     {% if isEditLocked == '1' %}

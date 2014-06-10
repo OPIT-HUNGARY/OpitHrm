@@ -36,22 +36,20 @@ class LeaveType extends AbstractType
         $builder->add('startDate', 'date', array(
             'widget' => 'single_text',
             'label'=>'Start date',
+            'required' => true,
             'attr' => array(
-                'required' => 'required',
                 'placeholder' => 'Start date',
-                'class' => 'start-date',
-                'required' => 'required'
+                'class' => 'start-date'
             )
         ));
 
         $builder->add('endDate', 'date', array(
             'widget' => 'single_text',
             'label'=>'End date',
+            'required' => true,
             'attr' => array(
-                'required' => 'required',
                 'placeholder' => 'End date',
-                'class' => 'end-date',
-                'required' => 'required'
+                'class' => 'end-date'
             )
         ));
 

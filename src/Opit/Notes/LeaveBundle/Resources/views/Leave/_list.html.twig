@@ -28,7 +28,7 @@
         {% set lrInfo = 'Kindly contact general manager assigned for this leave request until ' ~ lastContactDate ~ '. Incase of no contact by employee the company hold the rights to approve the leave request.' %}
         <tr>
             <td>
-                <input type="checkbox" class="deleteMultiple" {% if leaveRequest.createdUser.id != leaveRequest.employee.user.id %}disabled="disabled"{% endif %} name="deleteMultiple[]" value="{{ leaveRequest.id }}" />
+                <input type="checkbox" class="deleteMultiple" {% if not listingRights['isDeleteable'][id] %}disabled="disabled"{% endif %} name="deleteMultiple[]" value="{{ leaveRequest.id }}" />
             </td>
             <td>
                 <span>{{ leaveRequest.leaveRequestId }}</span>

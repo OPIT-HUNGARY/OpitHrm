@@ -4,6 +4,7 @@ namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * LeaveRequest
@@ -26,8 +27,8 @@ class Leave
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="date")
-     * @Assert\NotBlank(message="Start date cannot be empty.", groups={"user"})
-     * @Assert\Date()
+     * @Assert\NotBlank(message="Start date cannot be empty.")
+     * @Assert\Type("\DateTime")
      */
     protected $startDate;
 
@@ -35,8 +36,8 @@ class Leave
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="date")
-     * @Assert\NotBlank(message="End date cannot be empty.", groups={"user"})
-     * @Assert\Date()
+     * @Assert\NotBlank(message="End date cannot be empty.")
+     * @Assert\Type("\DateTime")
      */
     protected $endDate;
 
@@ -210,5 +211,20 @@ class Leave
     public function getNumberOfDays()
     {
         return $this->numberOfDays;
+    }
+
+    /**
+     * Validate if a leave's start is in the past
+     *
+     * @Assert\Callback
+     */
+    public function validatePastLeaveDate(ExecutionContextInterface $context)
+    {
+        if (null !== $this && $this->getStartDate()->format('Y-m-d') < date('Y-m-d')) {
+            $context->addViolationAt(
+                'startDate',
+                sprintf('Start date can not be in the past.')
+            );
+        }
     }
 }

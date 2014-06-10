@@ -141,7 +141,7 @@ class LeaveController extends Controller
         $form = $this->createForm(
             new LeaveRequestType($isNewLeaveRequest),
             $leaveRequest,
-            array('em' => $entityManager, 'validation_groups' => array('user'))
+            array('em' => $entityManager)
         );
 
         if (null !== $leaveRequest) {
@@ -152,7 +152,6 @@ class LeaveController extends Controller
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-
                 $employees = $request->request->get('employee');
                 // Check the date overlappling with previous leave requests
                 $dateOverlappings = $leaveRequestService->checkLRsDateOverlapping($leaveRequest, $employees);

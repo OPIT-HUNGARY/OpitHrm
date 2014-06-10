@@ -102,24 +102,44 @@ class LeaveRequestService
      */
     public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest, $currentUser)
     {
-        // if user has gm rights
-        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            // if user created or is general manager of lr
-            if ($leaveRequest->getCreatedUser() == $currentUser ||
-                $leaveRequest->getGeneralManager() == $currentUser) {
-                return true;
-            }
+        $currentUserId = $currentUser->getId();
+        
         // if user is admin
-        } elseif ($this->securityContext->isGranted('ROLE_ADMIN')){
+        if ($this->securityContext->isGranted('ROLE_ADMIN')){
             return true;
-        // if user created his own lr
-        } elseif ($leaveRequest->getEmployee() == $currentUser) {
-            if ($leaveRequest->getCreatedUser() == $currentUser ) {
+        // if user has gm rights
+        } elseif ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
+            // if user created or is general manager of lr
+            if ($leaveRequest->getCreatedUser()->getId() === $currentUserId ||
+                $leaveRequest->getGeneralManager()->getId() === $currentUserId) {
                 return true;
             }
+        // if user created his own lr
+        } elseif (
+            $leaveRequest->getEmployee()->getUser()->getId() === $currentUserId &&
+            $leaveRequest->getCreatedUser()->getId() === $currentUserId
+            ) {
+                return $this->isLRPastLeaveDateDeleteable($leaveRequest);
         }
         
         return false;
+    }
+    
+    public function isLRPastLeaveDateDeleteable(LeaveRequest $leaveRequest)
+    {
+        $lrStatusId = $this->statusManager->getCurrentStatus($leaveRequest)->getId();
+        foreach($leaveRequest->getLeaves() as $leave) {
+            // check if leave date is smaller then todays date
+            if ($leave->getStartDate()->format('Y-m-d') <= date('Y-m-d')) {
+                if (Status::APPROVED === $lrStatusId) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        
+        return true;
     }
 
     /**

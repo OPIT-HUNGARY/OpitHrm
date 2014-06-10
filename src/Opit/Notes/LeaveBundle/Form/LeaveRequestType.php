@@ -97,8 +97,7 @@ class LeaveRequestType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\LeaveBundle\Entity\LeaveRequest',
-            'validation_groups' => array('user')
+            'data_class' => 'Opit\Notes\LeaveBundle\Entity\LeaveRequest'
         ))
         ->setRequired(array(
             'em',
