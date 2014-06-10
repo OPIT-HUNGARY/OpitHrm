@@ -152,39 +152,57 @@ class LeaveController extends Controller
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $employees = $request->request->get('employee');
 
-                if ($isGeneralManager && count($employees) > 0) {
-                    // Createing mass leave requests.
-                    $unpaidLeaveDetails = $this->createEmployeeLeaveRequests($leaveRequest, $entityManager, $employees);
-                } else {
-                    // Creating single leave request.
-                    foreach ($children as $child) {
-                        if (false === $leaveRequest->getLeaves()->contains($child)) {
-                            $child->setLeaveRequest();
-                            $entityManager->remove($child);
+                $employees = $request->request->get('employee');
+                // Check the date overlappling with previous leave requests
+                $dateOverlappings = $leaveRequestService->checkLRsDateOverlapping($leaveRequest, $employees);
+                // If there are not any date overlappings with other LRs this LR
+                if (0 === count($dateOverlappings)) {
+
+                    if ($isGeneralManager && count($employees) > 0) {
+                        // Creating mass leave requests.
+                        $unpaidLeaveDetails = $this->createEmployeeLeaveRequests($leaveRequest, $entityManager, $employees);
+                    } else {
+                        // Creating single leave request.
+                        foreach ($children as $child) {
+                            if (false === $leaveRequest->getLeaves()->contains($child)) {
+                                $child->setLeaveRequest();
+                                $entityManager->remove($child);
+                            }
+                        }
+
+                        foreach ($leaveRequest->getLeaves() as $leave) {
+                            $leave->setNumberOfDays(
+                                $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate())
+                            );
+                        }
+
+                        $entityManager->persist($leaveRequest);
+                        $entityManager->flush();
+
+                        if ($isNewLeaveRequest) {
+                            $statusManager->changeStatus($leaveRequest, Status::CREATED, true);
                         }
                     }
 
-                    foreach ($leaveRequest->getLeaves() as $leave) {
-                        $leave->setNumberOfDays(
-                            $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate())
-                        );
+                    if (empty($unpaidLeaveDetails)) {
+                        return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
                     }
-
-                    $entityManager->persist($leaveRequest);
-                    $entityManager->flush();
-
-                    if ($isNewLeaveRequest) {
-                        $statusManager->changeStatus($leaveRequest, Status::CREATED, true);
+                } else {
+                    // Set the date collisions into the error array.
+                    foreach ($dateOverlappings as $dateOverlapping) {
+                        foreach ($dateOverlapping as $requestId => $dates) {
+                            $errors[] = sprintf(
+                                'Date collision with %s leave request with %s and %s dates',
+                                $requestId,
+                                $dates['startDate']->format('Y-m-d'),
+                                $dates['endDate']->format('Y-m-d')
+                            );
+                        }
                     }
                 }
-
-                if (empty($unpaidLeaveDetails)) {
-                    return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
             } else {
                 $errors = Utils::getErrorMessages($form);
-                }
             }
         }
         

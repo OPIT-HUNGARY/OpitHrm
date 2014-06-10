@@ -286,4 +286,67 @@ class LeaveRequestService
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:massLeaveRequests.html.twig', array_merge($templateVariables, $unpaidLeaveDetails));
         $this->mailer->sendMail();
     }
+
+    /**
+     * Check leave requests date overlapping
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @return array of date overlappings
+     */
+    public function checkLRsDateOverlapping($leaveRequest, $employees)
+    {
+        $result = array();
+        $employeeLeaveRequests = array();
+        // If this is an own employee leave request.
+        if (empty($employees)) {
+            $employees[] = $this->securityContext->getToken()->getUser()->getEmployee();
+        }
+        // Get the employee lave requests.
+        foreach ($employees as $employee) {
+            $employeeLeaveRequests[] = $this->entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->findBy(array(
+                'employee' => $this->entityManager->getRepository('OpitNotesUserBundle:Employee')->find($employee)
+            ));
+        }
+        // Check the date overlappings.
+        foreach ($employeeLeaveRequests as $leaveRequests) {
+            foreach ($leaveRequests as $lr) {
+                // Compare the date overlapping between leave requests
+                $dateOverlappings = $this->compareLRDateOverlapping($leaveRequest, $lr);
+                if (0 < count($dateOverlappings)) {
+                    $result[] = $dateOverlappings;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compare the date overlapping between leave requests
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $currentLR
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $otherLR
+     * @return array of date overlappings
+     */
+    public function compareLRDateOverlapping($currentLR, $otherLR)
+    {
+        $dateOverlappings = array();
+        // Iterate the current leave request's leaves.
+        foreach ($currentLR->getLeaves() as $currentElement) {
+            // Iterate the other leave request' leaves.
+            foreach ($otherLR->getLeaves() as $otherElement) {
+                // Checking the date overlapping.
+                if (($currentElement->getStartDate() <= $otherElement->getEndDate()) &&
+                    ($otherElement->getStartDate() <= $currentElement->getEndDate())) {
+                    $dateOverlappings[$otherLR->getLeaveRequestId()] = array(
+                        'startDate' => $otherElement->getStartDate(),
+                        'endDate' => $otherElement->getEndDate()
+                    );
+                    break;
+                }
+            }
+        }
+
+        return $dateOverlappings;
+    }
 }

@@ -13,11 +13,11 @@
                 <i class="fa fa-sort default-right" data-field="endDate"></i>
                 <span class="order-text cursor-pointer">Dates</span>
             </th>
-            <th>Created By</th>
             <th>
                 Leave days
                 <i class="fa fa-info-circle cursor-pointer margin-left-5" title="Administrative holidays - Excluded Administrative working days - Included"></i>
             </th>
+            <th>Created By</th>
             <th>Status</th>
             <th>Actions</th>
         </tr>
@@ -50,10 +50,10 @@
                 </ul>
             </td>
             <td>
-                <span>{{ leaveRequest.createdUser.Employee.EmployeeName }}</span>
+                {{ numberOfDays }}
             </td>
             <td>
-                {{ numberOfDays }}
+                <span>{{ leaveRequest.createdUser.Employee.EmployeeName }}</span>
             </td>
             <td>
                 {% if leaveRequest.leaveRequestGroup is defined and leaveRequest.leaveRequestGroup is null %}
