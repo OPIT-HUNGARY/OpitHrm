@@ -421,7 +421,7 @@ class ExchangeRateServiceTest extends WebTestCase
      */
     public function testGetDiffExchangeRates()
     {
-        // Get the last week's thursday.
+        // Get the last week's Monday.
         $lastMondayDate = date('Y-m-d', strtotime('last Monday'));
         
         // Create a mocked Exchange Service.
