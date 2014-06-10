@@ -35,9 +35,16 @@
                 {% if "now"|date("Y-m-d") <= lastContactDate and leaveRequest.createdUser.id != leaveRequest.employee.user.id and listingRights['isForApproval'][id] %}
                     <i class="fa fa-info-circle color-ferrari-red cursor-pointer margin-left-5 font-size-18 tipsy-notification" title="{{ lrInfo }}"></i>
                 {% endif %}
+                {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest == true %}
+                    <i class="fa fa-group margin-left-5" title="Group leave request"></i>
+                {% endif %}
             </td>
             <td>
-                {{ leaveRequest.employee.employeeName }} < {{ leaveRequest.employee.user.email }} >
+                {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest == true %}
+                    <i><strong>{{ 'Group leave request' }}</strong></i>
+                {% else %}
+                    {{ leaveRequest.employee.employeeName }} < {{ leaveRequest.employee.user.email }} >
+                {% endif %}
             </td>
             <td>
                 <ul class="no-style leave-dates">
@@ -53,10 +60,10 @@
                 {{ numberOfDays }}
             </td>
             <td>
-                <span>{{ leaveRequest.createdUser.Employee.EmployeeName }}</span>
+                <span>{{ leaveRequest.createdUser.employee.employeeName }} < {{ leaveRequest.createdUser.employee.user.email }} ></span>
             </td>
             <td>
-                {% if leaveRequest.leaveRequestGroup is defined and leaveRequest.leaveRequestGroup is null %}
+                {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest != true %}
                     {% if not listingRights['isLocked'][id]['isStatusLocked'] %}
                     <select data-lr="{{ id }}" class="changeState">
                     {% for key, value in listingRights['leaveRequestStates'][id] %}
@@ -71,28 +78,29 @@
                 {% endif %}
             </td>
             <td>
-                {% if not listingRights['isLocked'][id]['isEditLocked'] %}
-                <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="Edit leave request">
-                    <i class="fa fa-pencil-square-o fa-1x"></i>
-                </a>
+                {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest != true %}
+                    {% if not listingRights['isLocked'][id]['isEditLocked'] %}
+                    <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="Edit leave request">
+                        <i class="fa fa-pencil-square-o fa-1x"></i>
+                    </a>
+                    {% else %}
+                    <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="View leave request">
+                        <i class="fa fa-list-alt fa-1x"></i>
+                    </a>
+                    {% endif %}
                 {% else %}
-                <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="View leave request">
-                    <i class="fa fa-list-alt fa-1x"></i>
-                </a>
+                    <span class="float-left width-22-fix">&nbsp;</span>
                 {% endif %}
                 {% if listingRights['isDeleteable'][id] %}
-                    {% if leaveRequest.createdUser.id == leaveRequest.employee.user.id %}
-                        <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
-                            <i class="fa fa-trash-o fa-1x"></i>
-                        </a>
-                    {% endif %}
+                    <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
+                        <i class="fa fa-trash-o fa-1x"></i>
+                    </a>
                 {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
 
-    {# Display a no results message #}
     {% include 'OpitNotesCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': leaveRequests } %}
 
     {% if numberOfPages is defined and numberOfPages > 0 %}

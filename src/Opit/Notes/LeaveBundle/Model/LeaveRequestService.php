@@ -81,7 +81,7 @@ class LeaveRequestService
             $isLocked[$leaveRequest->getId()] = $isTRLocked;
 
             $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest);
-            
+
             $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
         }
 
@@ -211,13 +211,14 @@ class LeaveRequestService
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest
      */
-    public function createLRInstance(LeaveRequest $leaveRequest, LeaveRequestGroup $leaveRequestGroup, Employee $employee)
+    public function createLRInstance(LeaveRequest $leaveRequest, LeaveRequestGroup $leaveRequestGroup, Employee $employee, $isMassLeaveRequest = false)
     {
         $lr = new LeaveRequest();
         $lr->setEmployee($employee);
         $lr->setGeneralManager($leaveRequest->getGeneralManager());
         $lr->setTeamManager($leaveRequest->getTeamManager());
         $lr->setLeaveRequestGroup($leaveRequestGroup);
+        $lr->setIsMassLeaveRequest($isMassLeaveRequest);
 
         return $lr;
     }

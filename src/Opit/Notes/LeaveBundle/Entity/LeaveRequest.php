@@ -65,6 +65,11 @@ class LeaveRequest extends AbstractBase
     protected $teamManager;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    protected $isMassLeaveRequest;
+
+    /**
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
      */
     protected $notifications;
@@ -342,5 +347,28 @@ class LeaveRequest extends AbstractBase
     public function getLeaveRequestGroup()
     {
         return $this->leaveRequestGroup;
+    }
+
+    /**
+     * Set isMassLeaveRequest
+     *
+     * @param boolean $isMassLeaveRequest
+     * @return LeaveRequest
+     */
+    public function setIsMassLeaveRequest($isMassLeaveRequest)
+    {
+        $this->isMassLeaveRequest = $isMassLeaveRequest;
+
+        return $this;
+    }
+
+    /**
+     * Get isMassLeaveRequest
+     *
+     * @return boolean
+     */
+    public function getIsMassLeaveRequest()
+    {
+        return $this->isMassLeaveRequest;
     }
 }

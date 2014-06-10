@@ -205,9 +205,9 @@ class LeaveController extends Controller
                 $errors = Utils::getErrorMessages($form);
             }
         }
-        
+
         $isForApproval = $currentStatus->getId() === Status::FOR_APPROVAL;
-        
+
         return $this->render(
             'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig',
             array_merge(
@@ -249,7 +249,7 @@ class LeaveController extends Controller
 
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
-            
+
             if ($token->getUser()->getEmployee() !== $leaveRequest->getEmployee() &&
                 !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
                 !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER') &&
@@ -357,13 +357,26 @@ class LeaveController extends Controller
         $leaveRequestGroup = new LeaveRequestGroup();
         $entityManager->persist($leaveRequestGroup);
 
+        // get leave from leave request
+        $leave = current(current($leaveRequest->getLeaves()));
+        $startDate = clone $leave->getStartDate();
+        $endDate = clone $leave->getEndDate();
+
+        // Create mass leave request
+        $massLeaveRequest = $leaveRequestService->createLRInstance(
+            $leaveRequest,
+            $leaveRequestGroup,
+            $this->get('security.context')->getToken()->getUser()->getEmployee(),
+            true
+        );
+        // create new instance leave for massive leaveRequest
+        $leaveOfMLR = $leaveRequestService->createLeaveInstance($leave, $massLeaveRequest, $fullDayCategory, 0, $startDate, $endDate);
+        $leaveOfMLR->setNumberOfDays($leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate()));
+        $massLeaveRequest->addLeaf($leaveOfMLR);
+        $entityManager->persist($massLeaveRequest);
+
         foreach ($employees as $employee) {
             $employee = $entityManager->getRepository('OpitNotesUserBundle:Employee')->find($employee);
-
-            // get leave from leave request
-            $leave = current(current($leaveRequest->getLeaves()));
-            $startDate = clone $leave->getStartDate();
-            $endDate = clone $leave->getEndDate();
 
             // create new leave request instace to not overwrite old one
             $lr = $leaveRequestService->createLRInstance($leaveRequest, $leaveRequestGroup, $employee);
