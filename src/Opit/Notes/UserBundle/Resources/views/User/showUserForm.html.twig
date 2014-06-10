@@ -7,14 +7,14 @@
     {% set title = "Create User"  %}
     {% set desc = "Create a new user." %}
 {% endif %}
-<h2 class="dialog-h2">{{ title|trans }}</h2>
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
 <div class="dialog-description">{{desc|trans}}</div>
 <div id="reply-message"></div>
 <div class="error-message">
     {{ form_errors(form) }}
 </div>
-<form name="adduser_frm" id="adduser_frm" method="post">
-    <div class="modalwindow width-98 default-border height-auto overflow-hidden">
+{{ form_start(form, {'attr': { 'id': 'adduser_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
         {# form rendering is split because of subform layout nesting #}
         {% for key, value in form if key != 'employee' %}
             {{ form_row(value) }}
@@ -24,4 +24,4 @@
             {{ form_row(value) }}
         {% endfor %}
     </div>
-</form>
+{{ form_end(form) }}

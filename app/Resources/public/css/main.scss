@@ -680,10 +680,11 @@
 }
 
 .modalwindow {
-    border: 1px solid $darkGrey;
+    border: 1px solid $defaultDarkColor;
     background-color: $defaultLightColor;
     font-size: $defaultFontSize;
     padding: 5px;
+    @include box-sizing(border-box);
     @include border-radius(5px);
 }
 

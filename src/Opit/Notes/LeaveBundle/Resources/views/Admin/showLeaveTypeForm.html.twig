@@ -6,14 +6,13 @@
     {% set title = "Create Administrative Leave/Working Day type"  %}
     {% set desc = "Create a new Administrative Leave/Working Day type." %}
 {% endif %}
-<h2 class="dialog-h2">{{ title|trans }}</h2>
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
 <div class="dialog-description">{{desc|trans}}</div>
 <div id="reply-message"></div>
-<form name="addleavetype_frm" id="addleavetype_frm" method="post">
-    {{ form_start(form) }}
-    <div class="modalwindow width-98 default-border height-auto overflow-hidden">
+{{ form_start(form, {'attr': { 'id': 'addleavetype_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
         <div class="float-left width-300">
-            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-section-color-grey bold padding-4">
                 {{ form_label(form.name) }}
             </div>
             <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
@@ -23,7 +22,7 @@
         </div>
             
         <div class="float-left width-32">
-            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-section-color-grey bold padding-4">
                 {{ form_label(form.isWorkingDay) }}
             </div>
             <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
@@ -32,5 +31,4 @@
             </div>
         </div>
     </div>
-    {{ form_end(form) }}
-</form>
+{{ form_end(form) }}

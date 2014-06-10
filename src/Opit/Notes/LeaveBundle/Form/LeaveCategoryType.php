@@ -47,10 +47,14 @@ class LeaveCategoryType extends AbstractType
             'max_length' => 50,
             'placeholder' => 'Name'
         )));
-        $builder->add('description', 'textarea', array('attr' => array(
-            'max_length' => 255,
-            'placeholder' => 'Description'
-        )));
+        $builder->add('description', 'textarea', array(
+            'attr' => array(
+                'max_length' => 255,
+                'placeholder' => 'Description'
+
+            ),
+            'required' => false
+        ));
         $builder->add('leaveCategoryDuration', 'entity', array(
             'class' => 'OpitNotesLeaveBundle:LeaveCategoryDuration',
             'property' => 'leaveCategoryDurationName',

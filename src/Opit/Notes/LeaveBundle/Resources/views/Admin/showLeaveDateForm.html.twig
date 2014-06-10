@@ -1,4 +1,6 @@
 {% form_theme form 'OpitNotesUserBundle:Form:form_template.html.twig' %}
+
+{% set labelWrapperClasses = ['vertical-align-top', 'item-input-box-header', 'float-left height-20', 'color-white', 'background-section-color-grey', 'bold', 'padding-4'] %}
 {% if form.vars.value.getId() is not null %}
     {% set title = "Edit Administrative Leave/Working Day"  %}
     {% set desc = "You can edit an existing Administrative Leave/Working Day from here." %}
@@ -6,14 +8,13 @@
     {% set title = "Create Administrative Leave/Working Day"  %}
     {% set desc = "You can create a new Administrative Leave/Working Day from here." %}
 {% endif %}
-<h2 class="dialog-h2">{{ title|trans }}</h2>
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
 <div class="dialog-description">{{desc|trans}}</div>
 <div id="reply-message"></div>
-<form name="addleavedate_frm" id="addleavedate_frm" method="post">
-    {{ form_start(form) }}
-    <div class="modalwindow width-98 default-border height-auto overflow-hidden">
+{{ form_start(form, {'attr': { 'id': 'addleavedate_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
         <div class="float-left width-48">
-            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
                 {{ form_label(form.holidayDate) }}
             </div>
             <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
@@ -22,7 +23,7 @@
             </div>
         </div>
         <div class="float-left width-48">
-            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-color-green bold padding-4">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
                 {{ form_label(form.holidayType) }}
             </div>
             <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
@@ -31,5 +32,4 @@
             </div>
         </div>
     </div>
-    {{ form_end(form) }}
-</form>
+{{ form_end(form) }}
