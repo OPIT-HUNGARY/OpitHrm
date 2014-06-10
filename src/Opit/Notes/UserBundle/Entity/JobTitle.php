@@ -43,7 +43,7 @@ class JobTitle
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=100)
-     * @Assert\NotBlank(message="The title should not be blank.")
+     * @Assert\NotBlank(message="The title can not be blank.")
      */
     private $title;
 
@@ -51,10 +51,10 @@ class JobTitle
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
-     * @Assert\NotBlank(message="The description should not be blank.")
+     * @Assert\NotBlank(message="The description can not be blank.")
      * @Assert\Length(
      *      max = "255",
-     *      maxMessage = "The password should not be longer than {{ limit }} characters length"
+     *      maxMessage = "The password can not be longer than {{ limit }} characters length"
      * )
      */
     private $description;

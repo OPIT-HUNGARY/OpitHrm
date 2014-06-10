@@ -26,7 +26,7 @@ class LeaveType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=100)
-     * @Assert\NotBlank(message="The name may not be blank.")
+     * @Assert\NotBlank(message="The name can not be blank.")
      */
     protected $name;
 

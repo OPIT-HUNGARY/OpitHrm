@@ -42,7 +42,7 @@ class TEPerDiem
      * @var float
      *
      * @ORM\Column(name="hours", type="float")
-     * @Assert\NotBlank(message="The hours should not be blank.")
+     * @Assert\NotBlank(message="The hours can not be blank.")
      * @Assert\Range(
      *      min = 1,
      *      max = 24,
@@ -56,7 +56,7 @@ class TEPerDiem
      * @var float
      *
      * @ORM\Column(name="amount", type="decimal", scale=2)
-     * @Assert\NotBlank(message="The amount should not be blank.")
+     * @Assert\NotBlank(message="The amount can not be blank.")
      * @Assert\Range(
      *      min = 1,
      *      minMessage = "The amount should be least 1."

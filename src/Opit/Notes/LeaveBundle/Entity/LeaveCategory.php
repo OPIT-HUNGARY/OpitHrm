@@ -37,7 +37,7 @@ class LeaveCategory extends AbstractBase
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=50)
-     * @Assert\NotBlank(message="The name may not be blank.")
+     * @Assert\NotBlank(message="The name can not be blank.")
      */
     private $name;
 
@@ -45,7 +45,7 @@ class LeaveCategory extends AbstractBase
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=255)
-     * @Assert\NotBlank(message="The description may not be blank.")
+     * @Assert\NotBlank(message="The description can not be blank.")
      */
     private $description;
 

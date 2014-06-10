@@ -553,7 +553,7 @@ $.validator.addMethod 'compare', (value, element) ->
     $('#travelExpense_arrivalDateTime_time_minute').css border: 'solid 1px rgb(170, 170, 170)'
 
     return new Date(departure) < new Date(arrival)
-, 'Arrival date should not be earlier than departure date.'
+, 'Arrival date can not be earlier than departure date.'
     
 $form.validate
     ignore: []

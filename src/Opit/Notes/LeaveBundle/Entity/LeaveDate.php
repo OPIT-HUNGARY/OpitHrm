@@ -26,7 +26,7 @@ class LeaveDate
      * @var \DateTime
      *
      * @ORM\Column(name="leaveDate", type="date")
-     * @Assert\NotBlank(message="The leave date may not be blank.")
+     * @Assert\NotBlank(message="The leave date can not be blank.")
      * @Assert\Type("\DateTime")
      */
     private $holidayDate;

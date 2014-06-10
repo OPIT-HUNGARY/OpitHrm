@@ -86,7 +86,7 @@ $(document).ready ->
             if startDateVal > endDateVal
                 isValid = no
                 if $startDateParent.children('label.error').length is 0
-                    $startDateParent.append createErrorLabel('Start date should not be bigger than end date.')
+                    $startDateParent.append createErrorLabel('Start date bigger than end date.')
                     $startDate.addClass 'error'
             else
                 $startDateParent.find('label.error').remove()
@@ -100,7 +100,7 @@ $(document).ready ->
             isValid = no
             if $('.leave-error').length <= 0
                 $errorContainer = $('#reply-message')
-                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No leave date added.')
+                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('Leave date required.')
                 $errorContainer
                     .append $errorMessage
                     .removeClass 'display-none'
