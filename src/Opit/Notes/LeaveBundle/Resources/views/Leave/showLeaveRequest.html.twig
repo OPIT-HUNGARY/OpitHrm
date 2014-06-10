@@ -76,8 +76,10 @@
         {% endif %}
     {% endif %}
         
-    <div id="reply-message" class="alert-message error-message display-none">
+    {% set formErrors = form_errors(form) %}
+    <div id="reply-message" class="alert-message error-message {% if 0 == formErrors|length %}display-none{% endif %}">
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
+        {{ formErrors }}
     </div>
     
     {% if isEditLocked == '1' %}
@@ -129,7 +131,7 @@
                 {{ form_label(form.team_manager_ac) }}
                 {{ form_widget(form.team_manager_ac) }}
                 </div>
-                <div class="display-inline-block width-500">
+                <div class="display-inline-block">
                 {{ form_label(form.general_manager_ac) }}
                 {{ form_widget(form.general_manager_ac) }}
                 </div>

@@ -371,4 +371,24 @@ class LeaveRequest extends AbstractBase
     {
         return $this->isMassLeaveRequest;
     }
+    
+    /**
+     * Validate if a leave's start, end date is in the past
+     * 
+     * @Assert\Callback(groups={"user"})
+     */    
+    public function validatePastLeaveDates(ExecutionContextInterface $context)
+    {
+        $leaves = $this->leaves;
+        $now = date('Y-m-d');
+        
+        foreach ($leaves as $leave) {
+            if ($leave->getStartDate()->format('Y-m-d') < $now) {
+                $context->addViolation(
+                    sprintf('Leave start date can not be in the past.')
+                );
+                break;
+            }
+        }
+    }
 }

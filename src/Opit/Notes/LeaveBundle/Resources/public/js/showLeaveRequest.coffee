@@ -13,6 +13,18 @@ $('form#leaveRequestForm').on 'change', '.end-date', ->
 
 $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
 
+createErrorLabel = (errorMessage, errorClass = '', attributes = []) ->
+    $errorLabel = $('<label>')
+    $errorLabel
+        .addClass 'error'
+        .addClass errorClass
+        .html errorMessage
+        
+    attributes.forEach (attribute) ->
+        $errorLabel.attr attribute['property'], attribute['value']
+
+    return $errorLabel
+
 # Cechking dates overlapping on the current date input field.
 checkDatesOverlapping = ($self) ->
     $formFieldset = $self.closest('.formFieldsetChild')
@@ -29,12 +41,6 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
     $('.formFieldsetChild').each (index, element) ->
         $startDate = $(element).find '.start-date'
         $endDate = $(element).find '.end-date'
-        # Removing error labels from other elements.
-        $startDate.removeClass 'error'
-        $startDate.parent().find('label.error').remove()
-        $endDate.removeClass 'error'
-        $endDate.parent().find('label.error').remove()
-        $(element).find('label.error').remove()
 
         # Check DOMs are notthe same (checking the DOM level) in order to avoid to compoare itself values.
         # Compare the Dom's first element show the level. Otherwise it will not work.
@@ -45,12 +51,13 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
                 # Prevent to add more error class on the element
                 if $self.hasClass('error') is no
                     $self.addClass 'error'
-                    $errorLabel = $('<label>').addClass('error').html 'Dates are overlapping: ' + $startDate.val() + ' and ' + $endDate.val()
-                    $errorLabel.attr('data-start-date', $startDate.val())
-                    $errorLabel.attr('data-end-date', $endDate.val())
-                    $self.parent().append $errorLabel
+                    $self.parent().append createErrorLabel(
+                        'Dates are overlapping: ' + $startDate.val() + ' and ' + $endDate.val(),
+                        'overlap-error',
+                        [{'property': 'data-start-date', 'value': $startDate.val()}, {'property': 'data-end-date', 'value': $endDate.val()}]
+                    )
                 else
-                    $errorLabel = $self.parent().find 'label.error'
+                    $errorLabel = $self.parent().find 'label.overlap-error'
                     # Refresh the dates of error message
                     if ($errorLabel.data 'start-date' != $startDate) and ($errorLabel.data 'end-date' != $endDate)
                         $errorLabel.html 'Date overlapping with: ' + $startDate.val() + ' ' + $endDate.val()
@@ -61,18 +68,10 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
             else
                 # If there is not overlapping remove the error class
                 $self.removeClass 'error'
-                $self.parent().find('label.error').remove()
+                $self.parent().find('label.overlap-error').remove()
     return isValid
 
 $(document).ready ->
-    createErrorLabel = (errorMessage) ->
-        $errorLabel = $('<label>')
-        $errorLabel
-            .addClass 'error'
-            .html errorMessage
-
-        return $errorLabel
-
     compareLeaveDates = () ->
         isValid = yes
         $('.formFieldsetChild').each (index) ->
@@ -85,12 +84,13 @@ $(document).ready ->
             
             if startDateVal > endDateVal
                 isValid = no
-                if $startDateParent.children('label.error').length is 0
-                    $startDateParent.append createErrorLabel('Start date bigger than end date.')
+                if $startDateParent.children('label.bigger-error').length is 0
+                    $startDateParent.append createErrorLabel('Start date can not be bigger than end date.', 'bigger-error')
                     $startDate.addClass 'error'
             else
-                $startDateParent.find('label.error').remove()
-                $startDate.removeClass 'error'
+                $startDateParent.find('label.bigger-error').remove()
+                if $startDateParent.find('label.past-error').length == 0
+                    $startDate.removeClass 'error'
             
         return isValid
         
@@ -100,13 +100,47 @@ $(document).ready ->
             isValid = no
             if $('.leave-error').length <= 0
                 $errorContainer = $('#reply-message')
-                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('Leave date required.')
+                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No leave date added.')
                 $errorContainer
                     .append $errorMessage
                     .removeClass 'display-none'
         else
             $('#reply-message').addClass 'display-none'
             $('.leave-error').remove()
+            
+        return isValid
+        
+    validatePastDates = () ->
+        isValid = yes
+        $('.start-date').each () ->
+            $startDate = $(@)
+            $startDateParent = $startDate.parent()
+            
+            dateNow = new Date()
+            startDate = new Date($startDate.val())
+            
+            if startDate < dateNow
+                isValid = no
+                if $startDateParent.children('label.past-error').length is 0
+                    $startDateParent.append createErrorLabel('Start date can not be in the past.', 'past-error')
+                    $startDate.addClass 'error'
+            else
+                $startDateParent.find('label.past-error').remove()
+                $startDate.removeClass 'error'
+                
+        return isValid
+        
+    validateGm = () ->
+        isValid = yes
+        $generalManger = $('#leave_request_general_manager')
+        $generalManagerAc = $('#leave_request_general_manager_ac')
+        if $generalManger.val() == ''
+            $generalManagerAc.parent().append createErrorLabel('A general manager must be selected.', 'gm-error')
+            $generalManagerAc.addClass 'error'
+            isValid = no
+        else
+            $generalManagerAc.parent().find('.gm-error').remove()
+            $generalManagerAc.removeClass 'error'
             
         return isValid
             
@@ -203,14 +237,6 @@ $(document).ready ->
     $form.prepend $('.formFieldset')
     $form.find('#leave_request_create_leave_request').parent().append $('#cancel-button')
 
-    $employeeError = $('#leave_request').find('ul')
-    if $employeeError.length > 0
-        $('.alert-message')
-            .removeClass 'display-none'
-            .append $employeeError
-        valid = validateDatesOverlapping $startDate, $endDate, $(@).children()
-
-
     $collectionHolder.children().each (index) ->
         $(@).find('label:first').remove()
         createLeave($(@))
@@ -257,25 +283,10 @@ $(document).ready ->
             $addFormFieldset.removeClass displayNone
             
             $employeeSelector.attr 'disabled', 'disabled'
-
-    $.validator.addMethod 'checkGM', (value, element) ->
-        $gmName = $(element)
-        $gmName.addClass 'error'
-        gmNameFieldId = $gmName.attr 'id'
-        $gmId = $('#'+gmNameFieldId.substr(0, gmNameFieldId.length-3))
-        if $gmName.val()
-            if not $gmId.val() then return false else return true
-        else return false
-    , 'This field is required'
-
-    $form.validate
-        ignore: []
-        rules:
-            "leave_request[general_manager_ac]": "checkGM"
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and $form.valid() is yes
+        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validatePastDates() is yes and validateGm() is yes
             $('#leaveRequestForm').submit()
             return
         
