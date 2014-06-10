@@ -16,7 +16,9 @@ framework:
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
-    validation:      { enable_annotations: true }
+    validation:
+        enable_annotations: true
+        api: auto
     templating:
         engines: ['twig']
         assets_version: %version_number%
