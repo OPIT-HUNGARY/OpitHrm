@@ -18,6 +18,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\UserBundle\Entity\Employee;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * Description of CalendarController
@@ -63,12 +64,13 @@ class CalendarController extends Controller
 
         $teamsEmployees = $this->getTeamsEmployees($employee);
 
-        // get all leave requests employees are in
+        // get all approved leave requests employees are in
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findEmployeesLeaveRequests(
                 $teamsEmployees,
                 date('Y-m-d', $request->query->get('start')),
-                date('Y-m-d', $request->query->get('end'))
+                date('Y-m-d', $request->query->get('end')),
+                Status::APPROVED
             );
 
         $leaves = array();

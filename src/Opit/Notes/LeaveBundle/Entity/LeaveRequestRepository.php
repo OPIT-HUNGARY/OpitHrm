@@ -85,21 +85,35 @@ class LeaveRequestRepository extends EntityRepository
         return new Paginator($dq->getQuery(), true);
     }
 
-    public function findEmployeesLeaveRequests($employeeIds, $startDate = '', $endDate = '')
+    /**
+     * Find all employee leave request with in a date range
+     *
+     * @param type $employeeIds
+     * @param type $startDate
+     * @param type $endDate
+     * @param type $status
+     * @return type
+     */
+    public function findEmployeesLeaveRequests($employeeIds, $startDate = '', $endDate = '', $status = null)
     {
-        $dq = $this->createQueryBuilder('lr')
-            ->select('lr, l, e')
-            ->where('lr.employee in (:employee)')
-            ->andwhere('l.startDate > :startDate')
-            ->andWhere('l.endDate < :endDate')
-            ->innerJoin('lr.leaves', 'l')
-            ->innerJoin('lr.employee', 'e')
-            ->setParameter('employee', $employeeIds)
-            ->setParameter('startDate', $startDate)
-            ->setParameter('endDate', $endDate)
-            ->getQuery();
+        $dq = $this->createQueryBuilder('lr');
+        $dq->select('lr, l, e')
+                ->where('lr.employee in (:employee)')
+                ->andwhere('l.startDate > :startDate')
+                ->andWhere('l.endDate < :endDate');
+        if ($status) {
+            $dq->andWhere($dq->expr()->In('s.status', ':states'));
+            $dq->setParameter(':states', $status);
+            $dq->innerJoin('lr.states', 's');
+        }
+        $dq->innerJoin('lr.leaves', 'l')
+                ->innerJoin('lr.employee', 'e')
+                ->setParameter('employee', $employeeIds)
+                ->setParameter('startDate', $startDate)
+                ->setParameter('endDate', $endDate);
+        $q = $dq->getQuery();
 
-        return $dq->getResult();
+        return $q->getResult();
     }
 
     /**
