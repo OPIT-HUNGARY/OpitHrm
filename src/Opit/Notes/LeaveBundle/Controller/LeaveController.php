@@ -49,6 +49,7 @@ class LeaveController extends Controller
         $employee = $user->getEmployee();
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
+        $parentsOfGroupLRs = array();
 
         // Calculating the leave days for the current employee.
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
@@ -72,10 +73,16 @@ class LeaveController extends Controller
 
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
-        
+
+        $massLeaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
+            ->findBy(array('isMassLeaveRequest' => 1));
+        foreach ($massLeaveRequests as $massLeaveRequest) {
+            $parentsOfGroupLRs[$massLeaveRequest->getLeaveRequestGroup()->getId()] = $massLeaveRequest;
+        }
+
         $listingRights = $this->get('opit.model.leave_request')
             ->setLeaveRequestListingRights($leaveRequests, $user);
-        
+
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesLeaveBundle:Leave:_list.html.twig';
         } else {
@@ -86,6 +93,7 @@ class LeaveController extends Controller
             $template,
             array(
                 'leaveRequests' => $leaveRequests,
+                'parentsOfGroups' => $parentsOfGroupLRs,
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
@@ -175,7 +183,7 @@ class LeaveController extends Controller
                                 $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate())
                             );
                         }
-
+                        $leaveRequest->setIsMassLeaveRequest(false);
                         $entityManager->persist($leaveRequest);
                         $entityManager->flush();
 
@@ -250,6 +258,13 @@ class LeaveController extends Controller
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
 
+            // If it is a massive leave request then delete all child employee leave requests.
+            if (true === $leaveRequest->getIsMassLeaveRequest()) {
+                // Remove the leave request group.
+                // This will remove the joined request leaves too.
+                $entityManager->remove($leaveRequest->getLeaveRequestGroup());
+            }
+
             if ($currentUser->getEmployee() !== $leaveRequest->getEmployee() &&
                 !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
                 !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER') &&
@@ -258,7 +273,7 @@ class LeaveController extends Controller
                     'Access denied for leave.'
                 );
             }
-            
+
             if ($leaveRequestService->isLeaveRequestDeleteable($leaveRequest, $currentUser)) {
                 $entityManager->remove($leaveRequest);
             }

@@ -37,6 +37,12 @@
                 {% endif %}
                 {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest == true %}
                     <i class="fa fa-group margin-left-5" title="Group leave request"></i>
+                {% elseif leaveRequest.leaveRequestGroup is not null and parentsOfGroups[leaveRequest.leaveRequestGroup.id] is defined  %}
+                    {% if listingRights['isDeleteable'][id]%}
+                        <i class="fa fa-info-circle cursor-pointer margin-left-5" title="{{ 'Parent leave request ' ~ parentsOfGroups[leaveRequest.leaveRequestGroup.id].leaveRequestId }}" ></i>
+                    {% else %}
+                        <i class="fa fa-info-circle cursor-pointer margin-left-5" title="Part of group leave request, you cannot delete this leave request." ></i>
+                    {% endif %}
                 {% endif %}
             </td>
             <td>
@@ -92,7 +98,8 @@
                     <span class="float-left width-22-fix">&nbsp;</span>
                 {% endif %}
                 {% if listingRights['isDeleteable'][id] %}
-                    <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}" class="delete-leave-request">
+                    <a href="{{ path('OpitNotesLeaveBundle_leaverequest_delete') }}" title="Delete leave request" class="delete-leave-request" data-request="{{ leaveRequest.leaveRequestId }}" data-id="{{ id }}"
+                       data-mlr="{% if leaveRequest.isMassLeaveRequest == true %}{{leaveRequest.isMassLeaveRequest}}{% else %}0{% endif %}" >
                         <i class="fa fa-trash-o fa-1x"></i>
                     </a>
                 {% endif %}

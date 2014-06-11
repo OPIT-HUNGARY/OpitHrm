@@ -30,9 +30,18 @@ $(document).ready ->
         event.preventDefault()
         $deleteButton = $(@)
         leaveRequestId = $deleteButton.data 'request'
-        $('<div id="dialog-show-details-tr"></div>').html("Are you sure you want to delete leave request #{ leaveRequestId }?")
+        message = "Are you sure you want to delete leave request #{ leaveRequestId }?"
+        title = 'Delete leave request'
+
+        # Checking if it is a massive leave request
+        if  1 == $deleteButton.data('mlr')
+            title = 'Delete group leave request'
+            message = 'Are you sure you want to delete this group leave request. ' +
+            'Deleting this group leave request will subsequently delete all child leave requests created by it.'
+
+        $('<div id="dialog-show-details-tr"></div>').html(message)
             .dialog
-                title: '<i class="fa fa fa-exclamation-triangle"></i> Delete leave request'
+                title: '<i class="fa fa fa-exclamation-triangle"></i> ' + title
                 width: 550
                 maxHeight: $(window).outerHeight()-100
                 modal: on
@@ -43,13 +52,20 @@ $(document).ready ->
                             url: $deleteButton.attr('href')
                             data: 'id': $deleteButton.data('id')
                         .done (data) ->
+                            $.ajax
+                                type: 'POST'
+                                url: Routing.generate 'OpitNotesLeaveBundle_leave_list'
+                                data: "resetForm" : 1
+                            .done (list)->
+                                $('#leave_list').html list
+                                $(document).data('notes').funcs.initListPageListeners()
+                                $(document).data('notes').funcs.initDeleteMultipleListener()
                             $('#dialog-show-details-tr').dialog 'destroy'
-                            $deleteButton.closest('tr').remove()
                             return
                     No: ->
                         $('#dialog-show-details-tr').dialog 'destroy'
                         return
-                        
+
     $('#leave_list').on 'change', '.changeState', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'        
 
