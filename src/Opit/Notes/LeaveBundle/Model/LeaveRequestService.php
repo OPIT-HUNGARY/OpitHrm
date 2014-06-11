@@ -104,17 +104,11 @@ class LeaveRequestService
     {
         $currentUserId = $currentUser->getId();
         
-        // if user is admin
-        if ($this->securityContext->isGranted('ROLE_ADMIN')){
-            return true;
-        // if user has gm rights
-        } elseif ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            // if user created or is general manager of lr
+        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
             if ($leaveRequest->getCreatedUser()->getId() === $currentUserId ||
                 $leaveRequest->getGeneralManager()->getId() === $currentUserId) {
                 return true;
             }
-        // if user created his own lr
         } elseif (
             $leaveRequest->getEmployee()->getUser()->getId() === $currentUserId &&
             $leaveRequest->getCreatedUser()->getId() === $currentUserId
