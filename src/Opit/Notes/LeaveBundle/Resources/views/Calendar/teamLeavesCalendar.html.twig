@@ -26,11 +26,12 @@
     <h2 class="width-55">Team employees</h2>
     <div class="margin-bottom-20 display-block width-55">
     {% for employee in employees %}
-        <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employee['class'] }}" data-class="{{ employee['class'] }}">
-            {{ employee['name'] }}
+        {% set employeeClass = employee.employeeName|replace(' ', '_') ~ '-' ~ employee.id %}
+        <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employeeClass }}" data-class="{{ employeeClass }}">
+            {{ employee.employeeName }}
             <br />
             <span class="font-size-d8-em">
-                {{ employee['email'] }}
+                {{ employee.user.email }}
             </span>
         </div>
     {% endfor %}

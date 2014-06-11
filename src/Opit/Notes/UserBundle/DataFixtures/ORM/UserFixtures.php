@@ -61,9 +61,11 @@ class UserFixtures extends AbstractDataFixture
         if ('dev' === $this->getCurrentEnvironment()) {
 
             for ($i = 0; $i < 10; $i++) {
+                $testEmployee = $this->createEmployee();
+                $username = substr($testEmployee->getEmployeeName(), strpos($testEmployee->getEmployeeName(), ' ')+1);
                 $testUser = new User();
-                $testUser->setUsername('Name ' . $i);
-                $testUser->setEmployee($this->createEmployee());
+                $testUser->setUsername(strtolower($username));
+                $testUser->setEmployee($testEmployee);
                 $password = $encoder->encodePassword('test' . $i . 'Password', '');
                 $testUser->setPassword($password);
                 $testUser->setLdapEnabled(0);

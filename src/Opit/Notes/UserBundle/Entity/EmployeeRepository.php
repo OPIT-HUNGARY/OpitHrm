@@ -23,44 +23,28 @@ use Doctrine\ORM\EntityRepository;
 class EmployeeRepository extends EntityRepository
 {
     /**
-     * Find all teams an employee is in
+     * Finds employees in the same teams for the given user
      *
-     * @param integer $employeeId
+     * Returns only himself if no teams are assigned
+     *
+     * @param integer $id
      * @return array
      */
-    public function findEmployeeTeamIds($employeeId)
+    public function findTeamEmployees($id)
     {
-        $dq = $this->createQueryBuilder('e')
-            ->select('t.id')
-            ->where('e.id = :id')
-            ->innerJoin('e.teams', 't')
-            ->setParameter(':id', $employeeId)
+       $dq = $this->createQueryBuilder('e0')
+            ->select('t0.id')
+            ->innerJoin('e0.teams', 't0', 'WITH', 'e0.id = :id');
+
+        $dq2 = $this->createQueryBuilder('e')
+            ->leftJoin('e.teams', 't');
+        $employees = $dq2
+            ->where($dq2->expr()->in('t.id', $dq->getDQL()))
+            ->orWhere('e.id = :id')
+            ->groupBy('e.id')
+            ->setParameter(':id', $id)
             ->getQuery();
 
-        $teams = array();
-        foreach ($dq->getArrayResult() as $team){
-            $teams[] = $team['id'];
-        }
-
-        return $teams;
-    }
-
-    public function findAllEmployeeIdNameHydrated()
-    {
-        return $this->createQueryBuilder('e')
-            ->select('e.id, e.employeeName')
-            ->getQuery()
-            ->getArrayResult();
-    }
-
-    public function findEmployeeIdNameHydrated($employeeId)
-    {
-        $dq = $this->createQueryBuilder('e')
-            ->select('e.id, e.employeeName')
-            ->where('e.id = :id')
-            ->setParameter(':id', $employeeId)
-            ->getQuery();
-
-        return $dq->getArrayResult();
+        return $employees->getResult();
     }
 }
