@@ -5,6 +5,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/StatusHistory.coffee'
         '@OpitNotesLeaveBundle/Resources/public/js/showLeaveRequest.coffee'
         '@OpitNotesLeaveBundle/Resources/public/js/main.coffee'
     output='js/opitnotesleave/show_leave_request.js' filter='?yui_js' %}
@@ -45,7 +46,14 @@
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-    <h1>{% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request</h1>
+    <h1>
+        {% if not isNewLeaveRequest == true %}
+        <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+                <i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>
+        </a>
+        {% endif %}
+        {% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request
+    </h1>
 
     <div id="changeStateWrapper">
         <h3 class="display-inline-block margin-top-0">Change status: </h3>

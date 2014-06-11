@@ -10,6 +10,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/StatusHistory.coffee'
         '@OpitNotesTravelBundle/Resources/public/js/showTravelRequest.coffee'
     output='js/opitnotestravel/show_travel_request.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
@@ -29,7 +30,9 @@
         {% if travelRequest.id is empty or travelRequest.id == 'new' %}
             New Travel Request
         {% else %}
-            <i class="fa fa-book pointer float-right travel-status-history margin-top-10 margin-right-10 visibility-hidden cursor-pointer" data-id="{{ travelRequest.id }}"></i>
+            <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+                <i class="fa fa-book" data-id="{{ travelRequest.id }}"></i>
+            </a>
             Edit Travel Request ({{ travelRequest.travelRequestId }})
         {% endif %}
     </h1>

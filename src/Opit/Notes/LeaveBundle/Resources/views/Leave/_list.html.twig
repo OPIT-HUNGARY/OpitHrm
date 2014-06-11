@@ -84,6 +84,9 @@
                 {% endif %}
             </td>
             <td>
+                <a href="#" class="status-history" title="Status history">
+                    <i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>
+                </a>
                 {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest != true %}
                     {% if not listingRights['isLocked'][id]['isEditLocked'] %}
                     <a href="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': id}) }}" title="Edit leave request">

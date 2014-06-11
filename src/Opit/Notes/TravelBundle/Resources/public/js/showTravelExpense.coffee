@@ -1,9 +1,8 @@
 # Where addClass called twice first addClass contains selector(s) and second the actual styles
 
-$('.travel-status-history').click (event) ->
-    event.preventDefault()
-    id = $(@).data 'id'
-    $(document).data('notes').funcs.showTravelStatusHistory id, 'te'
+# Init status history for travel expenses
+history = new StatusHistory('OpitNotesTravelBundle_status_history', {mode: 'te'})
+do history.init
 
 calculateAdvancesPayback = () ->
     spent = []

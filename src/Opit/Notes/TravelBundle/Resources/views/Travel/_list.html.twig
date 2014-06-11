@@ -65,7 +65,9 @@
                         </a>
                     {% endset %}
 
-                    <a href="#" class="status-history" title="Status history"><i class="fa fa-book" data-id="{{ travelRequest.id }}"></i></a>
+                    <a href="#" class="status-history" title="Status history">
+                        <i class="fa fa-book" data-id="{{ travelRequest.id }}"></i>
+                    </a>
                     {% if isLocked[travelRequest.id]['isTREditLocked'] == 0 %}
                        {{ editTR }}
                     {% else %}

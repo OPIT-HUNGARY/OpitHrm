@@ -1,0 +1,22 @@
+{# Status history template used by CoreBundle:StatusHistory.coffee class #}
+<div id="status-history">
+    {% for key, element in elements %}
+    <section id="{{ key }}" class="margin-bottom-20">
+        <table class="bordered">
+            <caption class="dialog-table-title">{{ element.title }} History</caption>
+            {% for item in element.collection %}
+            <tbody>
+                <tr>
+                    <td class="width-30">{{ item.status.name }}</td>
+                    <td class="width-30">{{ item.created|date('Y-m-d H:i') }}</td>
+                    <td>{{ item.createdUser is empty ? 'n/a' : item.createdUser.employee.employeeName }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        {% if element.collection|length == 0 %}
+        <div class="padding-5">There is no status history</div>
+        {% endif %}
+    </section>
+    {% endfor %}
+</div>

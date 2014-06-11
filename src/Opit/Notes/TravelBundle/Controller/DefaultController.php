@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * DefaultController
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
@@ -46,7 +46,7 @@ class DefaultController extends Controller
         //get token and Token entity
         $token = $entityManager->getRepository('OpitNotesTravelBundle:Token')
             ->findOneBy(array('token' => $request->attributes->get('token')));
-        
+
         // if $token is not an instance of Token entity throw an exception
         if (false === ($token instanceof Token)) {
             throw $this->createNotFoundException('Security token is not valid. Status cannot be updated.');
@@ -58,7 +58,7 @@ class DefaultController extends Controller
         if (null === $travel) {
             throw $this->createNotFoundException('Missing travel ' . $travelTypeName . '.');
         }
-        
+
         if ($request->isMethod('POST')) {
             $method = 'post';
 
@@ -70,47 +70,56 @@ class DefaultController extends Controller
             $entityManager->flush();
             $this->get('opit.manager.travel_status_manager')->addStatus($travel, $status->getId());
         }
-        
+
         return $this->render(
             'OpitNotesTravelBundle:Shared:updateStatus.html.twig',
             array('status' => strtolower($status->getName()), 'travelTypeName' => $travelTypeName, 'method' => $method)
         );
     }
-    
+
     /**
      * Method to get the history for a travel request and travel expense if it exists
      *
-     * @Route("/secured/travel/states/history/{mode}", name="OpitNotesTravelBundle_travel_states_history", requirements={"mode"="tr|te|both"}, defaults={"mode"="both"})
+     * @Route("/secured/travel/status/history/{id}/{mode}", name="OpitNotesTravelBundle_status_history", requirements={"mode"="tr|te|both", "id"="\d+"}, defaults={"mode"="both"})
      * @Method({"POST"})
      * @Template()
      */
-    public function getTravelStatusHistoryAction(Request $request, $mode)
+    public function showStatusHistoryAction($id, $mode)
     {
         $travelRequestStates = array();
         $travelExpenseStates = array();
+        $elements = array();
         $entityManager = $this->getDoctrine()->getManager();
-        $travelRequestId = $request->request->get('id');
+
         $travelRequest = $entityManager
             ->getRepository('OpitNotesTravelBundle:TravelRequest')
-            ->find($travelRequestId);
-        
+            ->find($id);
+
         if (in_array($mode, array('tr', 'both'))) {
             $travelRequestStates = $entityManager
                 ->getRepository('OpitNotesTravelBundle:StatesTravelRequests')
                 ->findBy(array('travelRequest' => $travelRequest), array('created' => 'DESC'));
+
+            $elements['tr'] = array(
+                'title' => 'Travel Request',
+                'collection' => $travelRequestStates,
+            );
         }
-        
+
         if (in_array($mode, array('te', 'both')) && null !== $travelExpense = $travelRequest->getTravelExpense()) {
             $travelExpenseStates = $entityManager
                 ->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
                 ->findBy(array('travelExpense' => $travelExpense), array('created' => 'DESC'));
+
+            $elements['te'] = array(
+                'title' => 'Travel Expense',
+                'collection' => $travelExpenseStates,
+            );
         }
+
         return $this->render(
-            'OpitNotesTravelBundle:Shared:travelStatesHistory.html.twig',
-            array(
-                'travelRequestStates' => $travelRequestStates,
-                'travelExpenseStates' => $travelExpenseStates
-            )
+            'OpitNotesCoreBundle:Shared:statusHistory.html.twig',
+            array('elements' => $elements)
         );
     }
 }

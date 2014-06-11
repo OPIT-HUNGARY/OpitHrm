@@ -1,23 +1,7 @@
 $(document).ready ->
-    $('#main-wrapper').on 'click', '.status-history', (event) ->
-        event.preventDefault()
-        $.ajax
-            method: 'POST'
-            url: Routing.generate 'OpitNotesTravelBundle_travel_states_history'
-            data: {'id': $(@).find('.fa-book').data 'id'}
-        .done (data) ->
-            dialogWidth = 550
-            $('<div id="dialog-show-details-tr"></div>').html(data)
-                .dialog
-                    title: '<i class="fa fa-book"></i> Status history'
-                    width: dialogWidth
-                    maxHeight: $(window).outerHeight()-100
-                    modal: on
-                    buttons:
-                        Close: ->
-                            $('#dialog-show-details-tr').dialog 'destroy'
-                            return
-            return
+    # Init status history for travel requests
+    history = new StatusHistory('OpitNotesTravelBundle_status_history')
+    do history.init
 
     $('#main-wrapper').on 'click', '#travel_list #list-table .clickable', ->
       $changeState = $(@).closest('tr').find('.changeState')

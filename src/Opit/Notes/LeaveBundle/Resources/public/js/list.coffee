@@ -26,6 +26,10 @@ $.extend true, $(document).data('notes'),
             return
 
 $(document).ready ->
+    # Init leave history for travel requests
+    history = new StatusHistory('OpitNotesLeaveBundle_status_history')
+    do history.init
+
     $('#main-wrapper').on 'click', '.delete-leave-request', (event) ->
         event.preventDefault()
         $deleteButton = $(@)

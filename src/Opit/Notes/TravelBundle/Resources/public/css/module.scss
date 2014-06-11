@@ -26,13 +26,14 @@
     background-color:$greyColor;
 }
 
+h1 {
+    .status-history {
+        font-size: 0.65em;
+    }
 
-.travel-status-history{
-    font-size: 0.65em;
-}
-
-h1:hover i.travel-status-history{
-    visibility: visible;
+    &:hover a.status-history {
+        visibility: visible;
+    }
 }
 
 .changeState{

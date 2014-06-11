@@ -75,21 +75,3 @@ $.extend true, $(document).data('notes'),
                             Close: ->
                                 $(@).dialog 'destroy'
                                 return
-                                
-        showTravelStatusHistory: (id, mode) ->
-            $.ajax
-                method: 'POST'
-                url: Routing.generate 'OpitNotesTravelBundle_travel_states_history', mode: mode
-                data: {'id': id}
-            .done (data) ->
-                $('<div id="dialog-show-details-tr"></div>').html(data)
-                    .dialog
-                        title: '<i class="fa fa-book"></i> Status history'
-                        width: 550
-                        maxHeight: $(window).outerHeight()-100
-                        modal: on
-                        buttons:
-                            Close: ->
-                                $('#dialog-show-details-tr').dialog 'destroy'
-                                return
-                    return

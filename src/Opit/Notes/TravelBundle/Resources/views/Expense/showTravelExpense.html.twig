@@ -27,6 +27,7 @@
         {% endif %}
     </script>
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/StatusHistory.coffee'
         '@OpitNotesTravelBundle/Resources/public/js/showTravelExpense.coffee'
         '@OpitNotesCurrencyRateBundle/Resources/public/js/CurrencyConverter.coffee'
     output='js/opitnotestravel/show_travel_expense.js' filter='?yui_js' %}
@@ -48,7 +49,9 @@
     <h1>Add travel expense</h1>
     {% else %}
     <h1>
-        <i class="fa fa-book pointer float-right travel-status-history margin-top-10 margin-right-10 visibility-hidden cursor-pointer" data-id="{{ travelExpense.travelRequest.id }}"></i>
+        <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+            <i class="fa fa-book" data-id="{{ travelExpense.travelRequest.id }}"></i>
+        </a>
         Edit travel expense
     </h1>
     {% endif %}

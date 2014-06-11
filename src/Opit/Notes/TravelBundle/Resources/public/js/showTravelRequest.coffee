@@ -131,10 +131,10 @@ $(document).ready ->
             $('#travelRequest_general_manager').val ui.item.id
             return
             
-    $('.travel-status-history').click (event) ->
-        event.preventDefault()
-        $(document).data('notes').funcs.showTravelStatusHistory $(@).data('id'), 'tr'
-        
+    # Init status history for travel requests
+    history = new StatusHistory('OpitNotesTravelBundle_status_history')
+    do history.init
+
     #check customer related value
     travelCustomer = $('#travelRequest_customer_name')
     if travelCustomer.val() is ''

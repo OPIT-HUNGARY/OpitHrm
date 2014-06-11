@@ -1,3 +1,7 @@
+# Init leave history for travel requests
+history = new StatusHistory('OpitNotesLeaveBundle_status_history')
+do history.init
+
 # Listener to set end date to start date if empty
 $('form#leaveRequestForm').on 'focus', '.end-date', ->
     $startDateInput = $(@).closest('div').prev().find 'input.start-date'
