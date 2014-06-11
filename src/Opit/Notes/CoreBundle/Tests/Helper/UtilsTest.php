@@ -207,4 +207,18 @@ class UtilsTest extends TypeTestCase
             'Utils::buildDoctrineQuery: Json result does not match.'
         );
     }
+
+    public function testarrayValuesToUpper()
+    {
+        $arr = array('role_user', 'role_admin');
+        $result = Utils::arrayValuesToUpper($arr);
+
+        $this->assertEquals('ROLE_USER', $result[0], 'Utils::arrayValuesToUpper Array input, result is not uppercase.');
+
+        // Test string to array casting
+        $value = 'role_admin';
+        $result2 = Utils::arrayValuesToUpper($value);
+
+        $this->assertEquals('ROLE_ADMIN', $result2[0], 'Utils::arrayValuesToUpper String input, result is not uppercase.');
+    }
 }

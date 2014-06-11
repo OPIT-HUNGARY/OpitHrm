@@ -224,5 +224,25 @@ class Utils
 
         return $count;
     }
-    
+
+    /**
+     * Convert array values to upper case
+     *
+     * @param mixed $arr
+     * @return array
+     */
+    public static function arrayValuesToUpper($arr)
+    {
+        // Convert value to array
+        if (!is_array($arr)) {
+            $arr = array($arr);
+        }
+
+        // Ensure capitalized role names
+        array_walk($arr, function (&$value, $index) {
+            $value = strtoupper($value);
+        });
+
+        return $arr;
+    }
 }

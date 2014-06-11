@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -47,7 +47,7 @@ class UserController extends Controller
             $filters = $entityManager->getFilters();
             $filters->disable('softdeleteable');
         }*/
-        
+
         $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
         $propertyValues = array();
         $request = $this->getRequest();
@@ -65,7 +65,7 @@ class UserController extends Controller
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
                 ->getPaginaton(($offset * $config['max_results']), $config['max_results']);
         }
-        
+
         foreach ($users as $user) {
             //fetch roles for the user
             $localUserRoles = $groups->findUserGroupsArray($user->getId());
@@ -77,7 +77,7 @@ class UserController extends Controller
             }
 
             $employeeName = $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '';
-            
+
             //create new array for user containing its properties
             $propertyValues[$user->getId()] = array(
                 "username" => $user->getUsername(),
@@ -88,11 +88,11 @@ class UserController extends Controller
                 "roles" => $roles
             );
         }
-        
+
         $numberOfPages = ceil(count($users) / $config['max_results']);
         // Used by _list template. Alias is needed for odering but cut of for displaying
         $propertyNames = array("u.username", "u.email", "e.employeeName", "u.isActive", "u.ldapEnabled", "u.roles");
-        
+
         $templateVars['numberOfPages'] = $numberOfPages;
         $templateVars['maxPages'] = $config['max_pages'];
         if (!$request->request->get('incrementOffset')) {
@@ -102,13 +102,13 @@ class UserController extends Controller
         }
         $templateVars['propertyNames'] = $propertyNames;
         $templateVars['propertyValues'] = $propertyValues;
-        
+
         if (null === $showList && (null === $offset && !$isSearch)) {
             $template = 'OpitNotesUserBundle:User:list.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
         }
-        
+
         return $this->render($template, $templateVars);
     }
 
@@ -155,29 +155,29 @@ class UserController extends Controller
         $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
 
         $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
-        
+
         $form = $this->createForm(
             new UserShowType($this->container),
             $user
         );
-        
+
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             // Process form data and create user
             if ($form->isValid()) {
-                
+
                 if (null === $user->getId()) {
                     $user->setIsFirstLogin(true);
                     $user->setPassword($userService->encodePassword($user));
                     $userService->sendNewPasswordMail($user);
                 }
-                
+
                 // Save the user.
                 $em->persist($user);
                 $em->flush();
 
                 $result['response'] = 'success';
-             
+
                 if ($isAdmin && $request->headers->get('referer') === $this->generateUrl('OpitNotesUserBundle_user_list', array(), true)) {
                     return $this->listAction();
                 }
@@ -186,7 +186,7 @@ class UserController extends Controller
                 $errors = Utils::getErrorMessages($form);
                 $result['errorMessage'] = $errors;
             }
-            
+
         }
         return new JsonResponse(array($result), $statusCode);
     }
@@ -250,10 +250,10 @@ class UserController extends Controller
         $userService->sendNewPasswordMail($user, true);
         $entityManager->persist($user);
         $entityManager->flush();
-                
+
         return new JsonResponse('');
     }
-    
+
     /**
      * To generate change password form
      *
@@ -274,7 +274,7 @@ class UserController extends Controller
             array('form' => $form->createView())
         );
     }
-    
+
     /**
      * Change password on first login action
      *
@@ -286,23 +286,23 @@ class UserController extends Controller
     {
         $request = $this->getRequest();
         $user = $this->container->get('security.context')->getToken()->getUser();
-        
+
         if (!$user->getIsFirstLogin()) {
             return $this->redirect($this->generateUrl('OpitNotesUserBundle_security_login'));
         }
-        
+
         $form = $this->createForm(new ChangePasswordType(true), $user);
-        
+
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $user->setIsFirstLogin(0);
                 $this->setUserPassword($user);
-                
+
                 return $this->redirect($this->generateUrl('OpitNotesUserBundle_user_show_infoboard'));
             }
         }
-        
+
         return $this->render(
             'OpitNotesUserBundle:User:changePasswordForm.html.twig',
             array('form' => $form->createView())
@@ -337,7 +337,7 @@ class UserController extends Controller
                 $result['errorMessage'] = $errors;
             }
         }
-        
+
         return new JsonResponse(array($result), $statusCode);
     }
 
@@ -357,9 +357,8 @@ class UserController extends Controller
         return new JsonResponse(array('ldap_enabled' => $user->isldapEnabled()));
     }
 
-    /* Moveable */
     /**
-     * @Route("/secured/user/search/{role}", name="OpitNotesUserBundle_user_search", defaults={"role"="ROLE_USER"})
+     * @Route("/secured/user/search/{role}", name="OpitNotesUserBundle_user_search", defaults={"role"=false})
      * @Method({"POST"})
      * @Secure(roles="ROLE_USER")
      */
@@ -368,9 +367,16 @@ class UserController extends Controller
         $userNames = array();
         $request = $this->getRequest();
         $term = $request->request->get('term');
-        $users = $this->getDoctrine()->
-                        getRepository('OpitNotesUserBundle:User')->
-                        findUserByEmployeeNameUsingLike($term, $request->attributes->get('role'));
+        $role = $request->attributes->get('role');
+
+        if (false === $role) {
+            $userService = $this->get('opit.model.user');
+            $role = $userService->getInheritedRoles($this->getUser());
+        }
+
+        $users = $this->getDoctrine()
+            ->getRepository('OpitNotesUserBundle:User')
+            ->findUserByEmployeeNameUsingLike($term, $role);
 
         foreach ($users as $user) {
             $userUniqueIdentifier = $user->getEmployee()->getEmployeeNameFormatted();
@@ -380,10 +386,10 @@ class UserController extends Controller
                 'id'=>$user->getId()
             );
         }
-        
+
         return new JsonResponse($userNames);
-    }    
-    
+    }
+
     /**
      * Gets a user object
      *
@@ -403,13 +409,13 @@ class UserController extends Controller
         if (!$user = $em->getRepository('OpitNotesUserBundle:User')->find($id)) {
             throw $this->createNotFoundException('User object with id "'.$id.'" not found.');
         }
-       
+
         return $user;
     }
-    
+
     /**
      * Set password for the user
-     * 
+     *
      * @param Opit\Notes\UserBundle\Entity\User $user
      */
     protected function setUserPassword($user)

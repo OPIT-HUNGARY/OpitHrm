@@ -175,20 +175,25 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     /**
      * Finds users by employee name
      *
-     * @param type $chunk part of the employee name
-     * @return type object
+     * @param string $chunk part of the employee name
+     * @param mixed $role String or array of role names
+     * @return array
      */
     public function findUserByEmployeeNameUsingLike($chunk, $role = "ROLE_USER")
     {
+        $role = Utils::arrayValuesToUpper($role);
+
         $q = $this->createQueryBuilder('u')
             ->leftJoin('u.employee', 'e')
             ->innerJoin('u.groups', 'g')
             ->where('e.employeeName LIKE :employeeName')
-            ->andWhere('g.role = :role')
+            ->orWhere('u.email LIKE :email')
+            ->andWhere('g.role IN (:role)')
             ->setParameter('employeeName', "%{$chunk}%")
-            ->setParameter('role', strtoupper($role))
+            ->setParameter('email', "%{$chunk}%")
+            ->setParameter('role', $role)
             ->getQuery();
-            
+
         return $q->getResult();
     }
 

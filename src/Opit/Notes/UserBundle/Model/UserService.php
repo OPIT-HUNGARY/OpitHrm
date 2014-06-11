@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -28,18 +28,20 @@ class UserService
     protected $mail;
     protected $encoder;
     protected $password;
+    protected $systemRoles;
 
-    public function __construct(EmailManagerInterface $mail, EncoderFactoryInterface $encoder)
+    public function __construct(EmailManagerInterface $mail, EncoderFactoryInterface $encoder, $systemRoles = array())
     {
         $this->mail = $mail;
         $this->encoder = $encoder;
         $this->password = '';
+        $this->systemRoles = $systemRoles;
     }
-    
+
     /**
-     * Method to send a mail to the user that his account has been created 
+     * Method to send a mail to the user that his account has been created
      * or that his password has been reset.
-     * 
+     *
      * @param UserInterface $user
      * @param boolean $isReset
      */
@@ -51,38 +53,38 @@ class UserService
             $subject = '[NOTES] - Password reset';
             $template = 'passwordReset';
         }
-        
+
         $this->mail->setRecipient($user->getEmail());
         $this->mail->setSubject($subject);
-        
+
         $this->mail->setBodyByTemplate(
             'OpitNotesUserBundle:Mail:' . $template . '.html.twig',
             array('password' => $this->password, 'user' => $user)
         );
-        
+
         $this->mail->sendMail();
     }
-    
+
     /**
      * Method to generate a random string.
-     * 
+     *
      * @param integer $length
      * @return string
      */
     public function generatePassword($length = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        
+
         for ($i = 0; $i < $length; $i++) {
             $this->password .= $characters[rand(0, strlen($characters) - 1)];
         }
-        
+
         return $this->password;
     }
-    
+
     /**
      * Method to encode password.
-     * 
+     *
      * @param UserInterface $user
      * @param string $password
      * @return string
@@ -92,7 +94,32 @@ class UserService
         if (null === $password) {
             $this->generatePassword();
         }
-        
+
         return $this->encoder->getEncoder($user)->encodePassword($this->password, $user->getSalt());
+    }
+
+    /**
+     * Returns all authorized roles of a user
+     *
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @return array
+     */
+    public function getInheritedRoles(UserInterface $user)
+    {
+        $availableRoles = array();
+        $userRoles = $user->getRoles();
+
+        foreach($userRoles as $userRole) {
+            $availableRoles[] = $userRole->getRole();
+            if (array_key_exists($userRole->getRole(), $this->systemRoles)) {
+                $availableRoles = array_merge($availableRoles, $this->systemRoles[$userRole->getRole()]);
+            }
+        }
+
+        $roles = array_values(
+            array_unique($availableRoles)
+        );
+
+        return $roles;
     }
 }

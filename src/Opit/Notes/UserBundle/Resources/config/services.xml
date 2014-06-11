@@ -18,6 +18,7 @@
         <service id="opit.model.user" class="%opit.model.user.class%">
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="security.encoder_factory" />
+            <argument>%security.role_hierarchy.roles%</argument>
         </service>
         <service id="opit.listener.first_login" class="%opit.listener.first_login.class%">
             <argument type="service" id="security.context" />
