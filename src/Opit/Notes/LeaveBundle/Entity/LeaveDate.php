@@ -4,12 +4,14 @@ namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * LeaveDate
  *
  * @ORM\Table(name="notes_leave_dates")
  * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\LeaveDateRepository")
+ * @UniqueEntity(fields={"holidayDate"}, message="The date is already in use.")
  */
 class LeaveDate
 {
@@ -25,7 +27,7 @@ class LeaveDate
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="leaveDate", type="date")
+     * @ORM\Column(name="leaveDate", type="date", unique=true)
      * @Assert\NotBlank(message="The leave date can not be blank.")
      * @Assert\Type("\DateTime")
      */
