@@ -39,7 +39,7 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: false
-    bundles:        [ OpitNotesUserBundle, OpitNotesTravelBundle, OpitNotesLeaveBundle ]
+    bundles:        [ OpitNotesCoreBundle, OpitNotesUserBundle, OpitNotesTravelBundle, OpitNotesLeaveBundle ]
     #java: /usr/bin/java
     filters:
         coffee:
