@@ -34,6 +34,7 @@ $('#resetButton').click ->
 
 # method to make search form toggleable
 $('#searchFormTitle').click ->
+    $(@).toggleClass 'closed'
     $nextElement = $(@).next()
     # check if toogle animation is running to prevent a new animation
     if not $nextElement.is(':animated')

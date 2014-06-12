@@ -556,3 +556,11 @@ ul {
     .tipsy-arrow-e { border-left-color: #F70D1A; }
     .tipsy-arrow-w { border-right-color: #F70D1A; }
 }
+
+#searchFormTitle {
+    cursor: n-resize;
+    
+    &.closed {
+        cursor: s-resize;
+    }
+}

@@ -1,0 +1,35 @@
+{#
+Search scaffold
+
+This template serves as a scaffold for search form components.
+
+Variables
+--------------
+searchAction: Relative or absolute URL. If not set, the current route will be used
+
+Blocks
+--------------
+forms: no default, has to be implemented by child template
+forms_rest: any custom hidden form inputs
+#}
+<section id="searchFormWrapper" class="margin-bottom-20 padding-10 border-radius-5">
+    <h3 id="searchFormTitle" class="margin-0 closed">
+        <i class="fa fa-chevron-up fa-chevron-down default-right float-right color-grey border-radius-5 padding-4 font-weight-normal"></i>
+        Search Options
+    </h3>
+    
+    <form id="searchForm" class="display-none" method="post" action="{{ (searchAction is defined) ? searchAction : path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}">
+        <div id="searchFormProperties" class="padding-10">
+            {% block forms %}{% endblock %}
+        </div>
+        <div id="searchFormButtons">
+            <button class="button search" id="searchButton" type="submit"><i class="fa fa-search"></i>Search</button>
+            <button class="button reset" id="resetButton" type="reset"><i class="fa fa-refresh"></i>Reset</button>
+        </div>
+        {% block forms_rest %}
+        <input type="hidden" name="issearch" id="issearch" value="1" />
+        <input type="hidden" name="order[field]" id="order_field" value="{{ order_field is defined ? order_field : 'id' }}" />
+        <input type="hidden" name="order[dir]" id="order_dir" value="{{ order_dir is defined ? order_dir : 'asc' }}" />
+        {% endblock %}
+    </form>
+</section>
