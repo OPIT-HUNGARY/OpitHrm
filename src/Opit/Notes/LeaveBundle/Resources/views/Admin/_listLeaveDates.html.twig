@@ -25,14 +25,18 @@
             {% for leaveDate in leaveDates %}
             <tr class="clickableTableRow" id="row-{{ leaveDate.id }}">
                 <td>
-                    <input name="delete-leavedate[]" type="checkbox" class="list-delete-leavedate deleteMultiple" value="{{ leaveDate.id }}">
+                    {% if date('now') < date(leaveDate.holidayDate) %}
+                        <input name="delete-leavedate[]" type="checkbox" class="list-delete-leavedate deleteMultiple" value="{{ leaveDate.id }}">
+                    {% endif %}
                 </td>
                 <td data-tr-id='{{ leaveDate.id }}'>{{ leaveDate.id }}</td>
                 <td><span class="list-leavedate clickable" data-id="{{ leaveDate.id }}">{{ leaveDate.holidayDate|date('Y-m-d') }}</span></td>
                 <td>{{ leaveDate.holidayType.name|slice(0,80) }}{% if leaveDate.holidayType.name|length > 80 %}{{ '...' }}{% endif %}</td>
                 <td>
-                    <a href="#" class="list-leavedate" data-id="{{ leaveDate.id }}" title="Edit Administrative Leave/Working Day"><i class="fa fa-pencil-square-o"></i></a>
-                    <a href="#" data-id="{{ leaveDate.id }}" class="delete-single-leavedate" title="Delete Administrative Leave/Working Day"><i class="fa fa-trash-o"></i></a>
+                    {% if date('now') < date(leaveDate.holidayDate) %}
+                        <a href="#" class="list-leavedate" data-id="{{ leaveDate.id }}" title="Edit Administrative Leave/Working Day"><i class="fa fa-pencil-square-o"></i></a>
+                        <a href="#" data-id="{{ leaveDate.id }}" class="delete-single-leavedate" title="Delete Administrative Leave/Working Day"><i class="fa fa-trash-o"></i></a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

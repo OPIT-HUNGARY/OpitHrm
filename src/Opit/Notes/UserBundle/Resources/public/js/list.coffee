@@ -30,11 +30,8 @@ $(document).ready ->
                           $('#user-list').html data
                           $(document).data('notes').funcs.showAlert $('#dialog-edititem'), response, 'create', 'User created successfully'
                           $('#dialog-edititem').dialog "destroy"
-                  .fail (data) ->
-                      response = data.responseText
-                      if typeof response is 'string'
-                          response = $.parseJSON response
-                      $(document).data('notes').funcs.showAlert $('#dialog-edititem'), response, 'create', 'Error'
+                  .fail (jqXHR, textStatus, errorThrown) ->
+                      $(document).data('notes').funcs.showAlert $('#dialog-edititem'), $.parseJSON(jqXHR.responseText), 'create', 'Error'
                 Close: ->
                     $('#dialog-edititem').dialog 'destroy'
                     return
@@ -78,7 +75,7 @@ $(document).ready ->
                             data: 'id': userId
                         .done (data)->
                             $('#reset-password-dialog').dialog 'destroy'
-                        .fail (data) ->
+                        .fail (jqXHR, textStatus, errorThrown) ->
                             console.warn data
                       Close: ->
                           $('#reset-password-dialog').dialog 'destroy'

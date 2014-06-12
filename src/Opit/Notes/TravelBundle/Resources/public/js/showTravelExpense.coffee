@@ -593,7 +593,7 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                         Cancel: ->
                             $preview.dialog "destroy"
                             return
-            .fail () ->
+            .fail (jqXHR, textStatus, errorThrown) ->
                 $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
                     title: 'Error'
         else

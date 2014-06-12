@@ -263,6 +263,11 @@ class AdminLeaveController extends Controller
             $leaveDate = new LeaveDate();
         }
 
+        // If it is a past leave/working day throw exception
+        if ($leaveDate->getId() && !$leaveDate->isValidDate()) {
+            throw $this->createAccessDeniedException('Past leave/working day is not editable!');
+        }
+
         $form = $this->createForm(
             new LeaveDateType(),
             $leaveDate
@@ -311,11 +316,11 @@ class AdminLeaveController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $id = $request->attributes->get('id');
-        $errorMessages = array();
         $result = array('response' => 'error');
+        $statusCode = 200;
 
         if ($id) {
-            $leaveDate = $this->getLeaveDate($request->attributes->get('id'));
+            $leaveDate = $this->getLeaveDate($id);
         } else {
             $leaveDate = new LeaveDate();
         }
@@ -323,6 +328,7 @@ class AdminLeaveController extends Controller
         $form = $this->createForm(new LeaveDateType(), $leaveDate);
 
         if ($request->isMethod('POST')) {
+
             $form->handleRequest($request);
 
             if ($form->isValid()) {
@@ -330,20 +336,14 @@ class AdminLeaveController extends Controller
                 $em->flush();
 
                 $result['response'] = 'success';
+            } else {
+                $statusCode = 500;
+                $errors = Utils::getErrorMessages($form);
+                $result['errorMessage'] = $errors;
             }
-
-            $validator = $this->get('validator');
-            $errors = $validator->validate($leaveDate);
-
-            if (count($errors) > 0) {
-                foreach ($errors as $e) {
-                    $errorMessages[] = $e->getMessage();
-                }
-            }
-            $result['errorMessage'] = $errorMessages;
         }
 
-        return new JsonResponse(array($result));
+        return new JsonResponse(array($result), $statusCode);
     }
 
     /**
@@ -358,6 +358,7 @@ class AdminLeaveController extends Controller
         $request = $this->getRequest();
         $ids = (array) $request->request->get('delete-leavedate');
         $result = array('response' => 'error');
+        $today = new \DateTime('today');
 
         if (!is_array($ids)) {
             $ids = array($ids);
@@ -365,7 +366,10 @@ class AdminLeaveController extends Controller
 
         foreach ($ids as $id) {
             $leaveDate = $this->getLeaveDate($id);
-            $em->remove($leaveDate);
+            // If it is an future date then it will be deleted.
+            if ($today <= $leaveDate->getHolidayDate()) {
+                $em->remove($leaveDate);
+            }
         }
         $em->flush();
         $result['response'] = 'success';

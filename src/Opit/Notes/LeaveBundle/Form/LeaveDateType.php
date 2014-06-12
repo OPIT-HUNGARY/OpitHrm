@@ -34,10 +34,12 @@ class LeaveDateType extends AbstractType
         $dataArr = $builder->getData();
         
         $builder->add('holidayDate', 'date', array(
+            'label' => 'Leave Date',
             'widget' => 'single_text',
         ));
-        
+
         $builder->add('holidayType', 'entity', array(
+            'label' => 'Leave Type',
             'class' => 'OpitNotesLeaveBundle:LeaveType',
             'property' => 'name',
             'multiple' => false,

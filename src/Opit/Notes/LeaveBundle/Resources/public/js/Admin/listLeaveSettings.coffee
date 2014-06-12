@@ -52,11 +52,11 @@ $('#save').click (event) ->
                 $('#list-settings').html data
                 $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Entitlement configuration saved successfully!"
                 isHadChild = $('.container').children('.formFieldsetChild').length > 0
-            .fail (data) ->
-                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
+            .fail (jqXHR, textStatus, errorThrown) ->
+                $(document).data('notes').funcs.showAlert $('#main-content'), $.parseJSON(jqXHR.responseText), "create", "Error", true
             return
-        .fail (data) ->
-                $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Error", true
+        .fail (jqXHR, textStatus, errorThrown) ->
+                $(document).data('notes').funcs.showAlert $('#main-content'), $.parseJSON(jqXHR.responseText), "create", "Error", true
         return
     else
         disableSaveButton(false)

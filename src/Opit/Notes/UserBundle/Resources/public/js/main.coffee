@@ -46,8 +46,8 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                           else
                             $('#dialog-edititem').dialog 'destroy'
                           return
-                      .fail (data) ->
-                        successCallback $('#dialog-edititem'), $.parseJSON(data.responseText), "update", "Error"
+                      .fail (jqXHR, textStatus, errorThrown) ->
+                        successCallback $('#dialog-edititem'), $.parseJSON(jqXHR.responseText), "update", "Error"
                     Close: ->
                        $('#dialog-edititem').dialog "destroy"
                        return
@@ -278,9 +278,8 @@ $(document).ready ->
                             .done (data)->
                                 $('#password-dialog').dialog 'destroy'
                                 $(document).data('notes').funcs.showAlert $('#password-dialog'), data, 'update', 'Password successfully changed'
-                            .fail (data) ->
-                                data = $.parseJSON data.responseText
-                                $(document).data('notes').funcs.showAlert $('#password-dialog'), data, 'update', 'Password reset successfully'
+                            .fail (jqXHR, textStatus, errorThrown) ->
+                                $(document).data('notes').funcs.showAlert $('#password-dialog'), $.parseJSON(jqXHR.responseText), 'update', 'Password reset successfully'
                         Close: ->
                             $('#password-dialog').dialog 'destroy'
                             return

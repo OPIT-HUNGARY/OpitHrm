@@ -98,9 +98,6 @@ $.extend true, $(document).data('notes'),
 
             $errorContainer.addClass "alert-message"
 
-            if typeof response is not "string"
-                response = $.parseJSON response
-
             if response[0]? and response[0].response == 'error'
               if "update" == actionType or "create" == actionType
                 errorString = "<ul>"

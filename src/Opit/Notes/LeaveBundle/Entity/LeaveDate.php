@@ -95,4 +95,13 @@ class LeaveDate
     {
         return $this->holidayType;
     }
+
+    /**
+     * @Assert\True(message="The leave date can be in the future.")
+     * @return boolean
+     */
+    public function isValidDate()
+    {
+        return ($this->getHolidayDate() > new \DateTime('today'));
+    }
 }
