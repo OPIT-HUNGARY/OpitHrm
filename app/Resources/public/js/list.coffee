@@ -134,13 +134,25 @@ $.extend true, $(document).data('notes'),
             min = offset - pagesOnOneSide
             max = offset + pagesOnOneSide
 
-            if 0 >= min
+            if 0 >= min || offset < maxPages
                 min = 1
                 max = maxPages
 
             if max > pages
-                min = pages - maxPages + 1
                 max = pages
+                # Increase the minimum if offset is reached the max pages.
+                if offset >= maxPages
+                    min = pages - maxPages + 1
+
+            # If the max pages is an odd value
+            if maxPages % 2 == 0
+                diff = max - min
+                if diff < maxPages - 1 and offset >= maxPages
+                    # set the max value of interval
+                    max = Math.abs(max - (maxPages - diff))
+                if diff >= maxPages and max >= maxPages
+                    # set the min value of interval.
+                    min = Math.abs(min + 1)
 
             for num in [max..min]
                 $newPagerItem = $('<span>')
