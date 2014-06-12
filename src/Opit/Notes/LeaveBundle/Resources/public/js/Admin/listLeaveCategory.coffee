@@ -12,18 +12,18 @@ $("#addLeaveCategory").click ->
                     Create: ->
                         $.ajax
                             type: 'POST'
-                            global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_category', id: 0
                             data: $('#addleavecategory_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
-                                global: false
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_categories'
                                 data: "showList" : 1
                             .done (data)->
                                 $('#form-leavecategory').html data
+                                $(document).data('notes').funcs.initListPageListeners()
+                                $(document).data('notes').funcs.initDeleteMultipleListener()
                                 validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavecategory'), response, "create", "Leave category created successfully"
                                 if validationResult is true
                                     $('#dialog-editleavecategory').dialog "destroy"
@@ -33,7 +33,7 @@ $("#addLeaveCategory").click ->
             return
         return
 
-$("#list-table").on "click", ".list-leavecategory", ->
+$("#form-leavecategory").on "click", ".list-leavecategory", ->
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
@@ -48,18 +48,18 @@ $("#list-table").on "click", ".list-leavecategory", ->
                     Save: ->
                         $.ajax
                             type: 'POST'
-                            global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_category', id: id
                             data: $('#addleavecategory_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
-                                global: false
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_categories'
                                 data: "showList" : 1
                             .done (data)->
                                 $('#form-leavecategory').html data
+                                $(document).data('notes').funcs.initListPageListeners()
+                                $(document).data('notes').funcs.initDeleteMultipleListener()
                                 validationResult = $(document).data('notes').funcs.showAlert $('#dialog-editleavecategory'), response, "create", "Leave category modified successfully"
                                 if validationResult is true
                                     $('#dialog-editleavecategory').dialog "destroy"

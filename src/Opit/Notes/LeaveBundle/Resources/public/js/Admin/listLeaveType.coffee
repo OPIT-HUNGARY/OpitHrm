@@ -12,14 +12,12 @@ $("#addLeaveType").click ->
                     Create: ->
                         $.ajax
                             type: 'POST'
-                            global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_type', id: 0
                             data: $('#addleavetype_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
-                                global: false
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_types'
                                 data: "showList" : 1
                             .done (data)->
@@ -35,7 +33,7 @@ $("#addLeaveType").click ->
             return
         return
 
-$("#list-table").on "click", ".list-leavetype", ->
+$("#form-leavetype").on "click", ".list-leavetype", ->
     id = $(@).attr "data-id"
     $.ajax
         method: 'GET'
@@ -50,14 +48,12 @@ $("#list-table").on "click", ".list-leavetype", ->
                     Save: ->
                         $.ajax
                             type: 'POST'
-                            global: false
                             url: Routing.generate 'OpitNotesLeaveBundle_admin_add_leave_type', id: id
                             data: $('#addleavetype_frm').serialize()
                         .done (data)->
                             response = data
                             $.ajax
                                 type: 'POST'
-                                global: false
                                 url: Routing.generate 'OpitNotesLeaveBundle_admin_list_leave_types'
                                 data: "showList" : 1
                             .done (data)->
