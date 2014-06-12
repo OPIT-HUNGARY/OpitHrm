@@ -33,12 +33,12 @@
                         {% if attribute(value, 'Role') in security_roles|merge(['ROLE_STAKEHOLDER', 'ROLE_PAYROLL', 'ROLE_FINANCE']) %}
                             <i class="fa fa-cog darker-gray-color" title="System role"></i>
                         {% else %}
-                            <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="list-delete-user" value="{{ key }}" >
+                            <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="deleteMultiple" value="{{ key }}" >
                         {% endif %}
                     {% elseif  attribute(value, 'username') is defined %}
-                        <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" {% if key == app.user.id %}disabled="disabled"{% endif %}>
+                        <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ key }}" {% if key == app.user.id %}disabled="disabled"{% endif %}>
                     {% else %}
-                        <input name="delete-user[]" type="checkbox" class="list-delete-user" value="{{ key }}" >
+                        <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ key }}" >
                     {% endif %}
                 </td>
                 {% for propertyName in propertyNames %}

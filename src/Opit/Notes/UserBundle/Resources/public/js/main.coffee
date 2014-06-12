@@ -37,6 +37,7 @@ $.extend true, $(document).data('OpitNotesUserBundle'),
                               $('#user-list').html data
                               $(document).data('notes').funcs.initListPageListeners()
                               $(document).data('notes').funcs.initPager()
+                              $(document).data('notes').funcs.initDeleteMultipleListener()
                               $('.selected-page').each ->
                                   $(@).removeClass 'selected-page'
                               $('[data-offset="'+offset+'"]').addClass 'selected-page'

@@ -62,19 +62,20 @@ $.extend true, $(document).data('notes'),
                 event.preventDefault()
 
             $('#list-table th .fa-trash-o').click ->
-                $('.deleteMultiple').checkAll $(document).data('notes').funcs.changeDeleteButton
+                $('.deleteMultiple').filter(() ->
+                    return not @.disabled).checkAll $(document).data('notes').funcs.changeDeleteButton
                 return
 
             $('#list-table .deleteSingeTravelRequest').click (event) ->
                 event.preventDefault()
                 $(document).data('notes').funcs.deleteSingleRequest 'request', $(@)
 
-            $('#delete').click ->
+            $('#delete').off('click.deleteList').on 'click.deleteList', ->
                 if $('#userlistWrapper').length is 1
                     title = 'User delete'
                     message = 'user(s)'
                     url = Routing.generate 'OpitNotesUserBundle_user_delete'
-                    $(document).data('notes').funcs.deleteAction(title, message, url, '.list-delete-user')
+                    $(document).data('notes').funcs.deleteAction(title, message, url, '.deleteMultiple')
                     return false
                 else if $('#travel_list').length is 1
                     warningMessage = 'Are you sure you want to delete the selected travel requests?'
