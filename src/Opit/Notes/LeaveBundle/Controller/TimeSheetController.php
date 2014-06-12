@@ -345,7 +345,7 @@ class TimeSheetController extends Controller
         $leaveData['leaveDays'] = array();
         $leaveData['leaveIds'] = array();
         // Get the leave requests
-        $leaveRequests = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')->findLeaveRequestsByDates(
+        $leaveRequests = $em->getRepository('OpitNotesLeaveBundle:LeaveRequest')->findApprovedLeaveRequestsByDates(
             date($year.'-'.$month.'-01'),
             date($year.'-'.$month.'-31')
         );

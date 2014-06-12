@@ -166,8 +166,8 @@ class Utils
         $endDate = clone $eDate;
         $days = array();
 
-        // Collect the days of month.
-        while ($startDate->getTimestamp() < $endDate->getTimestamp()) {
+        // Collect the days between two datetime.
+        while ($startDate->getTimestamp() <= $endDate->getTimestamp()) {
             $days[] = clone $startDate;
             $startDate->add(new \DateInterval("P1D"));
         }

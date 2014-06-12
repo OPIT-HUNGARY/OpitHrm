@@ -155,7 +155,7 @@ class UtilsTest extends TypeTestCase
     {
         $result = Utils::diffDays(new \DateTime('2014-01-01'), new \DateTime('2014-01-15'));
 
-        $this->assertCount(14, $result, 'Utils::diffDays: Count does not match.');
+        $this->assertCount(15, $result, 'Utils::diffDays: Count does not match.');
         $this->assertTrue($result[0] instanceof \DateTime, 'Utils::diffDays: Wrong object type.');
 
         // Test overlapping month including time
