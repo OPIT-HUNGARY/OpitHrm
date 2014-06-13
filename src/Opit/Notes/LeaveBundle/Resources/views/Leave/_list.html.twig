@@ -31,7 +31,7 @@
                 <input type="checkbox" class="deleteMultiple" {% if not listingRights['isDeleteable'][id] %}disabled="disabled"{% endif %} name="deleteMultiple[]" value="{{ leaveRequest.id }}" />
             </td>
             <td>
-                <span>{{ leaveRequest.leaveRequestId }}</span>
+                <span class="lr-details clickable text-decoration-underline cursor-pointer" data-lr-id="{{ id }}">{{ leaveRequest.leaveRequestId }}</span>
                 {% if "now"|date("Y-m-d") <= lastContactDate and leaveRequest.createdUser.id != leaveRequest.employee.user.id and listingRights['isForApproval'][id] %}
                     <i class="fa fa-info-circle color-ferrari-red cursor-pointer margin-left-5 font-size-18 tipsy-notification" title="{{ lrInfo }}"></i>
                 {% endif %}

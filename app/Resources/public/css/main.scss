@@ -512,6 +512,10 @@
     @include border-radius(100%);
 }
 
+.border-bottom-seperator-important{
+    border-bottom: solid 2px $darkGrey !important;
+}
+
 /* Box shadow properties */
 
 .box-shadow-1-darkgray{

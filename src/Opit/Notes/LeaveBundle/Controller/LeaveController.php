@@ -239,6 +239,46 @@ class LeaveController extends Controller
     }
 
     /**
+     * To generate details form for leave requests
+     *
+     * @Route("/secured/leave/show/details", name="OpitNotesLeaveBundle_leave_show_details")
+     * @Template()
+     */
+    public function showDetailsAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $leaveRequestId = $request->request->get('id');
+        // Disable softdeleteable filter for user entity to allow persistence
+        $entityManager->getFilters()->disable('softdeleteable');
+        // For creating entities for the leave request preview
+        $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
+
+        if (null === $leaveRequest) {
+            throw $this->createNotFoundException('Missing leave request.');
+        }
+
+        $children = new ArrayCollection();
+        // Add the leaves to leave reqeust.
+        if (null !== $leaveRequest) {
+            foreach ($leaveRequest->getLeaves() as $leave) {
+                $children->add($leave);
+            }
+        }
+
+        // Calculating the leave days for the current employee.
+        $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
+        $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
+
+        return $this->render(
+            'OpitNotesLeaveBundle:Leave:showDetails.html.twig',
+            array(
+                'leaveRequest' => $leaveRequest,
+                'leaveDays' => $leaveDays
+            )
+        );
+    }
+
+    /**
      * To delete leave request in Notes
      *
      * @Route("/secured/leaverequest/delete", name="OpitNotesLeaveBundle_leaverequest_delete")

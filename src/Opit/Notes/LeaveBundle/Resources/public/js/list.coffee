@@ -70,6 +70,23 @@ $(document).ready ->
                         $('#dialog-show-details-tr').dialog 'destroy'
                         return
 
+    $('#leave_list').on 'click', '.lr-details', ->
+        leaveRequestId = $(@).data 'lr-id'
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitNotesLeaveBundle_leave_show_details'
+            data: 'id': leaveRequestId
+          .done (data) ->
+            dialogWidth = 550
+            $('<div id="dialog-show-details-lr"></div>').html(data)
+              .dialog
+                title: '<i class="fa fa-list-alt"></i> Details'
+                width: dialogWidth
+                maxHeight: $(window).outerHeight()-100
+                modal: on
+            return
+          return
+
     $('#leave_list').on 'change', '.changeState', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'        
 

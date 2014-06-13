@@ -1,0 +1,95 @@
+{# Set if it is a group leave request #}
+{% if leaveRequest.leaveRequestGroup is not null and leaveRequest.isMassLeaveRequest == true %}
+    {% set isGroupLR = true %}
+{% else %}
+    {% set isGroupLR = false %}
+{% endif %}
+{# Calculate the number of leave days #}
+{% set numberOfDays = 0 %}
+{% for leave in leaveRequest.leaves %}
+    {% set numberOfDays = numberOfDays + leave.numberOfDays %}
+{% endfor %}
+<div id="dialog-details-leaverequest">
+    <h2 class="dialog-h2">
+        {% if isGroupLR %}
+            Group Request Details
+        {% else %}
+            Leave Request Details
+        {% endif %}
+    </h2>
+    <div class="modalwindow">
+        <table class="bordered width-100 table-layout-fixed">
+            <caption class="dialog-table-title">General</caption>
+            {% if leaveRequest.leaveRequestId is defined %}
+                <tr>
+                    <td class="bgGrey width-40 bold">Id</td>
+                    <td>{{ leaveRequest.leaveRequestId }}</td>
+                </tr>
+            {% endif %}
+            {% if not isGroupLR %}
+            <tr>
+                <td class="bgGrey bold">Employee Name</td>
+                {% if leaveRequest.employee.employeeName is defined %}
+                <td>{{ leaveRequest.employee.getEmployeeNameFormatted }}</td>
+                {% endif %}
+            </tr>
+            {% endif %}
+            {% if leaveRequest.leaveRequestGroup is not null %}
+             <tr>
+                <td class="bgGrey bold">Created by</td>
+                {% if leaveRequest.createdUser.employee.employeeName is defined %}
+                <td>{{ leaveRequest.createdUser.employee.getEmployeeNameFormatted }}</td>
+                {% endif %}
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="bgGrey bold">Team Manager</td>
+                <td>
+                    {% if leaveRequest.teamManager is null %}
+                        [Empty]
+                    {% else %}
+                        {{ leaveRequest.teamManager.employee.getEmployeeNameFormatted }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">General Manager</td>
+                <td>{{ leaveRequest.generalManager.employee.getEmployeeNameFormatted }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">Leave Days</td>
+                <td>{{ numberOfDays }}</td>
+            </tr>
+        </table>
+        {% if leaveRequest.leaves is defined and leaveRequest.leaves|length > 0 %}
+        <table class="bordered">
+            <caption class="dialog-table-title padding-5 color-white background-section-color-grey margin-top-5">Leave</caption>
+            {% for leave in leaveRequest.leaves %}
+            <tr>
+                <td class="bgGrey bold">Start date</td>
+                <td>{{ leave.startDate|date('d  F  Y (D)') }}</td>
+                <td class="width-24-fix align-center" rowspan="4">{{ loop.index }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">End date</td>
+                <td>{{ leave.endDate|date('d  F  Y (D)') }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold width-40">Description</td>
+                <td>
+                    {% if leave.description is not null%}
+                        {{ leave.description }}
+                    {% else %}
+                        [Empty]
+                    {% endif %}
+                </td>
+            </tr>
+            <tr {% if loop.last == false %} class="dialog-table-tr-seperator border-bottom-seperator-important"{% endif %}>
+                <td class="bgGrey bold">Category</td>
+                <td>{{ leave.category.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+</div>

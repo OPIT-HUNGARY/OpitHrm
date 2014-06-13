@@ -82,7 +82,7 @@
                     {% endif %}
                 </td>
             </tr>
-            <tr {% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+            <tr {% if loop.last == false %} class="dialog-table-tr-seperator border-bottom-seperator-important"{% endif %}>
                 <td class="bgGrey bold">Transportation type</td>
                 <td>{{ dest.transportationType.name }}</td>
             </tr>
@@ -109,7 +109,7 @@
                     <td class="bgGrey bold">Number of nights</td>
                     <td>{{ accom.numberOfNights }}</td>
                 </tr>
-                <tr{% if loop.last == false %} class="dialog-table-tr-seperator"{% endif %}>
+                <tr{% if loop.last == false %} class="dialog-table-tr-seperator border-bottom-seperator-important"{% endif %}>
                     <td class="bgGrey bold">Cost</td>
                     <td>
                         {% if 'HUF' == accom.currency.code %}
