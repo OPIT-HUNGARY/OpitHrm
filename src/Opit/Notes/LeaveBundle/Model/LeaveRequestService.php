@@ -23,6 +23,7 @@ use Opit\Notes\LeaveBundle\Entity\Leave;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
 use Opit\Component\Utils\Utils;
 use Opit\Component\Email\EmailManagerInterface;
+use Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager;
 
 /**
  * Description of LeaveRequestService
@@ -38,6 +39,8 @@ class LeaveRequestService
     protected $statusManager;
     protected $aclManager;
     protected $mailer;
+    protected $leaveNotificationManager;
+    protected $leaveStatusManager;
 
     /**
      *
@@ -46,13 +49,14 @@ class LeaveRequestService
      * @param \Opit\Notes\LeaveBundle\Manager\LeaveStatusManager $statusManager
      * @param \Opit\Notes\TravelBundle\Manager\AclManager $aclManager
      */
-    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer)
+    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->aclManager = $aclManager;
         $this->mailer = $mailer;
+        $this->leaveNotificationManager = $leaveNotificationManager;
     }
 
     /**
@@ -68,7 +72,7 @@ class LeaveRequestService
         $isLocked = array();
         $isDeleteable = array();
         $isForApproval = array();
-
+        
         foreach ($leaveRequests as $leaveRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($leaveRequest);
             $currentStatusNames[$leaveRequest->getId()] = $currentStatus->getName();
@@ -104,12 +108,23 @@ class LeaveRequestService
     {
         $currentUserId = $currentUser->getId();
         
+        // check if user is gm
         if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            if ($leaveRequest->getCreatedUser()->getId() === $currentUserId ||
-                $leaveRequest->getGeneralManager()->getId() === $currentUserId) {
-                return true;
+            // check if gm created lr or is gm of lr
+            if (
+                $leaveRequest->getCreatedUser()->getId() === $currentUserId ||
+                $leaveRequest->getGeneralManager()->getId() === $currentUserId
+            ) {
+                // if lr is locked and gm is assigned employee lock deletion
+                if ($leaveRequest->getEmployee()->getUser()->getId() === $currentUserId) {
+                    
+                    return $this->isLRPastLeaveDateDeleteable($leaveRequest);
+                } else {
+                    return true;
+                }
             }
         } elseif (
+            // if employee created and is assigned to lr as employee
             $leaveRequest->getEmployee()->getUser()->getId() === $currentUserId &&
             $leaveRequest->getCreatedUser()->getId() === $currentUserId
             ) {
@@ -331,16 +346,18 @@ class LeaveRequestService
         // Check the date overlappings.
         foreach ($employeeLeaveRequests as $leaveRequests) {
             foreach ($leaveRequests as $lr) {
-                // Compare the date overlapping between leave requests
-                $dateOverlappings = $this->compareLRDateOverlapping($leaveRequest, $lr);
-                if (0 < count($dateOverlappings)) {
-                    $result[] = $dateOverlappings;
+                if ($leaveRequest !== $lr) {
+                    // Compare the date overlapping between leave requests
+                    $dateOverlappings = $this->compareLRDateOverlapping($leaveRequest, $lr);
+                    if (0 < count($dateOverlappings)) {
+                        $result[] = $dateOverlappings;
+                    }
                 }
             }
         }
 
         return $result;
-    }
+    } 
 
     /**
      * Compare the date overlapping between leave requests
@@ -370,4 +387,23 @@ class LeaveRequestService
 
         return $dateOverlappings;
     }
+    
+    /**
+     * Reject the leave requests related to leaves, send a notification and email about it
+     * 
+     * @param array $leaves
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $lr
+     */
+    public function rejectLeavesLRs(array $leaves, LeaveRequest $lr)
+    {
+        foreach ($leaves as $leave) {
+            $leaveRequest = $leave->getLeaveRequest();
+            $leaveRequest->setIsOverlapped(true);
+            $leaveRequest->setRejectedGmName($lr->getGeneralManager()->getEmployee()->getEmployeeName());
+            $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::REJECTED);
+            $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, false, $status);
+            $this->statusManager->addStatus($leaveRequest, Status::REJECTED);
+        }
+    }
+
 }

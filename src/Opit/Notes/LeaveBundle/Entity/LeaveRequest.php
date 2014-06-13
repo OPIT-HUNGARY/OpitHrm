@@ -65,7 +65,7 @@ class LeaveRequest extends AbstractBase
     protected $teamManager;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":false})
+     * @ORM\Column(type="boolean")
      */
     protected $isMassLeaveRequest;
 
@@ -73,6 +73,10 @@ class LeaveRequest extends AbstractBase
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
      */
     protected $notifications;
+    
+    protected $isOverlapped;
+    
+    protected $rejectedGmName;
 
     /**
      * Constructor
@@ -82,6 +86,7 @@ class LeaveRequest extends AbstractBase
         parent::__construct();
         $this->leaves = new \Doctrine\Common\Collections\ArrayCollection();
         $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->isMassLeaveRequest = false;
     }
 
     /**
@@ -289,44 +294,6 @@ class LeaveRequest extends AbstractBase
     }
 
     /**
-     * validate leave dates overlapping
-     * An existing groups option must use in the assert annotation.
-     * This groups must on a property in order to this assert callback works
-     *
-     * @Assert\Callback
-     */
-    public function validateLeaveDates(ExecutionContextInterface $context)
-    {
-        $collection = $this->getLeaves();
-        $overlappingDates = array();
-        
-        // Checking the date overlapping
-        foreach ($collection as $element) {
-            $current = $element;
-
-            foreach ($collection as $otherElement) {
-
-                if ($current !== $otherElement) {
-                    // Checking the date overlapping with other leaves.
-                    if (($current->getStartDate() <= $otherElement->getEndDate()) &&
-                        ($otherElement->getStartDate() <= $current->getEndDate())) {
-                        $overlappingDates[] = array(
-                            $otherElement->getStartDate(),
-                            $otherElement->getEndDate());
-                        break;
-                    }
-                }
-            }
-        }
-        // Error messages.
-        foreach ($overlappingDates as $dates) {
-            $context->addViolation(
-                sprintf('Leave dates are overlapping: %s and %s', $dates[0]->format('Y-m-d'), $dates[1]->format('Y-m-d'))
-            );
-        }
-    }
-
-    /**
      * Set leaveRequestGroup
      *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup
@@ -370,5 +337,88 @@ class LeaveRequest extends AbstractBase
     public function getIsMassLeaveRequest()
     {
         return $this->isMassLeaveRequest;
+    }
+    
+    /**
+     * Set isOverlapped
+     *
+     * @param boolean $isOverlapped
+     * @return LeaveRequest
+     */
+    public function setIsOverlapped($isOverlapped)
+    {
+        $this->isOverlapped = $isOverlapped;
+
+        return $this;
+    }
+
+    /**
+     * Get isOverlapped
+     *
+     * @return boolean
+     */
+    public function getIsOverlapped()
+    {
+        return $this->isOverlapped;
+    }
+    
+    /**
+     * Set rejectedGmName
+     *
+     * @param boolean $rejectedGmName
+     * @return LeaveRequest
+     */
+    public function setRejectedGmName($rejectedGmName)
+    {
+        $this->rejectedGmName = $rejectedGmName;
+
+        return $this;
+    }
+
+    /**
+     * Get rejectedGmName
+     *
+     * @return boolean
+     */
+    public function getRejectedGmName()
+    {
+        return $this->rejectedGmName;
+    }
+    
+    /**
+     * validate leave dates overlapping
+     * An existing groups option must use in the assert annotation.
+     * This groups must on a property in order to this assert callback works
+     *
+     * @Assert\Callback
+     */
+    public function validateLeaveDates(ExecutionContextInterface $context)
+    {
+        $collection = $this->getLeaves();
+        $overlappingDates = array();
+        
+        // Checking the date overlapping
+        foreach ($collection as $element) {
+            $current = $element;
+
+            foreach ($collection as $otherElement) {
+                if ($current !== $otherElement) {
+                    // Checking the date overlapping with other leaves.
+                    if (($current->getStartDate() <= $otherElement->getEndDate()) &&
+                        ($otherElement->getStartDate() <= $current->getEndDate())) {
+                        $overlappingDates[] = array(
+                            $otherElement->getStartDate(),
+                            $otherElement->getEndDate());
+                        break;
+                    }
+                }
+            }
+        }
+        // Error messages.
+        foreach ($overlappingDates as $dates) {
+            $context->addViolation(
+                sprintf('Leave dates are overlapping: %s and %s', $dates[0]->format('Y-m-d'), $dates[1]->format('Y-m-d'))
+            );
+        }
     }
 }

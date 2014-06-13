@@ -119,10 +119,10 @@ $(document).ready ->
         $('.start-date').each () ->
             $startDate = $(@)
             $startDateParent = $startDate.parent()
-            
+
             dateNow = new Date()
             startDate = new Date($startDate.val())
-            
+
             if startDate < dateNow
                 isValid = no
                 if $startDateParent.children('label.past-error').length is 0
@@ -241,29 +241,11 @@ $(document).ready ->
     $form.prepend $('.formFieldset')
     $form.find('#leave_request_create_leave_request').parent().append $('#cancel-button')
 
-    $collectionHolder.children().each (index) ->
-        $(@).find('label:first').remove()
-        createLeave($(@))
-    
-    $('.addFormFieldsetChild').on 'click', ->    
-        createLeave()
-        
-    $('.disabled .deleteFormFieldsetChild, .disabled .addFormFieldsetChild').each ->
-        $(@).remove()
-        
-    $('.disabled select, .disabled input, .disabled textarea').each ->
-        $(@).attr 'disabled', 'disabled'
-        
-    $('.disabled #leave_request_create_leave_request')
-        .addClass 'button-disabled'
-        .attr 'disabled', 'disabled'
-        
-    $('.disabled #leave_request_create_leave_request').attr 'disabled', 'disabled'
-
     $leaveRequestUser = $('#leave_request_user_ac')
     $addFormFieldset = $('.addFormFieldsetChild')
     $employeeSelector = $('#employee-selector')
     $employeeSelector.addClass 'display-none-important'
+    
     if $('#employee-selector').length != 0
         $leaveRequestUser.parent().addClass('display-inline-block display-none-important')
         $addFormFieldset.addClass 'display-none-important'
@@ -287,6 +269,28 @@ $(document).ready ->
             $addFormFieldset.removeClass displayNone
             
             $employeeSelector.attr 'disabled', 'disabled'
+            
+    $collectionHolder.children().each (index) ->
+        $(@).find('label:first').remove()
+        if $(@).find('.isLocked').val() == '1'
+            $(@).addClass 'disabled'
+            $('.addFormFieldsetChild').removeClass 'display-none-important'
+        createLeave($(@))
+        
+    $('.addFormFieldsetChild').on 'click', ->
+        createLeave()
+        
+    $('.disabled .deleteFormFieldsetChild, .disabled .addFormFieldsetChild').each ->
+        $(@).remove()
+        
+    $('.disabled select, .disabled input, .disabled textarea').each ->
+        $(@).attr 'disabled', 'disabled'
+        
+    $('.disabled #leave_request_create_leave_request')
+        .addClass 'button-disabled'
+        .attr 'disabled', 'disabled'
+        
+    $('.disabled #leave_request_create_leave_request').attr 'disabled', 'disabled'
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()

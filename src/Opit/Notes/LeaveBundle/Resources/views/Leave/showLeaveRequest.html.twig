@@ -12,28 +12,28 @@
         <script type="text/javascript" src="{{ asset_url }}" ></script>
         <script type="text/javascript">
             {% if unpaidLeaveDetails['unpaidLeaveDetails'] is defined %}
-            {% if unpaidLeaveDetails['unpaidLeaveDetails']|length > 0 %}
-                var html = 'Unpaid leaves created for some employees, kindly check for details in the email following this request.';
-                (function() {
-                  $('<div></div>').html(html).dialog({
-                    title: 'Notification',
-                    width: 550,
-                    buttons: {
-                      'OK': function() {
-                        window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
-                        $(this).dialog('close');
-                      }
-                    },
-                    close: function() {
-                        window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
-                        $(this).dialog('destroy');
-                    }
-                  });
+                {% if unpaidLeaveDetails['unpaidLeaveDetails']|length > 0 %}
+                    var html = 'Unpaid leaves created for some employees, kindly check for details in the email following this request.';
+                    (function() {
+                      $('<div></div>').html(html).dialog({
+                        title: 'Notification',
+                        width: 550,
+                        buttons: {
+                          'OK': function() {
+                            window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
+                            $(this).dialog('close');
+                          }
+                        },
+                        close: function() {
+                            window.location.href = Routing.generate('OpitNotesLeaveBundle_leave_list');
+                            $(this).dialog('destroy');
+                        }
+                      });
 
-                  return;
+                      return;
 
-                }).call(this);
-            {% endif %}
+                    }).call(this);
+                {% endif %}
             {% endif %}
         </script>
     {% endjavascripts %}
@@ -88,7 +88,6 @@
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
         {{ form_errors(form) }}
     </div>
-    
     {% if isEditLocked == '1' %}
         {% set disabled = 'disabled' %}
     {% else %}
@@ -97,7 +96,7 @@
     <form action="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{{ disabled }}">
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Request for</h3>
-            {% if isGeneralManager and isEditLocked != '1' %}
+            {% if isGeneralManager and isEditLocked != '1' and isLRLocked != '1' %}
             <div class="margin-left-1-em display-inline-block vertical-align-top">
                 <label class="padding-bottom-5 bold">Select</label>
                 <ul class="no-style option-list-scrollable">
@@ -122,10 +121,14 @@
                     {% endfor %}
                 </ul>
             </div>
-            {% endif %}
-            <div class="margin-left-1-em {% if isGeneralManager and isEditLocked != '1' %}display-none-important{% endif %}">
+            <div class="margin-left-1-em display-none-important">
             {{ form_widget(form.user_ac) }}
             </div>
+            {% else %}
+                <div class="margin-left-1-em">
+                {{ form_widget(form.user_ac) }}
+                </div>
+            {% endif %}
         </div>
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave dates</h3>

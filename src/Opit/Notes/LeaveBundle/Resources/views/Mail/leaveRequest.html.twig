@@ -72,7 +72,7 @@
     </table>
 {% endif %}
 
-    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white;">
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
         <tr>
             <td colspan="2">
                 <font style="color:#94c11c; font-size: 13px;"><u>Leave request summary</u></font><br />
@@ -108,6 +108,23 @@
             </td>
         </tr>
     </table>
+
+{% if leaveRequest.isOverlapped is defined %}
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white;">
+        <tr>
+            <td colspan="2">
+                <font style="color:#94c11c; font-size: 13px;"><u>Note</u></font><br />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                This leave request has been rejected as it overlapped with a leave request created by {{ leaveRequest.rejectedGmName }} for you. 
+                Kindly create a new leave request if required.
+            </td>
+        </tr>
+    </table>
+{% endif %}
+
     <p>
         Autosent by NOTES 2014 - An initiative of <a href="http://www.opit.hu/">OPIT Consulting KFT</a>, Hungary
     </p>

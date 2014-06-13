@@ -10,7 +10,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * LeaveRequest
  *
  * @ORM\Table(name="notes_leaves")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\LeaveRepository")
  */
 class Leave
 {
@@ -64,7 +64,7 @@ class Leave
      * @ORM\Column(name="number_of_days", type="integer")
      */
     protected $numberOfDays;
-
+    
     /**
      * Get id
      *
@@ -215,6 +215,7 @@ class Leave
 
     /**
      * Validate if a leave's start is in the past
+     * if leave is created by gm do not check if leave is in the past
      *
      * @Assert\Callback
      */

@@ -42,6 +42,7 @@
             <argument type="service" id="opit.manager.leave_status_manager" />
             <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="opit.component.email_manager" />
+            <argument type="service" id="opit.manager.leave_notification_manager" />
         </service>
         <service id="opit.twig.opit_leave_bundle_extension.class" class="%opit.twig.opit_leave_bundle_extension.class%">
             <tag name="twig.extension" />
