@@ -69,7 +69,7 @@
                     {% for unpaidLeaveDetail in templateVars['unpaidLeaveDetails'] %}
                         {% if unpaidLeaveDetail.unpaid > 0 %}
                         <tr>
-                            <td style="font-weight:bold; width: 80%;"><strong>{{ unpaidLeaveDetail.employee.employeeName }} < {{ unpaidLeaveDetail.employee.user.email }} ></strong></td>
+                            <td style="font-weight:bold; width: 80%;"><strong>{{ unpaidLeaveDetail.employee.employeeNameFormatted }}</strong></td>
                             <td>{{ unpaidLeaveDetail.unpaid }}</td>
                         </tr>
                         {% endif %}
