@@ -31,6 +31,7 @@ class AppKernel extends Kernel
             new Opit\Notes\LeaveBundle\OpitNotesLeaveBundle(),
             new Opit\Notes\StatusBundle\OpitNotesStatusBundle(),
             new Opit\Notes\NotificationBundle\OpitNotesNotificationBundle(),
+            new Opit\Notes\HiringBundle\OpitNotesHiringBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

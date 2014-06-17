@@ -36,3 +36,8 @@ opit_notes_travel:
     type:     annotation
     prefix:   /
 
+opit_notes_hiring:
+    resource: "@OpitNotesHiringBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
