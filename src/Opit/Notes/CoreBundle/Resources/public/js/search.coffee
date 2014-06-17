@@ -3,13 +3,18 @@ url = $form.attr 'action'
 $('#searchButton').click (event) ->
     event.preventDefault()
     return if not $form.formIsEmpty()
-  
+
     $.ajax
         method: 'POST'
         url: url
         data: $form.serialize()
     .done (response) ->
         $('#list-table').parent().html response
+
+        # find which field should be sorted and add related class
+        $field = $('#list-table').find('[data-field="' + $form.find('#order_field').val() + '"]')
+        $field.addClass 'fa-sort-' + $form.find('#order_dir').val()
+
         $(document).data('notes').funcs.initDeleteMultipleListener()
         $(document).data('notes').funcs.initListPageListeners()
         $(document).data('notes').funcs.initPager()

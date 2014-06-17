@@ -1,6 +1,7 @@
 $.extend true, $(document).data('notes'),
     funcs:
         clientSideListOrdering: ($self, inverse) ->
+            $form = $('#searchFormWrapper').find 'form'
             header = $self.parent()
             index = header.index()
             header
@@ -19,6 +20,10 @@ $.extend true, $(document).data('notes'),
             inverse = not inverse
             $('#list-table').find('.fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc')
             $self.removeClass('fa-sort-asc').addClass if inverse then 'fa-sort-desc' else 'fa-sort-asc'
+
+            order = if inverse then 'desc' else 'asc'
+            $form.find('#order_field').val $self.data('field')
+            $form.find('#order_dir').val order
             
             return inverse
         
@@ -26,7 +31,7 @@ $.extend true, $(document).data('notes'),
             $form = $('#searchFormWrapper').find 'form'
             order = $form.find('#order_dir').val()
             order = if order is 'desc' then 'asc' else 'desc'
-            $form.find('#order_field').val(dataField)
+            $form.find('#order_field').val dataField
             $form.find('#order_dir').val order
 
             $.ajax

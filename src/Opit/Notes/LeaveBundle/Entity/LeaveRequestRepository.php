@@ -30,33 +30,36 @@ class LeaveRequestRepository extends EntityRepository
      */
     public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
+        $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
+        $searchParams = isset($parameters['search']) ? $parameters['search'] : array();
+        
         $dq = $this->createQueryBuilder('lr')
             ->innerJoin('lr.leaves', 'l')
             ->innerJoin('lr.employee', 'e')
             ->innerJoin('e.user', 'u');
 
-        if (isset($parameters['startDate']) && $parameters['startDate'] !== '') {
+        if (isset($searchParams['startDate']) && $searchParams['startDate'] !== '') {
             $dq->andWhere('l.startDate >= :startDate');
-            $dq->setParameter(':startDate', $parameters['startDate']);
+            $dq->setParameter(':startDate', $searchParams['startDate']);
         }
 
-        if (isset($parameters['endDate']) && $parameters['endDate'] !== '') {
+        if (isset($searchParams['endDate']) && $searchParams['endDate'] !== '') {
             $dq->andWhere('l.endDate <= :endDate');
-            $dq->setParameter(':endDate', $parameters['endDate']);
+            $dq->setParameter(':endDate', $searchParams['endDate']);
         }
         
-        if (isset($parameters['email']) && $parameters['email'] !== '') {
+        if (isset($searchParams['email']) && $searchParams['email'] !== '') {
             $dq->andWhere('u.email LIKE :email');
-            $dq->setParameter(':email', '%' . $parameters['email']. '%');
+            $dq->setParameter(':email', '%' . $searchParams['email']. '%');
         }
-        if (isset($parameters['employeeName']) && $parameters['employeeName'] !== '') {
+        if (isset($searchParams['employeeName']) && $searchParams['employeeName'] !== '') {
             $dq->andWhere('e.employeeName LIKE :employeeName');
-            $dq->setParameter(':employeeName', '%' . $parameters['employeeName']. '%');
+            $dq->setParameter(':employeeName', '%' . $searchParams['employeeName']. '%');
         }
 
-        if (isset($parameters['leaveId']) && $parameters['leaveId'] !== '') {
+        if (isset($searchParams['leaveId']) && $searchParams['leaveId'] !== '') {
             $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
-            $dq->setParameter(':leaveId', '%'.$parameters['leaveId'].'%');
+            $dq->setParameter(':leaveId', '%'.$searchParams['leaveId'].'%');
         }
         
         if ($pagnationParameters['isGeneralManager'] || $pagnationParameters['isAdmin']) {
@@ -78,6 +81,9 @@ class LeaveRequestRepository extends EntityRepository
             $dq->setParameter(':employee', $pagnationParameters['employee']);
         }
 
+        if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
+            $dq->orderBy($orderParams['field'], $orderParams['dir']);
+        }
 
         $dq->setFirstResult($pagnationParameters['firstResult']);
         $dq->setMaxResults($pagnationParameters['maxResults']);

@@ -116,7 +116,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $qb = $this->createQueryBuilder('u');
         $params = array();
         $andx = array();
-        $oderParams = isset($parameters['order']) ? $parameters['order'] : array();
+        $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
 
         // Build the query from posted search parameters
         Utils::buildDoctrineQuery($qb, $parameters['search'], $params, $andx);
@@ -127,8 +127,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                 ->setParameters($params);
         }
 
-        if (isset($oderParams['field']) && $oderParams['field'] && isset($oderParams['dir']) && $oderParams['dir']) {
-            $qb->orderBy($oderParams['field'], $oderParams['dir']);
+        if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
+            $qb->orderBy($orderParams['field'], $orderParams['dir']);
         }
 
         $qb->setFirstResult($firstResult);
