@@ -131,6 +131,12 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     protected $tmLeaveRequests;
 
     /**
+     * Hiring manager job positions
+     * @ORM\OneToMany(targetEntity="\Opit\Notes\HiringBundle\Entity\JobPosition", mappedBy="hiringManager", cascade={"remove"})
+     */
+    protected $hmJobPositions;
+
+    /**
      * Notifications sent by user
      * @ORM\OneToMany(targetEntity="\Opit\Notes\NotificationBundle\Entity\Notification", mappedBy="receiver", cascade={"remove"})
      */
@@ -161,6 +167,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
         $this->gmTravelRequests = new ArrayCollection();
         $this->tmTravelRequests = new ArrayCollection();
         $this->gmLeaveRequests = new ArrayCollection();
+        $this->hmJobPositions = new ArrayCollection();
         $this->userTravelExpenses = new ArrayCollection();
         $this->setSalt("");
         // Set ldap required to handle the default values mapped to not null properties.

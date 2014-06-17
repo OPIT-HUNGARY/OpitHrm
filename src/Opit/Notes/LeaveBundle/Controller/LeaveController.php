@@ -71,7 +71,7 @@ class LeaveController extends Controller
         );
 
         if ($isSearch) {
-            $searchRequests = $request->request->get('search');
+            $searchRequests = $request->request->all();
         }
 
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
