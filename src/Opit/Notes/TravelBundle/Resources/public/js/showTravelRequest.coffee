@@ -162,8 +162,7 @@ $(document).ready ->
     $('#travelRequest_general_manager').after requiredApprovals.append($div)
 
     #set elements to be inlined
-    $('#travelRequest_departure_date, #travelRequest_arrival_date,
-       #travelRequest_customer_related, #travelRequest_customer_name,
+    $('#travelRequest_customer_related, #travelRequest_customer_name,
        #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
         
     formFieldsetAddClasses(['travelRequest_destinations', 'travelRequest_accomodations'])
@@ -174,15 +173,18 @@ $(document).ready ->
                     .addClass('formFieldset generalFormFieldset')
                     .addClass('padding-bottom-5 margin-top-20 margin-bottom-20')
                     .append($('#travelRequest_user_ac,
-                          #travelRequest_departure_date,
-                          #travelRequest_arrival_date,
                           #travelRequest_customer_related,
                           #travelRequest_customer_name,
                           #travelRequest_trip_purpose').parent())
+
     $('#travelRequest').prepend $generalData
 
-    #add br tag to break inline
-    $('#travelRequest_arrival_date').parent().after '<br />'
+    $userAc = $('#travelRequest_user_ac')
+    $arrivalDateContainer = $('#travelRequest_arrival_date').closest('div')
+    $departureDateContainer = $('#travelRequest_departure_date').closest('div')
+
+    $userAc.after $arrivalDateContainer.addClass('display-inline-block')
+    $userAc.after $departureDateContainer.addClass('display-inline-block margin-right-1-em')
     
     $(document).data('notes').funcs.createButton 'Cancel', 'button display-inline-block', '', $('#travelRequest_add_travel_request').parent(), 'OpitNotesTravelBundle_travel_list'
     $(document).data('notes').funcs.makeElementToggleAble 'h3', $('.formFieldset')
@@ -240,11 +242,11 @@ validateCost = (self) ->
     regexp = /^[0-9]+([\,\.][0-9]+)?$/;
     # Check if the cost is a number or not.
     if !regexp.test(cost)
-        if self.parent().children('.custom-label-error').length < 1
+        if self.closest('div').children('.custom-label-error').length < 1
             self.addClass 'display-inline-block'
-            self.parent().append $('<label>').addClass('custom-label-error').text 'Invalid number.'
+            self.closest('div').append $('<label>').addClass('custom-label-error').text 'Invalid number.'
     else
-        self.parent().children().remove('.custom-label-error')
+        self.closest('div').children().remove('.custom-label-error')
 
 # assing custom validation rules to arrival date, user, general manager
 $form.validate
@@ -253,6 +255,8 @@ $form.validate
         "travelRequest[arrival_date]": "compare"
         "travelRequest[user_ac]": "checkId"
         "travelRequest[general_manager_ac]": "checkId"
+    errorPlacement: ($error, $element) ->
+        $element.closest('div').append $error
 
 $( '#travelRequest_add_travel_request' ).click (event) ->
     event.preventDefault()
@@ -292,8 +296,4 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
         .fail (jqXHR, textStatus, errorThrown) ->
             $('<div></div>').html('The travel request could not be saved due to an error.').dialog
                 title: 'Error'
-    else
-        $('.hasDatepicker').each ->
-            if $(@).hasClass 'error'
-                $(@).parent().find('.fa-calendar').addClass 'margin-top-12'
     return

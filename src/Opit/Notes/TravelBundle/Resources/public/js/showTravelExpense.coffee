@@ -13,11 +13,12 @@ calculateAdvancesPayback = () ->
         amountSpent = $(@).val()
         if spent[amountSpent] is undefined then spent[amountSpent] = amount else spent[amountSpent] += amount
         if isNaN(spent[amountSpent])
-            $amountEl.after $('<label>').addClass('custom-label-error').text 'Amount must be a valid number.'
-            $amountEl.css 'border': 'solid 2px #aa0000'
+            if $amountEl.closest('div').children('.custom-label-error').length < 1
+                $amountEl.closest('div').append $('<label>').addClass('custom-label-error').text 'Amount must be a valid number.'
+                $amountEl.css 'border': 'solid 2px #aa0000'
         else
             $amountEl.css 'border': '0'
-            $amountEl.parent().find('.custom-label-error').remove()
+            $amountEl.closest('div').find('.custom-label-error').remove()
         
     $('.generalFormFieldset .te-advances-received-currency').each ->
         $closestAdvancesReceived = $(@).closest '.advances-received'
@@ -70,7 +71,7 @@ validateAllExpenseDates = ->
         expenseDateField = $(@).find('input[type=date]')
         if expenseDateField.attr('id').indexOf('userPaidExpenses') > -1
             validateExpenseDate(expenseDateField)
-            if expenseDateField.parent().children('.custom-label-error').length > 0
+            if expenseDateField.closest('div').children('.custom-label-error').length > 0
                 isDateValid = false
                 return
 
@@ -79,11 +80,13 @@ validateAllExpenseDates = ->
 validateExpenseDate = (self) ->
     date = self.val()
     self.addClass 'display-inline-block'
-    if date > $('#travelExpense_arrivalDateTime_date').val() or date < $('#travelExpense_departureDateTime_date').val()
-        if self.parent().children('.custom-label-error').length < 1
-            self.parent().append $('<label>').addClass('custom-label-error').text 'Invalid expense date.'
+    $('#travelExpenseForm').valid()
+    $selfClosestDiv = self.closest('div')
+    if (date > $('#travelExpense_arrivalDateTime_date').val() or date < $('#travelExpense_departureDateTime_date').val()) and date != ''
+        if $selfClosestDiv.children('.custom-label-error').length < 1
+            $selfClosestDiv.append $('<label>').addClass('custom-label-error').text 'Invalid expense date.'
     else
-        self.parent().children().remove('.custom-label-error')
+        $selfClosestDiv.children().remove('.custom-label-error')
 
 expenseDateChange = (parent) ->
     $dateOfExpenseSpent = parent.find('input[type=date]')
@@ -284,6 +287,7 @@ addNewForm = (collectionHolder, parent) ->
 
     # init datepicker plugin
     $(document).data('notes').funcs.initDateInputs $formFieldsetChild
+    $('.hasDatepicker').css 'padding-right', '0'
     return
     
 createTableRow = (text, value, rowTitle) ->
@@ -534,7 +538,6 @@ $addUserTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-squa
 $addUserTagLink.on 'click', ->
     addNewForm($('#travelExpense_userPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(2)'))
     
-    
 $form = $('#travelExpenseForm')    
     
 $.validator.addMethod 'compare', (value, element) ->
@@ -560,6 +563,8 @@ $form.validate
         'travelExpense[arrivalDateTime][time][minute]': 'compare',
         'travelExpense[taxIdentification]': {maxlength: 11},
         'travelExpense[toSettle]': {digits: true}
+    errorPlacement: ($error, $element) ->
+        $element.closest('div').append $error
  
 $('#travelExpense_add_travel_expense').on 'click', (event) ->
     event.preventDefault()
@@ -596,10 +601,6 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
             .fail (jqXHR, textStatus, errorThrown) ->
                 $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
                     title: 'Error'
-        else
-            $('.hasDatepicker').each ->
-                if $(@).hasClass 'error'
-                    $(@).parent().find('.fa-calendar').addClass 'margin-top-12'
 
 $('#travelRequestPreview').on 'click', ->
     $.ajax

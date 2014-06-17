@@ -33,15 +33,15 @@
             <td>
                 <span class="lr-details clickable text-decoration-underline cursor-pointer" data-lr-id="{{ id }}">{{ leaveRequest.leaveRequestId }}</span>
                 {% if "now"|date("Y-m-d") <= lastContactDate and leaveRequest.createdUser.id != leaveRequest.employee.user.id and listingRights['isForApproval'][id] %}
-                    <i class="fa fa-info-circle color-ferrari-red cursor-pointer margin-left-5 font-size-18 tipsy-notification" title="{{ lrInfo }}"></i>
+                    <i class="fa fa-exclamation color-ferrari-red cursor-pointer margin-left-5 font-size-18 tipsy-notification" title="{{ lrInfo }}"></i>
                 {% endif %}
                 {% if leaveRequest.isMassLeaveRequest is defined and leaveRequest.isMassLeaveRequest == true %}
                     <i class="fa fa-group margin-left-5" title="Group leave request"></i>
                 {% elseif leaveRequest.leaveRequestGroup is not null and parentsOfGroups[leaveRequest.leaveRequestGroup.id] is defined  %}
                     {% if listingRights['isDeleteable'][id]%}
-                        <i class="fa fa-info-circle cursor-pointer margin-left-5" title="{{ 'Parent leave request ' ~ parentsOfGroups[leaveRequest.leaveRequestGroup.id].leaveRequestId }}" ></i>
+                        <i class="fa fa-info-circle font-size-18 cursor-pointer margin-left-5" title="{{ 'Parent leave request ' ~ parentsOfGroups[leaveRequest.leaveRequestGroup.id].leaveRequestId }}" ></i>
                     {% else %}
-                        <i class="fa fa-info-circle cursor-pointer margin-left-5" title="Part of group leave request, you cannot delete this leave request." ></i>
+                        <i class="fa fa-lock font-size-18 cursor-pointer margin-left-5" title="Part of group leave request, you cannot edit or delete this leave request." ></i>
                     {% endif %}
                 {% endif %}
             </td>

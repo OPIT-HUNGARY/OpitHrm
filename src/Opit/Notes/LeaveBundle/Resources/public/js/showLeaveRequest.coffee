@@ -80,7 +80,7 @@ $(document).ready ->
         isValid = yes
         $('.formFieldsetChild').each (index) ->
             $startDate = $(@).find('.start-date')
-            $startDateParent = $startDate.parent()
+            $startDateParent = $startDate.closest 'div'
             startDateVal = $startDate.val()
             
             $endDate = $(@).find('.end-date')
@@ -118,7 +118,7 @@ $(document).ready ->
         isValid = yes
         $('.start-date').each () ->
             $startDate = $(@)
-            $startDateParent = $startDate.parent()
+            $startDateParent = $startDate.closest 'div'
 
             dateNow = new Date()
             startDate = new Date($startDate.val())
@@ -139,7 +139,7 @@ $(document).ready ->
         $generalManger = $('#leave_request_general_manager')
         $generalManagerAc = $('#leave_request_general_manager_ac')
         if $generalManger.val() == ''
-            $generalManagerAc.parent().append createErrorLabel('A general manager must be selected.', 'gm-error')
+            $generalManagerAc.closest('div').append createErrorLabel('A general manager must be selected.', 'gm-error')
             $generalManagerAc.addClass 'error'
             isValid = no
         else

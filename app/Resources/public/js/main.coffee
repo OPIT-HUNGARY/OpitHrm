@@ -22,7 +22,7 @@ $.extend true, $(document).data('notes'),
                     name = $(@).attr 'name'
                     id = $(@).attr('id')
                     $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val())) + '" />'
-                    $(@).datepicker {altField:'#altDate'+id, altFormat: $.datepicker.ISO_8601}
+                    $(@).datepicker()
     
         deleteSingleRequest: (type, self) ->
             $checkbox = self.closest('tr').find(':checkbox')
@@ -183,26 +183,63 @@ $.extend true, $(document).data('notes'),
 ###
 __picker = $.fn.datepicker
 
-$.fn.datepicker = (options) ->
-    __picker.apply this, [options]
+$.fn.datepicker = (options = {}, parameters) ->
     $self = @
 
-    options = options or {}
     defaultOptions =
-        wrapper: '<div></div>'
-        indicatorIcon: $('<i>')
+        altField: '#altDate' + $(@).attr('id')
+        altFormat: $.datepicker.ISO_8601
     # Merge passed options
     $.extend true, defaultOptions, options
-    
+
+    defaultParameters =
+        wrapper: $('<span class="position-relative datepicker-wrapper"></span>')
+        indicatorIcon: $('<i>')
+        deleteIcon: $('<i>')
+        testNativeSupport: off
+    # Merge passed parameters
+    $.extend true, defaultParameters, parameters
+
+    # Allow bypassing native support test
+    if parameters?.testNativeSupport is on and Modernizr.inputtypes.date
+        return
+
+    __picker.apply this, [defaultOptions]
+
     if options.showOn isnt 'button'
+        $wrapper = defaultParameters.wrapper
+        $deleteIcon = defaultParameters.deleteIcon
+        $calendarIcon = defaultParameters.indicatorIcon
+
         $self.attr
             readonly: 'readonly'
-        .addClass 'icon-prefix-indent'
-        defaultOptions.indicatorIcon.addClass 'fa fa-calendar position-absolute input-prefix-position cursor-pointer'
-        defaultOptions.indicatorIcon.click ->
+        .addClass 'icon-prefix-indent display-inline-block'
+
+        $self.wrap $wrapper
+
+        # Adding delete icon and handle delete event
+        $deleteIcon.addClass 'fa fa-times-circle position-absolute input-postfix-position cursor-pointer'
+        $deleteIcon.click ->
+            $.datepicker._clearDate $self
+
+        $self.after $deleteIcon
+
+        # Adding calendar icon.
+        $calendarIcon.addClass 'fa fa-calendar position-absolute input-prefix-position cursor-pointer'
+        $calendarIcon.click ->
             $(@).parent().parent().children('input').focus()
-        $self.before defaultOptions.wrapper
-        $self.prev().append defaultOptions.indicatorIcon
+            $(@).addClass 'display-none-important'
+
+        $self.before $calendarIcon
+
+        # Register delete icon display events
+        $self.closest('.datepicker-wrapper')
+            .on 'mouseenter.datepicker', 'input, i.fa-times-circle',  ->
+                if $self.val() != ''
+                    $deleteIcon.addClass 'display-inline-block-important'
+            .on 'mouseleave.datepicker', 'input, i.fa-times-circle',  ->
+                $deleteIcon.removeClass 'display-inline-block-important'
+
     return $self
 
 ###

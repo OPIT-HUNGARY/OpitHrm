@@ -25,3 +25,9 @@
         {% endfor %}
     </div>
 {{ form_end(form) }}
+{# Date of birth requires individual options #}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#user_employee_dateOfBirth").datepicker({"maxDate": 0, 'changeMonth': true, 'changeYear': true}, {'testNativeSupport': true});
+    });
+</script>
