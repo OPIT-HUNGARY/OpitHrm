@@ -244,7 +244,7 @@ $(document).ready ->
     # start checking for new notifications
     getUnreadNotifications() if $('#notifications').length > 0
 
-    $('#loggedInUser').click ->
+    $('#loggedInUser.edit').click ->
         $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('notes').funcs?.showAlert
 
     $(document).on 'click', '.ui-button-text', ->

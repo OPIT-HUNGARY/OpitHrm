@@ -26,10 +26,12 @@
             logout
             <i class="fa fa-sign-out margin-0"></i>
         </a>
-        <div id="loggedInUser" class="cursor-pointer header-tab float-right text-decoration-none bold">
+        <div id="loggedInUser" class="header-tab float-right text-decoration-none bold{{ is_granted('ROLE_ADMIN') ? ' edit cursor-pointer' : '' }}">
             <span data-user-id="{{app.user.id}}">
                 {{ app.user.username }}&nbsp;
+                {% if is_granted('ROLE_ADMIN') %}
                 <i class="fa fa-cog margin-0"></i>
+                {% endif %}
             </span>
         </div>
         <div id="changePassword" class="pointer header-tab float-right text-decoration-none bold" data-user-id="{{ app.user.id }}">

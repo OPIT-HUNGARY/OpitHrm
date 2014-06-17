@@ -116,6 +116,7 @@ class UserController extends Controller
      * To generate add/edit item form
      *
      * @Route("/secured/user/show/{id}", name="OpitNotesUserBundle_user_show", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_ADMIN")
      * @Method({"GET"})
      * @Template()
      */
@@ -141,6 +142,7 @@ class UserController extends Controller
      * To add/edit user in Notes
      *
      * @Route("/secured/user/add/{id}", name="OpitNotesUserBundle_user_add", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      */
     public function addUserAction()
@@ -195,6 +197,7 @@ class UserController extends Controller
      * To delete user in Notes
      *
      * @Route("/secured/user/delete", name="OpitNotesUserBundle_user_delete")
+     * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      */
     public function deleteUserAction()
@@ -234,6 +237,7 @@ class UserController extends Controller
      * Method to change password for user
      *
      * @Route("/secured/user/password/reset", name="OpitNotesUserBundle_user_password_reset")
+     * @Secure(roles="ROLE_USER")
      * @Method({"POST"})
      */
     public function resetPasswordAction()
@@ -258,6 +262,7 @@ class UserController extends Controller
      * To generate change password form
      *
      * @Route("/secured/user/show/password/{id}", name="OpitNotesUserBundle_user_show_password", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_USER")
      * @Method({"GET"})
      * @Template()
      */
@@ -313,6 +318,7 @@ class UserController extends Controller
      * Change the password of an exist user.
      *
      * @Route("/secured/user/update/password/{id}", name="OpitNotesUserBundle_user_update_password", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_USER")
      * @Method({"POST"})
      * @Template()
      */
@@ -345,8 +351,8 @@ class UserController extends Controller
      * Returns if the given user has ldap auth enabled
      *
      * @Route("/secured/user/ldap/enabled", name="OpitNotesUserBundle_user_ldap_enabled")
-     * @Method({"POST"})
      * @Secure(roles="ROLE_USER")
+     * @Method({"POST"})
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
@@ -359,8 +365,8 @@ class UserController extends Controller
 
     /**
      * @Route("/secured/user/search/{role}", name="OpitNotesUserBundle_user_search", defaults={"role"=false})
-     * @Method({"POST"})
      * @Secure(roles="ROLE_USER")
+     * @Method({"POST"})
      */
     public function userSearchAction()
     {
@@ -434,8 +440,8 @@ class UserController extends Controller
      * To show logged in  user summary page.Seperate bundles should add there info directly into the template.
      *
      * @Route("/secured/user/show/infoboard", name="OpitNotesUserBundle_user_show_infoboard")
-     * @Method({"GET"})
      * @Secure(roles="ROLE_USER")
+     * @Method({"GET"})
      * @Template()
      */
     public function showUserSummaryAction()
