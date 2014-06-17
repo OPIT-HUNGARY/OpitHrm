@@ -160,8 +160,11 @@ class LeaveController extends Controller
         
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
+            $employees = $request->request->get('employee');
+
+            $this->validateLeaveDatesCategory(null === $employees ? array() : $employees, $leaveRequest, $leaveRequestService, $entityManager, $form);
+
             if ($form->isValid()) {
-                $employees = $request->request->get('employee');
 
                 if ($isGeneralManager && count($employees) > 0) {
                     // Creating mass leave requests.
@@ -175,7 +178,6 @@ class LeaveController extends Controller
                     $dateOverlappings = $leaveRequestService->checkLRsDateOverlapping($leaveRequest, $employees);
                     // If there are not any date overlappings with other LRs this LR
                     if (0 === count($dateOverlappings)) {
-
                         // Creating single leave request.
                         foreach ($children as $child) {
                             if (false === $leaveRequest->getLeaves()->contains($child)) {
@@ -197,9 +199,7 @@ class LeaveController extends Controller
                             $statusManager->changeStatus($leaveRequest, Status::CREATED, true);
                         }
 
-                        if (empty($unpaidLeaveDetails)) {
-                            return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
-                        }
+                        return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
                     } else {
                         // Set the date collisions into the error array.
                         foreach ($dateOverlappings as $dateOverlapping) {
@@ -568,4 +568,57 @@ class LeaveController extends Controller
 
         return $leaveEndDate;
     }
+
+    /**
+     * Check if leave category can be selected using the left to availed days,
+     * add error message to leave category if days left to avail were exceeded.
+     * 
+     * @param array $employees
+     * @param \Opit\Notes\UserBundle\Entity\Employee $employee
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @param \Opit\Notes\LeaveBundle\Model\LeaveRequestService $leaveRequestService
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param type $form
+     */
+    protected function validateLeaveDatesCategory(array $employees, LeaveRequest $leaveRequest, LeaveRequestService $leaveRequestService, EntityManagerInterface $entityManager, $form)
+    {
+        if (0 === count($employees)) {
+            $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
+
+            $employee = $leaveRequest->getEmployee();
+
+            // Leave entitlements of an employee.
+            $leaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($employee);
+
+            // Availed leave days of an employee.
+            $employeeAvailedLeaveDays = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->totalCountedLeaveDays($employee->getId());
+
+            // Left to avail days of an employee.
+            $leftToAvail = $leaveEntitlement - $employeeAvailedLeaveDays;
+
+            $countLeaveDays = 0;
+
+            $leaves = $leaveRequest->getLeaves();
+
+            $message = 'Entitlement exceeded - kindly change category';
+
+            // Loop through all leaves employee has posted.
+            foreach ($leaves as $index => $leave) {
+                $countLeaveDays += $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
+                // Check if count of leave days are more than days left to avail.
+                if ($countLeaveDays > $leftToAvail) {
+                    // If there are days left to avail
+                    if ($leftToAvail > 0) {
+                        // Add error to leave category
+                        $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . ' or dates.'));
+                        $leftToAvail = 0;
+                    }
+
+                    // Add error to leave category
+                    $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . '.'));
+                }
+            }
+        }
+    }
+
 }
