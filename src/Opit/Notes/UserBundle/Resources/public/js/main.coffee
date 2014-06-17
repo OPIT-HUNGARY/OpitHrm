@@ -245,7 +245,7 @@ $(document).ready ->
     getUnreadNotifications() if $('#notifications').length > 0
 
     $('#loggedInUser.edit').click ->
-        $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).children('span').data('user-id'), $(document).data('notes').funcs?.showAlert
+        $(document).data('OpitNotesUserBundle').funcs.userEdit $(@).data('user-id'), $(document).data('notes').funcs?.showAlert
 
     $(document).on 'click', '.ui-button-text', ->
         buttonText = $(@).html()

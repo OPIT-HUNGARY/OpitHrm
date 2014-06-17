@@ -22,21 +22,10 @@
             <span class="display-block">NOTES</span>
             <span class="color-light-green">New OPIT Travel Expense System</span>
         </a>
-        <a href="{{ path('OpitNotesUserBundle_logout') }}" id="logoutButton" class="float-right color-white background-color-green text-decoration-none bold">
-            logout
-            <i class="fa fa-sign-out margin-0"></i>
-        </a>
-        <div id="loggedInUser" class="header-tab float-right text-decoration-none bold{{ is_granted('ROLE_ADMIN') ? ' edit cursor-pointer' : '' }}">
-            <span data-user-id="{{app.user.id}}">
+        <div class="header-tab float-right text-decoration-none bold">
+            <span data-user-id="{{app.user.id}}"> Hello
                 {{ app.user.username }}&nbsp;
-                {% if is_granted('ROLE_ADMIN') %}
-                <i class="fa fa-cog margin-0"></i>
-                {% endif %}
-            </span>
-        </div>
-        <div id="changePassword" class="pointer header-tab float-right text-decoration-none bold" data-user-id="{{ app.user.id }}">
-            <span class="list-change-password clickable no-text-decoration" title="Reset password">
-               <i class="fa fa-key cursor-pointer margin-0"></i>
+                 !
             </span>
         </div>
         <div id="notifications">
