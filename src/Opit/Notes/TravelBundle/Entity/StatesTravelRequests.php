@@ -48,6 +48,11 @@ class StatesTravelRequests extends AbstractBase
      */
     protected $status;
 
+    /**
+     * @ORM\OneToOne(targetEntity="CommentTRStatus", mappedBy="status", cascade={"persist", "remove"})
+     */
+    protected $comment;
+
     public function __construct(Status $status = null, TravelRequest $travelRequest = null)
     {
         parent::__construct();
@@ -109,5 +114,29 @@ class StatesTravelRequests extends AbstractBase
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\CommentTRStatus $comment
+     * @return StatesTravelRequests
+     */
+    public function setComment(\Opit\Notes\TravelBundle\Entity\CommentTRStatus $comment = null)
+    {
+        $comment->setStatus($this);
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \Opit\Notes\TravelBundle\Entity\CommentTRStatus
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }

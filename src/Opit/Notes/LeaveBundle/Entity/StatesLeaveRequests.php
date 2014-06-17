@@ -48,6 +48,11 @@ class StatesLeaveRequests extends AbstractBase
      */
     protected $status;
 
+    /**
+     * @ORM\OneToOne(targetEntity="CommentLeaveStatus", mappedBy="status", cascade={"persist", "remove"})
+     */
+    protected $comment;
+
     public function __construct(Status $status = null, LeaveRequest $leaveRequest = null)
     {
         parent::__construct();
@@ -109,5 +114,29 @@ class StatesLeaveRequests extends AbstractBase
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\CommentLeaveStatus $comment
+     * @return StatesLeaveRequests
+     */
+    public function setComment(\Opit\Notes\LeaveBundle\Entity\CommentLeaveStatus $comment = null)
+    {
+        $comment->setStatus($this);
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \Opit\Notes\LeaveBundle\Entity\CommentLeaveStatus
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }
