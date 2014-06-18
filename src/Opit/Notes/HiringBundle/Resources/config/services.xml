@@ -3,5 +3,13 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="opit.listener.job_position_post_listener.class">Opit\Notes\HiringBundle\EventListener\JobPositionPostListener</parameter>
+    </parameters>
 
+    <services>
+        <service id="opit.listener.job_position_post_listener" class="%opit.listener.job_position_post_listener.class%">
+            <tag name="doctrine.event_listener" event="postPersist" />
+        </service>
+    </services>
 </container>

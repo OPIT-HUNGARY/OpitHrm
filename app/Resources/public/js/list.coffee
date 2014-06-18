@@ -41,6 +41,7 @@ $.extend true, $(document).data('notes'),
              .done (data) ->
                 $toReplace = $('#' + toRelplace).html data
                 $(document).data('notes').funcs.initPager()
+                $(document).data('notes').funcs.initListPageListeners()
                 $(document).data('notes').funcs.initDeleteMultipleListener()
                 $toReplace.find('th').eq($self.parent().index()).find('i').addClass(if order is 'desc' then 'fa-sort-desc' else 'fa-sort-asc')
         

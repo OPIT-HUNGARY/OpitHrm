@@ -1,0 +1,66 @@
+{% extends 'OpitNotesCoreBundle::layout.html.twig' %}
+{% block title %}
+        {% if true == isNewJobPosition %}New job position{% else %}Edit job position{% endif %} - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesHiringBundle/Resources/public/js/showJobPosition.coffee'
+    output='js/opitnoteshiring/show_job_position.js' filter='?yui_js' %}
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block stylesheets %}
+    {% stylesheets
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotesleave/show_leave_request.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+    <h1>
+        {% if false == isNewJobPosition %}
+            <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+                {#<i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>#}
+            </a>
+        {% endif %}
+        {% if true == isNewJobPosition %}New{% else%}Edit{% endif %} job position
+    </h1>
+
+    <div class="dialog-description default-border-radius">
+        Job positions can be added or edited from here.
+    </div>
+
+    <form action="{{ path('OpitNotesHiringBundle_job_position_show', { 'id': app.request.get('id')}) }}" method="post" id="jobPositionForm" class="">
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20 padding-10">
+                <div class="display-inline-block">
+                    {{ form_label(form.jobTitle) }}
+                    {{ form_widget(form.jobTitle) }}
+                </div>
+                <div class="display-inline-block margin-bottom-10">
+                    {{ form_label(form.numberOfPositions) }}
+                    {{ form_widget(form.numberOfPositions) }}
+                </div>
+                <div class="display-block margin-bottom-10">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                </div>
+                <div class="display-block margin-bottom-10">
+                    {{ form_label(form.hiring_manager_ac) }}
+                    {{ form_widget(form.hiring_manager_ac) }}
+                </div>
+                <div class="display-block margin-bottom-10">
+                    <div class="display-inline-block">
+                    {{ form_label(form.isActive) }}
+                    </div>
+                    <div class="display-inline-block">
+                    {{ form_widget(form.isActive) }}
+                    </div>
+                </div>
+        </div>
+        {{ form_widget(form.hiring_manager) }}
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.create_job_position) }}
+        <a href="{{ path('OpitNotesHiringBundle_job_position_show') }}" id="cancel-button" class="button">Cancel</a>
+    </form>
+{% endblock %}

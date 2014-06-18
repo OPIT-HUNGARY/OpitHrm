@@ -24,6 +24,19 @@ class JobPosition extends AbstractBase
     private $id;
     
     /**
+     * @var text
+     * @ORM\Column(name="job_position_id", type="string", length=11, nullable=true)
+     */
+    protected $jobPositionId;
+    
+    /**
+     * @var \Text
+     *
+     * @ORM\Column(name="job_title", type="text")
+     */
+    protected $jobTitle;
+    
+    /**
      * @var integer
      *
      * @ORM\Column(name="number_of_positions", type="integer")
@@ -49,9 +62,13 @@ class JobPosition extends AbstractBase
      */
     protected $isActive;
     
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         parent::__construct();
+        $this->isActive = false;
     }
 
     /**
@@ -109,6 +126,29 @@ class JobPosition extends AbstractBase
     {
         return $this->description;
     }
+    
+    /**
+     * Set job title
+     *
+     * @param string $jobTitle
+     * @return JobPosition
+     */
+    public function setJobTitle($jobTitle)
+    {
+        $this->jobTitle = $jobTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getJobTitle()
+    {
+        return $this->jobTitle;
+    }
 
     /**
      * Set isActive
@@ -154,5 +194,28 @@ class JobPosition extends AbstractBase
     public function getHiringManager()
     {
         return $this->hiringManager;
+    }
+
+    /**
+     * Set jobPositionId
+     *
+     * @param string $jobPositionId
+     * @return JobPosition
+     */
+    public function setJobPositionId($jobPositionId)
+    {
+        $this->jobPositionId = $jobPositionId;
+
+        return $this;
+    }
+
+    /**
+     * Get jobPositionId
+     *
+     * @return string 
+     */
+    public function getJobPositionId()
+    {
+        return $this->jobPositionId;
     }
 }

@@ -93,6 +93,7 @@
 
     </li>
 
+    {% if is_granted('ROLE_TEAM_MANAGER') %}
     <li><a href="#">Hiring Management</a>
 
         <div class="dropdown_3columns">
@@ -104,7 +105,7 @@
             <div class="col_1">
                 <h3><i class="fa fa-th-list"></i> Job Position</h3>
                 <ul>
-                    <li><a href='#'>Create</a></li>
+                    <li><a href='{{ path('OpitNotesHiringBundle_job_position_show') }}'>Create</a></li>
                     <li><a href='#'>View List</a></li>
                 </ul>
             </div>
@@ -120,7 +121,7 @@
         </div>
 
     </li>
-
+    {% endif %}
         <li class="float-right"><i class="fa fa-cog font-size-18 cursor-pointer"></i>
 
            <div class="dropdown_1column align_right" style="">
@@ -144,5 +145,4 @@
             </div>
 
     </li>
-
 </ul>
