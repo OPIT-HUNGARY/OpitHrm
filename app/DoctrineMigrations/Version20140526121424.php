@@ -17,7 +17,7 @@ class Version20140526121424 extends AbstractMigration
         
         $this->addSql("ALTER TABLE notes_status_workflow ADD discr VARCHAR(255) NOT NULL");
 
-        // Update discr attribute to be deafault
+        // Update discr attribute to be default
         $this->addSql("UPDATE notes_status_workflow SET discr = 'default'");
     }
 

@@ -14,8 +14,12 @@ class Version20140513152023 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
+
         $this->addSql("ALTER TABLE notes_employees ADD employeeName VARCHAR(25) NOT NULL");
+
+        // Migrate data from user to employee attributes
+        $this->addSql("UPDATE notes_employees e, notes_users u SET e.employeeName = u.employeeName WHERE u.employee_id = e.id");
+
         $this->addSql("ALTER TABLE notes_users DROP employeeName");
     }
 
@@ -23,7 +27,7 @@ class Version20140513152023 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        
+
         $this->addSql("ALTER TABLE notes_employees DROP employeeName");
         $this->addSql("ALTER TABLE notes_users ADD employeeName VARCHAR(25) NOT NULL");
     }

@@ -32,15 +32,15 @@ class TeamFixtures extends AbstractDataFixture
     public function doLoad(ObjectManager $manager)
     {
         $team1 = new Team();
-        $team1->setTeamName('team#1');
+        $team1->setTeamName('Team #1');
         $manager->persist($team1);
         
         $team2 = new Team();
-        $team2->setTeamName('team#2');
+        $team2->setTeamName('Team #2');
         $manager->persist($team2);
         
         $team3 = new Team();
-        $team3->setTeamName('team#3');
+        $team3->setTeamName('Team #3');
         $manager->persist($team3);
         
         $manager->flush();
