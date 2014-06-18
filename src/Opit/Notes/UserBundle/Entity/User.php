@@ -453,6 +453,7 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     public function setEmployee(\Opit\Notes\UserBundle\Entity\Employee $employee = null)
     {
         $this->employee = $employee;
+        $employee->setUser($this);
 
         return $this;
     }

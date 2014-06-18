@@ -374,7 +374,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
         return $this->employeeName;
     }
 
-     public function getEmployeeNameFormatted()
+    public function getEmployeeNameFormatted()
     {
         return $this->employeeName . ' <' . $this->getUser()->getEmail() . '>';
     }
