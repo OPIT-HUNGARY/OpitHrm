@@ -111,6 +111,11 @@ class SearchForm
     ###
     runCallbacks: () ->
         do callback for callback in @callbacks
+
+        # Log data if debug enabled
+        console.info "[SearchForm] Search form callbacks triggered.", "(count: #{@callbacks.length})" if @debug is on
+
+        return
     
     ###*
      * Adds callback functions triggered by run/reset
@@ -120,7 +125,7 @@ class SearchForm
     addCallback: (callbacks) ->
         # Map single function to array
         callbacks = [callbacks] if typeof callbacks isnt 'object'
-        console
+
         for callback in callbacks
             do (callback) =>
                 if typeof callback is 'function'
@@ -139,8 +144,7 @@ class SearchForm
         @callbacks.splice index, 1
         
         # Log data if debug enabled
-        console.info "[SearchForm] Callback removed.", "(index: #{index})"
-        console.log @callbacks
+        console.info "[SearchForm] Callback removed.", "(index: #{index})" if @debug is on
     
     ###*
      * Register search component events

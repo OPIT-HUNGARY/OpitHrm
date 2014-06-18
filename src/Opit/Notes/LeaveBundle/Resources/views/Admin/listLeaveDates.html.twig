@@ -35,6 +35,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/SearchForm.coffee'
         '@OpitNotesLeaveBundle/Resources/public/js/Admin/listLeaveDates.coffee'
         '@OpitNotesUserBundle/Resources/public/js/list.coffee'
     output='js/opitnotesleave/admin/list_dates.js' filter='?yui_js' %}

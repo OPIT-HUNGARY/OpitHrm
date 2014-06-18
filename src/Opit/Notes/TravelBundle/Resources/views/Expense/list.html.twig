@@ -18,6 +18,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/SearchForm.coffee'
         '@OpitNotesTravelBundle/Resources/public/js/list.coffee'
     output='js/opitnotestravel/tr_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
