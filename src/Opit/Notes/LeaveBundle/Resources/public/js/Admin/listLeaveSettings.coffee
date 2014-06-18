@@ -1,7 +1,6 @@
 # declare holiday setting wrapper
 leaveSettingWrapper = ''
 idIteratorValue = 0
-isHadChild = false;
 
 # add new holiday setting form
 $('#list-settings').on 'click', '.addLeaveSetting', (event) ->
@@ -30,10 +29,9 @@ disableSaveButton = (disable) ->
 $('#save').click (event) ->
     event.preventDefault()
     form = $('form')
-    isHasChild = $('#list-settings').children('.formFieldsetChild').length > 0
 
     # If the form valid, Save it.
-    if form.valid() && (isHasChild || isHadChild)
+    if form.valid()
         disableSaveButton(true)
         $.ajax
             method: 'POST'
@@ -51,7 +49,6 @@ $('#save').click (event) ->
             .done (data)->
                 $('#list-settings').html data
                 $(document).data('notes').funcs.showAlert $('#main-content'), response, "create", "Entitlement configuration saved successfully!"
-                isHadChild = $('.container').children('.formFieldsetChild').length > 0
             .fail (jqXHR, textStatus, errorThrown) ->
                 $(document).data('notes').funcs.showAlert $('#main-content'), $.parseJSON(jqXHR.responseText), "create", "Error", true
             return
@@ -66,7 +63,6 @@ $('#save').click (event) ->
 # document ready
 $(document).ready () ->
     idIteratorValue = $('.formFieldsetChild').length
-    isHadChild = $('.container').children('.formFieldsetChild').length > 0
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitNotesLeaveBundle_admin_show_leave_setting'
