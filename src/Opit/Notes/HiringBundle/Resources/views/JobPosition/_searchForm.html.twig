@@ -1,0 +1,20 @@
+{% extends 'OpitNotesCoreBundle:Shared:search.html.twig' %}
+
+{% block forms %}
+<div class="searchProperty vertical-align-top">
+    <label for="search_job_position_id">ID</label>
+    <input type="text" name="search[jobPositionId]" id="search_job_position_id" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_job_position_title">Job title</label>
+    <input type="text" name="search[jobTitle]" id="search_job_position_title" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_job_position_is_active">Active</label>
+    <select name="search[isActive]" id="search_job_position_is_active">
+        <option value="">Select</option>
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+    </select>
+</div>
+{% endblock %}        

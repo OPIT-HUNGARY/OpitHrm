@@ -1,0 +1,35 @@
+{% extends 'OpitNotesCoreBundle::layout.html.twig' %}
+{% block title %}
+        Job position list - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/SearchForm.coffee'
+        '@OpitNotesCoreBundle/Resources/public/js/StatusHistory.coffee'
+        '@OpitNotesHiringBundle/Resources/public/js/list.coffee'
+    output='js/opitnoteshiring/list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <h1>Job position list</h1>
+    {% include 'OpitNotesHiringBundle:JobPosition:_searchForm.html.twig' with { 'order_field': 'jp.id' } %}
+    <table>
+        <tr>
+            <td class="padding-0">
+                <a href="{{ path('OpitNotesHiringBundle_job_position_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
+                <button id="delete" class="button delete button-disabled" disabled="disabled"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <div id="job_position_list">
+        {% include 'OpitNotesHiringBundle:JobPosition:_list.html.twig' %}
+    </div>    
+{% endblock %}

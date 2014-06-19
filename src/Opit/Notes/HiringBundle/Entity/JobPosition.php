@@ -11,7 +11,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * JobPosition
  *
  * @ORM\Table(name="notes_job_position")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Opit\Notes\HiringBundle\Entity\JobPositionRepository")
  */
 class JobPosition extends AbstractBase
 {
@@ -78,21 +78,6 @@ class JobPosition extends AbstractBase
     {
         parent::__construct();
         $this->isActive = false;
-    }
-
-    /**
-     * Validate if a job position's no. of positions is bigger then 0.
-     *
-     * @Assert\Callback
-     */
-    public function validatePastLeaveDate(ExecutionContextInterface $context)
-    {
-        if ($this->getNumberOfPositions() <= 0) {
-            $context->addViolationAt(
-                'numberOfPositions',
-                sprintf('Number of positions can not be smaller equal to 0.')
-            );
-        }
     }
 
     /**
@@ -274,5 +259,20 @@ class JobPosition extends AbstractBase
     public function getNotifications()
     {
         return $this->notifications;
+    }
+
+    /**
+     * Validate if a job position's no. of positions is bigger then 0.
+     *
+     * @Assert\Callback
+     */
+    public function validatePastLeaveDate(ExecutionContextInterface $context)
+    {
+        if ($this->getNumberOfPositions() <= 0) {
+            $context->addViolationAt(
+                'numberOfPositions',
+                sprintf('Number of positions can not be smaller equal to 0.')
+            );
+        }
     }
 }
