@@ -294,6 +294,12 @@
     margin-bottom: 1em;
 }
 
+.margin-bottom-01em-important{
+    -moz-margin-after: 0.1em !important;
+    -webkit-margin-after: 0.1em !important;
+    margin: 0.1em 0px !important;
+}
+
 .margin-left-0-important{
     margin-left: 0 !important;
 }
@@ -705,6 +711,15 @@
 }
 
 .dialog-description {
+    background-color: $lightGreen;
+    color: white;
+    margin-bottom:5px;
+    padding:5px;
+    @include border-radius(5px);
+}
+
+.listing-description {
+    display:inline-block;
     background-color: $lightGreen;
     color: white;
     margin-bottom:5px;

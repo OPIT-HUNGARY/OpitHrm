@@ -1,6 +1,6 @@
 {% extends 'OpitNotesCoreBundle::layout.html.twig' %}
 {% block title %}
-Entitlement configuration - {{ parent() }}
+Leave Entitlement configuration - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
     {% stylesheets
@@ -10,8 +10,8 @@ Entitlement configuration - {{ parent() }}
     {% endstylesheets %}
 {% endblock %}
 {% block body %}
-<h1>Entitlement configuration</h1>
-<div class="dialog-description">Leave entitlement can be configured from here. These values will be used to calculate employee leave entitlement.</div>
+<h1 class="margin-bottom-01em-important">Leave Entitlement configuration</h1>
+<div class="listing-description">Leave Entitlement can be configured from here.It is used to calculate employee yearly leave entitlements.</div>
 {% if isEnabled  %}
     <div  id="list">
         <div id="list-reply-message"></div>
@@ -24,7 +24,7 @@ Entitlement configuration - {{ parent() }}
     </div>
 {% else %}
     <h3>
-        The entitlement configuration is disabled.
+        Leave entitlement configuration is disabled.
     </h3>
 {% endif %}
 {% endblock %}
