@@ -51,12 +51,10 @@ class SearchForm
             url: @url
             data: @form.serialize()
         .done (response) =>
-            $resultContainer = $(@options.resultSelector)
-            
-            $resultContainer.parent().html response
+            $(@options.resultSelector).parent().html response
 
             # Find column and add related class for sort icon
-            $field = $resultContainer.find('[data-field="' + @form.find('#order_field').val() + '"]')
+            $field = $(@options.resultSelector).find('[data-field="' + @form.find('#order_field').val() + '"]')
             $field.addClass 'fa-sort-' + @form.find('#order_dir').val()
             
             # Trigger callbacks if set
