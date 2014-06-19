@@ -80,10 +80,10 @@ class CommentLeaveStatus extends AbstractComment
     /**
      * Set status
      *
-     * @param \Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $status
-     * @return CommentTRStatus
+     * @param \Opit\Notes\LeaveBundle\Entity\StatesLeaveRequests $status
+     * @return CommentLeaveStatus
      */
-    public function setStatus(\Opit\Notes\TravelBundle\Entity\StatesTravelExpenses $status = null)
+    public function setStatus(\Opit\Notes\LeaveBundle\Entity\StatesLeaveRequests $status = null)
     {
         $this->status = $status;
 
@@ -93,7 +93,7 @@ class CommentLeaveStatus extends AbstractComment
     /**
      * Get status
      *
-     * @return \Opit\Notes\TravelBundle\Entity\StatesTravelExpenses
+     * @return \Opit\Notes\LeaveBundle\Entity\StatesLeaveRequests
      */
     public function getStatus()
     {

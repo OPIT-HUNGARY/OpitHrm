@@ -97,7 +97,10 @@ addForm = ($collectionHolder, $addButton, addListener) ->
 
 $(document).ready ->
     $('.changeState').on 'change', ->
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, $(@).data('tr'), 'travel'
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, {
+            foreignId: $(@).data('tr')
+            type: 'travel request'
+        }
 
     if not Modernizr.inputtypes.date
         $arrivalDate = $('#travelRequest_arrival_date')

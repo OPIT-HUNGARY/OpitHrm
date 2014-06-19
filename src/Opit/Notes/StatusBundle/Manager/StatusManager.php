@@ -37,27 +37,39 @@ abstract class StatusManager implements StatusManagerInterface
      *
      * @return Opit\Notes\StatusBundle\Entity\Status
      */
-    public function addStatus($resource, $requiredStatus)
+    public function addStatus($resource, $requiredStatus, $comment = null)
     {
         $pieces = preg_split('/(?=[A-Z])/', $this->request->attributes->get('_template')->get('bundle'));
         $bundleName = $pieces[3] . '' . $pieces[4];
-
+        $className = 'Opit\Notes\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's';
         $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find($requiredStatus);
         $statusId = $status->getId();
-        $nextStates = array();
-        $instanceS =
-            new \ReflectionClass('Opit\Notes\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's');
+        $instanceS = new \ReflectionClass($className);
+        $resourceState = $instanceS->newInstanceArgs(array($status, $resource));
 
+        // Remove old tokens
         $this->removeTokens($resource->getId());
 
-        // check if the state the resource will be set to is the parent of the current status of the resource
-        foreach ($this->getNextStates($status) as $key => $value) {
-            if ($key === $statusId) {
-                $this->entityManager->persist($instanceS->newInstanceArgs(array($status, $resource)));
-            } else {
-                $nextStates[$key] = $value;
+        // Create comment object and bind to resource related status if given
+        if (null !== $comment) {
+            // Get association mapping from resource related status class
+            $metadata = $this->entityManager->getClassMetadata($className);
+
+            if ($metadata->hasAssociation('comment')) {
+                $associationMapping = $metadata->getAssociationMapping('comment');
+                $targetEntity = $associationMapping['targetEntity'];
+                $statusComment = new $targetEntity();
+                $statusComment->setContent($comment);
+
+                $resourceState->setComment($statusComment);
             }
         }
+
+        $this->entityManager->persist($resourceState);
+
+        // Exclude current status from next states to prepare the email
+        $nextStates = $this->getNextStates($status);
+        unset($nextStates[$statusId]);
 
         $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
 

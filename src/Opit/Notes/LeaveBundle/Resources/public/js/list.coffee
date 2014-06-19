@@ -88,7 +88,12 @@ $(document).ready ->
           return
 
     $('#leave_list').on 'change', '.changeState', ->
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'        
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, {
+            foreignId: $(@).data('lr') # Leave request id
+            label: $(@).closest('tr').find('.clickable').text()
+            type: 'leave request'
+        }
+        return
 
 inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->

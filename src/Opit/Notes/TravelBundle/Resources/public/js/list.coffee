@@ -7,6 +7,18 @@ $(document).ready ->
       $changeState = $(@).closest('tr').find('.changeState')
       travelRequestId = $(@).attr 'data-tr-id'
       firstStatusId = $(@).parent().find('option:first-child').val()
+
+      buttons = {}
+      if firstStatusId is '1' or firstStatusId is '3'
+        buttons['Send for approval'] = ->
+            $(document).data('notes').funcs.changeTravelRequestStatus  'status[id]': 2, 'status[foreignId]': travelRequestId
+            $('#dialog-show-details-tr').dialog 'destroy'
+            return
+
+      buttons['Close'] = ->
+        $('#dialog-show-details-tr').dialog 'destroy'
+        return
+
       $.ajax
         method: 'POST'
         url: Routing.generate 'OpitNotesTravelBundle_travel_show_details'
@@ -19,22 +31,10 @@ $(document).ready ->
             width: dialogWidth
             maxHeight: $(window).outerHeight()-100
             modal: on
-            if firstStatusId is '1' or firstStatusId is '3'
-                buttons:
-                  'Send for approval': ->
-                     $(document).data('notes').funcs.changeTravelRequestStatus 2, travelRequestId
-                     $('#dialog-show-details-tr').dialog 'destroy'
-                  Close: ->
-                     $('#dialog-show-details-tr').dialog 'destroy'
-                     return
-            else
-                buttons:
-                  Close: ->
-                     $('#dialog-show-details-tr').dialog 'destroy'
-                     return
+            buttons: buttons
         return
       return
-      
+
     $('#main-wrapper').on 'click', '.print-view', (event) ->
         event.preventDefault()
         win=window.open $(@).attr('href'), '_blank'
@@ -43,8 +43,12 @@ $(document).ready ->
     $travelList = $('#travel_list')
     $travelList.on 'change.tr_status', '.changeState', ->
         travelRequestId = $(@).closest('tr').find('.clickable').data 'tr-id'
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, travelRequestId, 'travel'
-            
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelRequestStatus, {
+            foreignId: travelRequestId
+            label: $(@).closest('tr').find('.clickable').text()
+            type: 'travel request'
+        }
+
     $travelList.on 'click', '.order-text', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'
         

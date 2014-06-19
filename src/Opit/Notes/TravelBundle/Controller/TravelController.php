@@ -242,13 +242,16 @@ class TravelController extends Controller
      */
     public function changeTravelRequestStateAction(Request $request)
     {
-        $statusId = $request->request->get('statusId');
-        $travelRequestId = $request->request->get('travelRequestId');
         $entityManager = $this->getDoctrine()->getManager();
-        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
+        $data = $request->request->get('status');
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
+            ->find($data['foreignId']);
         
+        // Set comment content or null
+        $comment = isset($data['comment']) && $data['comment'] ? $data['comment'] : null;
+
         return $this->get('opit.model.travel_request')
-            ->changeStatus($travelRequest, $statusId);
+            ->changeStatus($travelRequest, $data['id'], false, $comment);
     }
     
     /**

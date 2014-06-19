@@ -214,7 +214,10 @@ $(document).ready ->
             $employeeSelector.attr 'disabled', 'disabled'
 
     $('.changeState').on 'change', ->
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, {
+            foreignId: $(@).data('lr')
+            type: 'leave request'
+        }
         
     $('#leave_request_team_manager_ac').autocomplete
         source: (request, response) ->

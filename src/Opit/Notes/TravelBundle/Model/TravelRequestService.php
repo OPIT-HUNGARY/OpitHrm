@@ -280,9 +280,11 @@ class TravelRequestService
      * 
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer $statusId
+     * @param boolean $validationDisabled
+     * @param string $comment A status comment
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function changeStatus(TravelRequest $travelRequest, $statusId, $validationDisabled = false)
+    public function changeStatus(TravelRequest $travelRequest, $statusId, $validationDisabled = false, $comment = null)
     {
         if ($validationDisabled || $this->statusManager->isValid($travelRequest, $statusId)) {
             // Manage travel request access control
@@ -300,7 +302,7 @@ class TravelRequestService
                     break;
             }
             
-            $status = $this->statusManager->addStatus($travelRequest, $statusId);
+            $status = $this->statusManager->addStatus($travelRequest, $statusId, $comment);
             
             // send a new notification when travel request or expense status changes
             $this->travelNotificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);

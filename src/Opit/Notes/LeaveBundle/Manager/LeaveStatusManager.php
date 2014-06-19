@@ -66,9 +66,11 @@ class LeaveStatusManager extends StatusManager
      *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param integer $statusId
+     * @param boolean $validationDisabled
+     * @param string $comment A status comment
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function changeStatus(LeaveRequest $leaveRequest, $statusId, $validationDisabled = false)
+    public function changeStatus(LeaveRequest $leaveRequest, $statusId, $validationDisabled = false, $comment = null)
     {
         if ($validationDisabled || $this->isValid($leaveRequest, $statusId)) {
             // Manage travel request access control
@@ -86,7 +88,7 @@ class LeaveStatusManager extends StatusManager
                     break;
             }
 
-            $status = $this->addStatus($leaveRequest, $statusId);
+            $status = $this->addStatus($leaveRequest, $statusId, $comment);
 
             // send a new notification when leave request status changes
             $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);

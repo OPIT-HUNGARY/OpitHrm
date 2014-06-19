@@ -481,7 +481,10 @@ $(document).ready ->
             $(@).remove()
         
     $('.changeState').on 'change', ->
-        $(document).data('notes').funcs.changeStateDialog($(@), $(document).data('notes').funcs.changeTravelExpenseStatus, $(@).data('te'), 'travel')
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelExpenseStatus,  {
+            foreignId: $(@).data('te')
+            type: 'travel expense'
+        }
 
 
 $formFieldset = $('<div>').addClass 'formFieldset padding-bottom-5 margin-top-20 margin-bottom-20'

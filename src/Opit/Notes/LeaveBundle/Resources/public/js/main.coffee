@@ -1,10 +1,10 @@
 $.extend true, $(document).data('notes'),
     funcs:
-        changeLeaveRequestStatus: (statusId, leaveRequestId, $spinner) ->
+        changeLeaveRequestStatus: (data, $spinner) ->
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesLeaveBundle_leave_request_state'
-                data: {'statusId': statusId, 'leaveRequestId': leaveRequestId}
+                data: data
                 global: false
             .done (data) ->
                 $spinner.remove()

@@ -1,0 +1,7 @@
+<div id="changeStatus_{{ id }}" class="modalwindow">
+    <p class="margin-top-0">
+        Do you want to change the status {% if label is defined %}of <span class="bold">{{ label }}</span> {% endif %} from "{{ statusFrom }}" to "{{ statusTo }}"?
+    </p>
+
+    {{ form(form) }}
+</div>

@@ -12,11 +12,11 @@ $.extend true, $(document).data('notes'),
             $self.prop 'selectedIndex', 0
             $self.removeClass 'dropdown-disabled'
                                 
-        changeTravelExpenseStatus: (statusId, travelExpenseId, $spinner) ->
+        changeTravelExpenseStatus: (data, $spinner) ->
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_expense_state'
-                data: {'statusId': statusId, 'travelExpenseId': travelExpenseId}
+                data: data
                 global: false
             .done (data) ->
                 location.reload()
@@ -36,16 +36,16 @@ $.extend true, $(document).data('notes'),
                                 $(@).dialog 'destroy'
                                 return
     
-        changeTravelRequestStatus: (statusId, travelRequestId, $spinner) ->
+        changeTravelRequestStatus: (data, $spinner) ->
             if $spinner is undefined
-                $row = $('tr').find("[data-tr-id=#{ travelRequestId }]")
+                $row = $('tr').find("[data-tr-id=#{ data['status[foreignId]'] }]")
                 $dropDown = $row.closest('tr').find '.changeState'
                 $spinner = $(document).data('notes').funcs.disableStatusDropdown($dropDown)
             reloadPage = false
             $.ajax
                 method: 'POST'
                 url: Routing.generate 'OpitNotesTravelBundle_request_state'
-                data: {'statusId': statusId, 'travelRequestId': travelRequestId}
+                data: data
             .done (data) ->
                 if data is 'error'
                     $('<div id="dialog-tr-error"></div>').html('You cannot change the status of the travel request because it has been already changed.')

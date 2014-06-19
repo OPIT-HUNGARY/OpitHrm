@@ -57,7 +57,7 @@ class LeaveController extends Controller
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
         $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
 
-        
+
         $config = $this->container->getParameter('pager_config');
         $maxResults = $config['max_results'];
         $offset = $request->request->get('offset');
@@ -143,7 +143,7 @@ class LeaveController extends Controller
                 );
             }
         }
-        
+
         $statusManager = $this->get('opit.manager.leave_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
         $leaveRequestStates = $statusManager->getNextStates($currentStatus);
@@ -152,7 +152,7 @@ class LeaveController extends Controller
         $form = $this->createForm(
             new LeaveRequestType($isNewLeaveRequest), $leaveRequest, array('em' => $entityManager)
         );
-        
+
         if (null !== $leaveRequest) {
             foreach ($leaveRequest->getLeaves() as $leave) {
                 $children->add($leave);
@@ -218,9 +218,9 @@ class LeaveController extends Controller
                 $errors = Utils::getErrorMessages($form);
             }
         }
-        
+
         $isForApproval = $currentStatus->getId() === Status::FOR_APPROVAL;
-        
+
         return $this->render(
             'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig', array_merge(
                 array(
@@ -332,19 +332,23 @@ class LeaveController extends Controller
     /**
      * Method to change state of leave request
      *
-     * @Route("/secured/leave/state/", name="OpitNotesLeaveBundle_leave_request_state")
+     * @Route("/secured/leave/state/change", name="OpitNotesLeaveBundle_leave_request_state")
      * @Secure(roles="ROLE_USER")
+     * @Method({"POST"})
      * @Template()
      */
     public function changeLeaveRequestStateAction(Request $request)
     {
-        $statusId = $request->request->get('statusId');
-        $leaveRequestId = $request->request->get('leaveRequestId');
         $entityManager = $this->getDoctrine()->getManager();
-        $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
+        $data = $request->request->get('status');
+        $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
+            ->find($data['foreignId']);
+
+        // Set comment content or null
+        $comment = isset($data['comment']) && $data['comment'] ? $data['comment'] : null;
 
         return $this->get('opit.manager.leave_status_manager')
-                ->changeStatus($leaveRequest, $statusId);
+            ->changeStatus($leaveRequest, $data['id'], false, $comment);
     }
 
     /**
@@ -409,7 +413,7 @@ class LeaveController extends Controller
      * @return array
      */
     protected function createEmployeeLeaveRequests(LeaveRequest $leaveRequest, EntityManagerInterface $entityManager, array $employees)
-    {   
+    {
         $leaveRequestService = $this->get('opit.model.leave_request');
         $currentLeave = current(current($leaveRequest->getLeaves()));
         // find leaves that are overlapping
@@ -418,7 +422,7 @@ class LeaveController extends Controller
         );
         // reject all overlapping LRs and send notification, email
         $leaveRequestService->rejectLeavesLRs($overlappingLeaves, $leaveRequest);
-        
+
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
         $unpaidLeaveDetails = array();
         $unpaidLeaveLength = 0;
@@ -575,7 +579,7 @@ class LeaveController extends Controller
     /**
      * Check if leave category can be selected using the left to availed days,
      * add error message to leave category if days left to avail were exceeded.
-     * 
+     *
      * @param array $employees
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest

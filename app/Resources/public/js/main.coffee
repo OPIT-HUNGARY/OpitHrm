@@ -1,20 +1,30 @@
 $(document).data 'notes', {}
 $.extend true, $(document).data('notes'),
     funcs:
-        changeStateDialog: ($dropdown, callback, travelId, type) ->
-            $('<div></div>').html("Change the status of #{ type } from '#{ $dropdown.find('option:nth-child(1)').text().toLowerCase() }' to '#{ $dropdown.find('option:selected').text().toLowerCase() }' ?").dialog
-                title: '<i class="fa fa-exclamation-triangle"></i> ' + type.toString().capitalize() + ' status change'
-                buttons:
-                    Yes: ->
-                        $(@).dialog 'destroy'
-                        callback $dropdown.val(), travelId, $(document).data('notes').funcs.disableStatusDropdown($dropdown)
-                    No: ->
+        changeStateDialog: ($dropdown, callback, options = {}) ->
+            $.extend options, {
+                id: $dropdown.val()
+                statusFrom: $dropdown.find('option:nth-child(1)').text().toLowerCase()
+                statusTo: $dropdown.find('option:selected').text().toLowerCase()
+            }
+
+            throw "Upps, something went wrong." if not options.foreignId?
+
+            $.post Routing.generate('OpitNotesStatusBundle_status_change_show'), options, (data) ->
+                $('<div></div>').html(data).dialog
+                    width: 500
+                    title: '<i class="fa fa-exclamation-triangle"></i> ' + ((if options.type? then options.type.toString() else '') + ' status change').capitalize()
+                    buttons:
+                        Yes: ->
+                            callback $(@).find('form').serialize(), $(document).data('notes').funcs.disableStatusDropdown($dropdown)
+                            $(@).dialog 'destroy'
+                        No: ->
+                            $(document).data('notes').funcs.enableStatusDropdown $dropdown
+                            $(@).dialog 'destroy'
+                    close: ->
                         $(@).dialog 'destroy'
                         $(document).data('notes').funcs.enableStatusDropdown $dropdown
-                close: ->
-                    $(@).dialog 'destroy'
-                    $(document).data('notes').funcs.enableStatusDropdown $dropdown    
-    
+
         initDateInputs: ($container) ->
             $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
             if not Modernizr.inputtypes.date
@@ -288,7 +298,8 @@ $.fn.checkAll = (callback, selector) ->
         callback($el)
         
 String.prototype.capitalize = () ->
-    return @.charAt(0).toUpperCase() + @.slice(1)
+    result = @.trim()
+    return result.charAt(0).toUpperCase() + result.slice(1)
 
 $(document).ajaxStart ->
     # Add generic ajax indicator for global requests
