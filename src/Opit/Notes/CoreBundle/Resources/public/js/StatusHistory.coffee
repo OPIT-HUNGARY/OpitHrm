@@ -17,7 +17,7 @@ class StatusHistory
     defaults:
         dialogSelector: '#main-wrapper'
         dialogTitle: 'Status History'
-        dialogWidth: 550
+        dialogWidth: 650
         mode: null
         debug: off
     
