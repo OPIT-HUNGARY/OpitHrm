@@ -78,7 +78,9 @@ class JobPositionController extends Controller
                 $entityManager->persist($jobPosition);
                 $entityManager->flush();
 
-                $this->sendJpMessages($jobPosition);
+                $this->sendJpMessages($jobPosition, $isNewJobPosition);
+
+                return $this->redirect($this->generateUrl('OpitNotesHiringBundle_job_position_list'));
             } else {
                 $errors = Utils::getErrorMessages($form);
             }
@@ -201,20 +203,21 @@ class JobPositionController extends Controller
             )
         );
     }
-    
+
     /**
      * Function to send email and notification when creating jp.
      * 
      * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPosition
+     * @param type $isNewJobPosition
      */
-    protected function sendJpMessages(JobPosition $jobPosition)
+    protected function sendJpMessages(JobPosition $jobPosition, $isNewJobPosition)
     {
-        if ($jobPosition->getCreated() === $jobPosition->getUpdated()) {
+        if ($isNewJobPosition) {
             $templateVars = array();
             $templateVars['jobPosition'] = $jobPosition;
 
             $emailManager = $this->get('opit.component.email_manager');
-            $emailManager->setRecipient($jobPosition->getCreatedUser()->getEmail());
+            $emailManager->setRecipient($jobPosition->getHiringManager()->getEmail());
             $emailManager->setSubject('[NOTES] - Job position created (' . $jobPosition->getJobPositionId() . ')');
             $emailManager->setBodyByTemplate('OpitNotesHiringBundle:Mail:jobPosition.html.twig', $templateVars);
             $emailManager->sendMail();

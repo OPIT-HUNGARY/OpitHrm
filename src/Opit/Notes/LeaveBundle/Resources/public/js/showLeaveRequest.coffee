@@ -192,6 +192,27 @@ $(document).ready ->
         $leaveWrapper.insertBefore $('.addFormFieldsetChild')
         return $leave
 
+    showRequestFor = ($self, $leaveRequestUser, $addFormFieldset, $employeeSelector) ->
+        $('.formFieldsetChild').remove()
+        displayNone = 'display-none-important'
+        if $self.val() is 'for-employees'
+            $leaveRequestUser.parent().addClass displayNone
+            $addFormFieldset.addClass displayNone
+            $employeeSelector.removeClass displayNone
+
+            $employeeSelector.removeAttr 'disabled'
+
+            $leave = createLeave()
+            $leave.find('.deleteFormFieldsetChild').remove()
+            $leave.find('.leave-category').parent().remove()
+
+        else if $self.val() is 'own'
+            $employeeSelector.addClass displayNone
+            $leaveRequestUser.parent().removeClass displayNone
+            $addFormFieldset.removeClass displayNone
+
+            $employeeSelector.attr 'disabled', 'disabled'
+
     $('.changeState').on 'change', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'
         
@@ -250,25 +271,11 @@ $(document).ready ->
         $leaveRequestUser.parent().addClass('display-inline-block display-none-important')
         $addFormFieldset.addClass 'display-none-important'
 
-    $('.leave-request-owner').on 'change', ->
-        $('.formFieldsetChild').remove()
-        displayNone = 'display-none-important'
-        if $(@).val() is 'for-employees'
-            $leaveRequestUser.parent().addClass displayNone
-            $addFormFieldset.addClass displayNone
-            $employeeSelector.removeClass displayNone
-            
-            $employeeSelector.removeAttr 'disabled'
+    if $('.leave-request-owner').prop 'checked'
+        showRequestFor $('.leave-request-owner'), $leaveRequestUser, $addFormFieldset, $employeeSelector
 
-            $leave = createLeave()
-            $leave.find('.deleteFormFieldsetChild').remove()
-            $leave.find('.leave-category').parent().remove()
-        else if $(@).val() is 'own'
-            $employeeSelector.addClass displayNone
-            $leaveRequestUser.parent().removeClass displayNone
-            $addFormFieldset.removeClass displayNone
-            
-            $employeeSelector.attr 'disabled', 'disabled'
+    $('.leave-request-owner').on 'change', ->
+        showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
             
     $collectionHolder.children().each (index) ->
         $(@).find('label:first').remove()

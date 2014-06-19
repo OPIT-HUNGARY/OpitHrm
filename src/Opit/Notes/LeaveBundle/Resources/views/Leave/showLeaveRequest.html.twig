@@ -101,11 +101,11 @@
                 <label class="padding-bottom-5 bold">Select</label>
                 <ul class="no-style option-list-scrollable">
                     <li class="white-space-nowrap">
-                        <input type="radio" name="leave-request-owner" id="own" class="leave-request-owner" value="own" />
+                        <input type="radio" name="leave-request-owner" {% if 'own' == requestFor %}checked="checked"{% endif %} id="own" class="leave-request-owner" value="own" />
                         <label for="own">Own</label>
                     </li>
                     <li class="white-space-nowrap">
-                        <input type="radio" name="leave-request-owner" id="other-employees" class="leave-request-owner" value="for-employees" />
+                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}checked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
                         <label for="other-employees">Other employees</label>
                     </li>
                 </ul>

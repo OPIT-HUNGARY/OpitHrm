@@ -125,6 +125,7 @@ class LeaveController extends Controller
         $errors = array();
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $unpaidLeaveDetails = array();
+        $requestFor = NULL;
 
         if ($isNewLeaveRequest) {
             $leaveRequest = new LeaveRequest();
@@ -157,7 +158,7 @@ class LeaveController extends Controller
                 $children->add($leave);
             }
         }
-        
+
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
             $employees = $request->request->get('employee');
@@ -213,6 +214,7 @@ class LeaveController extends Controller
                     }
                 }
             } else {
+                $requestFor = $request->request->get('leave-request-owner');
                 $errors = Utils::getErrorMessages($form);
             }
         }
@@ -230,6 +232,7 @@ class LeaveController extends Controller
                     'isGeneralManager' => $isGeneralManager,
                     'unpaidLeaveDetails' => $unpaidLeaveDetails,
                     'isForApproval' => $isForApproval,
+                    'requestFor' => $requestFor,
                     'isLRLocked' => (Status::REJECTED === $statusManager->getCurrentStatus($leaveRequest))
                 ),
                 $isNewLeaveRequest ? array('isStatusLocked' => true, 'isEditLocked' => false) : $leaveRequestService->setLeaveRequestAccessRights($leaveRequest, $currentStatus),
@@ -604,18 +607,20 @@ class LeaveController extends Controller
 
             // Loop through all leaves employee has posted.
             foreach ($leaves as $index => $leave) {
-                $countLeaveDays += $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
-                // Check if count of leave days are more than days left to avail.
-                if ($countLeaveDays > $leftToAvail) {
-                    // If there are days left to avail
-                    if ($leftToAvail > 0) {
-                        // Add error to leave category
-                        $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . ' or dates.'));
-                        $leftToAvail = 0;
-                    }
+                if (LeaveCategory::UNPAID !== $leave->getCategory()->getName()) {
+                    $countLeaveDays += $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
+                    // Check if count of leave days are more than days left to avail.
+                    if ($countLeaveDays > $leftToAvail) {
+                        // If there are days left to avail
+                        if ($leftToAvail > 0) {
+                            // Add error to leave category
+                            $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . ' or dates.'));
+                            $leftToAvail = 0;
+                        }
 
-                    // Add error to leave category
-                    $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . '.'));
+                        // Add error to leave category
+                        $form->get('leaves')->get($index)->get('category')->addError(new FormError($message . '.'));
+                    }
                 }
             }
         }
