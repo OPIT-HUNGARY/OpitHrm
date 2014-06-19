@@ -5,6 +5,7 @@ namespace Opit\Notes\HiringBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * JobPosition
@@ -22,46 +23,54 @@ class JobPosition extends AbstractBase
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var text
      * @ORM\Column(name="job_position_id", type="string", length=11, nullable=true)
      */
     protected $jobPositionId;
-    
+
     /**
      * @var \Text
      *
      * @ORM\Column(name="job_title", type="text")
+     * @Assert\NotBlank(message="Job title can not be empty.")
      */
     protected $jobTitle;
-    
+
     /**
      * @var integer
      *
      * @ORM\Column(name="number_of_positions", type="integer")
+     * @Assert\NotBlank(message="Number of positions can not be empty.")
      */
     protected $numberOfPositions;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Opit\Notes\UserBundle\Entity\User", inversedBy="hmJobPositions")
      */
     protected $hiringManager;
-    
+
     /**
      * @var \Text
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Description can not be empty.")
      */
     protected $description;
-    
+
     /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean")
      */
     protected $isActive;
-    
+
+    /**
+     * @ORM\OneToMany(targetEntity="JPNotification", mappedBy="jobPosition", cascade={"remove"})
+     */
+    protected $notifications;
+
     /**
      * Constructor
      */
@@ -72,13 +81,74 @@ class JobPosition extends AbstractBase
     }
 
     /**
+     * Validate if a job position's no. of positions is bigger then 0.
+     *
+     * @Assert\Callback
+     */
+    public function validatePastLeaveDate(ExecutionContextInterface $context)
+    {
+        if ($this->getNumberOfPositions() <= 0) {
+            $context->addViolationAt(
+                'numberOfPositions',
+                sprintf('Number of positions can not be smaller equal to 0.')
+            );
+        }
+    }
+
+    /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set jobPositionId
+     *
+     * @param string $jobPositionId
+     * @return JobPosition
+     */
+    public function setJobPositionId($jobPositionId)
+    {
+        $this->jobPositionId = $jobPositionId;
+
+        return $this;
+    }
+
+    /**
+     * Get jobPositionId
+     *
+     * @return string
+     */
+    public function getJobPositionId()
+    {
+        return $this->jobPositionId;
+    }
+
+    /**
+     * Set jobTitle
+     *
+     * @param string $jobTitle
+     * @return JobPosition
+     */
+    public function setJobTitle($jobTitle)
+    {
+        $this->jobTitle = $jobTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get jobTitle
+     *
+     * @return string
+     */
+    public function getJobTitle()
+    {
+        return $this->jobTitle;
     }
 
     /**
@@ -97,7 +167,7 @@ class JobPosition extends AbstractBase
     /**
      * Get numberOfPositions
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumberOfPositions()
     {
@@ -120,34 +190,11 @@ class JobPosition extends AbstractBase
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
         return $this->description;
-    }
-    
-    /**
-     * Set job title
-     *
-     * @param string $jobTitle
-     * @return JobPosition
-     */
-    public function setJobTitle($jobTitle)
-    {
-        $this->jobTitle = $jobTitle;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string 
-     */
-    public function getJobTitle()
-    {
-        return $this->jobTitle;
     }
 
     /**
@@ -166,7 +213,7 @@ class JobPosition extends AbstractBase
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -189,7 +236,7 @@ class JobPosition extends AbstractBase
     /**
      * Get hiringManager
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return \Opit\Notes\UserBundle\Entity\User
      */
     public function getHiringManager()
     {
@@ -197,25 +244,35 @@ class JobPosition extends AbstractBase
     }
 
     /**
-     * Set jobPositionId
+     * Add notifications
      *
-     * @param string $jobPositionId
+     * @param \Opit\Notes\HiringBundle\Entity\JPNotification $notifications
      * @return JobPosition
      */
-    public function setJobPositionId($jobPositionId)
+    public function addNotification(\Opit\Notes\HiringBundle\Entity\JPNotification $notifications)
     {
-        $this->jobPositionId = $jobPositionId;
+        $this->notifications[] = $notifications;
 
         return $this;
     }
 
     /**
-     * Get jobPositionId
+     * Remove notifications
      *
-     * @return string 
+     * @param \Opit\Notes\HiringBundle\Entity\JPNotification $notifications
      */
-    public function getJobPositionId()
+    public function removeNotification(\Opit\Notes\HiringBundle\Entity\JPNotification $notifications)
     {
-        return $this->jobPositionId;
+        $this->notifications->removeElement($notifications);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }

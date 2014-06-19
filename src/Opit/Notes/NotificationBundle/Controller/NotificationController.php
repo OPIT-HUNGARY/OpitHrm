@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\TravelBundle\Entity\TRNotification;
 use Opit\Notes\TravelBundle\Entity\TENotification;
 use Opit\Notes\LeaveBundle\Entity\LRNotification;
+use Opit\Notes\HiringBundle\Entity\JPNotification;
 use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
 
 /**
@@ -62,6 +63,7 @@ class NotificationController extends Controller
         $travelExpenses = array();
         $travelRequests = array();
         $leaveRequests = array();
+        $jobPositions = array();
         
         foreach ($notifications as $notification) {
             if ($notification instanceof TENotification) {
@@ -70,6 +72,8 @@ class NotificationController extends Controller
                 $travelRequests[] = $notification;
             } elseif ($notification instanceof LRNotification) {
                 $leaveRequests[] = $notification;
+            } elseif ($notification instanceof JPNotification) {
+                $jobPositions[] = $notification;
             }
         }
         
@@ -78,7 +82,8 @@ class NotificationController extends Controller
             array(
                 'travelRequests' => $travelRequests,
                 'travelExpenses' => $travelExpenses,
-                'leaveRequests' => $leaveRequests
+                'leaveRequests' => $leaveRequests,
+                'jobPositions' => $jobPositions,
             )
         );
     }

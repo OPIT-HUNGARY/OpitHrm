@@ -87,7 +87,7 @@ $('#delete').on 'click', ->
 $('th .fa-trash-o').on 'click', ->
     $('.list-delete-user:enabled').checkAll()
             
-inverse = false
+inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
     

@@ -30,11 +30,11 @@ class JobPositionPostListener
         $entityManager = $args->getEntityManager();
 
         if ($entity instanceof JobPosition) {
-            $jbIdPattern = 'JB-{year}-{id}';
+            $jpIdPattern = 'JP-{year}-{id}';
             $jobPositionId = str_replace(
                 array('{year}', '{id}'),
                 array(date('y'), sprintf('%05d', $entity->getId())),
-                $jbIdPattern
+                $jpIdPattern
             );
 
             $entity->setJobPositionId($jobPositionId);

@@ -82,7 +82,7 @@ class JobPositionType extends AbstractType
         ));
 
         $builder->add('isActive', 'choice', array(
-            'choices'   => array('0' => 'Yes', '1' => 'No'),
+            'choices'   => array('1' => 'Yes', '0' => 'No'),
             'required'  => true,
             'label' => 'Active'
         ));

@@ -6,6 +6,24 @@ $(document).ready ->
         select: (event, ui) ->
             $('#job_position_hiring_manager').val ui.item.id
             return
+        
+    $('form.disabled select, .disabled input, form.disabled textarea').each ->
+        $(@).attr 'disabled', 'disabled'
+        
+    $('form.disabled #job_position_create_job_position')
+        .addClass 'button-disabled'
+        .attr 'disabled', 'disabled'
+        
+    $('form.disabled #job_position_create_job_position').attr 'disabled', 'disabled'
+
+    $.validator.addMethod 'numberOfPositions', (value, element) ->
+        $element = $(element)
+        if $element.val() <= 0
+            return false
+        else
+            return true
+
+    , 'Number of positions can not be smaller equal to 0.'
 
     # method to validate form before preview
     $form = $('#jobPositionForm')
@@ -13,6 +31,8 @@ $(document).ready ->
     # assing custom validation rules to arrival date, user, general manager
     $form.validate
         ignore: []
+        rules:
+            'job_position[numberOfPositions]': 'numberOfPositions'
 
     $( '#job_position_create_job_position' ).click (event) ->
         event.preventDefault()

@@ -1,0 +1,38 @@
+<div id="dialog-details-leaverequest">
+    <h2 class="dialog-h2">
+            Job position details
+    </h2>
+    <div class="modalwindow">
+        <table class="bordered width-100 table-layout-fixed">
+            <caption class="dialog-table-title">General</caption>
+            <tr>
+                <td class="bgGrey width-40 bold">Id</td>
+                <td>{{ jobPosition.jobPositionId }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">Job title</td>
+                <td>{{ jobPosition.jobTitle }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">No. of positions</td>
+                <td>{{ jobPosition.numberOfPositions }}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">Active</td>
+                <td>{% if 1 == jobPosition.isActive %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <td class="bgGrey bold">Created</td>
+                <td>{{ jobPosition.created|date('d  F  Y (D)') }}</td>
+            </tr>            
+            <tr>
+                <td class="bgGrey bold">Created by</td>
+                <td>{{ jobPosition.createdUser.employee.getEmployeeNameFormatted }}</td>
+            </tr>            
+            <tr>
+                <td class="bgGrey bold">Hiring manager</td>
+                <td>{{ jobPosition.hiringManager.employee.getEmployeeNameFormatted }}</td>
+            </tr>            
+        </table>
+    </div>
+</div>

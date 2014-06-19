@@ -85,7 +85,7 @@ deleteLeaveType = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_type'
     $(document).data('notes').funcs.deleteAction('Leave type delete', 'leave type(s)', url, '.list-delete-leavetype')
 
-inverse = false
+inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
 

@@ -90,7 +90,7 @@ $(document).ready ->
     $('#leave_list').on 'change', '.changeState', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, $(@).data('lr'), 'leave'        
 
-inverse = false
+inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
     

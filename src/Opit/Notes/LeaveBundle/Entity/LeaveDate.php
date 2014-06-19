@@ -97,7 +97,7 @@ class LeaveDate
     }
 
     /**
-     * @Assert\True(message="The leave date can be in the future.")
+     * @Assert\True(message="The leave date must be in the future.")
      * @return boolean
      */
     public function isValidDate()

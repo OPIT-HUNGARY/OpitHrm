@@ -19,11 +19,6 @@
 {% endblock %}
 {% block body %}
     <h1>
-        {% if false == isNewJobPosition %}
-            <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
-                {#<i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>#}
-            </a>
-        {% endif %}
         {% if true == isNewJobPosition %}New{% else%}Edit{% endif %} job position
     </h1>
 
@@ -31,23 +26,32 @@
         Job positions can be added or edited from here.
     </div>
 
-    <form action="{{ path('OpitNotesHiringBundle_job_position_show', { 'id': app.request.get('id')}) }}" method="post" id="jobPositionForm" class="">
+    <div id="reply-message" class="alert-message error-message {% if 0 == form_errors(form)|length %}display-none{% endif %}">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
+        {{ form_errors(form) }}
+    </div>    
+    
+    <form action="{{ path('OpitNotesHiringBundle_job_position_show', { 'id': app.request.get('id')}) }}" method="post" id="jobPositionForm" class="{% if 0 == isEditable %}disabled{% endif %}">
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20 padding-10">
                 <div class="display-inline-block">
                     {{ form_label(form.jobTitle) }}
                     {{ form_widget(form.jobTitle) }}
+                    {{ form_errors(form.jobTitle) }}
                 </div>
                 <div class="display-inline-block margin-bottom-10">
                     {{ form_label(form.numberOfPositions) }}
                     {{ form_widget(form.numberOfPositions) }}
+                    {{ form_errors(form.numberOfPositions) }}
                 </div>
                 <div class="display-block margin-bottom-10">
                     {{ form_label(form.description) }}
                     {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
                 </div>
                 <div class="display-block margin-bottom-10">
                     {{ form_label(form.hiring_manager_ac) }}
                     {{ form_widget(form.hiring_manager_ac) }}
+                    {{ form_errors(form.hiring_manager_ac) }}
                 </div>
                 <div class="display-block margin-bottom-10">
                     <div class="display-inline-block">
@@ -61,6 +65,6 @@
         {{ form_widget(form.hiring_manager) }}
         {{ form_widget(form._token) }}
         {{ form_widget(form.create_job_position) }}
-        <a href="{{ path('OpitNotesHiringBundle_job_position_show') }}" id="cancel-button" class="button">Cancel</a>
+        <a href="{{ path('OpitNotesHiringBundle_job_position_list') }}" id="cancel-button" class="button">Cancel</a>
     </form>
 {% endblock %}

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\HiringBundle\Form\JobPositionType;
 use Opit\Notes\HiringBundle\Entity\JobPosition;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 class JobPositionController extends Controller
 {
@@ -35,7 +36,7 @@ class JobPositionController extends Controller
         $jobPositionId = $request->attributes->get('id');
         $isNewJobPosition = 'new' === $jobPositionId;
         $securityContext = $this->container->get('security.context');
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $isTeamManager = $securityContext->isGranted('ROLE_TEAM_MANAGER');
 
         if ($isNewJobPosition) {
             $jobPosition = new JobPosition();
@@ -46,30 +47,36 @@ class JobPositionController extends Controller
                 throw $this->createNotFoundException('Missing job position.');
             }
 
-            if (!$isGeneralManager) {
+            if (!$isTeamManager) {
                 throw new AccessDeniedException(
                     'Access denied for job position.'
                 );
             }
         }
-        
+
         $form = $this->createForm(
             new JobPositionType($isNewJobPosition),
             $jobPosition,
             array('em' => $entityManager)
         );
-        
+
         if ($request->isMethod("POST")) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
                 $entityManager->persist($jobPosition);
                 $entityManager->flush();
+
+                $statusManager = $this->get('opit.manager.job_position_status_manager');
+                $statusManager->sendEmail($jobPosition);
+
+                $notificationManager = $this->get('opit.manager.job_position_notification_manager');
+                $notificationManager->addNewJobPositionNotification($jobPosition);
             }
         }
-        
+
         return $this->render(
-            'OpitNotesHiringBundle:Job:showJobPosition.html.twig',
+            'OpitNotesHiringBundle:JobPosition:showJobPosition.html.twig',
             array(
                 'form' => $form->createView(),
                 'isNewJobPosition' => $isNewJobPosition

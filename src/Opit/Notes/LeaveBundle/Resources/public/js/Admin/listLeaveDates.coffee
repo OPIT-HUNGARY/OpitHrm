@@ -30,7 +30,7 @@ $("#addLeaveDate").click ->
                                 $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), response, "create", "Administrative Leave/Working Day created successfully"
                                 $('#dialog-editleavedate').dialog "destroy"
                         .fail (jqXHR, textStatus, errorThrown) ->
-                            $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), $.parseJSON(jqXHR.responseText), "create", "The leave date can be in the future."
+                            $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), $.parseJSON(jqXHR.responseText), "create", "The leave date must be in the future."
                     Close: ->
                         $('#dialog-editleavedate').dialog "destroy"
                         return
@@ -71,7 +71,7 @@ $("#form-leavedate").on "click", ".list-leavedate", (event) ->
                                 $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), response, "create", "Administrative Leave/Working Day modified successfully"
                                 $('#dialog-editleavedate').dialog "destroy"
                         .fail (jqXHR, textStatus, errorThrown) ->
-                            $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), $.parseJSON(jqXHR.responseText), "create", "The leave date can be in the future."
+                            $(document).data('notes').funcs.showAlert $('#dialog-editleavedate'), $.parseJSON(jqXHR.responseText), "create", "The leave date must be in the future."
                     Close: ->
                         $('#dialog-editleavedate').dialog "destroy"
                         return
@@ -97,7 +97,7 @@ deleteLeaveDate = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_date'
     $(document).data('notes').funcs.deleteAction 'Leave date delete', 'leave date(s)', url, '.list-delete-leavedate'
 
-inverse = false
+inverse = $('#order_dir').val() is 'asc'
 $('#form-leavedate').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
 

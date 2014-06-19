@@ -87,7 +87,7 @@ deleteJobTitle = () ->
 $('#list-table').on "click", "th .fa-trash-o", ->
       $('.list-delete-jobtitle').filter(() -> return not @.disabled).checkAll()
 
-inverse = false
+inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
     
