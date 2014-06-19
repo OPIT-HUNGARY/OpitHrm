@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\Validator\ExecutionContextInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * JobPosition
@@ -72,11 +73,19 @@ class JobPosition extends AbstractBase
     protected $notifications;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Applicant", inversedBy="jobPositions")
+     * @ORM\JoinTable(name="notes_job_position_applicants")
+     */
+    protected $applicants;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         parent::__construct();
+        $this->notifications = new ArrayCollection();
+        $this->applicants = new ArrayCollection();
         $this->isActive = false;
     }
 
@@ -259,6 +268,39 @@ class JobPosition extends AbstractBase
     public function getNotifications()
     {
         return $this->notifications;
+    }
+
+    /**
+     * Add applicants
+     *
+     * @param \Opit\Notes\HiringBundle\Entity\JobApplicant $applicants
+     * @return JobPosition
+     */
+    public function addApplicant(\Opit\Notes\HiringBundle\Entity\JobApplicant $applicants)
+    {
+        $this->applicants[] = $applicants;
+
+        return $this;
+    }
+
+    /**
+     * Remove applicants
+     *
+     * @param \Opit\Notes\HiringBundle\Entity\JobApplicant $applicants
+     */
+    public function removeApplicant(\Opit\Notes\HiringBundle\Entity\JobApplicant $applicants)
+    {
+        $this->applicants->removeElement($applicants);
+    }
+
+    /**
+     * Get applicants
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getApplicants()
+    {
+        return $this->applicants;
     }
 
     /**
