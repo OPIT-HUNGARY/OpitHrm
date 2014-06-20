@@ -1,6 +1,6 @@
 {% extends 'OpitNotesCoreBundle::layout.html.twig' %}
 {% block title %}
-        {% if true == isNewJobPosition %}New job position{% else %}Edit job position{% endif %} - {{ parent() }}
+    {% if true == isNewJobPosition %}New{% else %}Edit{% endif %} job position - {{ parent() }}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
@@ -13,7 +13,7 @@
 {% block stylesheets %}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'
-    output='css/opitnotesleave/show_leave_request.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnoteshiring/show_job_position.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}

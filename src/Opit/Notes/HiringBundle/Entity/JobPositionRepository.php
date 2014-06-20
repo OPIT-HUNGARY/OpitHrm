@@ -58,4 +58,13 @@ class JobPositionRepository extends EntityRepository
 
         return new Paginator($dq->getQuery(), true);
     }
+
+    public function findByTitleLike($title)
+    {
+        $dq = $this->createQueryBuilder('jp');
+        $dq->where('jp.jobTitle LIKE :title');
+        $dq->setParameter(':title', '%' . $title . '%');
+
+        return $dq->getQuery()->getResult();
+    }
 }

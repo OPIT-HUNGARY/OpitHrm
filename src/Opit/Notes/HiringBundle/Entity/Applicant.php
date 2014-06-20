@@ -14,15 +14,18 @@ namespace Opit\Notes\HiringBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * JobApplicant
  *
  * @ORM\Table(name="notes_applicants")
  * @ORM\Entity()
+ * @ORM\HasLifecycleCallbacks
  */
-class Applicant
+class Applicant extends AbstractBase
 {
     /**
      * @var integer
@@ -37,6 +40,7 @@ class Applicant
      * @var string
      *
      * @ORM\Column(name="name", type="string")
+     * @Assert\NotBlank(message="Applicant name can not be empty.")
      */
     protected $name;
 
@@ -44,6 +48,7 @@ class Applicant
      * @var string
      *
      * @ORM\Column(name="email", type="string")
+     * @Assert\NotBlank(message="Applicant email can not be empty")
      */
     protected $email;
 
@@ -51,6 +56,7 @@ class Applicant
      * @var string
      *
      * @ORM\Column(name="phoneNumber", type="string")
+     * @Assert\NotBlank(message="Applicant phone number can not be empty")
      */
     protected $phoneNumber;
 
@@ -58,40 +64,41 @@ class Applicant
      * @var string
      *
      * @ORM\Column(name="keywords", type="string")
+     * @Assert\NotBlank(message="Keywords can not be empty")
      */
     protected $keywords;
 
     /**
-     * @Assert\File(maxSize="1000000")
+     * @Assert\File(
+     *  maxSize="5M",
+     *  mimeTypes = {"application/pdf", "application/x-pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"},
+     *  mimeTypesMessage = "CV file format not supported, supported pdf, doc, docx"
+     * )
+     * @ORM\Column(name="cvFile", type="string", nullable=true)
+     * @Assert\NotBlank(message="Applicant CV must be added")
      */
-    protected $cvFile;
+    private $cvFile;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cv", type="string")
+     * @ORM\Column(name="cv", type="string", nullable=true)
      */
-    protected $cvPath;
+    protected $cv;
 
     /**
      * @var date
      *
      * @ORM\Column(name="applicationDate", type="date")
+     * @Assert\NotBlank(message="Application date can not be empty")
      */
     protected $applicationDate;
 
     /**
-     * @ORM\ManyToMany(targetEntity="JobPosition", mappedBy="applicants")
-     */
-    protected $jobPositions;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->jobPositions = new ArrayCollection();
-    }
+     * @ORM\ManyToOne(targetEntity="JobPosition", inversedBy="applicants")
+     * @ORM\JoinColumn(name="job_position_id", referencedColumnName="id")
+     **/
+    private $jobPosition;
 
     /**
      * Get id
@@ -107,7 +114,7 @@ class Applicant
      * Set name
      *
      * @param string $name
-     * @return JobApplicant
+     * @return Applicant
      */
     public function setName($name)
     {
@@ -130,7 +137,7 @@ class Applicant
      * Set email
      *
      * @param string $email
-     * @return JobApplicant
+     * @return Applicant
      */
     public function setEmail($email)
     {
@@ -153,7 +160,7 @@ class Applicant
      * Set phoneNumber
      *
      * @param string $phoneNumber
-     * @return JobApplicant
+     * @return Applicant
      */
     public function setPhoneNumber($phoneNumber)
     {
@@ -176,7 +183,7 @@ class Applicant
      * Set keywords
      *
      * @param string $keywords
-     * @return JobApplicant
+     * @return Applicant
      */
     public function setKeywords($keywords)
     {
@@ -196,35 +203,35 @@ class Applicant
     }
 
     /**
-     * Set cvPath
+     * Set cv
      *
-     * @param string $cvPath
-     * @return JobApplicant
+     * @param string $cv
+     * @return Applicant
      */
-    public function setCvPath($cvPath)
+    public function setCV($cv)
     {
-        $this->cvPath = $cvPath;
+        $this->cv = $cv;
 
         return $this;
     }
 
     /**
-     * Get cvPath
+     * Get cv
      *
      * @return string
      */
-    public function getCvPath()
+    public function getCV()
     {
-        return $this->cvPath;
+        return $this->cv;
     }
 
     /**
      * Set cvFile
      *
      * @param string $cvFile
-     * @return JobApplicant
+     * @return Applicant
      */
-    public function setCvFile(UploadedFile $cvFile = null)
+    public function setCvFile(UploadedFile $cvFile)
     {
         $this->cvFile = $cvFile;
 
@@ -245,7 +252,7 @@ class Applicant
      * Set applicationDate
      *
      * @param \DateTime $applicationDate
-     * @return JobApplicant
+     * @return Applicant
      */
     public function setApplicationDate($applicationDate)
     {
@@ -265,36 +272,26 @@ class Applicant
     }
 
     /**
-     * Add jobPositions
+     * Set jobPosition
      *
-     * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPositions
-     * @return JobApplicant
+     * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPosition
+     * @return Applicant
      */
-    public function addJobPosition(\Opit\Notes\HiringBundle\Entity\JobPosition $jobPositions)
+    public function setJobPosition(\Opit\Notes\HiringBundle\Entity\JobPosition $jobPosition = null)
     {
-        $this->jobPositions[] = $jobPositions;
+        $this->jobPosition = $jobPosition;
 
         return $this;
     }
 
     /**
-     * Remove jobPositions
+     * Get jobPosition
      *
-     * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPositions
+     * @return \Opit\Notes\HiringBundle\Entity\JobPosition
      */
-    public function removeJobPosition(\Opit\Notes\HiringBundle\Entity\JobPosition $jobPositions)
+    public function getJobPosition()
     {
-        $this->jobPositions->removeElement($jobPositions);
-    }
-
-    /**
-     * Get jobPositions
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getJobPositions()
-    {
-        return $this->jobPositions;
+        return $this->jobPosition;
     }
 
     /**
@@ -304,7 +301,7 @@ class Applicant
      */
     public function getAbsolutePath()
     {
-        return null === $this->cvPath ? null : $this->getUploadRootDir().'/'.$this->cvPath;
+        return null === $this->cv ? null : $this->getUploadRootDir().'/'.$this->cv;
     }
 
     /**
@@ -314,7 +311,7 @@ class Applicant
      */
     protected function getUploadRootDir()
     {
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+        return __DIR__.'/../../../../../web/'.$this->getUploadDir();
     }
 
     /**
@@ -324,7 +321,7 @@ class Applicant
      */
     public function getWebPath()
     {
-        return null === $this->cvPath ? null : $this->getUploadDir().'/'.$this->cvPath;
+        return null === $this->cv ? null : $this->getUploadDir().'/'.$this->cv;
     }
 
     /**
@@ -338,25 +335,26 @@ class Applicant
     }
 
     /**
-     * Uploads the cv file
-     *
-     * @return type
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
     public function uploadCV()
     {
-        if (null === $this->getCvFile()) {
-            return;
+        if (null !== $this->getId()){
+            unlink($this->getUploadRootDir(). '/' . $this->getCV());
         }
 
-        $originalCVFileName = $this->getCvFile()->getClientOriginalName();
+        $now = new \DateTime();
+        $originalCVFileName = explode('.', $this->getCvFile()->getClientOriginalName());
+        $originalCVFileName[count($originalCVFileName) - 2] = $originalCVFileName[count($originalCVFileName) - 2] . '_' . $now->getTimestamp();
+        $originalCVFileName = implode('.', $originalCVFileName);
 
         $this->getCvFile()->move(
             $this->getUploadRootDir(),
             $originalCVFileName
         );
 
-        $this->cvPath = $originalCVFileName;
-
+        $this->cv = $originalCVFileName;
         $this->cvFile = null;
     }
 }

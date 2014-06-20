@@ -13,8 +13,6 @@ $(document).ready ->
     $('form.disabled #job_position_create_job_position')
         .addClass 'button-disabled'
         .attr 'disabled', 'disabled'
-        
-    $('form.disabled #job_position_create_job_position').attr 'disabled', 'disabled'
 
     $.validator.addMethod 'numberOfPositions', (value, element) ->
         $element = $(element)
@@ -34,7 +32,7 @@ $(document).ready ->
         rules:
             'job_position[numberOfPositions]': 'numberOfPositions'
 
-    $( '#job_position_create_job_position' ).click (event) ->
+    $('#job_position_create_job_position').click (event) ->
         event.preventDefault()
         if $form.valid()
             do $form.submit

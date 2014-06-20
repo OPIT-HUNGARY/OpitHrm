@@ -27,12 +27,12 @@ use Opit\Notes\TravelBundle\Form\DataTransformer\UserIdToObjectTransformer;
 class JobPositionType extends AbstractType
 {
     protected $isNewJobPosition;
-    
+
     public function __construct($isNewJobPosition)
     {
         $this->isNewJobPosition = $isNewJobPosition;
     }
-    
+
      /**
      * Builds a form with given fields.
      *
@@ -45,7 +45,7 @@ class JobPositionType extends AbstractType
         $userTransformer = new UserIdToObjectTransformer($entityManager);
 
         $builder->add('jobTitle', 'text', array(
-            'label'=>'Job title',
+            'label' => 'Job title',
             'required' => true,
             'attr' => array(
                 'placeholder' => 'Job title',
@@ -54,7 +54,7 @@ class JobPositionType extends AbstractType
         ));
 
         $builder->add('numberOfPositions', 'integer', array(
-            'label'=>'No. of positions',
+            'label' => 'No. of positions',
             'required' => true,
             'attr' => array(
                 'class' => 'width-50'
@@ -62,7 +62,7 @@ class JobPositionType extends AbstractType
         ));
 
         $builder->add('description', 'textarea', array(
-            'label'=>'Description',
+            'label' => 'Description',
             'required' => true,
             'attr' => array(
                 'placeholder' => 'Description',
@@ -110,6 +110,7 @@ class JobPositionType extends AbstractType
             'em' => 'Doctrine\Common\Persistence\ObjectManager',
         ));
     }
+
     /**
      * Get the name
      *

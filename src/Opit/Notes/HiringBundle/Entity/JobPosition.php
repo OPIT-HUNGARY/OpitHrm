@@ -73,9 +73,8 @@ class JobPosition extends AbstractBase
     protected $notifications;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Applicant", inversedBy="jobPositions")
-     * @ORM\JoinTable(name="notes_job_position_applicants")
-     */
+     * @ORM\OneToMany(targetEntity="Applicant", mappedBy="jobPosition")
+     **/
     protected $applicants;
 
     /**
@@ -83,9 +82,8 @@ class JobPosition extends AbstractBase
      */
     public function __construct()
     {
-        parent::__construct();
-        $this->notifications = new ArrayCollection();
-        $this->applicants = new ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->applicants = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isActive = false;
     }
 
@@ -273,10 +271,10 @@ class JobPosition extends AbstractBase
     /**
      * Add applicants
      *
-     * @param \Opit\Notes\HiringBundle\Entity\JobApplicant $applicants
+     * @param \Opit\Notes\HiringBundle\Entity\Applicant $applicants
      * @return JobPosition
      */
-    public function addApplicant(\Opit\Notes\HiringBundle\Entity\JobApplicant $applicants)
+    public function addApplicant(\Opit\Notes\HiringBundle\Entity\Applicant $applicants)
     {
         $this->applicants[] = $applicants;
 
@@ -286,9 +284,9 @@ class JobPosition extends AbstractBase
     /**
      * Remove applicants
      *
-     * @param \Opit\Notes\HiringBundle\Entity\JobApplicant $applicants
+     * @param \Opit\Notes\HiringBundle\Entity\Applicant $applicants
      */
-    public function removeApplicant(\Opit\Notes\HiringBundle\Entity\JobApplicant $applicants)
+    public function removeApplicant(\Opit\Notes\HiringBundle\Entity\Applicant $applicants)
     {
         $this->applicants->removeElement($applicants);
     }

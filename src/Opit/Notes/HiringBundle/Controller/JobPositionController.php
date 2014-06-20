@@ -14,11 +14,13 @@ namespace Opit\Notes\HiringBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\HiringBundle\Form\JobPositionType;
 use Opit\Notes\HiringBundle\Entity\JobPosition;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Opit\Component\Utils\Utils;
 
 class JobPositionController extends Controller
@@ -30,6 +32,7 @@ class JobPositionController extends Controller
      * @Route("/secured/job/show/{id}", name="OpitNotesHiringBundle_job_position_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_TEAM_MANAGER")
      * @Template()
+     * @throws AccessDeniedException
      */
     public function showJobPositionAction(Request $request)
     {
@@ -42,6 +45,12 @@ class JobPositionController extends Controller
         $isEditable = true;
         $errors = array();
 
+        if (!$isTeamManager) {
+            throw new AccessDeniedException(
+                'Access denied for job position.'
+            );
+        }
+
         if ($isNewJobPosition) {
             $jobPosition = new JobPosition();
         } else {
@@ -50,12 +59,6 @@ class JobPositionController extends Controller
 
             if (null === $jobPosition) {
                 throw $this->createNotFoundException('Missing job position.');
-            }
-
-            if (!$isTeamManager) {
-                throw new AccessDeniedException(
-                    'Access denied for job position.'
-                );
             }
         }
 
@@ -66,15 +69,15 @@ class JobPositionController extends Controller
         );
 
         if ($request->isMethod("POST")) {
+            if (!$isEditable) {
+                throw new AccessDeniedException(
+                    'Job position can not be modified.'
+                );
+            }
+
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                if (!$isEditable) {
-                    throw new AccessDeniedException(
-                        'Job position can not be modified.'
-                    );
-                }
-
                 $entityManager->persist($jobPosition);
                 $entityManager->flush();
 
@@ -85,7 +88,7 @@ class JobPositionController extends Controller
                 $errors = Utils::getErrorMessages($form);
             }
         }
-        
+
         return $this->render(
             'OpitNotesHiringBundle:JobPosition:showJobPosition.html.twig',
             array(
@@ -103,6 +106,7 @@ class JobPositionController extends Controller
      * @Route("/secured/job/list", name="OpitNotesHiringBundle_job_position_list")
      * @Secure(roles="ROLE_TEAM_MANAGER")
      * @Template()
+     * @throws AccessDeniedException
      */
     public function listJobPositionAction(Request $request)
     {
@@ -150,6 +154,7 @@ class JobPositionController extends Controller
      * @Route("/secured/job/delete", name="OpitNotesHiringBundle_job_position_delete")
      * @Secure(roles="ROLE_TEAM_MANAGER")
      * @Template()
+     * @throws AccessDeniedException
      */
     public function deleteJobPositionAction(Request $request)
     {
@@ -205,8 +210,32 @@ class JobPositionController extends Controller
     }
 
     /**
+     * @Route("/secured/job/search", name="OpitNotesHiringBundle_job_search")
+     * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"POST"})
+     */
+    public function jobPositionSearchAction()
+    {
+        $request = $this->getRequest();
+        $jobTitle = $request->request->get('term');
+        $jobPositions = $this->getDoctrine()
+            ->getRepository('OpitNotesHiringBundle:JobPosition')->findByTitleLike($jobTitle);
+        $jps = array();
+
+        foreach ($jobPositions as $jobPosition) {
+            $jps[] = array(
+                'value' => $jobPosition->getJobTitle(),
+                'label' => $jobPosition->getJobTitle(),
+                'id' => $jobPosition->getId()
+            );
+        }
+
+        return new JsonResponse($jps);
+    }
+
+    /**
      * Function to send email and notification when creating jp.
-     * 
+     *
      * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPosition
      * @param type $isNewJobPosition
      */
