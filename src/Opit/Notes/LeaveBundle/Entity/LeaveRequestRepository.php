@@ -161,7 +161,8 @@ class LeaveRequestRepository extends EntityRepository
         $dq->select('count(lr)')
                 ->where('lr.employee = :employee')
                 ->andwhere('l.startDate > :startDate')
-                ->andWhere('l.endDate < :endDate');
+                ->andWhere('l.endDate < :endDate')
+                ->andWhere('lr.isMassLeaveRequest = :isMassLeaveRequest');
         if ($finalizedOnly) {
             $status = array(Status::APPROVED, Status::PAID, Status::REJECTED);
             $dq->andWhere($dq->expr()->In('s.status', ':states'));
@@ -172,7 +173,8 @@ class LeaveRequestRepository extends EntityRepository
                 ->innerJoin('lr.employee', 'e')
                 ->setParameter('employee', $employeeId)
                 ->setParameter('startDate', $startDate)
-                ->setParameter('endDate', $endDate);
+                ->setParameter('endDate', $endDate)
+                ->setParameter('isMassLeaveRequest', 0);
         $q = $dq->getQuery();
 
         return $q->getSingleScalarResult();
@@ -189,23 +191,24 @@ class LeaveRequestRepository extends EntityRepository
     {
         $q = $this->createQueryBuilder('lr');
         $q->select('lr.id')
-            ->where($q->expr()->eq('s.status', ':status'))
-            ->innerJoin('lr.states', 's')
-            ->setParameter('status', Status::REJECTED);
+                ->where($q->expr()->eq('s.status', ':status'))
+                ->innerJoin('lr.states', 's')
+                ->setParameter('status', Status::REJECTED);
 
         $rejectedLeaveRequestIds = $q->getQuery()->getScalarResult();
 
         $dq = $this->createQueryBuilder('lr');
         $dq->select('sum(l.numberOfDays)')
-            ->where('lr.employee = :employee');
-            if(!$incNonAnnualEntLeaves){
-                $dq->andWhere($dq->expr()->eq('c.isCountedAsLeave', ':countAsLeave'))
-                ->setParameter('countAsLeave', 1);
-            }
-            $dq->innerJoin('lr.leaves', 'l')
-            ->innerJoin('lr.states', 's')
-            ->innerJoin('l.category', 'c')
-            ->setParameter('employee', $employeeId);
+                ->where('lr.employee = :employee')
+                ->andWhere('lr.isMassLeaveRequest = :isMassLeaveRequest')
+                ->innerJoin('lr.leaves', 'l');
+        if (!$incNonAnnualEntLeaves) {
+            $dq->andWhere($dq->expr()->eq('c.isCountedAsLeave', ':countAsLeave'))
+                    ->setParameter('countAsLeave', 1)
+                    ->innerJoin('l.category', 'c');
+        }
+        $dq->setParameter('employee', $employeeId)
+                ->setParameter('isMassLeaveRequest', 0);
 
         if (!empty($rejectedLeaveRequestIds)) {
             $dq->andWhere($dq->expr()->notIn('lr.id', ':lrIds'));
@@ -214,4 +217,5 @@ class LeaveRequestRepository extends EntityRepository
 
         return $dq->getQuery()->getSingleScalarResult();
     }
+
 }

@@ -383,12 +383,17 @@ class LeaveController extends Controller
         //pending leave request count
         $pendingLeaveRequestCount = $totalLeaveRequestCount - $finalizedLeaveRequestCount;
 
-        //remaning and availed leaves count
-        $availedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID, true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID, true) : 0);
-        $leftToAvail = ($empLeaveEntitlement > $availedLeaveDays ? $empLeaveEntitlement - $availedLeaveDays : 0);
+        //total applied leaves count
+        $totalAppliedLeaveDays = ($leaveRequestRepository->totalCountedLeaveDays($employeeID, true) ? $leaveRequestRepository->totalCountedLeaveDays($employeeID, true) : 0);
+
+        //entitled leave days
+        $entitledAppliedLeaveDays = $leaveRequestRepository->totalCountedLeaveDays($employeeID);
 
         //not entitled leave days count
-        $nonEntLeaveDaysCount = ($availedLeaveDays > $empLeaveEntitlement ? $availedLeaveDays - $empLeaveEntitlement : 0);
+        $notEntitledAppliedLeaveDays = $totalAppliedLeaveDays -  $entitledAppliedLeaveDays;
+
+        //left to avail
+        $leftToAvail = ($empLeaveEntitlement > $entitledAppliedLeaveDays ? $empLeaveEntitlement - $entitledAppliedLeaveDays : 0);
 
         return $this->render(
             'OpitNotesLeaveBundle:Leave:_employeeLeavesinfoBoard.html.twig',
@@ -398,9 +403,10 @@ class LeaveController extends Controller
                 'pendingLeaveRequestCount' => $pendingLeaveRequestCount,
                 'finalizedLeaveRequestCount' => $finalizedLeaveRequestCount,
                 'leftToAvail' => $leftToAvail,
-                'availedLeaveDays' => $availedLeaveDays,
+                'totalAppliedLeaveDays' => $totalAppliedLeaveDays,
+                'entitledAppliedLeaveDays' => $entitledAppliedLeaveDays,
                 'totalLeaveRequestCount' => $totalLeaveRequestCount,
-                'nonEntLeaveDaysCount' => $nonEntLeaveDaysCount
+                'notEntitledAppliedLeaveDays' => $notEntitledAppliedLeaveDays
             )
         );
     }
