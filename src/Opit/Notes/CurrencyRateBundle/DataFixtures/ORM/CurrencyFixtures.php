@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -43,6 +43,8 @@ class CurrencyFixtures extends AbstractDataFixture
             $currency->setCode($key);
             $currency->setDescription($value);
             $manager->persist($currency);
+
+            $this->addReference('currency-' . strtolower($key), $currency);
         }
 
         $manager->flush();
@@ -55,9 +57,9 @@ class CurrencyFixtures extends AbstractDataFixture
     {
         return 10; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()

@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -30,17 +30,19 @@ class TransportationTypeFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
-        $transportationTypes = array('Airplane', 'Bus', 'Car');
-        
+        $transportationTypes = array('Airplane', 'Bus', 'Car', 'Taxi');
+
         for ($i = 0; $i < count($transportationTypes); $i++) {
             $transportationType = new TransportationType();
             $transportationType->setName($transportationTypes[$i]);
             $manager->persist($transportationType);
+
+            $this->addReference('transportation-type-' . strtolower($transportationTypes[$i]), $transportationType);
         }
-        
+
         $manager->flush();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -48,13 +50,13 @@ class TransportationTypeFixtures extends AbstractDataFixture
     {
         return 10; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()
     {
-        return array('prod', 'dev');
+        return array('prod', 'dev', 'test');
     }
 }

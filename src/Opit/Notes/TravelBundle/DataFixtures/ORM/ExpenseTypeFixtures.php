@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -31,18 +31,18 @@ class ExpenseTypeFixtures extends AbstractDataFixture
     public function doLoad(ObjectManager $manager)
     {
         $expenseTypes = array('Tickets', 'Taxi', 'Hotel', 'Exchange cost', 'Other');
-        
+
         foreach ($expenseTypes as $type) {
             $expenseType = new TEExpenseType();
             $expenseType->setName($type);
             $manager->persist($expenseType);
+
+            $this->addReference('expense-type-' . strtolower(str_replace(' ', '-', $type)), $expenseType);
         }
-        
-        $this->addReference('other-expense-type', $expenseType);
-        
+
         $manager->flush();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -50,9 +50,9 @@ class ExpenseTypeFixtures extends AbstractDataFixture
     {
         return 10; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()

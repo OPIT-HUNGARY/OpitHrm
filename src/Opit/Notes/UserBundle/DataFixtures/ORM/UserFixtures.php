@@ -46,7 +46,7 @@ class UserFixtures extends AbstractDataFixture
         $testAdmin->setEmployee($this->createEmployee());
         $password = $encoder->encodePassword('admin', '');
         $testAdmin->setPassword($password);
-        $testAdmin->setEmail('admin@mail.com');
+        $testAdmin->setEmail('admin@mail.local');
         $testAdmin->setIsActive(1);
         if ('test' === $this->getCurrentEnvironment()) {
             $testAdmin->setIsFirstLogin(0);
@@ -58,7 +58,7 @@ class UserFixtures extends AbstractDataFixture
 
         $manager->persist($testAdmin);
 
-        if ('dev' === $this->getCurrentEnvironment()) {
+        if (in_array($this->getCurrentEnvironment(), array('dev', 'test'))) {
 
             for ($i = 0; $i < 10; $i++) {
                 $testEmployee = $this->createEmployee();
@@ -69,7 +69,7 @@ class UserFixtures extends AbstractDataFixture
                 $password = $encoder->encodePassword('test' . $i . 'Password', '');
                 $testUser->setPassword($password);
                 $testUser->setLdapEnabled(0);
-                $testUser->setEmail('mymail' . $i . '@mail.com');
+                $testUser->setEmail(strtolower($username) . '@mail.local');
                 $testUser->setIsActive(1);
                 $testUser->setIsFirstLogin(1);
                 $testUser->addGroup($this->getReference('user-group'));
@@ -83,7 +83,7 @@ class UserFixtures extends AbstractDataFixture
             $testTeamManager->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('teamManager', '');
             $testTeamManager->setPassword($password);
-            $testTeamManager->setEmail('tm@mail.com');
+            $testTeamManager->setEmail('tm@mail.local');
             $testTeamManager->setIsActive(1);
             $testTeamManager->setIsFirstLogin(1);
             $testTeamManager->addGroup($this->getReference('team-manager-group'));
@@ -96,7 +96,7 @@ class UserFixtures extends AbstractDataFixture
             $testGeneralManager->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('generalManager', '');
             $testGeneralManager->setPassword($password);
-            $testGeneralManager->setEmail('gm@mail.com');
+            $testGeneralManager->setEmail('gm@mail.local');
             $testGeneralManager->setIsActive(1);
             $testGeneralManager->setIsFirstLogin(1);
             $testGeneralManager->addGroup($this->getReference('general-manager-group'));
@@ -110,7 +110,7 @@ class UserFixtures extends AbstractDataFixture
             $user->setEmployee($this->createEmployee());
             $password = $encoder->encodePassword('user', '');
             $user->setPassword($password);
-            $user->setEmail('user@mail.com');
+            $user->setEmail('user@mail.local');
             $user->setIsActive(1);
             $user->setIsFirstLogin(1);
             $user->addGroup($this->getReference('user-group'));
@@ -118,8 +118,9 @@ class UserFixtures extends AbstractDataFixture
 
             $manager->persist($user);
 
-            $this->setReference('user', $user);
-            $this->setReference('generalManager', $testGeneralManager);
+            $this->addReference('admin', $testAdmin);
+            $this->addReference('user', $user);
+            $this->addReference('generalManager', $testGeneralManager);
         }
 
         $manager->flush();
