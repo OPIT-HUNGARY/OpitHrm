@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="opit.twig.core_extension.class">Opit\Notes\CoreBundle\Twig\CoreExtension</parameter>
         <parameter key="opit.core.email_manager.class">Opit\Notes\CoreBundle\Email\EmailManager</parameter>
+        <parameter key="opit.listener.xml_http_session_expired_listener.class">Opit\Notes\CoreBundle\EventListener\XMLHttpSessionExpiredListener</parameter>
     </parameters>
     
     <services>
@@ -19,6 +20,9 @@
             <argument type="service" id="templating" />
             <argument type="service" id="logger" on-invalid="null" />
             <argument>%mailing_config%</argument>
+        </service>
+        <service id="opit.listener.xml_http_session_expired_listener" class="%opit.listener.xml_http_session_expired_listener.class%">
+            <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
         </service>
     </services>
 </container>
