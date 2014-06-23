@@ -37,7 +37,7 @@ class LeaveRequestFixtures extends AbstractDataFixture
             throw new \RuntimeException('Leave request fixtures require user/status bundle fixtures.');
         }
 
-        // First travel request
+        // First leave request
         $admin = $this->getReference('admin');
 
         $leaveRequest1 = new LeaveRequest();
