@@ -6,7 +6,7 @@ $(document).ready ->
         select: (event, ui) ->
             $('#job_position_hiring_manager').val ui.item.id
             return
-        
+
     $('form.disabled select, .disabled input, form.disabled textarea').each ->
         $(@).attr 'disabled', 'disabled'
         

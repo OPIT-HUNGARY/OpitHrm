@@ -1,0 +1,24 @@
+{% extends 'OpitNotesCoreBundle:Shared:search.html.twig' %}
+
+{% block forms %}
+<div class="searchProperty vertical-align-top">
+    <label for="search_applicant_name">Name</label>
+    <input type="text" name="search[name]" id="search_applicant_name" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_applicant_email">Email</label>
+    <input type="text" name="search[email]" id="search_applicant_email" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_applicant_keywords">Keywords</label>
+    <input type="text" name="search[keywords]" id="search_applicant_keywords" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_applicant_application_date">Application date</label>
+    <input type="date" name="search[applicaitonDate]" id="search_applicant_application_date" />
+</div>
+<div class="searchProperty vertical-align-top">
+    <label for="search_applicant_job_title">Job title</label>
+    <input type="text" name="search[jobTitle]" id="search_applicant_job_title" />
+</div>
+{% endblock %}

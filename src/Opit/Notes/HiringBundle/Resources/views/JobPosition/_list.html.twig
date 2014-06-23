@@ -11,6 +11,9 @@
                 <span class="order-text cursor-pointer">Job title</span>
             </th>
             <th>
+                No. of applicants
+            </th>
+            <th>
                 <i class="fa fa-sort default-right" data-field="jp.created"></i>
                 <span class="order-text cursor-pointer">Created</span>
             </th>
@@ -33,6 +36,9 @@
             </td>
             <td>
                 {{ jobPosition.jobTitle }}
+            </td>
+            <td>
+                {{ jobPosition.applicants|length }}
             </td>
             <td>
                 {{ jobPosition.created|date('d  F  Y (D)') }}
@@ -72,7 +78,7 @@
                 'numberOfPages': numberOfPages,
                 'maxNumberOfPages': maxPages,
                 'offset': offset,
-                'url': path('OpitNotesLeaveBundle_leave_list')
+                'url': path('OpitNotesHiringBundle_job_position_list')
             }
         %}
     {% endif %}

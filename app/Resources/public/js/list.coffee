@@ -101,6 +101,12 @@ $.extend true, $(document).data('notes'),
                     url = Routing.generate 'OpitNotesHiringBundle_job_position_delete'
                     title = 'Job position removal'
                     errorText = 'The job position could not be deleted due to an error.'
+                else if $('#applicant_list').length is 1
+                    warningMessage = 'Are you sure you want to delete the selected applicants?'
+                    checkBoxClass = '.deleteMultiple'
+                    url = Routing.generate 'OpitNotesHiringBundle_applicant_delete'
+                    title = 'Applicant removal'
+                    errorText = 'The applicant could not be deleted due to an error.'
                 else
                     return false
 

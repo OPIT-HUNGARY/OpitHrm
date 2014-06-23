@@ -5,7 +5,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitNotesHiringBundle/Resources/public/js/showJobPosition.coffee'
+        '@OpitNotesHiringBundle/Resources/public/js/jobPosition/showJobPosition.coffee'
     output='js/opitnoteshiring/show_job_position.js' filter='?yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}

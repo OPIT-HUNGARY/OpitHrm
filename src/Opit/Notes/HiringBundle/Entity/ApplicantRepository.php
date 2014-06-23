@@ -21,7 +21,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * @package Opit
  * @subpackage Notes
  */
-class JobPositionRepository extends EntityRepository
+class ApplicantRepository extends EntityRepository
 {
     /**
      * @param array $parameters
@@ -32,21 +32,37 @@ class JobPositionRepository extends EntityRepository
         $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
         $searchParams = isset($parameters['search']) ? $parameters['search'] : array();
 
-        $dq = $this->createQueryBuilder('jp');
+        $dq = $this->createQueryBuilder('a')
+            ->innerJoin('a.jobPosition', 'jp');
 
-        if (isset($searchParams['jobPositionId']) && $searchParams['jobPositionId'] !== '') {
-            $dq->andWhere('jp.jobPositionId LIKE :jobPositionId');
-            $dq->setParameter(':jobPositionId', '%'.$searchParams['jobPositionId'].'%');
+        if (isset($searchParams['name']) && $searchParams['name'] !== '') {
+            $dq->andWhere('a.name LIKE :name');
+            $dq->setParameter(':name', '%'.$searchParams['name'].'%');
+        }
+
+        if (isset($searchParams['email']) && $searchParams['email'] !== '') {
+            $dq->andWhere('a.email LIKE :email');
+            $dq->setParameter(':email', '%'.$searchParams['email'].'%');
+        }
+
+        if (isset($searchParams['phoneNumber']) && $searchParams['phoneNumber'] !== '') {
+            $dq->andWhere('a.phoneNumber LIKE :phoneNumber');
+            $dq->setParameter(':phoneNumber', '%'.$searchParams['phoneNumber'].'%');
+        }
+
+        if (isset($searchParams['keywords']) && $searchParams['keywords'] !== '') {
+            $dq->andWhere('a.keywords LIKE :keywords');
+            $dq->setParameter(':keywords', '%'.$searchParams['keywords'].'%');
+        }
+
+        if (isset($searchParams['applicationDate']) && $searchParams['applicationDate'] !== '') {
+            $dq->andWhere('a.applicationDate LIKE :applicationDate');
+            $dq->setParameter(':applicationDate', '%'.$searchParams['applicationDate'].'%');
         }
 
         if (isset($searchParams['jobTitle']) && $searchParams['jobTitle'] !== '') {
             $dq->andWhere('jp.jobTitle LIKE :jobTitle');
             $dq->setParameter(':jobTitle', '%'.$searchParams['jobTitle'].'%');
-        }
-
-        if (isset($searchParams['isActive']) && $searchParams['isActive'] !== '') {
-            $dq->andWhere('jp.isActive LIKE :isActive');
-            $dq->setParameter(':isActive', '%'.$searchParams['isActive'].'%');
         }
 
         if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
@@ -57,23 +73,5 @@ class JobPositionRepository extends EntityRepository
         $dq->setMaxResults($pagnationParameters['maxResults']);
 
         return new Paginator($dq->getQuery(), true);
-    }
-
-    /**
-     * Find job title using title and is active
-     * 
-     * @param string $title
-     * @param boolean $isActive
-     * @return type
-     */
-    public function findByTitleLike($title, $isActive = true)
-    {
-        $dq = $this->createQueryBuilder('jp');
-        $dq->where('jp.jobTitle LIKE :title');
-        $dq->andWhere('jp.isActive = :isActive');
-        $dq->setParameter(':title', '%' . $title . '%');
-        $dq->setParameter(':isActive', $isActive);
-
-        return $dq->getQuery()->getResult();
     }
 }

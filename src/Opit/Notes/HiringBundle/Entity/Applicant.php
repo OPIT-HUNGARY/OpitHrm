@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * JobApplicant
  *
  * @ORM\Table(name="notes_applicants")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Opit\Notes\HiringBundle\Entity\ApplicantRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Applicant extends AbstractBase
@@ -49,6 +49,7 @@ class Applicant extends AbstractBase
      *
      * @ORM\Column(name="email", type="string")
      * @Assert\NotBlank(message="Applicant email can not be empty")
+     * @Assert\Email(message = "The email address is not valid.")
      */
     protected $email;
 
@@ -340,6 +341,10 @@ class Applicant extends AbstractBase
      */
     public function uploadCV()
     {
+        if (null === $this->getCvFile()) {
+            return;
+        }
+
         if (null !== $this->getId()){
             unlink($this->getUploadRootDir(). '/' . $this->getCV());
         }

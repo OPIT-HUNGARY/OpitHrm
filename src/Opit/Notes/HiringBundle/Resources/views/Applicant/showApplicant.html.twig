@@ -5,7 +5,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    '@OpitNotesHiringBundle/Resources/public/js/showApplicant.coffee'
+    '@OpitNotesHiringBundle/Resources/public/js/applicant/showApplicant.coffee'
     output='js/opitnoteshiring/show_applicant.js' filter='?yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
@@ -72,6 +72,6 @@
         </div>
         {{ form_widget(form._token) }}
         {{ form_widget(form.create_applicant) }}
-        <a href="{{ path('OpitNotesHiringBundle_job_position_list') }}" id="cancel-button" class="button">Cancel</a>
+        <a href="{{ path('OpitNotesHiringBundle_applicant_list') }}" id="cancel-button" class="button">Cancel</a>
     {{ form_end(form) }}
 {% endblock %}

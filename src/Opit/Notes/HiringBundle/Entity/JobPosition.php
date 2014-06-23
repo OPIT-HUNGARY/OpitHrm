@@ -7,12 +7,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * JobPosition
  *
  * @ORM\Table(name="notes_job_position")
  * @ORM\Entity(repositoryClass="Opit\Notes\HiringBundle\Entity\JobPositionRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class JobPosition extends AbstractBase
 {
@@ -24,6 +26,11 @@ class JobPosition extends AbstractBase
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     /**
      * @var text
@@ -82,6 +89,7 @@ class JobPosition extends AbstractBase
      */
     public function __construct()
     {
+        parent::__construct();
         $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
         $this->applicants = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isActive = false;
@@ -95,6 +103,28 @@ class JobPosition extends AbstractBase
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get deleted at
+     *
+     * @return type
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set deleted at
+     *
+     * @return type
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
     }
 
     /**

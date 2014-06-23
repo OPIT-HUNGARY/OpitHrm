@@ -1,0 +1,95 @@
+<form class="delete-checkbox-form">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="jp.jobTitle"></i>
+                <span class="order-text cursor-pointer">Job title</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="a.name"></i>
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="a.email"></i>
+                <span class="order-text cursor-pointer">Email</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="a.phoneNumber"></i>
+                <span class="order-text cursor-pointer">Phone number</span>
+            </th>
+            <th>
+                <span class="order-text cursor-pointer">Keywords</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="a.applicationDate"></i>
+                <span class="order-text cursor-pointer">Application date</span>
+            </th>
+            <th>CV</th>
+            <th>Actions</th>
+        </tr>
+        {% for applicant in applicants %}
+        {% set id = applicant.id %}
+        {% set isEditable = (is_granted('ROLE_ADMIN') or applicant.createdUser.id == app.user.id) %}
+        <tr>
+            <td>
+                <input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" {% if 0 == isEditable %}disabled="disabled"{% endif %} value="{{ id }}" />
+            </td>
+            <td>
+                {{ applicant.jobPosition.jobTitle }}
+                {% if null != applicant.jobPosition.deletedAt %}
+                <i class="fa fa-exclamation-triangle color-ferrari-red cursor-pointer margin-left-5 tipsy-notification" title="This job position has been removed"></i>
+                {% endif %}
+            </td>
+            <td>
+                {{ applicant.name }}
+            </td>
+            <td>
+                {{ applicant.email }}
+            </td>
+            <td>
+                {{ applicant.phoneNumber }}
+            </td>
+            <td>
+                {{ applicant.keywords }}
+            </td>
+            <td>
+                {{ applicant.applicationDate|date('d  F  Y (D)') }}
+            </td>
+            <td>
+                <a href="{{ path('OpitNotesHiringBundle_applicant_cv_download', { 'id': id}) }}" title="Download CV"><i class="fa fa-download"></i></a>
+            </td>
+            <td>
+                {% if isEditable and null == applicant.jobPosition.deletedAt %}
+                <a href="{{ path('OpitNotesHiringBundle_applicant_show', { 'id': id}) }}" title="Edit applicant">
+                    <i class="fa fa-pencil-square-o fa-1x"></i>
+                </a>
+                {% else %}
+                <a href="{{ path('OpitNotesHiringBundle_applicant_show', { 'id': id}) }}" title="View applicant">
+                    <i class="fa fa-list-alt fa-1x"></i>
+                </a>
+                {% endif %}
+
+                {% if isEditable %}
+                <a href="{{ path('OpitNotesHiringBundle_applicant_delete') }}" title="Delete applicant" class="delete-applicant" data-id="{{ id }}" data-request="{{ applicant.name }}">
+                    <i class="fa fa-trash-o fa-1x"></i>
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% include 'OpitNotesCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': applicants } %}
+
+    {% if numberOfPages is defined and numberOfPages > 0 %}
+        {% include 'OpitNotesUserBundle:Shared:_pager.html.twig' with
+            {
+                'numberOfPages': numberOfPages,
+                'maxNumberOfPages': maxPages,
+                'offset': offset,
+                'url': path('OpitNotesHiringBundle_applicant_list')
+            }
+        %}
+    {% endif %}
+</form>

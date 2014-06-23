@@ -7,7 +7,7 @@ $(document).ready ->
             data: 'id': jobPositionId
           .done (data) ->
             dialogWidth = 550
-            $('<div id="dialog-show-details-lr"></div>').html(data)
+            $('<div id="dialog-show-details-job-position"></div>').html(data)
               .dialog
                 title: '<i class="fa fa-list-alt"></i> Details'
                 width: dialogWidth
@@ -15,7 +15,7 @@ $(document).ready ->
                 modal: on
             return
           return
-          
+
     $('#main-wrapper').on 'click', '.delete-job-position', (event) ->
             event.preventDefault()
             $deleteButton = $(@)
@@ -49,7 +49,7 @@ $(document).ready ->
                         No: ->
                             $('#dialog-show-details-jp').dialog 'destroy'
                             return
-          
+
     $('#job_position_list').on 'click', '.fa-sort', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesHiringBundle_job_position_list', 'job_position_list'
 
