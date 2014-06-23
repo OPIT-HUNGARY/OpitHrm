@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-
     <parameters>
+        <parameter key="opit.listener.travel_request_post_listener.class">Opit\Notes\TravelBundle\EventListener\TravelRequestPostListener</parameter>
         <parameter key="opit.model.travel_expense.class">Opit\Notes\TravelBundle\Model\TravelExpenseService</parameter>
         <parameter key="opit.model.travel_request.class">Opit\Notes\TravelBundle\Model\TravelRequestService</parameter>
         <parameter key="opit.manager.travel_status_manager.class">Opit\Notes\TravelBundle\Manager\TravelStatusManager</parameter>
@@ -15,7 +15,11 @@
         <parameter key="opit.listener.xml_http_session_expired_listener.class">Opit\Notes\TravelBundle\EventListener\XMLHttpSessionExpiredListener</parameter>
         <parameter key="opit.twig.opit_travel_bundle_extension.class">Opit\Notes\TravelBundle\Twig\OpitExtension</parameter>
     </parameters>
+
     <services>
+        <service id="opit.listener.travel_request_post_listener" class="%opit.listener.travel_request_post_listener.class%" public="false">
+            <tag name="doctrine.event_listener" event="postPersist" />
+        </service>
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />

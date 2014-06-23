@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -25,17 +25,15 @@ use Opit\Notes\TravelBundle\Model\TravelResourceInterface;
  * @version 1.0
  * @package Notes
  * @subpackage TravelBundle
- * 
+ *
  * @ORM\Table(name="notes_travel_request")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TravelRequestRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class TravelRequest implements TravelResourceInterface
 {
     const TYPE = 'tr';
-    
-    private $trIdPattern = 'TR-{year}-{id}';
-    
+    const ID_PATTERN = 'TR-{year}-{id}';
+
     /**
      * @var integer
      *
@@ -103,36 +101,36 @@ class TravelRequest implements TravelResourceInterface
      * @ORM\Column(name="customer_name", type="string", nullable=true)
      */
     private $customerName;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="TRDestination", mappedBy="travelRequest", cascade={"persist", "remove"})
      * @Assert\NotBlank(message="Destinations cannot be empty.")
      */
     private $destinations;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="TRAccomodation", mappedBy="travelRequest", cascade={"persist", "remove"})
      * @Assert\NotBlank(message="Accomodations date cannot be empty.")
      */
     private $accomodations;
-    
+
     /**
      * @var text
      * @ORM\Column(name="travel_request_id", type="string", length=11, nullable=true)
      */
     private $travelRequestId;
-    
+
     /**
      * @var TravelExpense
      * @ORM\OneToOne(targetEntity="TravelExpense", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     private $travelExpense;
-     
+
     /**
      * @ORM\OneToMany(targetEntity="StatesTravelRequests", mappedBy="travelRequest", cascade={"persist", "remove"})
      */
     protected $states;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="TRNotification", mappedBy="travelRequest", cascade={"remove"})
      */
@@ -165,7 +163,7 @@ class TravelRequest implements TravelResourceInterface
     public function setDepartureDate($departureDate)
     {
         $this->departureDate = $departureDate;
-    
+
         return $this;
     }
 
@@ -188,7 +186,7 @@ class TravelRequest implements TravelResourceInterface
     public function setArrivalDate($arrivalDate)
     {
         $this->arrivalDate = $arrivalDate;
-    
+
         return $this;
     }
 
@@ -211,7 +209,7 @@ class TravelRequest implements TravelResourceInterface
     public function setTripPurpose($tripPurpose)
     {
         $this->tripPurpose = $tripPurpose;
-    
+
         return $this;
     }
 
@@ -234,7 +232,7 @@ class TravelRequest implements TravelResourceInterface
     public function setCustomerRelated($customerRelated)
     {
         $this->customerRelated = $customerRelated;
-    
+
         return $this;
     }
 
@@ -257,7 +255,7 @@ class TravelRequest implements TravelResourceInterface
     public function setCustomerName($customerName)
     {
         $this->customerName = $customerName;
-    
+
         return $this;
     }
 
@@ -281,7 +279,7 @@ class TravelRequest implements TravelResourceInterface
     {
         $this->destinations[] = $destinations;
         $destinations->setTravelRequest($this); // synchronously updating inverse side
-    
+
         return $this;
     }
 
@@ -315,7 +313,7 @@ class TravelRequest implements TravelResourceInterface
     {
         $this->accomodations[] = $accomodations;
         $accomodations->setTravelRequest($this); // synchronously updating inverse side
-    
+
         return $this;
     }
 
@@ -348,7 +346,7 @@ class TravelRequest implements TravelResourceInterface
     public function setUser(\Opit\Notes\TravelBundle\Model\TravelRequestUserInterface $user = null)
     {
         $this->user = $user;
-    
+
         return $this;
     }
 
@@ -371,7 +369,7 @@ class TravelRequest implements TravelResourceInterface
     public function setTeamManager(\Opit\Notes\UserBundle\Entity\User $teamManager = null)
     {
         $this->teamManager = $teamManager;
-    
+
         return $this;
     }
 
@@ -394,7 +392,7 @@ class TravelRequest implements TravelResourceInterface
     public function setGeneralManager(\Opit\Notes\UserBundle\Entity\User $generalManager = null)
     {
         $this->generalManager = $generalManager;
-    
+
         return $this;
     }
 
@@ -408,39 +406,23 @@ class TravelRequest implements TravelResourceInterface
         return $this->generalManager;
     }
 
-
     /**
      * Set travelRequestId
-     
+
      * @param string $travelRequestId
      * @return TravelRequest
      */
     public function setTravelRequestId($travelRequestId = null)
     {
         $this->travelRequestId = $travelRequestId;
-        
+
         return $this;
-    }
-    
-    /**
-     * @ORM\PostPersist
-     */
-    public function setTravelRequestIdOnPostPersist()
-    {
-        $travelRequestId = str_replace(
-            array('{year}', '{id}'),
-            array(date('y'), sprintf('%05d', $this->id)),
-            $this->trIdPattern
-        );
-        
-        // update travel request id on post persist event
-        $this->travelRequestId = $travelRequestId;
     }
 
     /**
      * Get travelRequestId
      *
-     * @return string 
+     * @return string
      */
     public function getTravelRequestId()
     {
@@ -456,7 +438,7 @@ class TravelRequest implements TravelResourceInterface
     public function setTravelExpense(TravelExpense $travelExpense = null)
     {
         $this->travelExpense = $travelExpense;
-    
+
         return $this;
     }
 
@@ -503,15 +485,25 @@ class TravelRequest implements TravelResourceInterface
     {
         return $this->states;
     }
-    
+
     /**
      * Returns the travel type constant
-     * 
+     *
      * @return string The travel entity type
      */
     public static function getType()
     {
         return self::TYPE;
+    }
+
+    /**
+     * Returns the travel request pattern for the ID generation
+     *
+     * @return string The travel entity type
+     */
+    public static function getIDPattern()
+    {
+        return self::ID_PATTERN;
     }
 
     /**
@@ -524,7 +516,7 @@ class TravelRequest implements TravelResourceInterface
     {
         $this->notifications[] = $notifications;
         $notifications->setTravelRequest($this);
-    
+
         return $this;
     }
 
@@ -541,7 +533,7 @@ class TravelRequest implements TravelResourceInterface
     /**
      * Get notifications
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNotifications()
     {

@@ -15,6 +15,8 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  */
 class LeaveRequest extends AbstractBase
 {
+    const ID_PATTERN = 'LR-{year}-{id}';
+
     /**
      * @var integer
      *
@@ -73,9 +75,9 @@ class LeaveRequest extends AbstractBase
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
      */
     protected $notifications;
-    
+
     protected $isOverlapped;
-    
+
     protected $rejectedGmName;
 
     /**
@@ -338,7 +340,7 @@ class LeaveRequest extends AbstractBase
     {
         return $this->isMassLeaveRequest;
     }
-    
+
     /**
      * Set isOverlapped
      *
@@ -361,7 +363,7 @@ class LeaveRequest extends AbstractBase
     {
         return $this->isOverlapped;
     }
-    
+
     /**
      * Set rejectedGmName
      *
@@ -384,7 +386,17 @@ class LeaveRequest extends AbstractBase
     {
         return $this->rejectedGmName;
     }
-    
+
+    /**
+     * Returns the leave request pattern for the ID generation
+     *
+     * @return string The travel entity type
+     */
+    public static function getIDPattern()
+    {
+        return self::ID_PATTERN;
+    }
+
     /**
      * validate leave dates overlapping
      * An existing groups option must use in the assert annotation.
@@ -396,7 +408,7 @@ class LeaveRequest extends AbstractBase
     {
         $collection = $this->getLeaves();
         $overlappingDates = array();
-        
+
         // Checking the date overlapping
         foreach ($collection as $element) {
             $current = $element;
