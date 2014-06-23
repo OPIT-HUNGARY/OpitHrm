@@ -380,9 +380,21 @@ class UserController extends Controller
             $role = $userService->getInheritedRoles($this->getUser());
         }
 
-        $users = $this->getDoctrine()
-            ->getRepository('OpitNotesUserBundle:User')
-            ->findUserByEmployeeNameUsingLike($term, $role);
+        if ('role_team_manager' === $role) {
+            $currentEmployee = $this->container->get('security.context')->getToken()->getUser()->getEmployee();
+            // Find the team managers which are in the same team as the employee.
+            $employees = $this->getDoctrine()
+                ->getRepository('OpitNotesUserBundle:Employee')
+                ->findTeamManagers($term, $currentEmployee->getId());
+
+            foreach ($employees as $employee) {
+                $users[] = $employee->getUser();
+            }
+        } else {
+            $users = $this->getDoctrine()
+                ->getRepository('OpitNotesUserBundle:User')
+                ->findUserByEmployeeNameUsingLike($term, $role);
+        }
 
         foreach ($users as $user) {
             $userUniqueIdentifier = $user->getEmployee()->getEmployeeNameFormatted();
