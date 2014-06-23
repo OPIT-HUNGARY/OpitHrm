@@ -37,6 +37,11 @@ class TravelRequestFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
+        // Test for required user/status references first
+        if (!$this->hasReference('admin') || !$this->hasReference('created')) {
+            throw new \RuntimeException('Travel request fixtures require user/status bundle fixtures.');
+        }
+
         $aclManager = $this->container->get('opit.security.acl.manager');
 
         // First travel request
@@ -54,7 +59,7 @@ class TravelRequestFixtures extends AbstractDataFixture
         $travelRequest1->setTripPurpose('Conference');
 
         // Add Destinations
-        if ($this->hasReference('currency-huf')) {
+        if ($this->hasReference('currency-huf') && $this->hasReference('transportation-type-airplane')) {
             $destination1 = new TRDestination();
             $destination1->setTransportationType($this->getReference('transportation-type-airplane'));
             $destination1->setName('Vienna');
@@ -64,7 +69,7 @@ class TravelRequestFixtures extends AbstractDataFixture
             $travelRequest1->addDestination($destination1);
         }
 
-        if ($this->hasReference('currency-eur')) {
+        if ($this->hasReference('currency-eur') && $this->hasReference('transportation-type-bus')) {
             $destination2 = new TRDestination();
             $destination2->setTransportationType($this->getReference('transportation-type-bus'));
             $destination2->setName('Hotel Stefanie');
@@ -72,8 +77,10 @@ class TravelRequestFixtures extends AbstractDataFixture
             $destination2->setCurrency($this->getReference('currency-eur'));
 
             $travelRequest1->addDestination($destination2);
+        }
 
-            // Add accomodation
+        // Add accomodation
+        if ($this->hasReference('currency-eur')) {
             $accomodation1 = new TRAccomodation();
             $accomodation1->setHotelName('Hotel Stefanie');
             $accomodation1->setCity('Vienna');
@@ -111,7 +118,7 @@ class TravelRequestFixtures extends AbstractDataFixture
         $travelRequest2->setTripPurpose('Business meeting');
 
         // Add Destinations
-        if ($this->hasReference('currency-huf')) {
+        if ($this->hasReference('currency-huf') && $this->hasReference('transportation-type-airplane')) {
             $destination3 = new TRDestination();
             $destination3->setTransportationType($this->getReference('transportation-type-airplane'));
             $destination3->setName('UK');
@@ -121,7 +128,7 @@ class TravelRequestFixtures extends AbstractDataFixture
             $travelRequest2->addDestination($destination3);
         }
 
-        if ($this->hasReference('currency-gbp')) {
+        if ($this->hasReference('currency-gbp') && $this->hasReference('transportation-type-taxi')) {
             $destination4 = new TRDestination();
             $destination4->setTransportationType($this->getReference('transportation-type-taxi'));
             $destination4->setName('Westpoint Hotel');
@@ -137,8 +144,10 @@ class TravelRequestFixtures extends AbstractDataFixture
             $destination5->setCurrency($this->getReference('currency-gbp'));
 
             $travelRequest2->addDestination($destination5);
+        }
 
-            // Add accomodation
+        // Add accomodation
+        if ($this->hasReference('currency-gbp')) {
             $accomodation2 = new TRAccomodation();
             $accomodation2->setHotelName('Westpoint Hotel');
             $accomodation2->setCity('London');

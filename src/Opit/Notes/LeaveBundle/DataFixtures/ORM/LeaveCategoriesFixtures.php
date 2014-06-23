@@ -31,8 +31,8 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
-        $fullDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::FULLDAY);
-        $halfDay = $manager->getRepository('OpitNotesLeaveBundle:LeaveCategoryDuration')->find(LeaveCategoryDuration::HALFDAY);
+        $fullDay = $this->getReference('leave-category-duration-full');
+        $halfDay = $this->getReference('leave-category-duration-half');
 
         $categories = array(
             LeaveCategory::FULL_DAY => array(
@@ -76,7 +76,7 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
             $leaveCategory->setIsCountedAsLeave($value['isCountedAsLeave']);
             $leaveCategory->setDescription($value['description']);
             $leaveCategory->setLeaveCategoryDuration($value['duration']);
-            
+
             if (isset($value['system'])) {
                 $leaveCategory->setSystem($value['system']);
             }
@@ -85,6 +85,8 @@ class LeaveCategoriesFixtures extends AbstractDataFixture
                 $leaveCategory->setCategoryKey($value['key']);
             }
             $manager->persist($leaveCategory);
+
+            $this->addReference('leave-category-' . strtolower(str_replace(' ', '-', $key)), $leaveCategory);
         }
 
         $manager->flush();

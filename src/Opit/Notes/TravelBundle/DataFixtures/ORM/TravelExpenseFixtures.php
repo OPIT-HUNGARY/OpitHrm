@@ -36,6 +36,11 @@ class TravelExpenseFixtures extends AbstractDataFixture
      */
     public function doLoad(ObjectManager $manager)
     {
+        // Test for required user/status references first
+        if (!$this->hasReference('travel-request-approved')) {
+            throw new \RuntimeException('Leave expense fixtures require travel request fixtures.');
+        }
+
         $travelRequest = $this->getReference('travel-request-approved');
         $employee = $travelRequest->getUser()->getEmployee();
 
@@ -55,7 +60,7 @@ class TravelExpenseFixtures extends AbstractDataFixture
 
 
         // Add expenses paid by me/company
-        if ($this->hasReference('currency-gbp')) {
+        if ($this->hasReference('currency-gbp') && $this->hasReference('expense-type-tickets')) {
             $expense1 = new TEUserPaidExpense();
 
             $expense1->setDescription('London weekly pass');
@@ -92,7 +97,7 @@ class TravelExpenseFixtures extends AbstractDataFixture
             $travelExpense1->addCompanyPaidExpense($expense3);
         }
 
-        if ($this->hasReference('currency-huf')) {
+        if ($this->hasReference('currency-huf') && $this->hasReference('expense-type-tickets')) {
             $expense4 = new TECompanyPaidExpense();
 
             $expense4->setDescription('Flight tickets');
@@ -105,10 +110,12 @@ class TravelExpenseFixtures extends AbstractDataFixture
             $travelExpense1->addCompanyPaidExpense($expense4);
         }
 
-        // Add travel request states
-        $travelRequest1Status = new StatesTravelExpenses($this->getReference('created'));
-        $travelRequest1Status->setCreatedUser($this->getReference('user'));
-        $travelExpense1->addState($travelRequest1Status);
+        // Add travel expense states
+        if ($this->hasReference('user') && $this->hasReference('created')) {
+            $travelRequest1Status = new StatesTravelExpenses($this->getReference('created'));
+            $travelRequest1Status->setCreatedUser($this->getReference('user'));
+            $travelExpense1->addState($travelRequest1Status);
+        }
 
         $travelExpense1->setTravelRequest($travelRequest);
 

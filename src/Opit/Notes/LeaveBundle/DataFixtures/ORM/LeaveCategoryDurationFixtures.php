@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -34,13 +34,16 @@ class LeaveCategoryDurationFixtures extends AbstractDataFixture
         $leaveDurationFullDay->setLeaveCategoryDurationName('Full day working hours');
         $leaveDurationFullDay->setId(LeaveCategoryDuration::FULLDAY);
         $manager->persist($leaveDurationFullDay);
-        
+
         $leaveDurationHalfDay = new LeaveCategoryDuration();
         $leaveDurationHalfDay->setLeaveCategoryDurationName('Half day working hours');
         $leaveDurationHalfDay->setId(LeaveCategoryDuration::HALFDAY);
         $manager->persist($leaveDurationHalfDay);
 
         $manager->flush();
+
+        $this->addReference('leave-category-duration-full', $leaveDurationFullDay);
+        $this->addReference('leave-category-duration-half', $leaveDurationHalfDay);
     }
 
     /**
@@ -50,9 +53,9 @@ class LeaveCategoryDurationFixtures extends AbstractDataFixture
     {
         return 13; // the order in which fixtures will be loaded
     }
-    
+
     /**
-     * 
+     *
      * @return array
      */
     protected function getEnvironments()
