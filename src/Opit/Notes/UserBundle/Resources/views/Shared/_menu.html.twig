@@ -3,7 +3,109 @@
 
 <ul id="menu">
 
+
+    <li class="margin-left-150"><i class="fa fa-cog font-size-18 cursor-pointer"></i>
+
+        <div class="dropdown_1column align_right" style="">
+            <div class="col_1">
+                <ul>
+                    <li><a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}"><i class="fa fa-home"></i>Information Board</a></li>
+                </ul>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <ul>
+                        <li id="loggedInUser" class="cursor-pointer menu-link edit" data-user-id="{{ app.user.id }}" data-user-id="{{app.user.id}}"><i class="fa fa-pencil-square-o"></i>&nbsp;Edit Info</li>
+                    </ul>
+                {% endif %}
+                <ul class="menu-link">
+                    <li id="changePassword" class="cursor-pointer menu-link" data-user-id="{{ app.user.id }}"><i class="fa fa-key"></i>&nbsp;Reset Password</li>
+                </ul>
+                <ul>
+                    <li><a href="{{ path('OpitNotesUserBundle_logout') }}"><i class="fa fa-sign-out"></i>Logout</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </li>
+
+    {% if is_granted('ROLE_TEAM_MANAGER') %}
+        <li><a href="#">Hiring</a>
+
+            <div class="dropdown_3columns">
+
+                <div class="col_3">
+                    <h2><i class="fa fa-folder-open"></i>  Job Positions & Applicants</h2>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-th-list"></i> Job Position</h3>
+                    <ul>
+                        <li><a href='{{ path('OpitNotesHiringBundle_job_position_show') }}'>Create</a></li>
+                        <li><a href='{{ path('OpitNotesHiringBundle_job_position_list') }}'>View List</a></li>
+                    </ul>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-male"></i> Applicant</h3>
+                    <ul>
+                        <li><a href='{{ path('OpitNotesHiringBundle_applicant_show') }}'>Create</a></li>
+                        <li><a href='#'>View List</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </li>
+    {% endif %}
+
+    <li><a href="#">Requests</a>
+
+        <div class="dropdown_3columns">
+
+            <div class="col_3">
+                <h2><i class="fa fa-tags"></i>  Create and View Requests</h2>
+            </div>
+
+            <div class="col_1">
+                <h3><i class="fa fa-plane"></i> Travel</h3>
+                <ul>
+                    <li><a href='{{ path('OpitNotesTravelBundle_travel_show') }}'>Create</a></li>
+                    <li><a href="{{ path('OpitNotesTravelBundle_travel_list') }}">View List</a></li>
+                </ul>
+            </div>
+
+            <div class="col_1">
+                <h3><i class="fa fa-road"></i> Leave</h3>
+                <ul>
+                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_show') }}'>Create</a></li>
+                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>View List</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </li>
     {% if is_granted('ROLE_ADMIN') %}
+
+        <li><a href="#">Reports</a>
+
+            <div class="dropdown_2columns">
+
+                <div class="col_2">
+                    <h2><i class="fa fa-bar-chart-o"></i>  View and Generate Reports</h2>
+                </div>
+
+                <div class="col_1">
+                    <h3><i class="fa fa-clock-o"></i> Time Sheet</h3>
+                    <ul>
+                        <li><a href="{{ path('OpitNotesLeaveBundle_timesheet_list') }}">View List</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </li>
+
         <li><a href="#">Administration</a>
 
             <div class="dropdown_4columns">
@@ -45,104 +147,8 @@
 
         </li>
 
-        <li><a href="#">Report Management</a>
-
-            <div class="dropdown_2columns">
-
-                <div class="col_2">
-                    <h2><i class="fa fa-bar-chart-o"></i>  View and Generate Reports</h2>
-                </div>
-
-                <div class="col_1">
-                    <h3><i class="fa fa-clock-o"></i> Time Sheet</h3>
-                    <ul>
-                        <li><a href="{{ path('OpitNotesLeaveBundle_timesheet_list') }}">View List</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-        </li>
-
     {% endif %}
-    <li><a href="#">Request Management</a>
 
-        <div class="dropdown_3columns">
 
-            <div class="col_3">
-                <h2><i class="fa fa-tags"></i>  Create and View Requests</h2>
-            </div>
 
-            <div class="col_1">
-                <h3><i class="fa fa-plane"></i> Travel</h3>
-                <ul>
-                    <li><a href='{{ path('OpitNotesTravelBundle_travel_show') }}'>Create</a></li>
-                    <li><a href="{{ path('OpitNotesTravelBundle_travel_list') }}">View List</a></li>
-                </ul>
-            </div>
-
-            <div class="col_1">
-                <h3><i class="fa fa-road"></i> Leave</h3>
-                <ul>
-                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_show') }}'>Create</a></li>
-                    <li><a href='{{ path('OpitNotesLeaveBundle_leave_list') }}'>View List</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-    </li>
-
-    {% if is_granted('ROLE_TEAM_MANAGER') %}
-    <li><a href="#">Hiring Management</a>
-
-        <div class="dropdown_3columns">
-
-            <div class="col_3">
-                <h2><i class="fa fa-folder-open"></i>  Manage Job Applications & Applicants</h2>
-            </div>
-
-            <div class="col_1">
-                <h3><i class="fa fa-th-list"></i> Job Position</h3>
-                <ul>
-                    <li><a href='{{ path('OpitNotesHiringBundle_job_position_show') }}'>Create</a></li>
-                    <li><a href='{{ path('OpitNotesHiringBundle_job_position_list') }}'>View List</a></li>
-                </ul>
-            </div>
-
-            <div class="col_1">
-                <h3><i class="fa fa-male"></i> Applicant</h3>
-                <ul>
-                    <li><a href='{{ path('OpitNotesHiringBundle_applicant_show') }}'>Create</a></li>
-                    <li><a href='#'>View List</a></li>
-                </ul>
-            </div>
-
-        </div>
-
-    </li>
-    {% endif %}
-        <li class="float-right"><i class="fa fa-cog font-size-18 cursor-pointer"></i>
-
-           <div class="dropdown_1column align_right" style="">
-                <div class="col_1">
-                    <ul>
-                        <li><a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}"><i class="fa fa-home"></i>Information Board</a></li>
-                    </ul>
-                    {% if is_granted('ROLE_ADMIN') %}
-                    <ul>
-                        <li id="loggedInUser" class="cursor-pointer menu-link edit" data-user-id="{{ app.user.id }}" data-user-id="{{app.user.id}}"><i class="fa fa-pencil-square-o"></i>&nbsp;Edit Info</li>
-                    </ul>
-                    {% endif %}
-                    <ul class="menu-link">
-                       <li id="changePassword" class="cursor-pointer menu-link" data-user-id="{{ app.user.id }}"><i class="fa fa-key"></i>&nbsp;Reset Password</li>
-                    </ul>
-                    <ul>
-                        <li><a href="{{ path('OpitNotesUserBundle_logout') }}"><i class="fa fa-sign-out"></i>Logout</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-    </li>
 </ul>

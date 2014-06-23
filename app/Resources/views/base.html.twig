@@ -51,6 +51,7 @@
                 LDAP <i class="fa fa-check"></i>&nbsp;-&nbsp;
             {% endif %}
             <span>An initiative of <a href="http://www.opit.hu" class="color-dark-grey" target="_blank">OPIT Consulting KFT</a>, Hungary</span>
+            <span class="float-right background-color-green color-white padding-2 margin-right-5 box-radius-5">Hello. {{ app.user.employee is defined ? app.user.employee.employeeName : app.user.username}} !</span>
         </footer>
         {% endblock %}
         {% block javascripts %}
