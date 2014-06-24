@@ -4,55 +4,57 @@ $(document).data 'OpitNotesUserBundle', {}
 $.extend true, $(document).data('OpitNotesUserBundle'),
     funcs:
         userEdit: (userId, successCallback) ->
-          $.ajax
-            method: 'GET'
-            url: Routing.generate 'OpitNotesUserBundle_user_show', id: userId
-          .done (data) ->
-            $('<div id="dialog-edititem"></div>').html(data)
-              .dialog
-                  title: '<i class="fa fa-list-alt"></i> Edit User'
-                  modal: on
-                  width: 710
-                  maxHeight: 600
-                  open: ->
-                    $(document).data('notes').funcs.initDateInputs $(@)
-                  buttons:
-                    Save: ->
-                      $.ajax
-                        type: 'POST'
-                        global: off
-                        url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
-                        data: $('#adduser_frm').serialize()
-                      .done (data, textStatus, jqXHR)->
-                          url = Routing.generate 'OpitNotesUserBundle_user_list'
-                          offset = $('.selected-page').data('offset')
-                          # Check if current page matches user list and update content (edit user can be triggered from several pages)
-                          if url is window.location.pathname and jqXHR.getResponseHeader("content-type").indexOf('html')
-                            response = data
-                            $.ajax
-                              type: 'POST'
-                              url: url
-                              data: 'offset' : (offset - 1), 'incrementOffset': false
-                            .done (data)->
-                              $('#user-list').html data
-                              $(document).data('notes').funcs.initListPageListeners()
-                              $(document).data('notes').funcs.initPager()
-                              $(document).data('notes').funcs.initDeleteMultipleListener()
-                              $('.selected-page').each ->
-                                  $(@).removeClass 'selected-page'
-                              $('[data-offset="'+offset+'"]').addClass 'selected-page'
-                              postActions = successCallback $('#dialog-edititem'), response, "update", "User modified successfully" if successCallback?
-                              $('#dialog-edititem').dialog 'destroy' if postActions or postActions is undefined
-                          else
-                            $('#dialog-edititem').dialog 'destroy'
-                          return
-                      .fail (jqXHR, textStatus, errorThrown) ->
-                        successCallback $('#dialog-edititem'), $.parseJSON(jqXHR.responseText), "update", "Error"
-                    Close: ->
-                       $('#dialog-edititem').dialog "destroy"
-                       return
-              return
-            return
+            $.ajax
+                method: 'GET'
+                url: Routing.generate 'OpitNotesUserBundle_user_show', id: userId
+            .done (data) ->
+                $('<div id="dialog-edituser"></div>').html(data)
+                    .dialog
+                        title: '<i class="fa fa-list-alt"></i> Edit User'
+                        modal: on
+                        width: 710
+                        maxHeight: 600
+                        open: ->
+                            $(document).data('notes').funcs.initDateInputs $(@)
+                        buttons:
+                            Save: ->
+                                $.ajax
+                                    type: 'POST'
+                                    global: off
+                                    url: Routing.generate 'OpitNotesUserBundle_user_add', id: userId
+                                    data: $('#adduser_frm').serialize()
+                                .done (data, textStatus, jqXHR)->
+                                    url = Routing.generate 'OpitNotesUserBundle_user_list'
+                                    offset = $('.selected-page').data('offset')
+                                    # Check if current page matches user list and update content (edit user can be triggered from several pages)
+                                    if url is window.location.pathname and jqXHR.getResponseHeader("content-type").indexOf('html')
+                                        response = data
+                                        $.ajax
+                                            type: 'POST'
+                                            url: url
+                                            data: 'offset' : (offset - 1), 'incrementOffset': false
+                                        .done (data)->
+                                            $('#user-list').html data
+                                            $(document).data('notes').funcs.initListPageListeners()
+                                            $(document).data('notes').funcs.initPager()
+                                            $(document).data('notes').funcs.initDeleteMultipleListener()
+                                            $('.selected-page').each ->
+                                                $(@).removeClass 'selected-page'
+                                            $('[data-offset="'+offset+'"]').addClass 'selected-page'
+                                            postActions = successCallback $('#dialog-edituser'), response, "update", "User modified successfully" if successCallback?
+                                            $('#dialog-edituser').dialog 'destroy' if postActions or postActions is undefined
+                                            return
+                                    else
+                                        $('#dialog-edituser').dialog 'destroy'
+                                    return
+                                .fail (jqXHR, textStatus, errorThrown) ->
+                                  successCallback $('#dialog-edituser'), $.parseJSON(jqXHR.responseText), "update", "Error"
+                                  return
+                            Close: ->
+                                $(@).dialog "destroy"
+                                return
+                    return
+                return
         isLdapUser: (userId) ->
             df = $.Deferred();
             $.ajax
