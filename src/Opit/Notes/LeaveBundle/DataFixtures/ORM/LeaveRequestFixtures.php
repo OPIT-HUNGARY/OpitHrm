@@ -37,6 +37,8 @@ class LeaveRequestFixtures extends AbstractDataFixture
             throw new \RuntimeException('Leave request fixtures require user/status bundle fixtures.');
         }
 
+        $service = $this->container->get('opit.model.leave_request');
+
         // First leave request
         $admin = $this->getReference('admin');
 
@@ -50,13 +52,14 @@ class LeaveRequestFixtures extends AbstractDataFixture
         $startDate->modify('next monday');
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval('P4D'));
-        $days = $endDate->diff($startDate);
+        // Notice: The service is based on LeaveDatesFixtures, ensure current year's public holidays are present.
+        $days = $service->countLeaveDays($startDate, $endDate);
 
         $leave1 = new Leave();
         $leave1->setDescription('Winter vacation');
         $leave1->setStartDate($startDate);
         $leave1->setEndDate($endDate);
-        $leave1->setNumberOfDays($days->format('%a'));
+        $leave1->setNumberOfDays($days);
         $leave1->setCategory($this->getReference('leave-category-full-day'));
 
         $leaveRequest1->addLeaf($leave1);
@@ -100,13 +103,13 @@ class LeaveRequestFixtures extends AbstractDataFixture
         $startDate->modify('next month monday');
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval('P4D'));
-        $days = $endDate->diff($startDate);
+        $days = $service->countLeaveDays($startDate, $endDate);
 
         $leave2 = new Leave();
         $leave2->setDescription('Family event');
         $leave2->setStartDate($startDate);
         $leave2->setEndDate($endDate);
-        $leave2->setNumberOfDays($days->format('%a'));
+        $leave2->setNumberOfDays($days);
         $leave2->setCategory($this->getReference('leave-category-full-day'));
 
         $leaveRequest2->addLeaf($leave2);
@@ -139,13 +142,13 @@ class LeaveRequestFixtures extends AbstractDataFixture
         $startDate->modify('last week monday');
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval('P2D'));
-        $days = $endDate->diff($startDate);
+        $days = $service->countLeaveDays($startDate, $endDate);
 
         $leave3 = new Leave();
         $leave3->setDescription('Cold');
         $leave3->setStartDate($startDate);
         $leave3->setEndDate($endDate);
-        $leave3->setNumberOfDays($days->format('%a'));
+        $leave3->setNumberOfDays($days);
         $leave3->setCategory($this->getReference('leave-category-sick-leave'));
 
         $leaveRequest3->addLeaf($leave3);
