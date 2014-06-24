@@ -75,9 +75,8 @@ $('#delete').click ->
 
 # Delete icon in the table row
 $('#list-table').on "click", ".delete-single-jobtitle", ->
-    $checkbox = $(@).closest('tr').find(':checkbox')
-    $checkbox.prop 'checked', true
-    deleteJobTitle()
+    $(document).data('notes').funcs.resetAndSelectSingle $(@)
+    do deleteJobTitle
 
 # Call the deleteAction from the app main.js
 deleteJobTitle = () ->  

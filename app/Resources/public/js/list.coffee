@@ -245,3 +245,11 @@ $.extend true, $(document).data('notes'),
                 .done (data) ->
                     $('#list-table').parent().replaceWith data
                     $(document).data('notes').funcs.reInitializeListTableListeners()
+        resetAndSelectSingle: ($element, container = '#list-table') ->
+            # Resetting any prior selections first
+            $element.closest(container).find(':checkbox')
+                .prop 'checked', false
+            # Select the related checkbox for deletion
+            $element.closest('tr').find(':checkbox').first()
+                .not(':disabled')
+                .prop 'checked', true

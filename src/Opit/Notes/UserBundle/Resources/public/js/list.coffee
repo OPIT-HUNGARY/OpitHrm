@@ -48,7 +48,7 @@ $(document).ready ->
 
     # Delete icon in the table row
     $('#userlistWrapper').on 'click', '.delete-single-user', ->
-        $(@).closest('tr').find(':checkbox').not('disabled').prop 'checked', true
+        $(document).data('notes').funcs.resetAndSelectSingle $(@)
         do deleteUser
 
     $('#userlistWrapper').on 'click', '.reset-password', ->

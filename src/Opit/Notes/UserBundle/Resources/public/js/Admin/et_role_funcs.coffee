@@ -22,6 +22,8 @@ showRoleDialog = (id, name, description, url, title, flashMessage) ->
                             $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "#{ propertyName } already exists", true
                         else
                             $('#list-table').replaceWith data
+                            $(document).data('notes').funcs.initListPageListeners()
+                            $(document).data('notes').funcs.initDeleteMultipleListener()
                             $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', flashMessage
                         $selfDialog.dialog 'destroy'
                 else
@@ -50,6 +52,8 @@ deleteGroup = (id, name) ->
                             $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "Deletion not allowed for #{ propertyName }(s) with relations", true
                         else
                             $('#list-table').replaceWith data
+                            $(document).data('notes').funcs.initListPageListeners()
+                            $(document).data('notes').funcs.initDeleteMultipleListener()
                             $(document).data('notes').funcs.showAlert $selfDialog, data, 'create', "#{ propertyNameCapital }(s) successfully deleted!"
                     $selfDialog.dialog 'destroy'
                 Cancel: ->
@@ -57,7 +61,7 @@ deleteGroup = (id, name) ->
                         $(@).attr 'checked', false
                     $selfDialog.dialog 'destroy'
 
-$('#main-wrapper').on 'click','#add', ->
+$('#main-wrapper #add').on 'click', ->
     showRoleDialog('new', '', "Create a new #{ propertyName }.", url, "Create #{ propertyName }", "#{ propertyNameCapital } successfully created!")
     
 $('#main-wrapper').on 'click','.edit-group', ->
@@ -67,26 +71,21 @@ $('#main-wrapper').on 'click','.edit-group', ->
     showRoleDialog(id, name, "Edit selected #{ propertyName }.", url, "Edit #{ propertyName }", "#{ propertyNameCapital } successfully edited!")
     
 $('#main-wrapper').on 'click','.remove-group', ->
+    $(document).data('notes').funcs.resetAndSelectSingle $(@)
     parentTr = $(@).closest('tr')
-    parentTr.find('input').attr 'checked', true
-    
     deleteGroup parentTr.children('td:nth-child(2)').html(), parentTr.children('td:nth-child(3)').html()
         
 $('#delete').on 'click', ->
     ids = []
     names = ''
-    $('.list-delete-user').each ->
+    $('.deleteMultiple').each ->
         if $(@).prop 'checked'
             parentTr = $(@).closest('tr')
             ids.push(parentTr.children('td:nth-child(2)').html())
             names += parentTr.children('td:nth-child(3)').html() + ', '
     names = names.substring(0, names.length-2)
-    
     deleteGroup(ids, names)
     
-$('th .fa-trash-o').on 'click', ->
-    $('.list-delete-user:enabled').checkAll()
-            
 inverse = $('#order_dir').val() is 'asc'
 $('form').on 'click', '.fa-sort', ->
     inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
