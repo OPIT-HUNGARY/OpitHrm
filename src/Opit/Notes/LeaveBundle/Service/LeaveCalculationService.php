@@ -1,27 +1,12 @@
 <?php
 
 /*
- * The MIT License
+ *  This file is part of the {Bundle}.
  *
- * Copyright 2014 OPIT\bota.
+ *  (c) Opit Consulting Kft. <info@opit.hu>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ *  For the full copyright and license information, please view the LICENSE
+ *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\LeaveBundle\Service;
@@ -41,29 +26,29 @@ use Doctrine\ORM\EntityManager;
 class LeaveCalculationService
 {
     /**
-     * em 
-     * 
-     * @var EntityManager 
+     * em
+     *
+     * @var EntityManager
      */
     protected $em;
-    
+
     /**
      * service container
-     * 
+     *
      * @var object
      */
     protected $options;
-    
+
     /**
      * Day of the Calendar
-     * 
-     * @var integer 
+     *
+     * @var integer
      */
     protected $calendarDays;
-    
+
     /**
      * Constructor
-     * 
+     *
      * @param \Doctrine\ORM\EntityManager
      */
     public function __construct(EntityManager $entityManager, $options)
@@ -74,10 +59,10 @@ class LeaveCalculationService
         // Set default days if not passed by $options
         $this->calendarDays = array_key_exists('calendar_days', $this->options) ? $this->options['calendar_days'] : 365;
     }
-    
+
     /**
      * Calculating leave days by the employee's data
-     * 
+     *
      * @param \Opit\Notes\HolidayBundle\Model\LeaveEntitlementEmployeeInterface $employee
      * @return integer the number of leaves in the current year.
      */
@@ -106,10 +91,10 @@ class LeaveCalculationService
         // Return by the rounded value
         return (int) round($result);
     }
-    
+
     /**
      * Calculating age from date of birth of employee
-     * 
+     *
      * @param \DateTime $dateOfBirth
      * @return integer age of the employee
      */
@@ -119,17 +104,17 @@ class LeaveCalculationService
 
         return $dateOfBirth->diff($endOfThisYear)->y;
     }
-    
+
     /**
      * Calculating remaining days from the joining date of employee
-     * 
+     *
      * @param \DateTime $joiningDate
      * @return integer day of remaining days
      */
     private function calculateRemainingDays(\DateTime $joiningDate)
     {
         $startOfThisYear = new \DateTime(date('Y-01-01'));
-        
+
         // If the employee joined to the company the last year then the remaining days will not be needed.
         if ( $joiningDate->format('Y') < $startOfThisYear->format('Y')) {
             return null;

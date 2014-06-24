@@ -66,7 +66,7 @@ class UserFixtures extends AbstractDataFixture
                 $testUser = new User();
                 $testUser->setUsername(strtolower($username));
                 $testUser->setEmployee($testEmployee);
-                $password = $encoder->encodePassword('test' . $i . 'Password', '');
+                $password = $encoder->encodePassword(strtolower($username), '');
                 $testUser->setPassword($password);
                 $testUser->setLdapEnabled(0);
                 $testUser->setEmail(strtolower($username) . '@mail.local');
