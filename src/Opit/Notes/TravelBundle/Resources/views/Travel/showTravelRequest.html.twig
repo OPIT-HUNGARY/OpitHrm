@@ -70,7 +70,8 @@
         {{ form(form, {
             'action': (path('OpitNotesTravelBundle_travel_show', { 'id': app.request.get('id')})),
             'method': 'POST',
-            'attr':{'id': 'travelRequestForm', 'class': disabled}
+            'attr': {'id': 'travelRequestForm', 'class': disabled},
+            'errors': false
            })
         }}    
 {% endblock %}
