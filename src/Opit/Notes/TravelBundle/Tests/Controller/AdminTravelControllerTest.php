@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opit\Notes\UserBundle\Tests\Controller;
+namespace Opit\Notes\TravelBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage UserBundle
+ * @subpackage TravelBundle
  */
 class AdminTravelControllerTest extends WebTestCase
 {

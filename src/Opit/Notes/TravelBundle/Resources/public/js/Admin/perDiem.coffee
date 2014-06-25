@@ -84,7 +84,7 @@ $(document).ready () ->
     isHadChild = $('.container').children('.formFieldsetChild').length > 0
     $.ajax
         method: 'GET'
-        url: Routing.generate 'OpitNotesUserBundle_admin_show_perdiem'
+        url: Routing.generate 'OpitNotesTravelBundle_admin_show_perdiem'
     .done (data) ->
         perDiemWrapper = data
         return
@@ -112,14 +112,14 @@ $('#save').click (event) ->
             method: 'POST'
             data: form.serialize()
             dataType: 'json'
-            url: Routing.generate 'OpitNotesUserBundle_admin_save_perdiem'
+            url: Routing.generate 'OpitNotesTravelBundle_admin_save_perdiem'
         .done (data) ->
             disableSaveButton(false)
             response = data
             #refresh the per diem listing
             $.ajax
                 type: 'POST'
-                url: Routing.generate 'OpitNotesUserBundle_admin_list_perdiem'
+                url: Routing.generate 'OpitNotesTravelBundle_admin_list_perdiem'
                 data: "showList" : 1
             .done (data)->
                 $('.container').html data

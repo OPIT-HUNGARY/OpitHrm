@@ -9,7 +9,7 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\UserBundle\Controller;
+namespace Opit\Notes\TravelBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,14 +29,14 @@ use Opit\Component\Utils\Utils;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage UserBundle
+ * @subpackage TravelBundle
  */
 class AdminTravelController extends Controller
 {
     /**
      * List expense types
      *
-     * @Route("/secured/admin/travelexpensetype/list", name="OpitNotesUserBundle_admin_travelexpensetype_list")
+     * @Route("/secured/admin/travelexpensetype/list", name="OpitNotesTravelBundle_admin_travelexpensetype_list")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -57,7 +57,7 @@ class AdminTravelController extends Controller
         if ($request->request->get('showList')) {
             $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
         } else {
-            $template = 'OpitNotesUserBundle:Admin:Travel/expensetypeList.html.twig';
+            $template = 'OpitNotesTravelBundle:Admin:expensetypeList.html.twig';
         }
 
         return $this->render(
@@ -72,7 +72,7 @@ class AdminTravelController extends Controller
     /**
      * Show expense type
      *
-     * @Route("/secured/admin/travelexpensetype/show/{id}", name="OpitNotesUserBundle_admin_travelexpensetype_show", requirements={ "id" = "new|\d+"})
+     * @Route("/secured/admin/travelexpensetype/show/{id}", name="OpitNotesTravelBundle_admin_travelexpensetype_show", requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
@@ -107,7 +107,7 @@ class AdminTravelController extends Controller
     }
 
     /**
-     * @Route("/secured/admin/expensetype/delete", name="OpitNotesUserBundle_admin_expensetype_delete")
+     * @Route("/secured/admin/expensetype/delete", name="OpitNotesTravelBundle_admin_expensetype_delete")
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
@@ -143,7 +143,7 @@ class AdminTravelController extends Controller
     /**
      * To generate list per diem
      *
-     * @Route("/secured/admin/list/perdiem", name="OpitNotesUserBundle_admin_list_perdiem")
+     * @Route("/secured/admin/list/perdiem", name="OpitNotesTravelBundle_admin_list_perdiem")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -163,7 +163,7 @@ class AdminTravelController extends Controller
     /**
      * To show per diem
      *
-     * @Route("/secured/admin/show/perdiem/{id}", name="OpitNotesUserBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
+     * @Route("/secured/admin/show/perdiem/{id}", name="OpitNotesTravelBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -192,7 +192,7 @@ class AdminTravelController extends Controller
     /**
      * To save per diem
      *
-     * @Route("/secured/admin/save/perdiem", name="OpitNotesUserBundle_admin_save_perdiem")
+     * @Route("/secured/admin/save/perdiem", name="OpitNotesTravelBundle_admin_save_perdiem")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
