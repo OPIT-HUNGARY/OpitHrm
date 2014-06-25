@@ -3,6 +3,7 @@
 Per Diem list - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'
     output='css/opitnotestravel/list_per_diem.css' filter='?yui_css,cssrewrite' %}

@@ -11,6 +11,7 @@
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'
     output='css/opitnoteshiring/show_applicant.css' filter='?yui_css,cssrewrite' %}

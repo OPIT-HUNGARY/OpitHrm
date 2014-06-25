@@ -1,8 +1,8 @@
 {% extends '::base.html.twig' %}
 {% block stylesheets %}
     {% stylesheets
-        '@OpitNotesUserBundle/Resources/public/css/list.scss'
-    output='css/opitnotesuser/main.css' filter='?yui_css, cssrewrite' %}
+        '@OpitNotesCoreBundle/Resources/public/css/menu.scss'
+    output='css/opitnotescore/main.css' filter='?yui_css, cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -11,7 +11,8 @@
     {% javascripts
         '//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js'
         '//ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/additional-methods.min.js'
-    output='js/opitnotesuser/main.js' filter='?yui_js' %}
+        '@OpitNotesCoreBundle/Resources/public/js/menu.coffee'
+    output='js/opitnotescore/main.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
 {% endblock %}
@@ -29,7 +30,7 @@
             </div>
         </div>
         <div id="menuWrapper">
-            {% include 'OpitNotesUserBundle:Shared:_menu.html.twig' %}
+            {% include 'OpitNotesCoreBundle:Navigation:_menu.html.twig' %}
         </div>
     </header>
 {% endblock %}

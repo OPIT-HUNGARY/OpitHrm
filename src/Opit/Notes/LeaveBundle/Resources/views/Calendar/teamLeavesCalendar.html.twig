@@ -3,6 +3,7 @@
         Team leaves calendar - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         'libs/fullcalendar/css/fullcalendar.css'
     output='css/opitnotesleave/fullcalendar.css' filter='?yui_css,cssrewrite' %}
@@ -36,5 +37,4 @@
         </div>
     {% endfor %}
     </div>
-    
 {% endblock %}

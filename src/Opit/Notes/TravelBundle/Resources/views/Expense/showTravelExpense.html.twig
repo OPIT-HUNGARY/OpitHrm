@@ -36,6 +36,7 @@
 {% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/showTravelExpense.scss'
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'

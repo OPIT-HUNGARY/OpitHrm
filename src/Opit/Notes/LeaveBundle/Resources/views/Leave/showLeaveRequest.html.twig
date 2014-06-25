@@ -39,6 +39,7 @@
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'
     output='css/opitnotesleave/show_leave_request.css' filter='?yui_css,cssrewrite' %}

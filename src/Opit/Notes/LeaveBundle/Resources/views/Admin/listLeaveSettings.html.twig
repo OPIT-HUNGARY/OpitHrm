@@ -3,6 +3,7 @@
 Leave Entitlement configuration - {{ parent() }}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'
     output='css/opitnotesleave/list_leave_settings.css' filter='?yui_css,cssrewrite' %}

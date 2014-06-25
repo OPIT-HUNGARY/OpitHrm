@@ -1,7 +1,9 @@
 {% extends 'OpitNotesCoreBundle::layout.html.twig' %}
+
 {% block title %}
     Team list - {{ parent() }}
 {% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
@@ -20,6 +22,7 @@
 {% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     {% include '::_stylesheets.html.twig' %}
 {% endblock %}
 

@@ -1,6 +1,11 @@
 {% extends 'OpitNotesCoreBundle::layout.html.twig' %}
 {% block stylesheets %}
     {{ parent() }}
+    {% stylesheets
+        'libs/fullcalendar/css/fullcalendar.css'
+    output='css/opitnotesuser/show_user_summary.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
 {% block title %}
     Employee Summary - {{ parent() }}

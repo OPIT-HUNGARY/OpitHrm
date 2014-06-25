@@ -63,3 +63,9 @@ h1 {
     margin-top: 5px;
     cursor: pointer;
 }
+
+#dialog-details-travel {
+    .dialog-table-tr-seperator{
+        border-bottom: $darkGrey solid 2px;
+    }
+}

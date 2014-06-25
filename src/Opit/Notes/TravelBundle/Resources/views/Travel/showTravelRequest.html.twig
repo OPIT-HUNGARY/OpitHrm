@@ -17,6 +17,7 @@
     {% endjavascripts %}
 {% endblock %}
 {% block stylesheets %}
+    {{ parent() }}
     {% stylesheets
         '@OpitNotesTravelBundle/Resources/public/css/showTravelRequest.scss'
         '@OpitNotesTravelBundle/Resources/public/css/module.scss'

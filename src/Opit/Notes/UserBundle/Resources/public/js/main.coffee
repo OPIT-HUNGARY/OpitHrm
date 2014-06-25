@@ -179,34 +179,7 @@ $.fn.extend
                 exists = yes if($(@).val())
         return exists
 
-initMenu = ->
-    $menu = $('#menu:first')
-    $clone = $('#menu.clone')
-
-    if $menu.length > 0 and $clone.length is 0
-        $clone = $menu.clone()
-        $clone.attr
-            class: 'clone'
-        .css
-            top: 0
-        
-        $('body').append($clone);
-        
-    startHeight = parseInt($menu.offset().top) + parseInt($menu.outerHeight()) + 25
-    
-    # scroll method for sticky header
-    $(window).scroll ->
-        # if page scroll is below submenu top show submenu clone
-        if $menu.length > 0 and $clone.length > 0
-            if startHeight < parseInt($(window).scrollTop())
-                $('#menu.clone').slideDown('fast')
-            else
-                $('#menu.clone').slideUp('fast')
-
 $(document).ready ->
-    # init the menu
-    do initMenu if $('#menu').length > 0
-
     $(document).data('notes').funcs.initDeleteMultipleListener()
     $(document).data('notes').funcs.initListPageListeners()
     $(document).data('notes').funcs.initPager()
@@ -287,6 +260,3 @@ $(document).ready ->
                             return
             return
         return
-                
-
-
