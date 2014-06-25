@@ -49,12 +49,23 @@ class AdminLeaveController extends Controller
     {
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
+        $orderParams = $request->request->get('order');
         $em = $this->getDoctrine()->getManager();
-        // Order by system property to place the system categories on the top of list.
-        $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findBy(
-            array(),
-            array('system' => 'DESC')
-        );
+
+        if ($request->request->get('issearch')) {
+            // Find by order parameters.
+            $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            // Order by system property to place the system categories on the top of list.
+            $leaveCategories = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findBy(
+                array(),
+                array('system' => 'DESC')
+            );
+        }
+
         $numberOfRelations = array();
 
         foreach ($leaveCategories as $leaveCategory) {
@@ -230,9 +241,8 @@ class AdminLeaveController extends Controller
 
         // Check it is an ajax call to view the specific year's leave/working dates
         if ($showList || $isSearch) {
-            $searchProperties = $request->request->get('search');
-
-             // Get the leave dates of the searched year.
+            $searchProperties = $request->request->all();
+            // Get the leave dates of the searched year.
             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findAllFiltered($searchProperties);
         } else {
              // Get the leave dates of the current year.
@@ -388,9 +398,20 @@ class AdminLeaveController extends Controller
     {
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
+        $orderParams = $request->request->get('order');
         $em = $this->getDoctrine()->getManager();
         $leaveTypes = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findAll();
         $numberOfRelations = array();
+
+        if ($request->request->get('issearch')) {
+            // Find by order parameters.
+            $leaveTypes = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            $leaveTypes = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->findAll();
+        }
 
         foreach ($leaveTypes as $leaveType) {
             $leaveDates = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->findBy(

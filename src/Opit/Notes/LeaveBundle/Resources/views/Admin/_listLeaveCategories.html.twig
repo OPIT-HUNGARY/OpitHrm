@@ -2,23 +2,20 @@
     <table class="width-100">
         <tr>
             <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
-            {% set orderIcon %}
-                <i class="fa fa-sort default-right"></i>
-            {% endset %}
             <th>
-                {{ orderIcon }}
+                <i class="fa fa-sort default-right" data-field="id"></i>
                 <span class="order-text cursor-pointer">ID</span>
             </th>
             <th>
-                {{ orderIcon }}
+                <i class="fa fa-sort default-right" data-field="name"></i>
                 <span class="order-text cursor-pointer">Name</span>
             </th>
             <th>
-                {{ orderIcon }}
+                <i class="fa fa-sort default-right" data-field="description"></i>
                 <span class="order-text cursor-pointer">Description</span>
             </th>
             <th>
-                {{ orderIcon }}
+                <i class="fa fa-sort default-right" data-field="leaveCategoryDuration"></i>
                 <span class="order-text cursor-pointer">Duration</span>
             </th>
             <th>

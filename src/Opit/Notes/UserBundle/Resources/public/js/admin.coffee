@@ -86,9 +86,7 @@ deleteJobTitle = () ->
 $('#list-table').on "click", "th .fa-trash-o", ->
       $('.list-delete-jobtitle').filter(() -> return not @.disabled).checkAll()
 
-inverse = $('#order_dir').val() is 'asc'
-$('form').on 'click', '.fa-sort', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
-    
-$('form').on 'click', '.order-text', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+$('#list-table').on 'click', '.order-text', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesUserBundle_admin_list_jobtitle', 'list-table', 'searchForm'
+$('#list-table').on 'click', '.fa-sort', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesUserBundle_admin_list_jobtitle', 'list-table', 'searchForm'

@@ -97,9 +97,9 @@ deleteLeaveDate = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_date'
     $(document).data('notes').funcs.deleteAction 'Leave date delete', 'leave date(s)', url, '.list-delete-leavedate'
 
-inverse = $('#order_dir').val() is 'asc'
 $('#form-leavedate').on 'click', '.fa-sort', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesLeaveBundle_admin_list_leave_dates', 'form-leavedate'
 
 $('#form-leavedate').on 'click', '.order-text', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+    $orderIcon = $(@).parent().find('.fa-sort')
+    $(document).data('notes').funcs.serverSideListOrdering $orderIcon, $orderIcon.data('field'), 'OpitNotesLeaveBundle_admin_list_leave_dates', 'form-leavedate'

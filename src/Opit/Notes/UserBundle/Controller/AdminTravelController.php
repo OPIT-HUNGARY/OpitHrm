@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -40,19 +40,35 @@ class AdminTravelController extends Controller
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function listExpenseTypeAction()
+    public function listExpenseTypeAction(Request $request)
     {
-        $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
-        
+        $orderParams = $this->getRequest()->get('order');
+
+        if ($this->getRequest()->get('issearch')) {
+            // Find by order parameters.
+            $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
+        }
+
+        if ($request->request->get('showList')) {
+            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+        } else {
+            $template = 'OpitNotesUserBundle:Admin:Travel/expensetypeList.html.twig';
+        }
+
         return $this->render(
-            'OpitNotesUserBundle:Admin:Travel/expensetypeList.html.twig',
+            $template,
             array(
                 'propertyNames' => array('id', 'name'),
                 'propertyValues' => $expenseTypes
             )
         );
     }
-    
+
     /**
      * Show expense type
      *
@@ -66,20 +82,20 @@ class AdminTravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $expenseTypeId = $request->attributes->get('id');
-        
+
         if ('new' === $expenseTypeId) {
             $travelExpense = new TEExpenseType();
         } else {
             $travelExpense =
                 $entityManager->getRepository('OpitNotesTravelBundle:TEExpenseType')->find($expenseTypeId);
         }
-        
+
         $travelExpense->setName($request->request->get('value'));
         $entityManager->persist($travelExpense);
         $entityManager->flush();
-        
+
         $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
-        
+
         return $this->render(
             'OpitNotesUserBundle:Shared:_list.html.twig',
             array(
@@ -89,7 +105,7 @@ class AdminTravelController extends Controller
             )
         );
     }
-    
+
     /**
      * @Route("/secured/admin/expensetype/delete", name="OpitNotesUserBundle_admin_expensetype_delete")
      * @Secure(roles="ROLE_ADMIN")
@@ -100,20 +116,20 @@ class AdminTravelController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $expenseTypeId = $this->getRequest()->request->get('id');
-        
+
         if (!is_array($expenseTypeId)) {
             $expenseTypeId = array($expenseTypeId);
         }
-        
+
         foreach ($expenseTypeId as $id) {
             $expenseType = $entityManager->getRepository('OpitNotesTravelBundle:TEExpenseType')->find($id);
             $entityManager->remove($expenseType);
         }
-        
+
         $entityManager->flush();
-        
+
         $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
-        
+
         return $this->render(
             'OpitNotesUserBundle:Shared:_list.html.twig',
             array(
@@ -123,7 +139,7 @@ class AdminTravelController extends Controller
             )
         );
     }
-    
+
     /**
      * To generate list per diem
      *
@@ -143,7 +159,7 @@ class AdminTravelController extends Controller
             array('perDiems' => $perDiemList)
         );
     }
-    
+
     /**
      * To show per diem
      *
@@ -162,7 +178,7 @@ class AdminTravelController extends Controller
             $index = $request->attributes->get('index');
             $perDiem = $this->getPerDiem($id);
         }
-        
+
         $form = $this->createForm(
             new PerDiemType(),
             $perDiem
@@ -172,7 +188,7 @@ class AdminTravelController extends Controller
             array('form' => $form->createView(), 'index' => $index)
         );
     }
-    
+
     /**
      * To save per diem
      *
@@ -190,10 +206,10 @@ class AdminTravelController extends Controller
 
         //If it was a post
         if ($request->isMethod('POST')) {
-            
+
             $perDiemList = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAll();
             $ids = Utils::arrayValueRecursive('id', $data);
-            
+
             // Remove per diems
             foreach ($perDiemList as $pd) {
                 if (!in_array($pd->getId(), $ids)) {
@@ -218,7 +234,7 @@ class AdminTravelController extends Controller
         }
         return new JsonResponse(array('code' => $status, $result));
     }
-    
+
     /**
      * Set the per diem entity
      *
@@ -233,13 +249,13 @@ class AdminTravelController extends Controller
         $result['status'] = 200;
         $config = $this->container->getParameter('currency_config');
         $currencyCode = $config['default_currency'];
-        
+
         //If it is a new per diem create, else modify it.
         if (false === $perDiem) {
             // Create a new per diem and save it.
             $perDiem = new TEPerDiem();
         }
-        
+
         if (isset($data['currency'])) {
             $currencyCode = $data['currency'];
         }
@@ -247,7 +263,7 @@ class AdminTravelController extends Controller
         $perDiem->setHours($data['hours']);
         $perDiem->setAmount($data['amount']);
         $perDiem->setCurrency($currency);
-        
+
         $validator = $this->get('validator');
         $errors = $validator->validate($perDiem);
         // If the validation failed
@@ -264,7 +280,7 @@ class AdminTravelController extends Controller
         }
         return $result;
     }
-    
+
     /**
      * Returns a Per Diem request object
      *
@@ -282,7 +298,7 @@ class AdminTravelController extends Controller
         }
 
         $perDiem = $em->getRepository('OpitNotesTravelBundle:TEPerDiem')->find($perDiemId);
-        
+
         if (!$perDiem || null === $perDiem) {
             //If this method throws error or just return with false value.
             if (true === $throwError) {

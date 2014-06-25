@@ -10,6 +10,7 @@
         var valueForm = 'teamForm';
         var valueField = 'team';
         var url = 'OpitNotesUserBundle_admin_teams_show';
+        var listUrl = 'OpitNotesUserBundle_admin_teams_list';
         var removeUrl = 'OpitNotesUserBundle_admin_teams_delete';
         var propertyName = 'team';
         var propertyNameCapital = 'Team';
@@ -28,6 +29,7 @@
 
 {% block body %}
 <h1 class="margin-bottom-01em-important">Team list</h1>
+{% include 'OpitNotesCoreBundle:Shared:_order.html.twig' %}
 <div class="listing-description">Teams can be created from here.They can be assigned to users later on.</div>
     <table>
         <tr>

@@ -1,0 +1,10 @@
+{#
+Order scaffold
+
+This template serves as a scaffold for server side ordering emulated through the search form.
+#}
+<form id="searchForm" action="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) }}" method="post">
+    <input type="hidden" name="issearch" id="issearch" value="1" />
+    <input type="hidden" name="order[field]" id="order_field" value="{{ order_field is defined ? order_field : 'id' }}" />
+    <input type="hidden" name="order[dir]" id="order_dir" value="{{ order_dir is defined ? order_dir : 'asc' }}" />
+</form>

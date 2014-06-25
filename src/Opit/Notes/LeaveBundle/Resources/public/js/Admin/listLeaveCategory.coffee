@@ -85,9 +85,7 @@ deleteLeaveCategory = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_category'
     $(document).data('notes').funcs.deleteAction('Leave category delete', 'leave category(s)', url, '.list-delete-leavecategory')
 
-inverse = $('#order_dir').val() is 'asc'
-$('form').on 'click', '.fa-sort', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
-    
-$('form').on 'click', '.order-text', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+$('#list-table').on 'click', '.order-text', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesLeaveBundle_admin_list_leave_categories', 'list-table', 'searchForm'
+$('#list-table').on 'click', '.fa-sort', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesLeaveBundle_admin_list_leave_categories', 'list-table', 'searchForm'

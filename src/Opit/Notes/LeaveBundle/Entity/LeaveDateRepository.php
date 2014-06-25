@@ -29,7 +29,7 @@ class LeaveDateRepository extends EntityRepository
         $startYear = $endYear = date('Y');
         $startMonth = 1;
         $endMonth = 12;
-
+        $orderParams = isset($searchParams['order']) ? $searchParams['order'] : array();
 
         $qb = $this->createQueryBuilder('ld');
         // Get the date range
@@ -64,11 +64,14 @@ class LeaveDateRepository extends EntityRepository
             $qb->andWhere(
                 $qb->expr()->in('ld.holidayType', $searchParams['type'])
             );
-
         }
-
-        $qb->setParameters($parameters)
-            ->orderBy('ld.holidayDate', 'ASC');
+        $qb->setParameters($parameters);
+        
+        if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
+            $qb->orderBy('ld.'.$orderParams['field'], $orderParams['dir']);
+        } else {
+            $qb->orderBy('ld.holidayDate', 'ASC');
+        }
 
         return $qb->getQuery()->getResult();
     }

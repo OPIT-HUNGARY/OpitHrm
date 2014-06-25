@@ -8,6 +8,7 @@
         var valueForm = 'groupForm';
         var valueField = 'group';
         var url = 'OpitNotesUserBundle_admin_groups_show';
+        var listUrl = 'OpitNotesUserBundle_admin_groups_list';
         var removeUrl = 'OpitNotesUserBundle_admin_groups_delete';
         var propertyName = 'role';
         var propertyNameCapital = 'Role';
@@ -26,6 +27,7 @@
 
 {% block body %}
 <h1 class="margin-bottom-01em-important">Role list</h1>
+{% include 'OpitNotesCoreBundle:Shared:_order.html.twig' %}
 <div class="listing-description">Roles can be created from here.They can be assigned to users to manage their access in the portal.</div>
     <table>
         <tr>

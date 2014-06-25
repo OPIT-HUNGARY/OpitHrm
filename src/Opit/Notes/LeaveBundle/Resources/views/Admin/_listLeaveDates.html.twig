@@ -3,19 +3,16 @@
         <thead>
             <tr>
                 <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
-                {% set orderIcon %}
-                    <i class="fa fa-sort default-right"></i>
-                {% endset %}
                 <th>
-                    {{ orderIcon }}
+                    <i class="fa fa-sort default-right" data-field="id"></i>
                     <span class="order-text cursor-pointer">ID</span>
                 </th>
                 <th>
-                    {{ orderIcon }}
+                    <i class="fa fa-sort default-right" data-field="holidayDate"></i>
                     <span class="order-text cursor-pointer">Date</span>
                 </th>
                 <th>
-                    {{ orderIcon }}
+                    <i class="fa fa-sort default-right" data-field="holidayType"></i>
                     <span class="order-text cursor-pointer">Type</span>
                 </th>
                 <th>Actions</th>

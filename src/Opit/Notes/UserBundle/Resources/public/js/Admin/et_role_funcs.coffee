@@ -86,9 +86,8 @@ $('#delete').on 'click', ->
     names = names.substring(0, names.length-2)
     deleteGroup(ids, names)
     
-inverse = $('#order_dir').val() is 'asc'
-$('form').on 'click', '.fa-sort', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
-    
-$('form').on 'click', '.order-text', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+
+$('#list-table').on 'click', '.order-text', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), listUrl, 'list-table', 'searchForm'
+$('#list-table').on 'click', '.fa-sort', ->
+    $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), listUrl, 'list-table', 'searchForm'

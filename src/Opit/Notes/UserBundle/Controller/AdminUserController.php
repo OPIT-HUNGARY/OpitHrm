@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -12,6 +12,7 @@
 namespace Opit\Notes\UserBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -39,13 +40,22 @@ class AdminUserController extends Controller
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function listJobTitleAction()
+    public function listJobTitleAction(Request $request)
     {
-        $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
+        $orderParams = $request->request->get('order');
         $em = $this->getDoctrine()->getManager();
-        $jobTitles = $em->getRepository('OpitNotesUserBundle:JobTitle')->findAll();
         $disabledJobTitles = $this->getAssignedJobTitlesToUsers();
+
+        if ($request->request->get('issearch')) {
+            // Find by order parameters.
+            $jobTitles = $em->getRepository('OpitNotesUserBundle:JobTitle')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            $jobTitles = $em->getRepository('OpitNotesUserBundle:JobTitle')->findAll();
+        }
 
         return $this->render(
             'OpitNotesUserBundle:Admin:' . ($showList ? '_' : '') . 'listJobTitle.html.twig',
@@ -60,9 +70,8 @@ class AdminUserController extends Controller
      * @Method({"GET"})
      * @Template()
      */
-    public function showJobTitleFormAction()
+    public function showJobTitleFormAction(Request $request)
     {
-        $request = $this->getRequest();
         $id = $request->attributes->get('id');
 
         if ($id) {
@@ -88,10 +97,9 @@ class AdminUserController extends Controller
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function addJobTitleAction()
+    public function addJobTitleAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
         $id = $request->attributes->get('id');
         $errorMessages = array();
         $result = array('response' => 'error');
@@ -133,11 +141,10 @@ class AdminUserController extends Controller
      * @Route("/secured/admin/delete/jobtitle", name="OpitNotesUserBundle_admin_delete_jobtitle")
      * @Method({"POST"})
      */
-    public function deleteJobTitleAction()
+    public function deleteJobTitleAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $disabledJobTitles = $this->getAssignedJobTitlesToUsers();
-        $request = $this->getRequest();
         $ids = (array) $request->request->get('delete-jobtitle');
         $result = array('response' => 'error');
         $deleteDisabled = false;
@@ -213,46 +220,48 @@ class AdminUserController extends Controller
         }
         return $disabledJobTitles;
     }
-    
+
     /**
      * @Route("/secured/admin/groups/list", name="OpitNotesUserBundle_admin_groups_list")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function groupsListAction()
+    public function groupsListAction(Request $request)
     {
-        return $this->render(
-            'OpitNotesUserBundle:Admin:groupsList.html.twig',
-            $this->getAllGroups()
-        );
+        if ($request->request->get('showList')) {
+            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+        } else {
+            $template = 'OpitNotesUserBundle:Admin:groupsList.html.twig';
+        }
+
+        return $this->render($template, $this->getAllGroups());
     }
-   
+
     /**
      * @Route("/secured/admin/groups/show/{id}", name="OpitNotesUserBundle_admin_groups_show", requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
-    public function groupsShowAction()
+    public function groupsShowAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
         $groupId = $request->attributes->get('id');
-        
+
         $requestGroup = str_replace(' ', '_', $request->request->get('value'));
         $groupRoleName = 'ROLE_' . strtoupper($requestGroup);
         $groupName = ucfirst($requestGroup);
-        
+
         if ('new' === $groupId) {
             $group = new Groups();
         } else {
             $group = $entityManager->getRepository('OpitNotesUserBundle:Groups')->find($groupId);
         }
-        
+
         $group->setName($groupName);
         $group->setRole($groupRoleName);
         $entityManager->persist($group);
-        
+
         $role = $this->getDoctrine()
              ->getRepository('OpitNotesUserBundle:Groups')
              ->findOneBy(array('name' => $groupName, 'role' => $groupRoleName));
@@ -262,24 +271,24 @@ class AdminUserController extends Controller
         } else {
             $entityManager->flush();
         }
-        
+
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
-        
+
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
     }
-    
+
     /**
      * @Route("/secured/admin/groups/delete", name="OpitNotesUserBundle_admin_groups_delete")
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
-    public function deleteGroupAction()
+    public function deleteGroupAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $groupId = $this->getRequest()->request->get('id');
+        $groupId = $request->request->get('id');
         $userRelatedGroup = array();
-        
+
         if (!is_array($groupId)) {
             $groupId = array($groupId);
         }
@@ -291,65 +300,70 @@ class AdminUserController extends Controller
                 $userRelatedGroup[] = $group->getName();
             }
         }
-        
+
         $entityManager->flush();
-        
+
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
-        
+
         if (count($userRelatedGroup) > 0) {
             return new JsonResponse(array('userRelated' => $userRelatedGroup));
         }
-        
+
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
     }
-    
+
     /**
      * @Route("/secured/admin/teams/list", name="OpitNotesUserBundle_admin_teams_list")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
-    public function teamsListAction()
+    public function teamsListAction(Request $request)
     {
-        return $this->render('OpitNotesUserBundle:Admin:teamsList.html.twig', $this->getAllTeams());
+        if ($request->request->get('showList')) {
+            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+        } else {
+            $template = 'OpitNotesUserBundle:Admin:teamsList.html.twig';
+        }
+
+        return $this->render($template, $this->getAllTeams());
     }
-    
+
     /**
      * @Route("/secured/admin/teams/show/{id}", name="OpitNotesUserBundle_admin_teams_show", requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
-    public function teamsShowAction()
+    public function teamsShowAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
         $teamId = $request->attributes->get('id');
-        
+
         if ('new' === $teamId) {
             $team = new Team();
         } else {
             $team = $entityManager->getRepository('OpitNotesUserBundle:Team')->find($teamId);
         }
-        
+
         $team->setTeamName($request->request->get('value'));
         $entityManager->persist($team);
 
         $entityManager->flush();
-        
+
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
     }
-    
+
     /**
      * @Route("/secured/admin/teams/delete", name="OpitNotesUserBundle_admin_teams_delete")
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
-    public function deleteTeamAction()
+    public function deleteTeamAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $teamId = $this->getRequest()->request->get('id');
-        
+        $teamId = $request->request->get('id');
+
         if (!is_array($teamId)) {
             $teamId = array($teamId);
         }
@@ -359,49 +373,70 @@ class AdminUserController extends Controller
                 $entityManager->remove($team);
             }
         }
-        
+
         $entityManager->flush();
-        
+
         return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
     }
-    
+
     /**
      * Get all groups(roles) and return an array of results
-     * 
+     *
      * @return array
      */
     protected function getAllGroups()
     {
-        $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
+        $orderParams = $this->getRequest()->get('order');
         $disabledRoles = array();
         $numberOfRelations = array();
 
-        foreach ($group as $g) {
+        if ($this->getRequest()->get('issearch')) {
+            // Find by order parameters.
+            $groups = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            $groups = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
+        }
+
+        foreach ($groups as $g) {
             $users = $g->getUsers();
             if (0 !== count($users)) {
                 $disabledRoles[] = $g->getId();
             }
             $numberOfRelations[$g->getId()] = count($g->getUsers());
         }
-        
+
         return array(
             'propertyNames' => array('id', 'name', 'role'),
-            'propertyValues' => $group,
+            'propertyValues' => $groups,
             'hideReset' => true,
             'disabledRoles' => $disabledRoles,
             'numberOfRelations' => $numberOfRelations
         );
     }
-    
+
     protected function getAllTeams()
     {
+        $orderParams = $this->getRequest()->get('order');
         $numberOfRelations = array();
         $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Team')->findAll();
-        
+
+        if ($this->getRequest()->get('issearch')) {
+            // Find by order parameters.
+            $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Team')->findBy(
+                array(),
+                array($orderParams['field'] => $orderParams['dir'])
+            );
+        } else {
+            $teams = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Team')->findAll();
+        }
+
         foreach ($teams as $team) {
             $numberOfRelations[$team->getId()] = count($team->getEmployees());
         }
-        
+
         return array(
             'propertyNames' => array('id', 'teamName'),
             'propertyValues' => $teams,

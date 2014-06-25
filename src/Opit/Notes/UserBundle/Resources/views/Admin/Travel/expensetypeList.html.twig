@@ -14,6 +14,7 @@
         var valueForm = 'expenseTypeForm';
         var valueField = 'expenseType';
         var url = 'OpitNotesUserBundle_admin_travelexpensetype_show';
+        var listUrl = 'OpitNotesUserBundle_admin_travelexpensetype_list';
         var removeUrl = 'OpitNotesUserBundle_admin_expensetype_delete';
         var propertyName = 'expense type';
         var propertyNameCapital = 'Expense type';
@@ -26,6 +27,7 @@
 {% endblock %}
 {% block body %}
 <h1 class="margin-bottom-01em-important">Expense Type List</h1>
+{% include 'OpitNotesCoreBundle:Shared:_order.html.twig' %}
 <div class="listing-description">Expense types can be created from here.They are used while creating a travel expense request.</div>
 <table>
     <tr>

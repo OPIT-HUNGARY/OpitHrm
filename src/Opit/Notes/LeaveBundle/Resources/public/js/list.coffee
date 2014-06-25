@@ -95,9 +95,9 @@ $(document).ready ->
         }
         return
 
-inverse = $('#order_dir').val() is 'asc'
-$('form').on 'click', '.fa-sort', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@), inverse
-    
-$('form').on 'click', '.order-text', ->
-    inverse = $(document).data('notes').funcs.clientSideListOrdering $(@).parent().find('i'), inverse
+    $('#leave_list').on 'click', '.fa-sort', ->
+        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesLeaveBundle_leave_list', 'leave_list'
+
+    $('#leave_list').on 'click', '.order-text', ->
+        $orderIcon = $(@).parent().find('.fa-sort')
+        $(document).data('notes').funcs.serverSideListOrdering $orderIcon, $orderIcon.data('field'), 'OpitNotesLeaveBundle_leave_list', 'leave_list'

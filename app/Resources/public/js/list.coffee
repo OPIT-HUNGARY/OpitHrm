@@ -1,34 +1,7 @@
 $.extend true, $(document).data('notes'),
     funcs:
-        clientSideListOrdering: ($self, inverse) ->
-            $form = $('#searchFormWrapper').find 'form'
-            header = $self.parent()
-            index = header.index()
-            header
-                .closest('table')
-                .find('td')
-                .filter () ->
-                    return $(@).index() == index
-                .sort(
-                    (a,b) ->
-                        a = $(a).text()
-                        b = $(b).text()
-                        return if (if isNaN(a) or isNaN(b) then a > b else +a > +b) then (if inverse then -1 else 1) else (if inverse then 1 else -1)
-                    () ->
-                        return @.parentNode
-                )
-                
-            order = if inverse then 'desc' else 'asc'
-            $('#list-table').find('.fa-sort').removeClass('fa-sort-desc').removeClass('fa-sort-asc')
-            $self.removeClass('fa-sort-asc').addClass "fa-sort-#{order}"
-
-            $form.find('#order_field').val $self.data('field')
-            $form.find('#order_dir').val order
-            
-            return not inverse
-        
-        serverSideListOrdering: ($self, dataField, url, toRelplace) ->
-            $form = $('#searchFormWrapper').find 'form'
+        serverSideListOrdering: ($self, dataField, url, toRelplace, formElement = null) ->
+            $form = if formElement then $('#' + formElement) else $('#searchFormWrapper').find 'form'
             order = $form.find('#order_dir').val()
             order = if order is 'desc' then 'asc' else 'desc'
             $form.find('#order_field').val dataField

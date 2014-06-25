@@ -46,6 +46,7 @@ class TimeSheetController extends Controller
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $showList = (boolean) $request->request->get('showList');
+        $orderParams = $request->request->get('order');
         $currentMonth = date('n');
         $availableMonths = array();
         $logTimesheets = array();
@@ -79,6 +80,10 @@ class TimeSheetController extends Controller
                         ($hashId == $logTimesheet->getHashId());
                 }
             }
+        }
+        // Ordering the month. If the direction is desc then reverse the $availableMonths array.
+        if ($showList && ('desc' === $orderParams['dir']) && 'month' === $orderParams['field']) {
+            $availableMonths = array_reverse($availableMonths);
         }
 
         return $this->render(
