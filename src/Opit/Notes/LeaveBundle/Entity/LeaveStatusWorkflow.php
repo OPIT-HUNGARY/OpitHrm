@@ -2,38 +2,31 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\StatusBundle\Entity;
+namespace Opit\Notes\LeaveBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
 use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
- * This class is a container the status workflow.
+ * Description of ApplicantStatusWorkflow
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
- * @version 1.0
- * @package Notes
- * @subpackage StatusBundle
- *
- * @ORM\Table(name="notes_status_workflow")
+ * @package Opit
+ * @subpackage Notes
+ * 
  * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusWorkflowRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="discr", type="string")
- * @ORM\DiscriminatorMap({
- *     "travel" = "Opit\Notes\TravelBundle\Entity\TravelStatusWorkflow",
- *     "leave" = "Opit\Notes\LeaveBundle\Entity\LeaveStatusWorkflow",
- *     "applicant" = "Opit\Notes\HiringBundle\Entity\ApplicantStatusWorkflow"
- * })
  */
-class StatusWorkflow
+class LeaveStatusWorkflow extends StatusWorkflow
 {
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -42,13 +35,13 @@ class StatusWorkflow
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\StatusBundle\Entity\Status", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="states")
+     * @ORM\ManyToOne(targetEntity="\Opit\Notes\StatusBundle\Entity\Status", inversedBy="states")
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     protected $status;
@@ -108,4 +101,5 @@ class StatusWorkflow
     {
         return $this->status;
     }
+
 }

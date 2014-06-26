@@ -5,8 +5,10 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+        '@OpitNotesCoreBundle/Resources/public/js/StatusHistory.coffee'
         '@OpitNotesCoreBundle/Resources/public/js/SearchForm.coffee'
         '@OpitNotesHiringBundle/Resources/public/js/applicant/list.coffee'
+        '@OpitNotesHiringBundle/Resources/public/js/applicant/changeApplicantStatus.coffee'
     output='js/opitnoteshiring/list_applicant.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}

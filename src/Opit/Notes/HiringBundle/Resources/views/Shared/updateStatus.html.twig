@@ -3,7 +3,7 @@
     {{ parent() }}
     {% stylesheets
         '../app/Resources/public/css/updateStatus.scss'
-    output='css/opitnotestravel/update_status.css' filter='?yui_css,cssrewrite' %}
+    output='css/opitnotesleave/update_status.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
@@ -15,17 +15,17 @@
     </a>
 </div>
 <div id="request-status">
-{% if 'post' == method %}
-<h2>Status of travel {{ travelTypeName }} successfully updated to "{{ status }}".</h2>
-<h4>
-    You can go to <a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}">NOTES</a> project or simply close the tab.
-</h4>
-{% else %}
-<h2>Update status of travel {{ travelTypeName }} to "{{ status }}".</h2>
-<form method="post" action="{{ app.request.uri }}">
-    <input type="submit" class="button" value="Update" />
-</form>
-</div>
-{% endif %}
+    {% if 'post' == method %}
+    <h2>{% if '' == error %}Applicant status successfully updated: "{{ status }}".{% else %}{{ error }}{% endif %}</h2>
+    <h4>
+        You can go to <a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}">NOTES</a> or simply close the tab.
+    </h4>
+    {% else %}
+    <h2>Update applicant status: "{{ status }}".</h2>
+    <form method="post" action="{{ app.request.uri }}">
+        <input type="submit" class="button" value="Update" />
+    </form>
+    </div>
+    {% endif %}
 {% endblock %}
 {% block footer %}{% endblock %}

@@ -9,22 +9,23 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\LeaveBundle\Entity;
+namespace Opit\Notes\HiringBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\NotificationBundle\Entity\Notification;
+use Opit\Notes\HiringBundle\Entity\Applicant;
 
 /**
- * LRNotification
+ * ApplicantNotification
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage LeaveBundle
+ * @subpackage HiringBundle
  * 
  * @ORM\Entity
  */
-class LRNotification extends Notification
+class ApplicantNotification extends Notification
 {
     /**
      * @var integer
@@ -52,15 +53,15 @@ class LRNotification extends Notification
     protected $receiver;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Opit\Notes\LeaveBundle\Entity\LeaveRequest", inversedBy="notifications")
-     * @ORM\JoinColumn(name="lr_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Applicant", inversedBy="notifications")
+     * @ORM\JoinColumn(name="applicant_id", referencedColumnName="id")
      */
-    protected $leaveRequest;
-    
+    protected $applicant;
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -83,7 +84,7 @@ class LRNotification extends Notification
     /**
      * Get message
      *
-     * @return string 
+     * @return string
      */
     public function getMessage()
     {
@@ -106,7 +107,7 @@ class LRNotification extends Notification
     /**
      * Get dateTime
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDateTime()
     {
@@ -114,26 +115,26 @@ class LRNotification extends Notification
     }
 
     /**
-     * Set leaveRequest
+     * Set applicant
      *
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
-     * @return LRNotification
+     * @param Applicant $applicant
+     * @return ApplicantNotification
      */
-    public function setLeaveRequest(\Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest = null)
+    public function setApplicant(Applicant $applicant = null)
     {
-        $this->leaveRequest = $leaveRequest;
+        $this->applicant = $applicant;
 
         return $this;
     }
 
     /**
-     * Get leaveRequest
+     * Get applicant
      *
-     * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest 
+     * @return ApplicantNotification
      */
-    public function getLeaveRequest()
+    public function getApplicant()
     {
-        return $this->leaveRequest;
+        return $this->applicant;
     }
 
     /**
@@ -152,7 +153,7 @@ class LRNotification extends Notification
     /**
      * Get read
      *
-     * @return \Opit\Notes\NotificationBundle\Entity\NotificationStatus 
+     * @return \Opit\Notes\NotificationBundle\Entity\NotificationStatus
      */
     public function getRead()
     {
@@ -175,7 +176,7 @@ class LRNotification extends Notification
     /**
      * Get receiver
      *
-     * @return \Opit\Notes\UserBundle\Entity\User 
+     * @return \Opit\Notes\UserBundle\Entity\User
      */
     public function getReceiver()
     {

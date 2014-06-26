@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
 use Opit\Notes\TravelBundle\Model\TravelStatusInterface;
+use Opit\Notes\HiringBundle\Model\HiringStatusInterface;
 
 /**
  * This class is a container for the Status model
@@ -27,7 +28,7 @@ use Opit\Notes\TravelBundle\Model\TravelStatusInterface;
  * @ORM\Table(name="notes_status")
  * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusRepository")
  */
-class Status implements TravelStatusInterface
+class Status implements TravelStatusInterface, HiringStatusInterface
 {
     const CREATED = 1;
     const FOR_APPROVAL = 2;
@@ -35,7 +36,7 @@ class Status implements TravelStatusInterface
     const APPROVED = 4;
     const REJECTED = 5;
     const PAID = 6;
-    
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id

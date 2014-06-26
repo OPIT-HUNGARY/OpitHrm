@@ -13,6 +13,7 @@ namespace Opit\Notes\HiringBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 /**
  * Description of JobPositionRepository
@@ -73,5 +74,26 @@ class ApplicantRepository extends EntityRepository
         $dq->setMaxResults($pagnationParameters['maxResults']);
 
         return new Paginator($dq->getQuery(), true);
+    }
+
+    /**
+     * Find how many applicants have been hired for a job position
+     * 
+     * @param integer $jpId
+     * @return type
+     */
+    public function findHiredApplicantCount($jpId)
+    {
+        $dq = $this->createQueryBuilder('a');
+        $dq->select('count(a.id)');
+        $dq->innerJoin('a.jobPosition', 'jp');
+        $dq->innerJoin('a.states', 'states');
+        $dq->innerJoin('states.status', 'status');
+        $dq->where($dq->expr()->eq('jp.id', ':jpId'));
+        $dq->andWhere($dq->expr()->eq('status.id', ':hiredState'));
+        $dq->setParameter(':jpId', $jpId);
+        $dq->setParameter(':hiredState', Status::HIRED);
+
+        return $dq->getQuery()->getSingleScalarResult();
     }
 }

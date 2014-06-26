@@ -13,13 +13,12 @@ namespace Opit\Notes\HiringBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
- * JobApplicant
+ * Applicant
  *
  * @ORM\Table(name="notes_applicants")
  * @ORM\Entity(repositoryClass="Opit\Notes\HiringBundle\Entity\ApplicantRepository")
@@ -76,7 +75,6 @@ class Applicant extends AbstractBase
      *  mimeTypesMessage = "CV file format not supported, supported pdf, doc, docx"
      * )
      * @ORM\Column(name="cvFile", type="string", nullable=true)
-     * @Assert\NotBlank(message="Applicant CV must be added")
      */
     private $cvFile;
 
@@ -100,6 +98,25 @@ class Applicant extends AbstractBase
      * @ORM\JoinColumn(name="job_position_id", referencedColumnName="id")
      **/
     private $jobPosition;
+
+    /**
+     * @ORM\OneToMany(targetEntity="StatesApplicants", mappedBy="applicant", cascade={"persist", "remove"})
+     */
+    protected $states;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Applicant", mappedBy="applicant", cascade={"remove"})
+     */
+    protected $notifications;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->states = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -209,7 +226,7 @@ class Applicant extends AbstractBase
      * @param string $cv
      * @return Applicant
      */
-    public function setCV($cv)
+    public function setCv($cv)
     {
         $this->cv = $cv;
 
@@ -221,7 +238,7 @@ class Applicant extends AbstractBase
      *
      * @return string
      */
-    public function getCV()
+    public function getCv()
     {
         return $this->cv;
     }
@@ -296,6 +313,39 @@ class Applicant extends AbstractBase
     }
 
     /**
+     * Add states
+     *
+     * @param \Opit\Notes\HiringBundle\Entity\StatesApplicants $states
+     * @return Applicant
+     */
+    public function addState(\Opit\Notes\HiringBundle\Entity\StatesApplicants $states)
+    {
+        $this->states[] = $states;
+
+        return $this;
+    }
+
+    /**
+     * Remove states
+     *
+     * @param \Opit\Notes\HiringBundle\Entity\StatesApplicants $states
+     */
+    public function removeState(\Opit\Notes\HiringBundle\Entity\StatesApplicants $states)
+    {
+        $this->states->removeElement($states);
+    }
+
+    /**
+     * Get states
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getStates()
+    {
+        return $this->states;
+    }
+
+    /**
      * Returns the absolute path to a file
      *
      * @return type
@@ -336,6 +386,8 @@ class Applicant extends AbstractBase
     }
 
     /**
+     * Upload CV for applicant and remove old CV if there was one
+     * 
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
@@ -361,5 +413,17 @@ class Applicant extends AbstractBase
 
         $this->cv = $originalCVFileName;
         $this->cvFile = null;
+    }
+
+    /**
+     * Validate CV if new applicant is being added
+     * 
+     * @Assert\Callback
+     */
+    public function validateLeaveDates(ExecutionContextInterface $context)
+    {
+        if (null === $this->getId() && null === $this->getCvFile()) {
+            $context->addViolation('Applicant CV can not be empty');
+        }
     }
 }

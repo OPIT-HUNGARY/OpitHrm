@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\Component\Utils\Utils;
 use Opit\Notes\LeaveBundle\Entity\Token;
-use Opit\Notes\StatusBundle\Entity\StatusWorkflow;
+use Opit\Notes\LeaveBundle\Entity\LeaveStatusWorkflow;
 
 /**
  * Description of TravelStatusManager
@@ -217,6 +217,6 @@ class LeaveStatusManager extends StatusManager
      */
     protected function getScope()
     {
-        return get_class(new StatusWorkflow());
+        return get_class(new LeaveStatusWorkflow());
     }
 }

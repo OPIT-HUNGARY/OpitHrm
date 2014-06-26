@@ -5,6 +5,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
+    '@OpitNotesHiringBundle/Resources/public/js/applicant/changeApplicantStatus.coffee'
     '@OpitNotesHiringBundle/Resources/public/js/applicant/showApplicant.coffee'
     output='js/opitnoteshiring/show_applicant.js' filter='?yui_js' %}
     <script type="text/javascript" src="{{ asset_url }}" ></script>
@@ -23,6 +24,21 @@
         {% if true == isNewApplicant %}New{% else %}Edit{% endif %} applicant
     </h1>
 
+    <div id="changeStateWrapper" class="display-block">
+        <h3 class="display-inline-block margin-top-0">Change status:</h3>
+        {% if '0' == isStatusLocked %}
+        <select data-applicant="{{ applicantId }}" class="changeState display-inline-block">
+            {% for key, value in nextStates %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ currentStatus.name }}</option>
+        </select>
+        {% endif %}
+    </div>
+
     <div class="dialog-description default-border-radius">
         Applicants can be added or edited from here.
     </div>
@@ -36,7 +52,7 @@
         </ul>
     </div>
     {% set disabled = '' %}
-    {% if 0 == isEditable %}
+    {% if '0' == isEditable%}
         {% set disabled='disabled' %}
     {% endif %}
     {{ form_start(form, {'method': 'POST', 'attr': {'id': 'applicantForm', 'class': disabled}}) }}
@@ -69,6 +85,13 @@
                 <div class="display-block margin-bottom-10">
                     {{ form_label(form.cvFile) }}
                     {{ form_widget(form.cvFile) }}
+                    {% if '' != applicantCV %}
+                    <div class="display-block">
+                        <a href="{{ path('OpitNotesHiringBundle_applicant_cv_download', { 'id': applicantId}) }}" title="Download CV" class="display-inline-block color-blue">
+                            {{ applicantCV }}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
         </div>
         {{ form_widget(form._token) }}

@@ -22,6 +22,7 @@ use Opit\Notes\TravelBundle\Entity\TENotification;
 use Opit\Notes\LeaveBundle\Entity\LRNotification;
 use Opit\Notes\HiringBundle\Entity\JPNotification;
 use Opit\Notes\NotificationBundle\Entity\NotificationStatus;
+use Opit\Notes\HiringBundle\Entity\ApplicantNotification;
 
 /**
  * NotificationController
@@ -64,6 +65,7 @@ class NotificationController extends Controller
         $travelRequests = array();
         $leaveRequests = array();
         $jobPositions = array();
+        $applicants = array();
         
         foreach ($notifications as $notification) {
             if ($notification instanceof TENotification) {
@@ -74,6 +76,8 @@ class NotificationController extends Controller
                 $leaveRequests[] = $notification;
             } elseif ($notification instanceof JPNotification) {
                 $jobPositions[] = $notification;
+            } elseif ($notification instanceof ApplicantNotification) {
+                $applicants[] = $notification;
             }
         }
         
@@ -84,6 +88,7 @@ class NotificationController extends Controller
                 'travelExpenses' => $travelExpenses,
                 'leaveRequests' => $leaveRequests,
                 'jobPositions' => $jobPositions,
+                'applicants' => $applicants,
             )
         );
     }

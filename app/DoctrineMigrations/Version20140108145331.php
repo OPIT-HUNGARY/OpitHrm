@@ -28,7 +28,7 @@ class Version20140108145331 extends AbstractMigration
 
         // Insert status and status workflow
         $this->addSql("INSERT INTO notes_status(id, name) VALUES (4,'Approved'),(1,'Created'),(2,'For Approval'),(6,'Paid'),(5,'Rejected'),(3,'Revise')");
-        $this->addSql("insert  into notes_status_workflow(id, parent_id, status_id) values (1,NULL,1),(2,1,2),(3,2,3),(4,2,4),(5,3,2),(6,2,5),(7,4,6)");
+        $this->addSql("INSERT INTO notes_status_workflow(id, parent_id, status_id) VALUES (1,NULL,1),(2,1,2),(3,2,3),(4,2,4),(5,3,2),(6,2,5),(7,4,6)");
     }
 
     public function down(Schema $schema)

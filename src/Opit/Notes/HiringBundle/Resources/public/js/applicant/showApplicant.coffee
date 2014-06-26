@@ -7,6 +7,12 @@ $(document).ready ->
             $('#applicant_jobPosition').val ui.item.id
             return
 
+    $('.changeState').on 'change', ->
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeApplicantStatus, {
+            foreignId: $(@).data('applicant') # applicant id
+        }
+        return
+
     $('form.disabled select, .disabled input, form.disabled textarea').each ->
         $(@).attr 'disabled', 'disabled'
 

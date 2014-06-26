@@ -27,7 +27,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({
- * "te" = "Opit\Notes\TravelBundle\Entity\TENotification", "tr" = "Opit\Notes\TravelBundle\Entity\TRNotification", "lr" = "Opit\Notes\LeaveBundle\Entity\LRNotification", "jp" = "Opit\Notes\HiringBundle\Entity\JPNotification"})
+ * "te" = "Opit\Notes\TravelBundle\Entity\TENotification",
+ * "tr" = "Opit\Notes\TravelBundle\Entity\TRNotification",
+ * "lr" = "Opit\Notes\LeaveBundle\Entity\LRNotification",
+ * "jp" = "Opit\Notes\HiringBundle\Entity\JPNotification",
+ * "applicant" = "Opit\Notes\HiringBundle\Entity\ApplicantNotification"})
  */
 class Notification
 {

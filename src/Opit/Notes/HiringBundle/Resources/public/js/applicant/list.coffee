@@ -33,6 +33,16 @@ $(document).ready ->
                             $('#dialog-show-details-applicant').dialog 'destroy'
                             return
 
+    $('#applicant_list').on 'change', '.changeState', ->
+        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeApplicantStatus, {
+            foreignId: $(@).data('applicant') # applicant id
+            label: $(@).closest('tr').find('.applicant-name').text()
+        }
+        return
+
+    history = new StatusHistory('OpitNotesHiringBundle_status_history')
+    do history.init
+
     $('#applicant_list').on 'click', '.fa-sort', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesHiringBundle_applicant_list', 'applicant_list'
 

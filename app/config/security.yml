@@ -11,6 +11,9 @@ security:
         Opit\Notes\LeaveBundle\Entity\Token:
             algorithm:        sha512
             iterations:       1
+        Opit\Notes\HiringBundle\Entity\Token:
+            algorithm:        sha512
+            iterations:       1
 
     role_hierarchy:
         ROLE_CUSTOMER: ~

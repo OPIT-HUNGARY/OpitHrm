@@ -31,7 +31,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\DiscriminatorMap({
  *     "tr" = "Opit\Notes\TravelBundle\Entity\CommentTRStatus",
  *     "te" = "Opit\Notes\TravelBundle\Entity\CommentTEStatus",
- *     "leave" = "Opit\Notes\LeaveBundle\Entity\CommentLeaveStatus"
+ *     "leave" = "Opit\Notes\LeaveBundle\Entity\CommentLeaveStatus",
+ *     "applicant" = "Opit\Notes\HiringBundle\Entity\CommentApplicantStatus"
  * })
  */
 abstract class AbstractComment extends AbstractBase

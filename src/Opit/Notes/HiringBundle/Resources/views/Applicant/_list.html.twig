@@ -25,6 +25,7 @@
                 <i class="fa fa-sort default-right" data-field="a.applicationDate"></i>
                 <span class="order-text cursor-pointer">Application date</span>
             </th>
+            <th>Applicant status</th>
             <th>CV</th>
             <th>Actions</th>
         </tr>
@@ -41,7 +42,7 @@
                 <i class="fa fa-exclamation-triangle color-ferrari-red cursor-pointer margin-left-5 tipsy-notification" title="This job position has been removed"></i>
                 {% endif %}
             </td>
-            <td>
+            <td class="applicant-name">
                 {{ applicant.name }}
             </td>
             <td>
@@ -57,10 +58,21 @@
                 {{ applicant.applicationDate|date('d  F  Y (D)') }}
             </td>
             <td>
+                {% set isDropdownDisabled = availableStates[id]|length <= 1 or 0 == isEditable %}
+                <select data-applicant="{{ id }}" class="changeState {% if isDropdownDisabled %}dropdown-disabled{% endif %}" {% if isDropdownDisabled %}disabled="disabled"{% endif %}>
+                    {% for statusId, statusName in availableStates[id] %}
+                        <option value="{{ statusId }}">{{ statusName }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
                 <a href="{{ path('OpitNotesHiringBundle_applicant_cv_download', { 'id': id}) }}" title="Download CV"><i class="fa fa-download"></i></a>
             </td>
             <td>
-                {% if isEditable and null == applicant.jobPosition.deletedAt %}
+                <a href="#" class="status-history" title="Status history">
+                    <i class="fa fa-book" data-id="{{ id }}"></i>
+                </a>
+                {% if isEditable and null == applicant.jobPosition.deletedAt and '1' != isStatusFinalized[id] %}
                 <a href="{{ path('OpitNotesHiringBundle_applicant_show', { 'id': id}) }}" title="Edit applicant">
                     <i class="fa fa-pencil-square-o fa-1x"></i>
                 </a>

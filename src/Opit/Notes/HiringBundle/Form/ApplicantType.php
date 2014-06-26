@@ -105,9 +105,11 @@ class ApplicantType extends AbstractType
             )
         ));
 
-        $builder->add('cvFile', 'file', array(
-            'label' => 'Upload applicant CV'
-        ));
+        $builder->add('cvFile', 'file',array(
+                'required' => $this->isNewApplicant,
+                'label' => 'Upload applicant CV (.doc, .docx, .pdf)'
+            )
+        );
 
         $builder->add('create_applicant', 'submit', array(
             'label' => $this->isNewApplicant ? 'Add applicant' : 'Edit applicant',

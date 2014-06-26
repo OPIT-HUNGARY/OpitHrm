@@ -14,6 +14,7 @@ namespace Opit\Notes\HiringBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation\Secure;
@@ -22,9 +23,11 @@ use Opit\Notes\HiringBundle\Form\ApplicantType;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Component\Utils\Utils;
+use Opit\Notes\StatusBundle\Entity\Status;
 
 class ApplicantController extends Controller
 {
+
     /**
      * To add/edit applicant in Notes
      *
@@ -40,14 +43,18 @@ class ApplicantController extends Controller
         $isNewApplicant = 'new' === $applicantId;
         $securityContext = $this->container->get('security.context');
         $isTeamManager = $securityContext->isGranted('ROLE_TEAM_MANAGER');
+        $statusManager = $this->get('opit.manager.applicant_status_manager');
         $entityManager->getFilters()->disable('softdeleteable');
         $currentUser = $securityContext->getToken()->getUser();
         $isEditable = true;
+        $isStatusLocked = false;
         $errors = array();
+        $nextStates = array();
+        $applicantCV = '';
 
         if (!$isTeamManager) {
             throw new AccessDeniedException(
-                'Access denied for applicant.'
+            'Access denied for applicant.'
             );
         }
 
@@ -55,6 +62,7 @@ class ApplicantController extends Controller
             $applicant = new Applicant();
         } else {
             $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($applicantId);
+            $applicantCV = $applicant->getCv();
             $isEditable = (
                 ($securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() === $applicant->getCreatedUser()->getId()) &&
                 null === $applicant->getJobPosition()->getDeletedAt()
@@ -64,6 +72,19 @@ class ApplicantController extends Controller
                 throw $this->createNotFoundException('Missing applicant.');
             }
         }
+
+        $currentStatus = $statusManager->getCurrentStatusMetaData($applicant);
+        if (null === $currentStatus) {
+            $currentStatus = $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::CREATED);
+            $isStatusLocked = true;
+        } else {
+            $currentStatus = $statusManager->getCurrentStatus($applicant);
+            $nextStates = $statusManager->getNextStates($currentStatus);
+            $isStatusFinalized = Status::HIRED === $currentStatus->getId() || Status::REJECTED === $currentStatus->getId();
+            $isEditable = $isStatusFinalized ? false : $isEditable;
+            $isStatusLocked = $isStatusFinalized ? true : $isStatusLocked;
+        }
+
         $form = $this->createForm(
             new ApplicantType($isNewApplicant), $applicant, array('em' => $entityManager)
         );
@@ -71,7 +92,7 @@ class ApplicantController extends Controller
         if ($request->isMethod('POST')) {
             if (!$isEditable) {
                 throw new AccessDeniedException(
-                    'Applicant can not be modified.'
+                'Applicant can not be modified.'
                 );
             }
 
@@ -81,6 +102,10 @@ class ApplicantController extends Controller
                 $entityManager->persist($applicant);
                 $entityManager->flush();
 
+                if ($isNewApplicant) {
+                    $statusManager->addStatus($applicant, Status::CREATED, null);
+                }
+
                 return $this->redirect($this->generateUrl('OpitNotesHiringBundle_applicant_list'));
             } else {
                 $errors = Utils::getErrorMessages($form);
@@ -88,12 +113,18 @@ class ApplicantController extends Controller
         }
 
         return $this->render(
-                'OpitNotesHiringBundle:Applicant:showApplicant.html.twig', array(
+            'OpitNotesHiringBundle:Applicant:showApplicant.html.twig',
+            array(
                 'form' => $form->createView(),
                 'isNewApplicant' => $isNewApplicant,
                 'isEditable' => $isEditable,
-                'errors' => $errors
-                )
+                'errors' => $errors,
+                'isStatusLocked' => $isStatusLocked,
+                'nextStates' => $nextStates,
+                'currentStatus' => $currentStatus,
+                'applicantId' => $applicantId,
+                'applicantCV' => $applicantCV,
+            )
         );
     }
 
@@ -115,10 +146,13 @@ class ApplicantController extends Controller
         $config = $this->container->getParameter('pager_config');
         $maxResults = $config['max_results'];
         $offset = $request->request->get('offset');
+        $statusManager = $this->get('opit.manager.applicant_status_manager');
+        $availableStates = array();
+        $isStatusFinalized = array();
 
         if (!$securityContext->isGranted('ROLE_TEAM_MANAGER')) {
             throw new AccessDeniedException(
-                'Access denied for job position listing.'
+            'Access denied for job position listing.'
             );
         }
 
@@ -134,6 +168,12 @@ class ApplicantController extends Controller
         $applicants = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
 
+        foreach ($applicants as $applicant) {
+            $currentStatus = $statusManager->getCurrentStatus($applicant);
+            $isStatusFinalized[$applicant->getId()] = (Status::HIRED === $currentStatus->getId() || Status::REJECTED === $currentStatus->getId());
+            $availableStates[$applicant->getId()] = $statusManager->getNextStates($currentStatus);
+        }
+
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesHiringBundle:Applicant:_list.html.twig';
         } else {
@@ -141,8 +181,11 @@ class ApplicantController extends Controller
         }
 
         return $this->render(
-            $template,
-            array('applicants' => $applicants)
+            $template, array(
+                'applicants' => $applicants,
+                'availableStates' => $availableStates,
+                'isStatusFinalized' => $isStatusFinalized,
+            )
         );
     }
 
@@ -170,7 +213,7 @@ class ApplicantController extends Controller
 
             if (!$securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() !== $applicant->getCreatedUser()->getId()) {
                 throw new AccessDeniedException(
-                    'Access denied for applicant.'
+                'Access denied for applicant.'
                 );
             } else {
                 unlink($applicant->getAbsolutePath());
@@ -188,7 +231,6 @@ class ApplicantController extends Controller
      * @Route("/secured/applicant/cv/download/{id}", name="OpitNotesHiringBundle_applicant_cv_download", requirements={ "id" = "\d+"})
      * @Secure(roles="ROLE_TEAM_MANAGER")
      * @Template()
-     * @throws AccessDeniedException
      */
     public function applicantCVDownloadAction(Request $request)
     {
@@ -204,4 +246,77 @@ class ApplicantController extends Controller
         $response->sendHeaders();
         $response->setContent(readfile($CV));
     }
+
+    /**
+     * Method to change state of applicant
+     *
+     * @Route("/secured/applicant/state/change", name="OpitNotesHiringBundle_applicant_state")
+     * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function changeApplicantStateAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $data = $request->request->get('status');
+        $statusId = $data['id'];
+        $applicantId = $data['foreignId'];
+        $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($applicantId);
+        $numberOfPositions = $applicant->getJobPosition()->getNumberOfPositions();
+        $hiredApplicants =
+            $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->findHiredApplicantCount($applicant->getJobPosition()->getId());
+
+        if ($hiredApplicants >= $numberOfPositions && Status::HIRED == $statusId) {
+            return new JsonResponse(
+                array(
+                    'id' => $applicantId,
+                    'error' => 'No more applicants can be hired for job position'
+                ),
+                500
+            );
+        }
+
+        // Set comment content or null
+        $comment = isset($data['comment']) && $data['comment'] ? $data['comment'] : null;
+
+        $status = $this->get('opit.manager.applicant_status_manager')
+            ->addStatus($applicant, $statusId, $comment);
+
+        $this->get('opit.manager.applicant_notification_manager')
+            ->addNewApplicantNotification($applicant, $status);
+
+        return new JsonResponse('test');
+    }
+
+    /**
+     * Retrieves and displays applicant status history
+     *
+     * @Route("/secured/applicant/states/history/{id}", name="OpitNotesHiringBundle_status_history", requirements={"id"="\d+"})
+     * @Method({"POST"})
+     * @Template()
+     */
+    public function showStatusHistoryAction($id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $applicant = $entityManager
+            ->getRepository('OpitNotesHiringBundle:Applicant')
+            ->find($id);
+
+        $applicantStates = $entityManager
+            ->getRepository('OpitNotesHiringBundle:StatesApplicants')
+            ->findByApplicant($applicant, array('created' => 'DESC'));
+
+        return $this->render(
+            'OpitNotesCoreBundle:Shared:statusHistory.html.twig',
+            array(
+                'elements' => array(
+                    'tr' => array(
+                        'title' => 'Applicant history',
+                        'collection' => $applicantStates
+                    )
+                )
+            )
+        );
+    }
+
 }
