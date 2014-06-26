@@ -7,6 +7,14 @@ $.extend true, $(document).data('notes'),
                 data: data
                 global: false
             .done (data) ->
+                nextStates = data.nextStates
+                $changeState = $('[data-applicant="' + data.applicant + '"]')
+                $changeState
+                    .removeClass 'dropdown-disabled'
+                    .html ''
+                Object.keys(nextStates).forEach (key) ->
+                    $option = $('<option>').val(nextStates[key]).text(key)
+                    $changeState.append $option
                 $spinner.remove()
             .complete () ->
                 $spinner.remove()

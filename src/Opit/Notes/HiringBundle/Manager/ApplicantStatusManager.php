@@ -90,9 +90,15 @@ class ApplicantStatusManager extends StatusManager
         $statusName = $status->getName();
 
         $this->mailer->setRecipient($recipient);
-        $this->mailer->setSubject(
-            '[NOTES] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
-        );
+        if (Status::CREATED === $status->getId()) {
+            $this->mailer->setSubject(
+                '[NOTES] - New applicant created (' . $resource->getName() . ')'
+            );
+        } else {
+            $this->mailer->setSubject(
+                '[NOTES] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
+            );
+        }
 
         $this->mailer->setBodyByTemplate('OpitNotesHiringBundle:Mail:applicant.html.twig', $templateVars);
 

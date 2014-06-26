@@ -14,6 +14,7 @@ namespace Opit\Notes\HiringBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Opit\Notes\StatusBundle\Entity\Status;
+use Opit\Notes\HiringBundle\Entity\Applicant;
 
 /**
  * Description of JobPositionRepository
@@ -93,6 +94,32 @@ class ApplicantRepository extends EntityRepository
         $dq->andWhere($dq->expr()->eq('status.id', ':hiredState'));
         $dq->setParameter(':jpId', $jpId);
         $dq->setParameter(':hiredState', Status::HIRED);
+
+        return $dq->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * Check if applicant with email or phone number has been added to a job position
+     * 
+     * @param \Opit\Notes\HiringBundle\Entity\Applicant $applicant
+     * @return type
+     */
+    public function findByEmailPhoneNumber(Applicant $applicant)
+    {
+        $dq = $this->createQueryBuilder('a');
+        $dq->select('count(a.id)');
+        $dq->innerJoin('a.jobPosition', 'jp');
+        $dq->where($dq->expr()->eq('jp.id', ':jpId'));
+        $dq->andWhere(
+            $dq->expr()->orX(
+                $dq->expr()->eq('a.email', ':email'),
+                $dq->expr()->eq('a.phoneNumber', ':phoneNumber')
+            )
+        );
+
+        $dq->setParameter(':email', $applicant->getEmail());
+        $dq->setParameter(':phoneNumber', $applicant->getPhoneNumber());
+        $dq->setParameter(':jpId', $applicant->getJobPosition()->getId());
 
         return $dq->getQuery()->getSingleScalarResult();
     }

@@ -24,6 +24,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Component\Utils\Utils;
 use Opit\Notes\StatusBundle\Entity\Status;
+use Symfony\Component\Form\FormError;
 
 class ApplicantController extends Controller
 {
@@ -99,14 +100,24 @@ class ApplicantController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $entityManager->persist($applicant);
-                $entityManager->flush();
+                // If new applicant is being added
+                // check if applicant has already been added to jp with same email or phone number.
+                // Check after for is valid to make sure data is present.
+                if ($isNewApplicant && $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->findByEmailPhoneNumber($applicant) > 0) {
+                    $form->addError(new FormError(
+                        'Email or phone number has been already registered for this job position.'
+                    ));
+                    $errors = Utils::getErrorMessages($form);
+                } else {
+                    $entityManager->persist($applicant);
+                    $entityManager->flush();
 
-                if ($isNewApplicant) {
-                    $statusManager->addStatus($applicant, Status::CREATED, null);
+                    if ($isNewApplicant) {
+                        $statusManager->addStatus($applicant, Status::CREATED, null);
+                    }
+
+                    return $this->redirect($this->generateUrl('OpitNotesHiringBundle_applicant_list'));
                 }
-
-                return $this->redirect($this->generateUrl('OpitNotesHiringBundle_applicant_list'));
             } else {
                 $errors = Utils::getErrorMessages($form);
             }
@@ -270,7 +281,7 @@ class ApplicantController extends Controller
             return new JsonResponse(
                 array(
                     'id' => $applicantId,
-                    'error' => 'No more applicants can be hired for job position'
+                    'error' => 'Job position filled. No more applicants can be hired for this job position'
                 ),
                 500
             );
@@ -285,7 +296,21 @@ class ApplicantController extends Controller
         $this->get('opit.manager.applicant_notification_manager')
             ->addNewApplicantNotification($applicant, $status);
 
-        return new JsonResponse('test');
+        $nextStates = $this->get('opit.manager.applicant_status_manager')->getNextStates($status);
+        $ns = array();
+
+        // Move next states to different array and change key to string so it
+        // does not get ordered on the client side
+        foreach($nextStates as $key => $value) {
+            $ns[$value] = "$key";
+        }
+
+        return new JsonResponse(
+            array(
+                'applicant' => $applicantId,
+                'nextStates' => $ns
+            )
+        );
     }
 
     /**
