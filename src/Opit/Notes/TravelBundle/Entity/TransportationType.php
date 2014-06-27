@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -13,6 +13,8 @@ namespace Opit\Notes\TravelBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use \Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * TransPortationTypes
@@ -21,9 +23,10 @@ use \Doctrine\Common\Collections\ArrayCollection;
  * @version 1.0
  * @package Notes
  * @subpackage TravelBundle
- * 
+ *
  * @ORM\Table(name="notes_transportation_type")
  * @ORM\Entity(repositoryClass="Opit\Notes\TravelBundle\Entity\TransportationTypeRepository")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class TransportationType
 {
@@ -34,20 +37,26 @@ class TransportationType
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Name can not be empty.")
      */
-    private $name;
+    protected $name;
 
     /**
      * @ORM\OneToMany(targetEntity="TRDestination", mappedBy="transportationType", cascade={"persist"})
      */
     protected $destinations;
-    
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $deletedAt;
+
     /**
      * Constructor
      */
@@ -55,7 +64,7 @@ class TransportationType
     {
         $this->destinations = new ArrayCollection();
     }
-    
+
     /**
      * Get id
      *
@@ -75,7 +84,7 @@ class TransportationType
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
 
@@ -88,7 +97,7 @@ class TransportationType
     {
         return $this->name;
     }
-    
+
     /**
      * Add destinations
      *
@@ -98,7 +107,7 @@ class TransportationType
     public function addDestination(\Opit\Notes\TravelBundle\Entity\TRDestination $destinations)
     {
         $this->destinations[] = $destinations;
-    
+
         return $this;
     }
 
@@ -115,10 +124,44 @@ class TransportationType
     /**
      * Get destinations
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDestinations()
     {
         return $this->destinations;
+    }
+
+    /**
+     * Sets deletedAt.
+     *
+     * @param \Datetime|null $deletedAt
+     *
+     * @return $this
+     */
+    public function setDeletedAt(\DateTime $deletedAt = null)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Returns deletedAt.
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Is deleted?
+     *
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return null !== $this->deletedAt;
     }
 }

@@ -1,0 +1,52 @@
+{% extends 'OpitNotesCoreBundle::layout.html.twig' %}
+
+{% block title %}
+Transportation type list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '../app/Resources/public/css/list.scss'
+        '@OpitNotesTravelBundle/Resources/public/css/module.scss'
+    output='css/opitnotestravel/list_transportation_types.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block body %}
+<h1>Transportation type list</h1>
+{% include 'OpitNotesCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Transportation types can be configured from here. They are used while creating a travel request.</div>
+
+<table id="list-controls-table">
+    <tr>
+        <td class="padding-left-0">
+            <button id="add" class="button">
+                <i class="fa fa-plus-square fa-1x"></i> Add
+            </button>
+            <button id="delete" class="button delete">
+                <i class="fa fa-trash-o fa-1x"></i> Delete
+            </button>
+        </td>
+    </tr>
+</table>
+
+<div id="list-reply-message"></div>
+
+<div id="transportation-type-list">
+    <form id="form-transportation-types">
+        {% include 'OpitNotesTravelBundle:Admin:_listTransportationTypes.html.twig' %}
+    </form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitNotesTravelBundle/Resources/public/js/Admin/listTransportationTypes.coffee'
+    output='js/opitnotestravel/admin/list_transportation_types.js' filter='?yui_js' %}
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+

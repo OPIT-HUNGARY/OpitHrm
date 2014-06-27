@@ -364,6 +364,11 @@ class UserController extends Controller
     }
 
     /**
+     * Finds users called through ajax requests for autocomplete forms
+     *
+     * Softdeleteable filter has to be active for this action to ensure
+     * only present users will be found.
+     *
      * @Route("/secured/user/search/{role}", name="OpitNotesUserBundle_user_search", defaults={"role"=false})
      * @Secure(roles="ROLE_USER")
      * @Method({"POST"})
@@ -381,15 +386,12 @@ class UserController extends Controller
         }
 
         if ('role_team_manager' === $role) {
-            $currentEmployee = $this->container->get('security.context')->getToken()->getUser()->getEmployee();
-            // Find the team managers which are in the same team as the employee.
-            $employees = $this->getDoctrine()
-                ->getRepository('OpitNotesUserBundle:Employee')
-                ->findTeamManagers($term, $currentEmployee->getId());
+            $currentUser = $this->container->get('security.context')->getToken()->getUser();
 
-            foreach ($employees as $employee) {
-                $users[] = $employee->getUser();
-            }
+            // Find the team managers which are in the same team as the employee.
+            $users = $this->getDoctrine()
+                ->getRepository('OpitNotesUserBundle:User')
+                ->findTeamManagersUsingLike($currentUser, $term, $role);
         } else {
             $users = $this->getDoctrine()
                 ->getRepository('OpitNotesUserBundle:User')

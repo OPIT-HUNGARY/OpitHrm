@@ -1,0 +1,39 @@
+<table id="list-table" class="width-100">
+    <thead>
+        <tr>
+            <th class="width-24-fix">
+                <i class="fa fa-trash-o" title="Select/Deselect all"></i>
+            </th>
+            <th class="width-small">
+                <i class="fa fa-sort default-right" data-field="id"></i>
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="name"></i>
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th class="width-small">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transportationType in transportationTypes %}
+        <tr class="clickableTableRow">
+            <td>
+                <input name="delete-type[]" type="checkbox" class="list-delete-type" value="{{ transportationType.id }}">
+            </td>
+            <td data-tr-id='{{ transportationType.id }}'>{{ transportationType.id }}</td>
+            <td>
+                <span class="list-type clickable" data-id="{{ transportationType.id }}">
+                    {{ transportationType.name }}
+                </span>
+            </td>
+            <td>
+                <a href="#" class="list-type" data-id="{{ transportationType.id }}" title="Edit transportation type">
+                    <i class="fa fa-pencil-square-o"></i>
+                </a>
+                <a href="#" data-id="{{ transportationType.id }}" class="delete-single-type" title="Delete transportation type"><i class="fa fa-trash-o"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

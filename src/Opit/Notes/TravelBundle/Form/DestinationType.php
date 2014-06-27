@@ -15,6 +15,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 /**
  * Description of DestinationType
@@ -41,7 +43,10 @@ class DestinationType extends AbstractType
             'empty_value' => 'Choose...',
             'label'=>'Transportation type',
             'query_builder' => function (EntityRepository $repository) {
-                 return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
+                // Extend query to filter out softdeleted entities
+                return $repository->createQueryBuilder('t')
+                     ->where('t.deletedAt IS NULL')
+                     ->orderBy('t.name', 'ASC');
             }
          ));
         

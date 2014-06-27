@@ -1,5 +1,14 @@
 $.extend true, $(document).data('notes'),
     funcs:
+        ###*
+         * Helper to submit server side order queries on lists
+         *
+         * @param object $self The clicked element (icon or label)
+         * @param string dataField The entity property to order on
+         * @param string url Internal symfony route
+         * @param string toReplace A DOM element id selector
+         * @param mixed formElement Null or the order form id selector (default: #searchFormWrapper)
+        ###
         serverSideListOrdering: ($self, dataField, url, toRelplace, formElement = null) ->
             $form = if formElement then $('#' + formElement) else $('#searchFormWrapper').find 'form'
             order = $form.find('#order_dir').val()

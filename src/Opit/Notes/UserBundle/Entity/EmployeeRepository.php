@@ -47,34 +47,4 @@ class EmployeeRepository extends EntityRepository
 
         return $employees->getResult();
     }
-
-    /**
-     * Finds team managers in the same teams for the given user
-     *
-     * @param string $teamManagerName
-     * @param integer $id
-     * @return array
-     */
-    public function findTeamManagers($teamManagerName, $id)
-    {
-       $dq = $this->createQueryBuilder('e0')
-            ->select('t0.id')
-            ->innerJoin('e0.teams', 't0', 'WITH', 'e0.id = :id');
-
-        $dq2 = $this->createQueryBuilder('e')
-            ->leftJoin('e.teams', 't')
-            ->innerJoin('e.user', 'u')
-            ->innerJoin('u.groups', 'g');
-        $teamManagers = $dq2
-            ->where($dq2->expr()->in('t.id', $dq->getDQL()))
-            ->andWhere($dq2->expr()->like('e.employeeName', ':teamManagerName'))
-            ->andWhere('g.role IN (:role)')
-            ->groupBy('e.id')
-            ->setParameter(':id', $id)
-            ->setParameter(':teamManagerName', '%'.$teamManagerName.'%')
-            ->setParameter(':role', 'ROLE_TEAM_MANAGER')
-            ->getQuery();
-
-        return $teamManagers->getResult();
-    }
 }

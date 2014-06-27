@@ -175,26 +175,41 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     /**
      * Finds users by employee name
      *
-     * @param string $chunk part of the employee name
-     * @param mixed $role String or array of role names
+     * {@inheritDoc}
      * @return array
      */
     public function findUserByEmployeeNameUsingLike($chunk, $role = "ROLE_USER")
     {
-        $role = Utils::arrayValuesToUpper($role);
+        $q = $this->getFindUserBaseQueryBuilder($chunk, $role);
 
-        $q = $this->createQueryBuilder('u')
-            ->leftJoin('u.employee', 'e')
-            ->innerJoin('u.groups', 'g')
-            ->where('e.employeeName LIKE :employeeName')
-            ->orWhere('u.email LIKE :email')
-            ->andWhere('g.role IN (:role)')
-            ->setParameter('employeeName', "%{$chunk}%")
-            ->setParameter('email', "%{$chunk}%")
-            ->setParameter('role', $role)
+        return $q->getQuery()->getResult();
+    }
+
+    /**
+     * Finds team managers of the given user by employee name
+     *
+     * @param mixed $id User object or id
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    public function findTeamManagersUsingLike($id, $chunk, $role = "ROLE_TEAM_MANAGER")
+    {
+        $dq = $this->createQueryBuilder('u0')
+            ->select('t0.id')
+            ->innerJoin('u0.employee', 'e0')
+            ->innerJoin('e0.teams', 't0', 'WITH', 'e0.id = :id');
+
+        $dq2 = $this->getFindUserBaseQueryBuilder($chunk, $role);
+        $dq2->leftJoin('e.teams', 't');
+
+        $teamManagers = $dq2
+            ->andWhere($dq2->expr()->in('t.id', $dq->getDQL()))
+            ->groupBy('e.id')
+            ->setParameter('id', $id)
             ->getQuery();
 
-        return $q->getResult();
+        return $teamManagers->getResult();
     }
 
     /**
@@ -212,5 +227,29 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->getQuery();
 
         return new Paginator($users, $fetchJoinCollection = true);
+    }
+
+    /**
+     * Builds the base query for user search
+     *
+     * @param string $chunk part of the employee name or email
+     * @param mixed $role String or array of role names
+     * @return object
+     */
+    protected function getFindUserBaseQueryBuilder($chunk, $role)
+    {
+        $role = Utils::arrayValuesToUpper($role);
+
+        $q = $this->createQueryBuilder('u')
+            ->leftJoin('u.employee', 'e')
+            ->innerJoin('u.groups', 'g')
+            ->where('e.employeeName LIKE :employeeName')
+            ->orWhere('u.email LIKE :email')
+            ->andWhere('g.role IN (:role)')
+            ->setParameter('employeeName', "%{$chunk}%")
+            ->setParameter('email', "%{$chunk}%")
+            ->setParameter('role', $role);
+
+        return $q;
     }
 }

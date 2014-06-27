@@ -11,27 +11,31 @@
 
 namespace Opit\Notes\TravelBundle\Controller;
 
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use JMS\SecurityExtraBundle\Annotation\Secure;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Opit\Notes\TravelBundle\Form\TransportationType as TransportationTypeForm;
+use Opit\Notes\TravelBundle\Entity\TransportationType;
 use Opit\Notes\TravelBundle\Entity\TEExpenseType;
 use Opit\Notes\TravelBundle\Entity\TEPerDiem;
 use Opit\Notes\TravelBundle\Form\PerDiemType;
 use Opit\Component\Utils\Utils;
 
 /**
- * Description of AdminController
+ * AdminController
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Notes
- * @subpackage TravelBundle
+ * @package Opit
+ * @subpackage Notes
+ *
+ * @Route("/secured")
  */
-class AdminTravelController extends Controller
+class AdminController extends Controller
 {
     /**
      * List expense types
@@ -308,5 +312,108 @@ class AdminTravelController extends Controller
             }
         }
         return $perDiem;
+    }
+
+    /**
+     * Renders the transportation type list template
+     *
+     * @Route("/travel/admin/transportation_type/list", name="OpitNotesTravelBundle_admin_transportationtype_list")
+     * @Method({"GET", "POST"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function listTransportationTypesAction(Request $request)
+    {
+        $orderParams = $request->request->get('order');
+        $entityManager = $this->getDoctrine()->getManager();
+
+        if ($this->getRequest()->get('issearch')) {
+            // Find by order parameters.
+            $transportationTypes = $entityManager->getRepository('OpitNotesTravelBundle:TransportationType')
+                ->findBy(array(), array($orderParams['field'] => $orderParams['dir']));
+        } else {
+            $transportationTypes = $entityManager->getRepository('OpitNotesTravelBundle:TransportationType')
+                ->findAll();
+        }
+
+        // Return for ajax post requests
+        if ($request->isXmlHttpRequest()) {
+            return $this->render(
+                'OpitNotesTravelBundle:Admin:_listTransportationTypes.html.twig',
+                array('transportationTypes' => $transportationTypes)
+            );
+        }
+
+        return array('transportationTypes' => $transportationTypes);
+    }
+
+    /**
+     * Renders a transportation type form
+     *
+     * @Route("/travel/admin/transportation_type/show/{id}", name="OpitNotesTravelBundle_admin_transportationtype_show", requirements={ "id" = "new|\d+"}, defaults={"id" = "new"})
+     * @Method({"GET", "POST"})
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function showTransportationTypeAction(Request $request, $id)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $result = array('response' => 'success');
+        $statusCode = 200;
+
+        if ('new' === $id) {
+            $transportationType = new TransportationType();
+        } else {
+            $transportationType = $entityManager->getRepository('OpitNotesTravelBundle:TransportationType')
+                ->find($id);
+        }
+
+        $form = $this->createForm(new TransportationTypeForm(), $transportationType);
+
+        // Handle post data and persist
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $entityManager->persist($transportationType);
+                $entityManager->flush();
+            } else {
+                $statusCode = 500;
+                $result['response'] = 'error';
+                $result['errorMessage'] = Utils::getErrorMessages($form);
+            }
+
+            return new JsonResponse(array($result), $statusCode);
+        }
+
+        return array('form' => $form->createView());
+    }
+
+    /**
+     * Deletes one or more transportation types
+     *
+     * @Route("/travel/admin/transportation_type/delete", name="OpitNotesTravelBundle_admin_transportationtype_delete")
+     * @Method({"POST"})
+     * @Secure(roles="ROLE_ADMIN")
+     */
+    public function deleteTransportationTypesAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $ids = $request->request->get('delete-type');
+
+        $transportationTypes = $entityManager->getRepository('OpitNotesTravelBundle:TransportationType')
+            ->findById($ids);
+
+        if (count($transportationTypes) === 0) {
+            return $this->createNotFoundException('No transportation types found.');
+        }
+
+        foreach ($transportationTypes as $transportationType) {
+            $entityManager->remove($transportationType);
+        }
+
+        $entityManager->flush();
+
+        return new JsonResponse(array('response' => 'success'));
     }
 }
