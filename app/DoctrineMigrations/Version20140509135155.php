@@ -20,6 +20,10 @@ class Version20140509135155 extends AbstractMigration
         $this->addSql("ALTER TABLE notes_leave_request ADD CONSTRAINT FK_74EBEE948C03F15C FOREIGN KEY (employee_id) REFERENCES notes_employees (id)");
         $this->addSql("ALTER TABLE notes_leaves ADD CONSTRAINT FK_4B0AF95F12469DE2 FOREIGN KEY (category_id) REFERENCES notes_holiday_categories (id)");
         $this->addSql("ALTER TABLE notes_leaves ADD CONSTRAINT FK_4B0AF95FF5EC012 FOREIGN KEY (leaveRequest_id) REFERENCES notes_leave_request (id)");
+
+        // Get old data
+        $employees = $this->connection->fetchAll("SELECT id, dateOfBirth, joiningDate FROM notes_employees");
+
         $this->addSql("ALTER TABLE notes_employees ADD deletedAt DATETIME DEFAULT NULL, ADD date_of_birth DATE NOT NULL, ADD joining_date DATE NOT NULL, DROP dateOfBirth, DROP joiningDate, CHANGE numberofchildren number_of_children INT NOT NULL");
         $this->addSql("ALTER TABLE notes_users DROP FOREIGN KEY FK_8E744D495D9F75A1");
         $this->addSql("DROP INDEX UNIQ_8E744D495D9F75A1 ON notes_users");
@@ -28,10 +32,10 @@ class Version20140509135155 extends AbstractMigration
         $this->addSql("CREATE UNIQUE INDEX UNIQ_8E744D498C03F15C ON notes_users (employee_id)");
         $this->addSql("ALTER TABLE notes_holiday_categories ADD deletedAt DATETIME DEFAULT NULL");
 
-        // Add user to employee relation
-        $this->addSql("UPDATE notes_users SET employee_id = 1 WHERE id = 1");
-        // Migrate data from user to employee attributes
-        $this->addSql("UPDATE notes_employees SET date_of_birth = '" . date('Y-m-d', 0) . "', joining_date = '" . date('Y-m-d') . "' WHERE id = 1");
+        // Add employee data back
+        foreach ($employees as $employee) {
+            $this->addSql("UPDATE notes_employees SET date_of_birth = '" . $employee['dateOfBirth'] . "', joining_date = '" . $employee['joiningDate'] . "' WHERE id = " . $employee['id']);
+        }
     }
 
     public function down(Schema $schema)
@@ -42,6 +46,10 @@ class Version20140509135155 extends AbstractMigration
         $this->addSql("ALTER TABLE notes_leaves DROP FOREIGN KEY FK_4B0AF95FF5EC012");
         $this->addSql("DROP TABLE notes_leave_request");
         $this->addSql("DROP TABLE notes_leaves");
+
+        // Get old data
+        $employees = $this->connection->fetchAll("SELECT id, date_of_birth, joining_date FROM notes_employees");
+
         $this->addSql("ALTER TABLE notes_employees ADD dateOfBirth DATE NOT NULL, ADD joiningDate DATE NOT NULL, DROP deletedAt, DROP date_of_birth, DROP joining_date, CHANGE number_of_children numberOfChildren INT NOT NULL");
         $this->addSql("ALTER TABLE notes_holiday_categories DROP deletedAt");
         $this->addSql("ALTER TABLE notes_users DROP FOREIGN KEY FK_8E744D498C03F15C");
@@ -49,5 +57,10 @@ class Version20140509135155 extends AbstractMigration
         $this->addSql("ALTER TABLE notes_users CHANGE employee_id employee INT DEFAULT NULL");
         $this->addSql("ALTER TABLE notes_users ADD CONSTRAINT FK_8E744D495D9F75A1 FOREIGN KEY (employee) REFERENCES notes_employees (id)");
         $this->addSql("CREATE UNIQUE INDEX UNIQ_8E744D495D9F75A1 ON notes_users (employee)");
+
+        // Add employee data back
+        foreach ($employees as $employee) {
+            $this->addSql("UPDATE notes_employees SET dateOfBirth = '" . $employee['date_of_birth'] . "', joiningDate = '" . $employee['joining_date'] . "' WHERE id = " . $employee['id']);
+        }
     }
 }
