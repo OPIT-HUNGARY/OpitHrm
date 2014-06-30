@@ -214,18 +214,21 @@ class Leave
     }
 
     /**
-     * Validate if a leave's start is in the past
+     * Validate if a leave's start date is in the past
      * if leave is created by gm do not check if leave is in the past
      *
      * @Assert\Callback
      */
     public function validatePastLeaveDate(ExecutionContextInterface $context)
     {
-        if (null !== $this && $this->getStartDate()->format('Y-m-d') < date('Y-m-d')) {
-            $context->addViolationAt(
-                'startDate',
-                sprintf('Start date can not be in the past.')
-            );
+        // Check if leave date is in the past when it is not created by a GM
+        if (false === $this->getLeaveRequest()->getIsCreatedByGM()) {
+            if (null !== $this && $this->getStartDate()->format('Y-m-d') < date('Y-m-d')) {
+                $context->addViolationAt(
+                    'startDate',
+                    sprintf('Start date can not be in the past.')
+                );
+            }
         }
     }
 }

@@ -145,6 +145,7 @@ class LeaveController extends Controller
             }
         }
 
+        $leaveRequest->setIsCreatedByGM($isGeneralManager);
         $statusManager = $this->get('opit.manager.leave_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
         $leaveRequestStates = $statusManager->getNextStates($currentStatus);
@@ -164,14 +165,21 @@ class LeaveController extends Controller
 
             $form->handleRequest($request);
             $employees = $request->request->get('employee');
-            $isOwn =  'own' === $request->request->get('leave-request-owner') ? true : false;
+            $isOwn = false;
+            // If leave request owner is not passed
+            if (null === $request->request->get('leave-request-owner')) {
+                $isOwn = true;
+            } else {
+                // Check if leave request is own
+                $isOwn = 'own' === $request->request->get('leave-request-owner') ? true : false;
+            }
 
             // If it is an employee request.
             if ($isOwn) {
                 $this->validateLeaveDatesCategory($leaveRequest, $leaveRequestService, $entityManager, $form);
             } elseif (!$isOwn && empty($employees)) {
                 // If it is an mass leave request and the employees is empty then add a form error.
-                $form->addError(new FormError('The employees are not selected for the mass leave request.'));
+                $form->addError(new FormError('No employees are selected for mass leave request.'));
             }
 
             if ($form->isValid()) {
@@ -431,6 +439,7 @@ class LeaveController extends Controller
     protected function createEmployeeLeaveRequests(LeaveRequest $leaveRequest, EntityManagerInterface $entityManager, array $employees)
     {
         $leaveRequestService = $this->get('opit.model.leave_request');
+        $isMLR = 1 < count($employees) ? true : false;
         $currentLeave = current(current($leaveRequest->getLeaves()));
         // find leaves that are overlapping
         $overlappingLeaves = $entityManager->getRepository('OpitNotesLeaveBundle:Leave')->findOverlappingLeavesByDatesEmployees(
@@ -449,23 +458,30 @@ class LeaveController extends Controller
         $statusApproved = $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::APPROVED);
         $statusForApproval = $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::FOR_APPROVAL);
 
-        $leaveRequestGroup = new LeaveRequestGroup();
-        $entityManager->persist($leaveRequestGroup);
 
         // get leave from leave request
         $leave = current(current($leaveRequest->getLeaves()));
         $startDate = clone $leave->getStartDate();
         $endDate = clone $leave->getEndDate();
 
-        // Create mass leave request
-        $massLeaveRequest = $leaveRequestService->createLRInstance(
-            $leaveRequest, $leaveRequestGroup, $this->get('security.context')->getToken()->getUser()->getEmployee(), true
-        );
-        // create new instance leave for massive leaveRequest
-        $leaveOfMLR = $leaveRequestService->createLeaveInstance($leave, $massLeaveRequest, $fullDayCategory, 0, $startDate, $endDate);
-        $leaveOfMLR->setNumberOfDays($leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate()));
-        $massLeaveRequest->addLeaf($leaveOfMLR);
-        $entityManager->persist($massLeaveRequest);
+        // if is mass leave request
+        if ($isMLR) {
+            $leaveRequestGroup = new LeaveRequestGroup();
+            $entityManager->persist($leaveRequestGroup);
+
+            // Create mass leave request
+            $massLeaveRequest = $leaveRequestService->createLRInstance(
+                $leaveRequest, $leaveRequestGroup, $this->get('security.context')->getToken()->getUser()->getEmployee(), true
+            );
+
+            // create new instance leave for massive leaveRequest
+            $leaveOfMLR = $leaveRequestService->createLeaveInstance($leave, $massLeaveRequest, $fullDayCategory, 0, $startDate, $endDate);
+            $leaveOfMLR->setNumberOfDays($leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate()));
+            $massLeaveRequest->addLeaf($leaveOfMLR);
+            $entityManager->persist($massLeaveRequest);
+        } else {
+            $leaveRequestGroup = null;
+        }
 
         foreach ($employees as $employee) {
             $employee = $entityManager->getRepository('OpitNotesUserBundle:Employee')->find($employee);

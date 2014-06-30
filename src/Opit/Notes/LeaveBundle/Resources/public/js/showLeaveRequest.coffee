@@ -121,7 +121,7 @@ $(document).ready ->
             isValid = no
             if $('.leave-error').length <= 0
                 $errorContainer = $('#reply-message')
-                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('The employees are not selected for the mass leave request.')
+                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('No employees are selected for mass leave request.')
                 $errorContainer
                     .append $errorMessage
                     .removeClass 'display-none'
@@ -133,21 +133,22 @@ $(document).ready ->
 
     validatePastDates = () ->
         isValid = yes
-        $('.start-date').each () ->
-            $startDate = $(@)
-            $startDateParent = $startDate.closest 'div'
+        if true == isGeneralManager
+            $('.start-date').each () ->
+                $startDate = $(@)
+                $startDateParent = $startDate.closest 'div'
 
-            dateNow = new Date()
-            startDate = new Date($startDate.val())
+                dateNow = new Date()
+                startDate = new Date($startDate.val())
 
-            if startDate < dateNow
-                isValid = no
-                if $startDateParent.children('label.past-error').length is 0
-                    $startDateParent.append createErrorLabel('Start date can not be in the past.', 'past-error')
-                    $startDate.addClass 'error'
-            else
-                $startDateParent.find('label.past-error').remove()
-                $startDate.removeClass 'error'
+                if startDate < dateNow
+                    isValid = no
+                    if $startDateParent.children('label.past-error').length is 0
+                        $startDateParent.append createErrorLabel('Start date can not be in the past.', 'past-error')
+                        $startDate.addClass 'error'
+                else
+                    $startDateParent.find('label.past-error').remove()
+                    $startDate.removeClass 'error'
                 
         return isValid
         

@@ -15,6 +15,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  */
 class LeaveRequest extends AbstractBase
 {
+
     const ID_PATTERN = 'LR-{year}-{id}';
 
     /**
@@ -75,10 +76,9 @@ class LeaveRequest extends AbstractBase
      * @ORM\OneToMany(targetEntity="LRNotification", mappedBy="leaveRequest", cascade={"remove"})
      */
     protected $notifications;
-
     protected $isOverlapped;
-
     protected $rejectedGmName;
+    protected $isCreatedByGM;
 
     /**
      * Constructor
@@ -101,7 +101,7 @@ class LeaveRequest extends AbstractBase
         return $this->id;
     }
 
-   /**
+    /**
      * Set leaveRequestId
 
      * @param string $leaveRequestId
@@ -398,6 +398,29 @@ class LeaveRequest extends AbstractBase
     }
 
     /**
+     * Set isCreatedByGM
+     *
+     * @param boolean $isCreatedByGM
+     * @return Leave
+     */
+    public function setIsCreatedByGM($isCreatedByGM)
+    {
+        $this->isCreatedByGM = $isCreatedByGM;
+
+        return $this;
+    }
+
+    /**
+     * Get isCreatedByGM
+     *
+     * @return boolean
+     */
+    public function getIsCreatedByGM()
+    {
+        return $this->isCreatedByGM;
+    }
+
+    /**
      * validate leave dates overlapping
      * An existing groups option must use in the assert annotation.
      * This groups must on a property in order to this assert callback works
@@ -433,4 +456,5 @@ class LeaveRequest extends AbstractBase
             );
         }
     }
+
 }

@@ -17,7 +17,6 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Notes\StatusBundle\Entity\Status;
 use Opit\Notes\TravelBundle\Manager\AclManager;
 use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
-use Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup;
 use Opit\Notes\UserBundle\Entity\Employee;
 use Opit\Notes\LeaveBundle\Entity\Leave;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
@@ -242,11 +241,11 @@ class LeaveRequestService
      * Create a new instance of a leave request
      *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup
+     * @param $leaveRequestGroup
      * @param \Opit\Notes\UserBundle\Entity\Employee $employee
      * @return \Opit\Notes\LeaveBundle\Entity\LeaveRequest
      */
-    public function createLRInstance(LeaveRequest $leaveRequest, LeaveRequestGroup $leaveRequestGroup, Employee $employee, $isMassLeaveRequest = false)
+    public function createLRInstance(LeaveRequest $leaveRequest, $leaveRequestGroup, Employee $employee, $isMassLeaveRequest = false)
     {
         $lr = new LeaveRequest();
         $lr->setEmployee($employee);
