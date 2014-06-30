@@ -71,6 +71,12 @@
                     <i class="fa fa-trash-o fa-1x"></i>
                 </a>
                 {% endif %}
+
+                {% if isEditable %}
+                <a href="{{ path('OpitNotesHiringBundle_applicant_show', {'jobPositionId': jobPosition.id }) }}" title="Add applicant">
+                    <i class="fa fa-male fa-1x"></i>
+                </a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

@@ -96,6 +96,10 @@
         </div>
         {{ form_widget(form._token) }}
         {{ form_widget(form.create_applicant) }}
-        <a href="{{ path('OpitNotesHiringBundle_applicant_list') }}" id="cancel-button" class="button">Cancel</a>
+        {% set redirectUrl = 'OpitNotesHiringBundle_applicant_list' %}
+        {% if jobPositionId is not null %}
+            {% set redirectUrl = 'OpitNotesHiringBundle_job_position_list' %}
+        {% endif %}
+        <a href="{{ path(redirectUrl) }}" id="cancel-button" class="button">Cancel</a>
     {{ form_end(form) }}
 {% endblock %}

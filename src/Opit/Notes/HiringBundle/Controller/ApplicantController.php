@@ -41,6 +41,7 @@ class ApplicantController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $applicantId = $request->attributes->get('id');
+        $jobPositionId = $request->query->get('jobPositionId');
         $isNewApplicant = 'new' === $applicantId;
         $securityContext = $this->container->get('security.context');
         $isTeamManager = $securityContext->isGranted('ROLE_TEAM_MANAGER');
@@ -61,6 +62,12 @@ class ApplicantController extends Controller
 
         if ($isNewApplicant) {
             $applicant = new Applicant();
+            // If the job position id exists fetch the job position entity and adding to the applicant.
+            // The calling was from the job position list page.
+            if (null !== $jobPositionId) {
+                $jobPosition = $entityManager->getRepository('OpitNotesHiringBundle:JobPosition')->find($jobPositionId);
+                $applicant->setJobPosition($jobPosition);
+            }
         } else {
             $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($applicantId);
             $applicantCV = $applicant->getCv();
@@ -116,7 +123,9 @@ class ApplicantController extends Controller
                         $statusManager->addStatus($applicant, Status::CREATED, null);
                     }
 
-                    return $this->redirect($this->generateUrl('OpitNotesHiringBundle_applicant_list'));
+                    return $this->redirect($this->generateUrl(
+                        null !== $jobPositionId ? 'OpitNotesHiringBundle_job_position_list' : 'OpitNotesHiringBundle_applicant_list'
+                    ));
                 }
             } else {
                 $errors = Utils::getErrorMessages($form);
@@ -135,6 +144,7 @@ class ApplicantController extends Controller
                 'currentStatus' => $currentStatus,
                 'applicantId' => $applicantId,
                 'applicantCV' => $applicantCV,
+                'jobPositionId' => $jobPositionId,
             )
         );
     }
