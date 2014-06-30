@@ -113,7 +113,24 @@ $(document).ready ->
             $('.leave-error').remove()
             
         return isValid
-        
+
+    validateEmployeesForMLR = () ->
+        isValid = yes
+        if $('#other-employees').is(':checked') and not $('input[name="employee[]"]').is(':checked')
+            console.log 'bent'
+            isValid = no
+            if $('.leave-error').length <= 0
+                $errorContainer = $('#reply-message')
+                $errorMessage = $('<ul>').addClass('leave-error').append $('<li>').html('The employees are not selected for the mass leave request.')
+                $errorContainer
+                    .append $errorMessage
+                    .removeClass 'display-none'
+        else
+            $('#reply-message').addClass 'display-none'
+            $('.leave-error').remove()
+
+        return isValid
+
     validatePastDates = () ->
         isValid = yes
         $('.start-date').each () ->
@@ -304,7 +321,7 @@ $(document).ready ->
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validatePastDates() is yes and validateGm() is yes
+        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validatePastDates() is yes and validateGm() is yes and validateEmployeesForMLR() is yes
             $('#leaveRequestForm').submit()
             return
         
