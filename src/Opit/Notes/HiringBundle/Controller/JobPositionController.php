@@ -44,6 +44,7 @@ class JobPositionController extends Controller
         $currentUser = $securityContext->getToken()->getUser();
         $isEditable = true;
         $errors = array();
+        $externalApplicationFormUrl = '';
 
         if (!$isTeamManager) {
             throw new AccessDeniedException(
@@ -55,10 +56,20 @@ class JobPositionController extends Controller
             $jobPosition = new JobPosition();
         } else {
             $jobPosition = $entityManager->getRepository('OpitNotesHiringBundle:JobPosition')->find($jobPositionId);
-            $isEditable = ($securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() === $jobPosition->getCreatedUser()->getId());
 
             if (null === $jobPosition) {
                 throw $this->createNotFoundException('Missing job position.');
+            }
+
+            $isEditable = ($securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() === $jobPosition->getCreatedUser()->getId());
+
+            // Only show job position external url when job position is active
+            if (true === $jobPosition->getIsActive()) {
+                $externalApplicationFormUrl = $this->generateUrl(
+                    'OpitNotesHiringBundle_job_application',
+                    array('token' => $jobPosition->getExternalToken()),
+                    true
+                );
             }
         }
 
@@ -81,7 +92,9 @@ class JobPositionController extends Controller
                 $entityManager->persist($jobPosition);
                 $entityManager->flush();
 
-                $this->sendJpMessages($jobPosition, $isNewJobPosition);
+                if ($isNewJobPosition) {
+                    $this->sendJpMessages($jobPosition);
+                }
 
                 return $this->redirect($this->generateUrl('OpitNotesHiringBundle_job_position_list'));
             } else {
@@ -95,7 +108,8 @@ class JobPositionController extends Controller
                 'form' => $form->createView(),
                 'isNewJobPosition' => $isNewJobPosition,
                 'isEditable' => $isEditable,
-                'errors' => $errors
+                'errors' => $errors,
+                'externalApplicationFormUrl' => $externalApplicationFormUrl
             )
         );
     }
@@ -237,22 +251,19 @@ class JobPositionController extends Controller
      * Function to send email and notification when creating jp.
      *
      * @param \Opit\Notes\HiringBundle\Entity\JobPosition $jobPosition
-     * @param type $isNewJobPosition
      */
-    protected function sendJpMessages(JobPosition $jobPosition, $isNewJobPosition)
+    protected function sendJpMessages(JobPosition $jobPosition)
     {
-        if ($isNewJobPosition) {
-            $templateVars = array();
-            $templateVars['jobPosition'] = $jobPosition;
+        $templateVars = array();
+        $templateVars['jobPosition'] = $jobPosition;
 
-            $emailManager = $this->get('opit.component.email_manager');
-            $emailManager->setRecipient($jobPosition->getHiringManager()->getEmail());
-            $emailManager->setSubject('[NOTES] - Job position created (' . $jobPosition->getJobPositionId() . ')');
-            $emailManager->setBodyByTemplate('OpitNotesHiringBundle:Mail:jobPosition.html.twig', $templateVars);
-            $emailManager->sendMail();
+        $emailManager = $this->get('opit.component.email_manager');
+        $emailManager->setRecipient($jobPosition->getHiringManager()->getEmail());
+        $emailManager->setSubject('[NOTES] - Job position created (' . $jobPosition->getJobPositionId() . ')');
+        $emailManager->setBodyByTemplate('OpitNotesHiringBundle:Mail:jobPosition.html.twig', $templateVars);
+        $emailManager->sendMail();
 
-            $notificationManager = $this->get('opit.manager.job_position_notification_manager');
-            $notificationManager->addNewJobPositionNotification($jobPosition);
-        }
+        $notificationManager = $this->get('opit.manager.job_position_notification_manager');
+        $notificationManager->addNewJobPositionNotification($jobPosition);
     }
 }

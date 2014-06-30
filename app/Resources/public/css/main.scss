@@ -111,6 +111,10 @@
 
 /* Background color properties */
 
+.background-color-light-black{
+    background-color: $lightBlack;
+}
+
 .background-color-white{
     background-color: white;
 }
@@ -121,6 +125,10 @@
 
 .background-color-light-orange{
     background-color: $lightOrangeColor;
+}
+
+.background-color-light-yellow{
+    background-color: $lightYellow;
 }
 
 .background-color-dark-grey{
@@ -149,6 +157,10 @@
 
 .background-color-black{
     background-color: $darkBlack;
+}
+
+.background-color-aquamarine{
+    background-color: $aquamarine;
 }
 
 
@@ -187,12 +199,20 @@
 .padding-3{
     padding: 3px;
 }
+
 .padding-4{
     padding: 4px;
 }
-
 .padding-2{
     padding: 2px;
+}
+
+.padding-top-6{
+    padding-top: 6px;
+}
+
+.padding-bottom-6{
+    padding-bottom: 6px;
 }
 
 .padding-top-2{
@@ -250,12 +270,20 @@
     margin-top: 12px;
 }
 
+.margin-top-15{
+    margin-top: 15px;
+}
+
 .margin-top-20 {
     margin-top: 20px;
 }
 
 .margin-top-24 {
     margin-top: 24px;
+}
+
+.margin-top-28 {
+    margin-top: 28px;
 }
 
 .margin-top-30{
@@ -276,6 +304,10 @@
 
 .margin-right-15{
     margin-right: 15px;
+}
+
+.margin-right-20{
+    margin-right: 20px;
 }
 
 .margin-left-150{
@@ -338,6 +370,10 @@
 
 /* Width properties */
 
+.width-615{
+    width: 615px;
+}
+
 .width-420{
     width: 420px;
 }
@@ -352,6 +388,10 @@
 
 .width-200{
     width: 200px;
+}
+
+.width-240{
+    width: 240px;
 }
 
 .width-280{
@@ -388,6 +428,10 @@
 
 .width-55 {
     width: 55%;
+}
+
+.width-85 {
+    width: 85%;
 }
 
 .width-96 {
@@ -444,6 +488,10 @@
 
 /* Height properties */
 
+.height-18{
+    height: 18px;
+}
+
 .height-20{
     height: 20px;
 }
@@ -458,6 +506,10 @@
 
 .height-60{
     height: 60px;
+}
+
+.height-83{
+    height: 83px;
 }
 
 .height-100{
@@ -542,6 +594,14 @@
     @include border-radius(2px);
 }
 
+.border-radius-0-important{
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    -ms-border-radius: 0 !important;
+    -o-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
 .round-border{
     @include border-radius(100%);
 }
@@ -554,6 +614,10 @@
 
 .box-shadow-1-darkgray{
     @include box-shadow(1px, 1px, 1px, 1px, $darkerGrayColor);
+}
+
+.box-shadow-0{
+    @include box-shadow(0, 0, 0, 0, rgba(0, 0, 0, 0));
 }
 
 /* ? properties*/
@@ -637,6 +701,13 @@
     background: $snowColor;
     color: $lightGrayHover;
     @include box-shadow-disabled();
+}
+
+.button2{
+    border: 0;
+    padding: 8px 35px;
+    color: white;
+    background-color: $lightGreen;
 }
 
 .small-button {

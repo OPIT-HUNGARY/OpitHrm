@@ -1,0 +1,32 @@
+{% extends '::base.html.twig' %}
+{% block title %}
+        {{ jobPosition.jobTitle }} application form
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '@OpitNotesHiringBundle/Resources/public/css/externalApplicantion.scss'
+    output='css/opitnoteshiring/external_application.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+    <div class="width-615 background-color-light-black margin-center margin-top-15">
+        <div class="width-100 background-color-aquamarine padding-top-6 padding-bottom-6 align-center">
+            <h2 class="margin-0">{{ jobPosition.jobTitle }} application form</h2>
+        </div>
+        <div class="height-83 color-white align-center">
+            <span class="font-size-18 display-inline-block margin-top-28">
+                <strong>Successfully applied for Senior PHP Developer</strong>
+            </span>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    <footer class="color-dark-grey box-shadow-0 align-center">
+        <a href="{{ path('OpitNotesUserBundle_security_login') }}" class="color-dark-grey">NOTES 2014</a> - v1.1.0-beta  -  An initiative of <a href="http://opit.hu" class="color-dark-grey">OPIT Consulting KFT</a>, Hungary
+    </footer>
+{% endblock %}

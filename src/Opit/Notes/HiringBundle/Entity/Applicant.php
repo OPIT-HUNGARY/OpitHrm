@@ -105,7 +105,7 @@ class Applicant extends AbstractBase
     protected $states;
 
     /**
-     * @ORM\OneToMany(targetEntity="Applicant", mappedBy="applicant", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="ApplicantNotification", mappedBy="applicant", cascade={"remove"})
      */
     protected $notifications;
 

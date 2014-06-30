@@ -8,12 +8,14 @@
         <parameter key="opit.manager.job_position_notification_manager.class">Opit\Notes\HiringBundle\Manager\JobPositionNotificationManager</parameter>
         <parameter key="opit.manager.applicant_status_manager.class">Opit\Notes\HiringBundle\Manager\ApplicantStatusManager</parameter>
         <parameter key="opit.manager.applicant_notification_manager.class">Opit\Notes\HiringBundle\Manager\ApplicantNotificationManager</parameter>
+        <parameter key="opit.manager.external_application_email_manager.class">Opit\Notes\HiringBundle\Manager\ExternalApplicationEmailManager</parameter>
     </parameters>
     <services>
         <service id="opit.manager.job_position_notification_manager" class="%opit.manager.job_position_notification_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
         <service id="opit.listener.job_position_post_listener" class="%opit.listener.job_position_post_listener.class%">
+            <argument type="service" id="security.encoder_factory" />
             <tag name="doctrine.event_listener" event="postPersist" />
         </service>
         <service id="opit.manager.applicant_status_manager" class="%opit.manager.applicant_status_manager.class%">
@@ -29,6 +31,10 @@
         </service>
         <service id="opit.manager.applicant_notification_manager" class="%opit.manager.applicant_notification_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.manager.external_application_email_manager" class="%opit.manager.external_application_email_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="opit.component.email_manager" />
         </service>
     </services>
 </container>

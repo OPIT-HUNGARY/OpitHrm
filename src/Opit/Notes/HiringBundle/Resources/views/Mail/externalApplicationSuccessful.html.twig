@@ -1,0 +1,36 @@
+{% set jobPosition = templateVars['jobPosition'] %}
+{% set applicant = templateVars['applicant'] %}
+<body style="font-size:12px;font-family: 'Arial'">
+    <table cellpadding="5" style="width: 400px; font-size: 12px;">
+        <tr>
+            <td>
+                Dear {{ applicant.name }},
+            </td>
+        </tr>
+        <tr>
+            <td>
+                You have successfully applied for the following job.
+            </td>
+        </tr>
+    </table>
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c; margin-left: 5px;">
+        <tr>
+            <td colspan="2"><font style="color:#94c11c; font-size: 13px;"><u>Job position info</u></font><br /></td>
+        </tr>
+        <tr>
+            <td width="30%"><strong>Job position id:</strong></td>
+            <td>{{ jobPosition.jobPositionId }}<br /></td>
+        </tr>
+        <tr>
+            <td width="30%"><strong>Job position name:</strong></td>
+            <td>{{ jobPosition.jobTitle }}<br /></td>
+        </tr>
+        <tr>
+            <td width="30%"><strong>Job description:</strong></td>
+            <td>{{ jobPosition.description }}<br /></td>
+        </tr>
+    </table>
+    <p>
+        Autosent by NOTES 2014 - An initiative of <a href="http://www.opit.hu/">OPIT Consulting KFT</a>, Hungary
+    </p>
+</body>

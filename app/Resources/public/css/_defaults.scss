@@ -15,7 +15,8 @@ $boxShadowColor: rgba(160, 160, 160, 1);
 $greyColor: rgba(140, 140, 140, 1);
 $darkGrey: rgba(100, 100, 100, 1);
 $darkerGrayColor: rgba(80, 80, 80, 1);
-$darkBlack: #000;
+$darkBlack: rgb(0, 0, 0);
+$lightBlack: rgba(0, 0, 0, 0.8);
 $aquamarine: rgb(127, 255, 212);
 $aquamarineTransparent: rgba(127, 255, 212, 0.8);
 
@@ -35,6 +36,8 @@ $buttonDeleteLightColor: rgba(220, 10, 10, 1);
 $buttonDeleteDarkColor: rgba(140, 10, 10, 1);
 $buttonAddLightColor: rgba(10, 200, 10, 1);
 $buttonAddDarkColor: rgba(10, 140, 10, 1);
+
+$lightYellow: rgb(250, 255, 189);
 
 $defaultFontSize: 13px;
 $defaultFontSize: .9em;

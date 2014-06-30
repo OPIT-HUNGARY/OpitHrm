@@ -34,7 +34,7 @@
             <li>{{ error }}</li>
         {% endfor %}
         </ul>
-    </div>    
+    </div>
     
     <form action="{{ path('OpitNotesHiringBundle_job_position_show', { 'id': app.request.get('id')}) }}" method="post" id="jobPositionForm" class="{% if 0 == isEditable %}disabled{% endif %}">
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20 padding-10">
@@ -62,6 +62,14 @@
                     {{ form_widget(form.isActive) }}
                     </div>
                 </div>
+                {% if '' != externalApplicationFormUrl %}
+                <div class="display-block margin-bottom-10">
+                    <label>Job application external link</label>
+                    <a href="{{ externalApplicationFormUrl }}" target="_blank" title="Link to job application page">
+                        {{ externalApplicationFormUrl }}
+                    </a>
+                </div>
+                {% endif %}
         </div>
         {{ form_widget(form.hiring_manager) }}
         {{ form_widget(form._token) }}

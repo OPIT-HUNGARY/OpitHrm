@@ -221,14 +221,17 @@ class ApplicantController extends Controller
 
         foreach ($ids as $id) {
             $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($id);
-
-            if (!$securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() !== $applicant->getCreatedUser()->getId()) {
-                throw new AccessDeniedException(
-                'Access denied for applicant.'
-                );
-            } else {
-                unlink($applicant->getAbsolutePath());
+            // If user is admin or applicant has no created user or created use is current user
+            if ($securityContext->isGranted('ROLE_ADMIN') || null === $applicant->getCreatedUser() || $currentUser->getId() === $applicant->getCreatedUser()->getId()) {
+                $cv = $applicant->getAbsolutePath();
+                if (file_exists($cv)) {
+                    unlink($cv);
+                }
                 $entityManager->remove($applicant);
+            } else {
+                throw new AccessDeniedException(
+                    'Access denied for applicant.'
+                );
             }
         }
         $entityManager->flush();

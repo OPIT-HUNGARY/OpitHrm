@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\Validator\ExecutionContextInterface;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -83,6 +83,12 @@ class JobPosition extends AbstractBase
      * @ORM\OneToMany(targetEntity="Applicant", mappedBy="jobPosition")
      **/
     protected $applicants;
+
+    /**
+     * @var text
+     * @ORM\Column(name="external_token", type="string", nullable=true)
+     */
+    protected $externalToken;
 
     /**
      * Constructor
@@ -332,6 +338,29 @@ class JobPosition extends AbstractBase
     }
 
     /**
+     * Get external token
+     *
+     * @return type
+     */
+    public function getExternalToken()
+    {
+        return $this->externalToken;
+    }
+
+    /**
+     * Set external token
+     *
+     * @param type $externalToken
+     * @return \Opit\Notes\HiringBundle\Entity\JobPosition
+     */
+    public function setExternalToken($externalToken)
+    {
+        $this->externalToken = $externalToken;
+
+        return $this;
+    }
+
+    /**
      * Validate if a job position's no. of positions is bigger then 0.
      *
      * @Assert\Callback
@@ -344,5 +373,36 @@ class JobPosition extends AbstractBase
                 sprintf('Number of positions can not be smaller equal to 0.')
             );
         }
+    }
+
+    /**
+     * Upload CV for applicant and remove old CV if there was one
+     *
+     * @ORM\PostPersist()
+     */
+    public function setJpExternalToken(LifecycleEventArgs $eventArgs)
+    {
+
+        $entityManager = $eventArgs->getEntityManager();
+        if (null === $this->getCvFile()) {
+            return;
+        }
+
+        if (null !== $this->getId()){
+            unlink($this->getUploadRootDir(). '/' . $this->getCV());
+        }
+
+        $now = new \DateTime();
+        $originalCVFileName = explode('.', $this->getCvFile()->getClientOriginalName());
+        $originalCVFileName[count($originalCVFileName) - 2] = $originalCVFileName[count($originalCVFileName) - 2] . '_' . $now->getTimestamp();
+        $originalCVFileName = implode('.', $originalCVFileName);
+
+        $this->getCvFile()->move(
+            $this->getUploadRootDir(),
+            $originalCVFileName
+        );
+
+        $this->cv = $originalCVFileName;
+        $this->cvFile = null;
     }
 }

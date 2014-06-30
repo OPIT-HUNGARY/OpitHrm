@@ -57,42 +57,42 @@
     {% endif %}
     {{ form_start(form, {'method': 'POST', 'attr': {'id': 'applicantForm', 'class': disabled}}) }}
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20 padding-10">
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.jobPositionAc) }}
-                    {{ form_widget(form.jobPositionAc) }}
-                    {{ form_widget(form.jobPosition) }}
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.jobPositionAc) }}
+                {{ form_widget(form.jobPositionAc) }}
+                {{ form_widget(form.jobPosition) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.phoneNumber) }}
+                {{ form_widget(form.phoneNumber) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.keywords) }}
+                {{ form_widget(form.keywords) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.applicationDate) }}
+                {{ form_widget(form.applicationDate) }}
+            </div>
+            <div class="display-block margin-bottom-10">
+                {{ form_label(form.cvFile) }}
+                {{ form_widget(form.cvFile) }}
+                {% if '' != applicantCV %}
+                <div class="display-block">
+                    <a href="{{ path('OpitNotesHiringBundle_applicant_cv_download', { 'id': applicantId}) }}" title="Download CV" class="display-inline-block color-blue">
+                        {{ applicantCV }}
+                    </a>
                 </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.name) }}
-                    {{ form_widget(form.name) }}
-                </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.email) }}
-                    {{ form_widget(form.email) }}
-                </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.phoneNumber) }}
-                    {{ form_widget(form.phoneNumber) }}
-                </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.keywords) }}
-                    {{ form_widget(form.keywords) }}
-                </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.applicationDate) }}
-                    {{ form_widget(form.applicationDate) }}
-                </div>
-                <div class="display-block margin-bottom-10">
-                    {{ form_label(form.cvFile) }}
-                    {{ form_widget(form.cvFile) }}
-                    {% if '' != applicantCV %}
-                    <div class="display-block">
-                        <a href="{{ path('OpitNotesHiringBundle_applicant_cv_download', { 'id': applicantId}) }}" title="Download CV" class="display-inline-block color-blue">
-                            {{ applicantCV }}
-                        </a>
-                    </div>
-                    {% endif %}
-                </div>
+                {% endif %}
+            </div>
         </div>
         {{ form_widget(form._token) }}
         {{ form_widget(form.create_applicant) }}

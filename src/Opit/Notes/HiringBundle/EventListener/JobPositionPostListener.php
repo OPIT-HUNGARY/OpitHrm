@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -24,6 +24,18 @@ use Opit\Notes\HiringBundle\Entity\JobPosition;
  */
 class JobPositionPostListener
 {
+    protected $factory;
+
+    public function __construct($factory)
+    {
+        $this->factory = $factory;
+    }
+
+    /**
+     * Method to insert job position id and external token after persisting job position.
+     *
+     * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
+     */
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -31,13 +43,19 @@ class JobPositionPostListener
 
         if ($entity instanceof JobPosition) {
             $jpIdPattern = 'JP-{year}-{id}';
+            $jpId = $entity->getId();
             $jobPositionId = str_replace(
                 array('{year}', '{id}'),
-                array(date('y'), sprintf('%05d', $entity->getId())),
+                array(date('y'), sprintf('%05d', $jpId)),
                 $jpIdPattern
             );
 
+            $encoder = $this->factory->getEncoder($entity);
+            $jobPositionExternalToken = str_replace('/', '', $encoder->encodePassword(serialize($jpId) . date('Y-m-d H:i:s'), ''));
+
             $entity->setJobPositionId($jobPositionId);
+            $entity->setExternalToken($jobPositionExternalToken);
+
             $entityManager->persist($entity);
             $entityManager->flush();
         }
