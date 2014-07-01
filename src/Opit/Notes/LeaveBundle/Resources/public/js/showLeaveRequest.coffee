@@ -131,27 +131,23 @@ $(document).ready ->
 
         return isValid
 
-    validatePastDates = () ->
-        isValid = yes
-        if true == isGeneralManager
-            $('.start-date').each () ->
-                $startDate = $(@)
-                $startDateParent = $startDate.closest 'div'
+    isNotMassLR = () ->
+        if $('.company-employees:checked').length > 1 then return false else return true
 
-                dateNow = new Date()
-                startDate = new Date($startDate.val())
+    hasPastDates = () ->
+        isValid = no
+        $('.start-date').each () ->
+            $startDate = $(@)
+            $startDateParent = $startDate.closest 'div'
 
-                if startDate < dateNow
-                    isValid = no
-                    if $startDateParent.children('label.past-error').length is 0
-                        $startDateParent.append createErrorLabel('Start date can not be in the past.', 'past-error')
-                        $startDate.addClass 'error'
-                else
-                    $startDateParent.find('label.past-error').remove()
-                    $startDate.removeClass 'error'
-                
+            dateNow = new Date()
+            startDate = new Date($startDate.val())
+
+            if startDate < dateNow
+                isValid = yes
+
         return isValid
-        
+
     validateGm = () ->
         isValid = yes
         $generalManger = $('#leave_request_general_manager')
@@ -322,7 +318,20 @@ $(document).ready ->
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validatePastDates() is yes and validateGm() is yes and validateEmployeesForMLR() is yes
-            $('#leaveRequestForm').submit()
-            return
+        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validateGm() is yes and validateEmployeesForMLR() is yes
+            if hasPastDates() is yes and isNotMassLR()
+                message = 'Creating a past leave request will effect the time sheet of that period. Do you want to continue?'
+                $('<div id="dialog-show-past-lr-warning"></div>').html(message)
+                    .dialog
+                        title: '<i class="fa fa fa-exclamation-triangle"></i> Creating past leave request'
+                        width: 550
+                        maxHeight: $(window).outerHeight()-100
+                        modal: on
+                        buttons:
+                            Yes: ->
+                                $('#leaveRequestForm').submit()
+                            No: ->
+                                $('#dialog-show-past-lr-warning').dialog 'destroy'        
+            else
+                $('#leaveRequestForm').submit()
         

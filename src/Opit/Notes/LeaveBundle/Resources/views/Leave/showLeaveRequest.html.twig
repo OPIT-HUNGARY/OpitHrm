@@ -35,7 +35,6 @@
                     }).call(this);
                 {% endif %}
             {% endif %}
-            var isGeneralManager = '{{ is_granted('ROLE_GENERAL_MANAGER') }}';
         </script>
     {% endjavascripts %}
 {% endblock %}
@@ -51,7 +50,7 @@
     <h1>
         {% if not isNewLeaveRequest == true %}
         <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
-                <i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>
+            <i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>
         </a>
         {% endif %}
         {% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request
