@@ -18,9 +18,8 @@
 {% endblock %}
 {% block header %}
     <header>
-        <a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}" id="siteLogo" class="float-left color-black text-decoration-none margin-bottom-20 margin-left-20">
-            <span class="display-block">NOTES</span>
-            <span class="color-dark-grey">New OPIT Travel Expense System</span>
+        <a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}" id="siteLogo" class="float-left color-black text-decoration-none margin-bottom-20 margin-left-20 margin-top-10">
+            <span class="display-block"><img src="{{ asset('images/logo.png') }}" width="105" alt="" /></span>
         </a>
         <div id="notifications">
             <i class="fa fa-bell-o"></i>
