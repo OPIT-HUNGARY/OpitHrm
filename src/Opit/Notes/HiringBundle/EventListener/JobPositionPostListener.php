@@ -13,6 +13,8 @@ namespace Opit\Notes\HiringBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Opit\Notes\HiringBundle\Entity\JobPosition;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Description of NotificationExceptionListener
@@ -25,10 +27,12 @@ use Opit\Notes\HiringBundle\Entity\JobPosition;
 class JobPositionPostListener
 {
     protected $factory;
+    protected $router;
 
-    public function __construct($factory)
+    public function __construct($factory, RouterInterface $router)
     {
         $this->factory = $factory;
+        $this->router = $router;
     }
 
     /**
@@ -58,6 +62,24 @@ class JobPositionPostListener
 
             $entityManager->persist($entity);
             $entityManager->flush();
+        }
+    }
+
+    /**
+     * Method to initalize the external link property of job position.
+     *
+     * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
+     */
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        $entityManager = $args->getEntityManager();
+
+        if ($entity instanceof JobPosition) {
+            $link = $this->router->generate("OpitNotesHiringBundle_job_application", array('token' => $entity->getExternalToken()), UrlGeneratorInterface::ABSOLUTE_URL);
+            $entity->setExternalLink($link);
+
+            $entityManager->persist($entity);
         }
     }
 }

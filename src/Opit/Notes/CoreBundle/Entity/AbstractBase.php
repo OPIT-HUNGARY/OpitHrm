@@ -14,6 +14,7 @@ namespace Opit\Notes\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * AbstractBase class is sharing properties equal for all entities
@@ -26,6 +27,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @package Opit
  * @subpackage Notes
  *
+ * @Serializer\ExclusionPolicy("all")
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */

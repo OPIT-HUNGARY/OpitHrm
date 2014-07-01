@@ -38,7 +38,7 @@ class FirstLoginListener
      */
     public function __construct(SecurityContext $securityContext, Router $router)
     {
-		$this->securityContext = $securityContext;
+	$this->securityContext = $securityContext;
         $this->router = $router;
 	}
     
@@ -49,8 +49,9 @@ class FirstLoginListener
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (HttpKernel::MASTER_REQUEST != $event->getRequestType()) {
-            // don't do anything if it's not the master request
+        // Don't do anything if it's not the master request or another firewall than "secured"
+        $isSecuredArea = (bool) preg_match('/^\/secured/', $event->getRequest()->getBasePath());
+        if (HttpKernel::MASTER_REQUEST != $event->getRequestType() || !$isSecuredArea) {
             return;
         }
         

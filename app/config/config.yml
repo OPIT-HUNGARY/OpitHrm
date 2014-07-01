@@ -106,3 +106,28 @@ stof_doctrine_extensions:
             softdeleteable: true
             timestampable: true
             blameable:     true
+
+# Sensio Extra Configuration
+sensio_framework_extra:
+    # For the Rest API the view annotations should be disabled
+    # in order to the FOSRestBundle is able to use the view annotations.
+    # @Template() annotations will be delegated by the fos_rest response listener.
+    #
+    # @see https://github.com/FriendsOfSymfony/FOSRestBundle/blob/master/Resources/doc/3-listener-support.md
+    view: { annotations: false }
+
+# Rest API Configuration
+fos_rest:
+    param_fetcher_listener: true
+    body_listener: true
+    format_listener: true
+    routing_loader:
+        default_format: json
+    view:
+        view_response_listener: force
+        formats:
+            json:   true
+            xml:    true
+    format_listener:
+        rules:
+            - { path: ^/, priorities: [ json, xml ], prefer_extension: false }

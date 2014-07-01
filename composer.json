@@ -33,7 +33,9 @@
         "jms/security-extra-bundle": "dev-master",
         "tecnick.com/tcpdf": "6.0.053",
         "phpunit/phpunit": "3.7.*",
-        "zendframework/zend-ldap": "~2.3"
+        "zendframework/zend-ldap": "~2.3",
+        "friendsofsymfony/rest-bundle": "1.*",
+        "jms/serializer-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

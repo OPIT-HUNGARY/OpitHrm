@@ -16,7 +16,9 @@
         </service>
         <service id="opit.listener.job_position_post_listener" class="%opit.listener.job_position_post_listener.class%">
             <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="router" />
             <tag name="doctrine.event_listener" event="postPersist" />
+            <tag name="doctrine.event_listener" event="postLoad" />
         </service>
         <service id="opit.manager.applicant_status_manager" class="%opit.manager.applicant_status_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />

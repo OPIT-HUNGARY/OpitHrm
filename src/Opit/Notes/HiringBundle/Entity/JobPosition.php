@@ -8,10 +8,12 @@ use Opit\Notes\CoreBundle\Entity\AbstractBase;
 use Symfony\Component\Validator\ExecutionContextInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * JobPosition
  *
+ * @Serializer\ExclusionPolicy("all")
  * @ORM\Table(name="notes_job_position")
  * @ORM\Entity(repositoryClass="Opit\Notes\HiringBundle\Entity\JobPositionRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
@@ -34,6 +36,8 @@ class JobPosition extends AbstractBase
 
     /**
      * @var text
+     *
+     * @Serializer\Expose
      * @ORM\Column(name="job_position_id", type="string", length=11, nullable=true)
      */
     protected $jobPositionId;
@@ -41,6 +45,7 @@ class JobPosition extends AbstractBase
     /**
      * @var \Text
      *
+     * @Serializer\Expose
      * @ORM\Column(name="job_title", type="text")
      * @Assert\NotBlank(message="Job title can not be empty.")
      */
@@ -62,6 +67,7 @@ class JobPosition extends AbstractBase
     /**
      * @var \Text
      *
+     * @Serializer\Expose
      * @ORM\Column(name="description", type="text")
      * @Assert\NotBlank(message="Description can not be empty.")
      */
@@ -89,6 +95,12 @@ class JobPosition extends AbstractBase
      * @ORM\Column(name="external_token", type="string", nullable=true)
      */
     protected $externalToken;
+
+    /**
+     * @var string
+     * @Serializer\Expose
+     */
+    protected $externalLink;
 
     /**
      * Constructor
@@ -246,6 +258,29 @@ class JobPosition extends AbstractBase
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set externalLink
+     *
+     * @param string $externalLink
+     * @return JobPosition
+     */
+    public function setExternalLink($externalLink)
+    {
+        $this->externalLink = $externalLink;
+
+        return $this;
+    }
+
+    /**
+     * Get externalLink
+     *
+     * @return string
+     */
+    public function getExternalLink()
+    {
+        return $this->externalLink;
     }
 
     /**
