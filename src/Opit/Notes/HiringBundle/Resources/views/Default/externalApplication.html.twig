@@ -79,6 +79,6 @@
 {% endblock %}
 {% block footer %}
     <footer class="color-dark-grey box-shadow-0 align-center">
-        <a href="{{ path('OpitNotesUserBundle_security_login') }}" class="color-dark-grey">OPIT-HRM 2014</a> - v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}  -  An initiative of <a href="http://opit.hu" class="color-dark-grey">OPIT Consulting KFT</a>, Hungary
+        <a href="{{ path('OpitNotesUserBundle_security_login') }}" class="color-dark-grey">{% if (application_name != null and application_name != 'OPIT-HRM') %}{{ application_name }}{% else %}OPIT-HRM{% endif %} 2014</a> - v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}  -  An initiative of <a href="http://opit.hu" class="color-dark-grey">OPIT Consulting KFT</a>, Hungary
     </footer>
 {% endblock %}

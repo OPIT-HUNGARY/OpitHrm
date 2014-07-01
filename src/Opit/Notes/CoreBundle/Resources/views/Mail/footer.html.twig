@@ -3,7 +3,7 @@
         <td>
             <br />
             Thanks,<br />
-            OPIT-HRM Team
+            {% if (application_name != null and application_name != 'OPIT-HRM') %}{{ application_name }}{% else %}OPIT-HRM{% endif %} Team
         </td>
     </tr>
     <tr>

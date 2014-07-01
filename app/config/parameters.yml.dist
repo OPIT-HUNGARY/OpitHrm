@@ -35,3 +35,5 @@ parameters:
     lunch_time_in_minutes: ~
 
     mail_sender: 'noreply@application'
+
+    application_name: OPIT-HRM

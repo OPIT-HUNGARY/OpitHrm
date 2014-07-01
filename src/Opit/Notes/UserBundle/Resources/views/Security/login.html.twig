@@ -18,7 +18,13 @@
 {% block body %}
     <div id="mainWrapper" class="margin-center">
         <div id="welcomeWrapper" class="float-left">
-            <div id="welcomeText" class="color-black align-left"><img src="{{ asset('images/logo.png') }}" width="170" alt="" /></div>
+            <div id="welcomeText" class="color-black align-left">
+                {% if (application_name != null and application_name != 'OPIT-HRM') %}
+                    {{ application_name }}
+                {% else %}
+                    <img src="{{ asset('images/logo.png') }}" width="170" alt="" />
+                {% endif %}
+            </div>
         </div>
         <div id="featuresForm" class="float-right">
 
