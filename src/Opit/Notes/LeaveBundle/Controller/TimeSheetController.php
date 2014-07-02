@@ -168,7 +168,7 @@ class TimeSheetController extends Controller
         // Prepare and send email to payroll(s).
         $mailer->setRecipient($payrollAddresses);
         $mailer->setSubject(
-            '[NOTES] - ' . $year . '-' . $month . ' timesheet is available'
+            '[OPIT-HRM] - ' . $year . '-' . $month . ' timesheet is available'
         );
 
         $mailer->setBodyByTemplate(

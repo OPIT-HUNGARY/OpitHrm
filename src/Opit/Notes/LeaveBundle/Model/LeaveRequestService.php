@@ -308,14 +308,14 @@ class LeaveRequestService
 
         if (null === $status) {
             $this->mailer->setSubject(
-                '[NOTES] - System leave requests created'
+                '[OPIT-HRM] - System leave requests created'
             );
         } else {
             $templateVariables['statusName'] = $status->getName();
             $templateVariables['isForApproval'] = Status::FOR_APPROVAL === $status->getId() ? true : false;
 
             $this->mailer->setSubject(
-                '[NOTES] - System leave request - ' . $status->getName() . ' (' . $leaveRequest->getLeaveRequestId() . ')'
+                '[OPIT-HRM] - System leave request - ' . $status->getName() . ' (' . $leaveRequest->getLeaveRequestId() . ')'
             );
         }
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:massLeaveRequests.html.twig', array_merge($templateVariables, $unpaidLeaveDetails));

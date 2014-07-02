@@ -92,11 +92,11 @@ class ApplicantStatusManager extends StatusManager
         $this->mailer->setRecipient($recipient);
         if (Status::CREATED === $status->getId()) {
             $this->mailer->setSubject(
-                '[NOTES] - New applicant created (' . $resource->getName() . ')'
+                '[OPIT-HRM] - New applicant created (' . $resource->getName() . ')'
             );
         } else {
             $this->mailer->setSubject(
-                '[NOTES] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
+                '[OPIT-HRM] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
             );
         }
 

@@ -163,7 +163,7 @@ class TravelStatusManager extends StatusManager
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-           '[NOTES] - ' .$subjectTravelType
+           '[OPIT-HRM] - ' .$subjectTravelType
             . ' status changed - ' . $statusName .' ('. $travelRequest->getTravelRequestId().')'
         );
 

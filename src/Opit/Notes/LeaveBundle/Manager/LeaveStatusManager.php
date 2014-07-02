@@ -204,7 +204,7 @@ class LeaveStatusManager extends StatusManager
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-            '[NOTES] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
+            '[OPIT-HRM] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
         );
 
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:leaveRequest.html.twig', $templateVariables);

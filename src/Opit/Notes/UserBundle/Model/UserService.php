@@ -47,10 +47,10 @@ class UserService
      */
     public function sendNewPasswordMail(UserInterface $user, $isReset = false)
     {
-        $subject = '[NOTES] - New account created';
+        $subject = '[OPIT-HRM] - New account created';
         $template = 'newAccount';
         if ($isReset) {
-            $subject = '[NOTES] - Password reset';
+            $subject = '[OPIT-HRM] - Password reset';
             $template = 'passwordReset';
         }
 
