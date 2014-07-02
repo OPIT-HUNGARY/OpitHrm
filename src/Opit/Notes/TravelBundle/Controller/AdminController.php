@@ -40,7 +40,7 @@ class AdminController extends Controller
     /**
      * List expense types
      *
-     * @Route("/secured/admin/travelexpensetype/list", name="OpitNotesTravelBundle_admin_travelexpensetype_list")
+     * @Route("/travel/admin/travelexpensetype/list", name="OpitNotesTravelBundle_admin_travelexpensetype_list")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -76,7 +76,7 @@ class AdminController extends Controller
     /**
      * Show expense type
      *
-     * @Route("/secured/admin/travelexpensetype/show/{id}", name="OpitNotesTravelBundle_admin_travelexpensetype_show", requirements={ "id" = "new|\d+"})
+     * @Route("/travel/admin/travelexpensetype/show/{id}", name="OpitNotesTravelBundle_admin_travelexpensetype_show", requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
@@ -111,7 +111,7 @@ class AdminController extends Controller
     }
 
     /**
-     * @Route("/secured/admin/expensetype/delete", name="OpitNotesTravelBundle_admin_expensetype_delete")
+     * @Route("/travel/admin/expensetype/delete", name="OpitNotesTravelBundle_admin_expensetype_delete")
      * @Secure(roles="ROLE_ADMIN")
      * @Method({"POST"})
      * @Template()
@@ -147,7 +147,7 @@ class AdminController extends Controller
     /**
      * To generate list per diem
      *
-     * @Route("/secured/admin/list/perdiem", name="OpitNotesTravelBundle_admin_list_perdiem")
+     * @Route("/travel/admin/list/perdiem", name="OpitNotesTravelBundle_admin_list_perdiem")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -167,7 +167,7 @@ class AdminController extends Controller
     /**
      * To show per diem
      *
-     * @Route("/secured/admin/show/perdiem/{id}", name="OpitNotesTravelBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
+     * @Route("/travel/admin/show/perdiem/{id}", name="OpitNotesTravelBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
@@ -196,7 +196,7 @@ class AdminController extends Controller
     /**
      * To save per diem
      *
-     * @Route("/secured/admin/save/perdiem", name="OpitNotesTravelBundle_admin_save_perdiem")
+     * @Route("/travel/admin/save/perdiem", name="OpitNotesTravelBundle_admin_save_perdiem")
      * @Secure(roles="ROLE_ADMIN")
      * @Template()
      */
