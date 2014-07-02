@@ -168,6 +168,18 @@ $.extend true, $(document).data('notes'),
             $(document).data('notes').funcs.initDeleteMultipleListener()
         
         initPager: () ->
+            paginateAction = ($form, requestUrl, requestData) ->
+                $.ajax
+                    method: 'POST'
+                    url: requestUrl
+                    data: requestData
+                .done (data) ->
+                    if data.indexOf('error') < 0
+                        $('#list-table').parent().replaceWith data
+                    $(document).data('notes').funcs.reInitializeListTableListeners()
+                    $field = $('#list-table').find('[data-field="' + $form.find('#order_field').val() + '"]')
+                    $field.addClass 'fa-sort-' + $form.find('#order_dir').val()
+
             $pager = $('#pager')
             selectedPageOffset = $pager.data 'offset'
             maxVisiblepages = $pager.data 'max'
@@ -190,18 +202,9 @@ $.extend true, $(document).data('notes'),
                 
                 $form = $('#searchFormWrapper').find 'form'
                 requestData = "offset=#{ offset - 1 }"
-                
-                if $form.formIsEmpty() is yes
-                    requestData = requestData + '&' + $form.serialize()
-               
-                $.ajax
-                    method: 'POST'
-                    url: requestUrl
-                    data: requestData
-                .done (data) ->
-                    if data.indexOf('error') < 0
-                        $('#list-table').parent().replaceWith data                                   
-                    $(document).data('notes').funcs.reInitializeListTableListeners()
+                requestData = requestData + '&' + $form.serialize()
+
+                paginateAction $form, requestUrl, requestData
 
             $('#pager i').on 'mousedown', (event) ->
                 self = $(@)
@@ -216,17 +219,10 @@ $.extend true, $(document).data('notes'),
 
                 $form = $('#searchFormWrapper').find 'form'
                 requestData = "offset=#{ offset - 1 }"
+                requestData = requestData + '&' + $form.serialize()
 
-                if $form.formIsEmpty() is yes
-                    requestData = requestData + '&' + $form.serialize()
+                paginateAction $form, requestUrl, requestData
 
-                $.ajax
-                    method: 'POST'
-                    url: requestUrl
-                    data: requestData
-                .done (data) ->
-                    $('#list-table').parent().replaceWith data
-                    $(document).data('notes').funcs.reInitializeListTableListeners()
         resetAndSelectSingle: ($element, container = '#list-table') ->
             # Resetting any prior selections first
             $element.closest(container).find(':checkbox')

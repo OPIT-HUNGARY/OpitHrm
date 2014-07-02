@@ -52,6 +52,11 @@ class LeaveRequest extends AbstractBase
     protected $leaveRequestId;
 
     /**
+     * @var text
+     */
+    protected $parentLeaveRequestId;
+
+    /**
      * @ORM\OneToMany(targetEntity="StatesLeaveRequests", mappedBy="leaveRequest", cascade={"persist", "remove"})
      */
     protected $states;
@@ -122,6 +127,29 @@ class LeaveRequest extends AbstractBase
     public function getLeaveRequestId()
     {
         return $this->leaveRequestId;
+    }
+
+    /**
+     * Set parentLeaveRequestId
+
+     * @param string $parentLeaveRequestId
+     * @return LeaveRequest
+     */
+    public function setParentLeaveRequestId($parentLeaveRequestId = null)
+    {
+        $this->parentLeaveRequestId = $parentLeaveRequestId;
+
+        return $this;
+    }
+
+    /**
+     * Get leave request id
+     *
+     * @return string
+     */
+    public function getParentLeaveRequestId()
+    {
+        return $this->parentLeaveRequestId;
     }
 
     /**

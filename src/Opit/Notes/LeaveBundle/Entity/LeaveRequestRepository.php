@@ -30,9 +30,12 @@ class LeaveRequestRepository extends EntityRepository
      */
     public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
     {
-        $orderParams = isset($parameters['order']) ? $parameters['order'] : array();
+        $orderParams = isset($parameters['order']) ? $parameters['order'] : array(
+            'field' => 'lr.id',
+            'dir' => 'ASC'
+        );
         $searchParams = isset($parameters['search']) ? $parameters['search'] : array();
-        
+
         $dq = $this->createQueryBuilder('lr')
             ->innerJoin('lr.leaves', 'l')
             ->innerJoin('lr.employee', 'e')
@@ -47,7 +50,7 @@ class LeaveRequestRepository extends EntityRepository
             $dq->andWhere('l.endDate <= :endDate');
             $dq->setParameter(':endDate', $searchParams['endDate']);
         }
-        
+
         if (isset($searchParams['email']) && $searchParams['email'] !== '') {
             $dq->andWhere('u.email LIKE :email');
             $dq->setParameter(':email', '%' . $searchParams['email']. '%');
@@ -61,7 +64,7 @@ class LeaveRequestRepository extends EntityRepository
             $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
             $dq->setParameter(':leaveId', '%'.$searchParams['leaveId'].'%');
         }
-        
+
         if ($pagnationParameters['isGeneralManager'] || $pagnationParameters['isAdmin']) {
             $statusExpr = $dq->expr()->orX(
                 $dq->expr()->andX(
@@ -81,9 +84,10 @@ class LeaveRequestRepository extends EntityRepository
             $dq->setParameter(':employee', $pagnationParameters['employee']);
         }
 
-        if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
-            $dq->orderBy($orderParams['field'], $orderParams['dir']);
-        }
+        // Order the result, mass leave request needs to be opposite of grouping
+        $dq->addOrderBy('lr.leaveRequestGroup', $orderParams['dir'])
+            ->addOrderBy('lr.isMassLeaveRequest', (strtoupper($orderParams['dir']) == 'ASC') ? 'DESC' : 'ASC')
+            ->addOrderBy($orderParams['field'], $orderParams['dir']);
 
         $dq->setFirstResult($pagnationParameters['firstResult']);
         $dq->setMaxResults($pagnationParameters['maxResults']);
@@ -182,7 +186,7 @@ class LeaveRequestRepository extends EntityRepository
 
     /**
      * Summarize number of leave days an employee has took
-     * 
+     *
      * @param integer $employeeId
      * @param bool $incNonAnnualEntLeaves decides to include or not leaves not to be subtracted from annual leaves
      * @return type

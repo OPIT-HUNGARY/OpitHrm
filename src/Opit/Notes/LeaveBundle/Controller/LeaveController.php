@@ -78,10 +78,14 @@ class LeaveController extends Controller
         $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
 
-        $massLeaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
-            ->findBy(array('isMassLeaveRequest' => 1));
-        foreach ($massLeaveRequests as $massLeaveRequest) {
-            $parentsOfGroupLRs[$massLeaveRequest->getLeaveRequestGroup()->getId()] = $massLeaveRequest;
+        // Set parent leave request ids
+        foreach ($leaveRequests as $leaveRequest) {
+            if ($lrg = $leaveRequest->getLeaveRequestGroup()) {
+                $massLeaveRequest = $lrg->getLeaveRequests(array('isMassLeaveRequest' => 1), array('limit' => 1));
+                if (!$leaveRequest->getIsMassLeaveRequest()) {
+                     $leaveRequest->setParentLeaveRequestId($massLeaveRequest[0]->getLeaveRequestId());
+                }
+            }
         }
 
         $listingRights = $this->get('opit.model.leave_request')
@@ -96,7 +100,6 @@ class LeaveController extends Controller
         return $this->render(
                 $template, array(
                 'leaveRequests' => $leaveRequests,
-                'parentsOfGroups' => $parentsOfGroupLRs,
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
@@ -180,7 +183,7 @@ class LeaveController extends Controller
                     }
                     // Single LR is being created
                     $error = $this->createLeaveRequests($leaveRequest, $employees);
-                } else if (count($employees) > 1) {
+                } elseif (count($employees) > 1) {
                     // MLR is being created
                     $error = $this->createLeaveRequests($leaveRequest, $employees, true);
                 } else {
@@ -391,7 +394,7 @@ class LeaveController extends Controller
     }
 
     /**
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param array $employees
      * @param type $isMLR
@@ -477,7 +480,7 @@ class LeaveController extends Controller
 
     /**
      * Method to create mass leave request
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequestGroup $leaveRequestGroup
@@ -541,7 +544,7 @@ class LeaveController extends Controller
 
     /**
      * Method to create single leave request (own or single employee selected)
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param type $data
@@ -594,7 +597,7 @@ class LeaveController extends Controller
     }
 
     /**
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveCategory $fullDayCategory
