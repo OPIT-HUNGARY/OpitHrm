@@ -144,6 +144,7 @@ class LeaveStatusManager extends StatusManager
      */
     protected function prepareEmail(Status $status, array $nextStates, $leaveRequest, $requiredStatus)
     {
+        $applicationName = $this->container->getParameter('application_name');
         // get template name by converting entity name first letter to lower
         $className = Utils::getClassBasename($leaveRequest);
         $statusName = $status->getName();
@@ -204,7 +205,7 @@ class LeaveStatusManager extends StatusManager
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-            '[OPIT-HRM] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
         );
 
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:leaveRequest.html.twig', $templateVariables);

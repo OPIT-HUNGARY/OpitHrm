@@ -141,6 +141,7 @@ class TimeSheetController extends Controller
      */
     public function sendEmailAction($token)
     {
+        $applicationName = $this->container->getParameter('application_name');
         $requestQuery = base64_decode($token);
         $tokenArray = explode('|', $requestQuery);
         $dateArray = array('year' => $tokenArray[0], 'month' => $tokenArray[1]);
@@ -168,7 +169,7 @@ class TimeSheetController extends Controller
         // Prepare and send email to payroll(s).
         $mailer->setRecipient($payrollAddresses);
         $mailer->setSubject(
-            '[OPIT-HRM] - ' . $year . '-' . $month . ' timesheet is available'
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - ' . $year . '-' . $month . ' timesheet is available'
         );
 
         $mailer->setBodyByTemplate(

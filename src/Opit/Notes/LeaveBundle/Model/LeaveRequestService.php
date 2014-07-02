@@ -292,6 +292,7 @@ class LeaveRequestService
      */
     public function prepareMassLREmail(LeaveRequest $leaveRequest, $recipient, array $unpaidLeaveDetails, $status = null)
     {
+        $applicationName = $this->container->getParameter('application_name');
         $templateVariables = array();
         $templateVariables['leaveRequest'] = $leaveRequest;
 
@@ -299,14 +300,14 @@ class LeaveRequestService
 
         if (null === $status) {
             $this->mailer->setSubject(
-                '[OPIT-HRM] - System leave requests created'
+                '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - System leave requests created'
             );
         } else {
             $templateVariables['statusName'] = $status->getName();
             $templateVariables['isForApproval'] = Status::FOR_APPROVAL === $status->getId() ? true : false;
 
             $this->mailer->setSubject(
-                '[OPIT-HRM] - System leave request - ' . $status->getName() . ' (' . $leaveRequest->getLeaveRequestId() . ')'
+                '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - System leave request - ' . $status->getName() . ' (' . $leaveRequest->getLeaveRequestId() . ')'
             );
         }
         $this->mailer->setBodyByTemplate('OpitNotesLeaveBundle:Mail:massLeaveRequests.html.twig', array_merge($templateVariables, $unpaidLeaveDetails));

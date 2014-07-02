@@ -96,6 +96,7 @@ class TravelStatusManager extends StatusManager
      */
     protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus)
     {
+        $applicationName = $this->container->getParameter('application_name');
         // get template name by converting entity name first letter to lower
         $className = Utils::getClassBasename($resource);
         // lowercase first character of string
@@ -163,7 +164,7 @@ class TravelStatusManager extends StatusManager
 
         $this->mailer->setRecipient($recipient);
         $this->mailer->setSubject(
-           '[OPIT-HRM] - ' .$subjectTravelType
+           '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - ' .$subjectTravelType
             . ' status changed - ' . $statusName .' ('. $travelRequest->getTravelRequestId().')'
         );
 

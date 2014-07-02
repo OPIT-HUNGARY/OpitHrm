@@ -256,10 +256,13 @@ class JobPositionController extends Controller
     {
         $templateVars = array();
         $templateVars['jobPosition'] = $jobPosition;
+        $applicationName = $this->container->getParameter('application_name');
 
         $emailManager = $this->get('opit.component.email_manager');
         $emailManager->setRecipient($jobPosition->getHiringManager()->getEmail());
-        $emailManager->setSubject('[OPIT-HRM] - Job position created (' . $jobPosition->getJobPositionId() . ')');
+        $emailManager->setSubject(
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - Job position created (' . $jobPosition->getJobPositionId() . ')'
+        );
         $emailManager->setBodyByTemplate('OpitNotesHiringBundle:Mail:jobPosition.html.twig', $templateVars);
         $emailManager->sendMail();
 

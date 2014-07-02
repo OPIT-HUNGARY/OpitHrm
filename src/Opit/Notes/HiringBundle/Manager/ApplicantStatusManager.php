@@ -67,6 +67,7 @@ class ApplicantStatusManager extends StatusManager
     {
         $this->removeTokens($resource->getId());
         $applicantToken = $this->setApplicantToken($resource->getId());
+        $applicationName = $this->container->getParameter('application_name');
 
         $templateVars = array();
         $templateVars['currentState'] = $status->getName();
@@ -92,11 +93,11 @@ class ApplicantStatusManager extends StatusManager
         $this->mailer->setRecipient($recipient);
         if (Status::CREATED === $status->getId()) {
             $this->mailer->setSubject(
-                '[OPIT-HRM] - New applicant created (' . $resource->getName() . ')'
+                '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - New applicant created (' . $resource->getName() . ')'
             );
         } else {
             $this->mailer->setSubject(
-                '[OPIT-HRM] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
+                '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - Applicant status changed - ' . $statusName . ' (' . $resource->getName() . ')'
             );
         }
 

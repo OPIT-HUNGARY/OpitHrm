@@ -47,10 +47,12 @@ class UserService
      */
     public function sendNewPasswordMail(UserInterface $user, $isReset = false)
     {
-        $subject = '[OPIT-HRM] - New account created';
+        $applicationName = $this->container->getParameter('application_name');
+        $subject = '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - New account created';
         $template = 'newAccount';
+
         if ($isReset) {
-            $subject = '[OPIT-HRM] - Password reset';
+            $subject = '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - Password reset';
             $template = 'passwordReset';
         }
 
