@@ -72,7 +72,7 @@ class ApplicantController extends Controller
             $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($applicantId);
             $applicantCV = $applicant->getCv();
             $isEditable = (
-                ($securityContext->isGranted('ROLE_ADMIN') || $currentUser->getId() === $applicant->getCreatedUser()->getId()) &&
+                ($securityContext->isGranted('ROLE_ADMIN') || ($applicant->getCreatedUser() &&  $applicant->getCreatedUser()->getId() === $currentUser->getId())) &&
                 null === $applicant->getJobPosition()->getDeletedAt()
             );
 

@@ -31,7 +31,7 @@
         </tr>
         {% for applicant in applicants %}
         {% set id = applicant.id %}
-        {% set isEditable = (is_granted('ROLE_ADMIN') or applicant.createdUser.id == app.user.id) %}
+        {% set isEditable = (is_granted('ROLE_ADMIN') or (applicant.createdUser.id is defined and applicant.createdUser.id == app.user.id)) %}
         <tr>
             <td>
                 <input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" {% if 0 == isEditable %}disabled="disabled"{% endif %} value="{{ id }}" />
