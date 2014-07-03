@@ -198,7 +198,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $dq = $this->createQueryBuilder('u0')
             ->select('t0.id')
             ->innerJoin('u0.employee', 'e0')
-            ->innerJoin('e0.teams', 't0', 'WITH', 'e0.id = :id');
+            ->innerJoin('e0.teams', 't0')
+            ->where('u0.id = :id');
 
         $dq2 = $this->getFindUserBaseQueryBuilder($chunk, $role);
         $dq2->leftJoin('e.teams', 't');
