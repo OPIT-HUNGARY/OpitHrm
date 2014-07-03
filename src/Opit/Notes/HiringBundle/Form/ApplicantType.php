@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Opit\Notes\HiringBundle\Form\DataTransformer\JobPositionIdToObjectTransformer;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Description of ApplicantType
@@ -89,7 +90,11 @@ class ApplicantType extends AbstractType
         ));
 
         $builder->add(
-            $builder->create('jobPosition', 'hidden')->addModelTransformer($transformer)
+            $builder->create('jobPosition', 'hidden', array(
+                'constraints' => array(
+                    new NotBlank(array('message' => 'Job position can not be empty.'))
+                )
+            ))->addModelTransformer($transformer)
         );
 
         $jobPosition = $options['data']->getJobPosition();
@@ -98,7 +103,6 @@ class ApplicantType extends AbstractType
             'label' => 'Job position',
             'data' => ($jobPosition ? $jobPosition->getJobTitle() : null),
             'mapped' => false,
-            'required' => false,
             'attr' => array(
                 'placeholder' => 'Job position',
                 'class' => 'width-200'

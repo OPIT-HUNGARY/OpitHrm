@@ -259,7 +259,8 @@ class ApplicantController extends Controller
     public function applicantCVDownloadAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')->find($request->attributes->get('id'));
+        $applicant = $entityManager->getRepository('OpitNotesHiringBundle:Applicant')
+            ->find($request->attributes->get('id'));
 
         $CV = $applicant->getAbsolutePath();
         $response = new Response();
@@ -269,6 +270,8 @@ class ApplicantController extends Controller
         $response->headers->set('Content-length', filesize($CV));
         $response->sendHeaders();
         $response->setContent(readfile($CV));
+
+        return $response;
     }
 
     /**
