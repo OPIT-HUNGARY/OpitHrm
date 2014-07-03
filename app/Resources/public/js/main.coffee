@@ -31,7 +31,9 @@ $.extend true, $(document).data('notes'),
                 $dateInputs.each ->
                     name = $(@).attr 'name'
                     id = $(@).attr('id')
-                    $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" value="' + $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val())) + '" />'
+                    $input = $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
+                    if $(@).val()
+                        $input.val $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val()))
                     $(@).datepicker()
     
         deleteSingleRequest: (type, self) ->
