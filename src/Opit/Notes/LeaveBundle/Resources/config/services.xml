@@ -32,6 +32,7 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="opit.manager.leave_notification_manager" />
             <argument type="service" id="router" />
+            <argument>%application_name%</argument>
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
@@ -43,6 +44,7 @@
             <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="opit.manager.leave_notification_manager" />
+            <argument>%application_name%</argument>
         </service>
         <service id="opit.twig.opit_leave_bundle_extension.class" class="%opit.twig.opit_leave_bundle_extension.class%">
             <tag name="twig.extension" />

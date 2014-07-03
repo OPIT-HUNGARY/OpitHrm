@@ -38,6 +38,7 @@
             <argument type="service" id="router" />
             <argument type="service" id="opit.model.travel_expense" />
             <argument type="service" id="opit.component.email_manager" />
+            <argument>%application_name%</argument>
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>

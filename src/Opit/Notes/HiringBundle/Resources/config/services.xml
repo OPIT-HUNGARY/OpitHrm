@@ -27,6 +27,7 @@
             <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="security.context" />
             <argument type="service" id="router" />
+            <argument>%application_name%</argument>
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>

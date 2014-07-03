@@ -41,6 +41,7 @@ class LeaveRequestService
     protected $mailer;
     protected $leaveNotificationManager;
     protected $leaveStatusManager;
+    protected $options;
 
     /**
      *
@@ -49,7 +50,7 @@ class LeaveRequestService
      * @param \Opit\Notes\LeaveBundle\Manager\LeaveStatusManager $statusManager
      * @param \Opit\Notes\TravelBundle\Manager\AclManager $aclManager
      */
-    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
+    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager, $applicationName)
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
@@ -57,6 +58,7 @@ class LeaveRequestService
         $this->aclManager = $aclManager;
         $this->mailer = $mailer;
         $this->leaveNotificationManager = $leaveNotificationManager;
+        $this->options['applicationName'];
     }
 
     /**
@@ -292,7 +294,7 @@ class LeaveRequestService
      */
     public function prepareMassLREmail(LeaveRequest $leaveRequest, $recipient, array $unpaidLeaveDetails, $status = null)
     {
-        $applicationName = $this->container->getParameter('application_name');
+        $applicationName = $this->options['applicationName'];
         $templateVariables = array();
         $templateVariables['leaveRequest'] = $leaveRequest;
 

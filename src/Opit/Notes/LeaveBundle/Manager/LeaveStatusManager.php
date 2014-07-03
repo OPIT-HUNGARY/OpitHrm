@@ -41,6 +41,7 @@ class LeaveStatusManager extends StatusManager
     protected $securityContext;
     protected $leaveNotificationManager;
     protected $router;
+    protected $options;
 
     /**
      *
@@ -51,7 +52,7 @@ class LeaveStatusManager extends StatusManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
@@ -60,6 +61,7 @@ class LeaveStatusManager extends StatusManager
         $this->securityContext = $securityContext;
         $this->leaveNotificationManager = $leaveNotificationManager;
         $this->router = $router;
+        $this->options['applicationName'] = $applicationName;
     }
 
     /**
@@ -144,7 +146,7 @@ class LeaveStatusManager extends StatusManager
      */
     protected function prepareEmail(Status $status, array $nextStates, $leaveRequest, $requiredStatus)
     {
-        $applicationName = $this->container->getParameter('application_name');
+        $applicationName = $this->options['applicationName'];
         // get template name by converting entity name first letter to lower
         $className = Utils::getClassBasename($leaveRequest);
         $statusName = $status->getName();

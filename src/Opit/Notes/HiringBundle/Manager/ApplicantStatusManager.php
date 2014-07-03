@@ -36,6 +36,7 @@ class ApplicantStatusManager extends StatusManager
     protected $aclManager;
     protected $securityContext;
     protected $router;
+    protected $options;
 
     /**
      * 
@@ -46,7 +47,7 @@ class ApplicantStatusManager extends StatusManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param type $router
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, $router)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, $router, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
@@ -54,6 +55,7 @@ class ApplicantStatusManager extends StatusManager
         $this->aclManager = $aclManager;
         $this->securityContext = $securityContext;
         $this->router = $router;
+        $this->options['applicationName'] = $applicationName;
     }
 
     /**
@@ -67,7 +69,7 @@ class ApplicantStatusManager extends StatusManager
     {
         $this->removeTokens($resource->getId());
         $applicantToken = $this->setApplicantToken($resource->getId());
-        $applicationName = $this->container->getParameter('application_name');
+        $applicationName = $this->options['applicationName'];
 
         $templateVars = array();
         $templateVars['currentState'] = $status->getName();

@@ -37,6 +37,7 @@ class TravelStatusManager extends StatusManager
     protected $factory;
     protected $router;
     protected $teService;
+    protected $options;
 
     /**
      *
@@ -46,13 +47,14 @@ class TravelStatusManager extends StatusManager
      * @param \Opit\Notes\TravelBundle\Model\TravelExpenseService $teService
      * @param \Opit\Component\Email\EmailManager $mailer
      */
-    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, EmailManagerInterface $mailer)
+    public function __construct(EntityManagerInterface $entityManager, $factory, Router $router, TravelExpenseService $teService, EmailManagerInterface $mailer, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->factory = $factory;
         $this->router = $router;
         $this->mailer = $mailer;
         $this->teService = $teService;
+        $this->options['applicationName'] = $applicationName;
     }
 
     /**
@@ -96,7 +98,7 @@ class TravelStatusManager extends StatusManager
      */
     protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus)
     {
-        $applicationName = $this->container->getParameter('application_name');
+        $applicationName = $this->options['applicationName'];
         // get template name by converting entity name first letter to lower
         $className = Utils::getClassBasename($resource);
         // lowercase first character of string
