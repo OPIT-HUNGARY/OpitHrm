@@ -129,7 +129,8 @@ class LeaveController extends Controller
         $errors = array();
         $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $unpaidLeaveDetails = array();
-        $requestFor = null;
+        $requestFor = $request->request->get('leave-request-owner');
+        $employees = $request->request->get('employee');
 
         if ($isNewLeaveRequest) {
             $leaveRequest = new LeaveRequest();
@@ -169,10 +170,9 @@ class LeaveController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $employees = $request->request->get('employee');
-                $isLRCreatedByGM = null !== $request->request->get('leave-request-owner');
+                $isLRCreatedByGM = null !== $requestFor;
 
-                if (1 === count($employees) || null === $request->request->get('leave-request-owner') || 'own' === $request->request->get('leave-request-owner')) {
+                if (1 === count($employees) || null === $requestFor || 'own' === $requestFor) {
                     if ($isLRCreatedByGM) {
                         if (!is_array($employees)) {
                             $employees = array($employee);
@@ -197,7 +197,6 @@ class LeaveController extends Controller
                     return $this->redirect($this->generateUrl('OpitNotesLeaveBundle_leave_list'));
                 }
             } else {
-                $requestFor = $request->request->get('leave-request-owner');
                 $errors = Utils::getErrorMessages($form);
             }
         }
@@ -215,6 +214,7 @@ class LeaveController extends Controller
                     'unpaidLeaveDetails' => $unpaidLeaveDetails,
                     'isForApproval' => $isForApproval,
                     'requestFor' => $requestFor,
+                    'selectedEmployees' => $employees,
                     'isLRLocked' => (Status::REJECTED === $statusManager->getCurrentStatus($leaveRequest))
                 ),
                 $isNewLeaveRequest ? array('isStatusLocked' => true,

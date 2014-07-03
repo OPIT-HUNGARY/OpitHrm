@@ -106,23 +106,23 @@
                         <label for="own">Own</label>
                     </li>
                     <li class="white-space-nowrap">
-                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}checked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
+                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}caddFormFieldsetChildhecked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
                         <label for="other-employees">Other employees</label>
                     </li>
                 </ul>
             </div>
-            <div class="margin-left-1-em display-inline-block vertical-align-top" id="employee-selector">
+            <div class="margin-left-1-em display-none-important display-inline-block vertical-align-top" id="employee-selector">
                 <label class="padding-bottom-5 bold"><a id="forAll" href="#">Check all</a></label>
                 <ul class="no-style option-list-scrollable">
                     {% for employee in employees %}
                     <li class="white-space-nowrap">
-                        <input type="checkbox" id="company-employee-{{ employee.id }}" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top">
+                        <input type="checkbox" id="company-employee-{{ employee.id }}" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top" {% if employee.id in selectedEmployees %}checked="checked"{% endif %}>
                         <label for="company-employee-{{ employee.id }}" class="vertical-align-top">{{ employee.employeeName }}</label>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
-            <div class="margin-left-1-em display-none-important">
+            <div class="margin-left-1-em display-inline-block display-none-important">
             {{ form_widget(form.user_ac) }}
             </div>
             {% else %}
@@ -133,7 +133,7 @@
         </div>
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave dates</h3>
-            <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button">Add leave date</a>
+            <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button{% if isGeneralManager %} display-none-important{% endif %}">Add leave date</a>
         </div>
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Approvers</h3>

@@ -291,15 +291,12 @@ $(document).ready ->
     $leaveRequestUser = $('#leave_request_user_ac')
     $addFormFieldset = $('.addFormFieldsetChild')
     $employeeSelector = $('#employee-selector')
-    $employeeSelector.addClass 'display-none-important'
-    
-    if $('#employee-selector').length != 0
-        $leaveRequestUser.parent().addClass('display-inline-block display-none-important')
-        $addFormFieldset.addClass 'display-none-important'
 
-    if $('.leave-request-owner').prop 'checked'
-        showRequestFor $('.leave-request-owner'), $leaveRequestUser, $addFormFieldset, $employeeSelector
+    # Trigger showRequestFor if selection is present
+    if $('.leave-request-owner:checked').length > 0
+        showRequestFor $('.leave-request-owner:checked'), $leaveRequestUser, $addFormFieldset, $employeeSelector
 
+    # Register request for radio event listener
     $('.leave-request-owner').on 'change', ->
         showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
             
