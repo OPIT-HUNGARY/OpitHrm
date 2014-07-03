@@ -169,9 +169,8 @@ class LeaveController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-            $employees = $request->request->get('employee');
-
-            $isLRCreatedByGM = null !== $request->request->get('leave-request-owner');
+                $employees = $request->request->get('employee');
+                $isLRCreatedByGM = null !== $request->request->get('leave-request-owner');
 
                 if (1 === count($employees) || null === $request->request->get('leave-request-owner') || 'own' === $request->request->get('leave-request-owner')) {
                     if ($isLRCreatedByGM) {

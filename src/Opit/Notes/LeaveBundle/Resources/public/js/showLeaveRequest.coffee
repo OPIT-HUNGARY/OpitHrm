@@ -210,6 +210,13 @@ $(document).ready ->
         $('.formFieldsetChild').remove()
         displayNone = 'display-none-important'
         if $self.val() is 'for-employees'
+            # Add event listener on the employee checkboxes
+            $('.company-employees').on 'change.category', ->
+                if $('.company-employees:checked').length > 1
+                    $leave.find('.leave-category').parent().hide()
+                else
+                    $leave.find('.leave-category').parent().show()
+
             $leaveRequestUser.parent().addClass displayNone
             $addFormFieldset.addClass displayNone
             $employeeSelector.removeClass displayNone
@@ -218,9 +225,11 @@ $(document).ready ->
 
             $leave = createLeave()
             $leave.find('.deleteFormFieldsetChild').remove()
-            $leave.find('.leave-category').parent().remove()
 
         else if $self.val() is 'own'
+            # Remove event listener on the employee checkboxes
+            $('.company-employees').off 'change.category'
+
             $employeeSelector.addClass displayNone
             $leaveRequestUser.parent().removeClass displayNone
             $addFormFieldset.removeClass displayNone
