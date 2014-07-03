@@ -78,8 +78,7 @@ class LeaveRequestService
 
             $isTRLocked = $this->setLeaveRequestAccessRights($leaveRequest, $currentStatus);
 
-            $leaveRequestStates[$leaveRequest->getId()] =
-                $this->getNextAvailableStates($leaveRequest);
+            $leaveRequestStates[$leaveRequest->getId()] = $this->getNextAvailableStates($leaveRequest);
 
             $isLocked[$leaveRequest->getId()] = $isTRLocked;
 
@@ -107,46 +106,37 @@ class LeaveRequestService
     {
         $currentUserId = $currentUser->getId();
         
-        // check if user is gm
-        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            // check if gm created lr or is gm of lr
-            if (
-                $leaveRequest->getCreatedUser()->getId() === $currentUserId ||
-                $leaveRequest->getGeneralManager()->getId() === $currentUserId
-            ) {
-                // if lr is locked and gm is assigned employee lock deletion
-                if ($leaveRequest->getEmployee()->getUser()->getId() === $currentUserId) {
-                    
-                    return $this->isLRPastLeaveDateDeleteable($leaveRequest);
-                } else {
-                    return true;
-                }
+        // If user is admin he is always allowed to delete
+        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$this->securityContext->isGranted('ROLE_ADMIN')) {
+            // Check if user is general manager of leave request
+            if ($leaveRequest->getGeneralManager()->getId() === $currentUserId) {
+                return true;
+            } else {
+                // If leave request is child of an MLR
+                return null !== $leaveRequest->getLeaveRequestGroup() ? false : $this->isLRPastLeaveDateDeleteable($leaveRequest);
             }
-        } elseif (
-            // if employee created and is assigned to lr as employee
-            $leaveRequest->getEmployee()->getUser()->getId() === $currentUserId &&
-            $leaveRequest->getCreatedUser()->getId() === $currentUserId
-            ) {
-                return $this->isLRPastLeaveDateDeleteable($leaveRequest);
+        } elseif ($leaveRequest->getEmployee()->getUser()->getId() === $currentUserId) {
+            return null !== $leaveRequest->getLeaveRequestGroup() ? false : $this->isLRPastLeaveDateDeleteable($leaveRequest);
         }
         
         return false;
     }
     
+    /**
+     * Check if leave request contains leave in the past
+     * 
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @return boolean
+     */
     public function isLRPastLeaveDateDeleteable(LeaveRequest $leaveRequest)
     {
-        $lrStatusId = $this->statusManager->getCurrentStatus($leaveRequest)->getId();
         foreach($leaveRequest->getLeaves() as $leave) {
-            // check if leave date is smaller then todays date
+            // Check if leave date is smaller then todays date
             if ($leave->getStartDate()->format('Y-m-d') <= date('Y-m-d')) {
-                if (Status::APPROVED === $lrStatusId) {
                     return false;
-                } else {
-                    return true;
-                }
             }
         }
-        
+
         return true;
     }
 

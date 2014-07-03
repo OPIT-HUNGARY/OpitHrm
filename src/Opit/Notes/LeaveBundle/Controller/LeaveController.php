@@ -35,7 +35,6 @@ use Opit\Notes\LeaveBundle\Entity\StatesLeaveRequests;
 
 class LeaveController extends Controller
 {
-
     /**
      * To list leaves in Notes
      *
@@ -48,7 +47,7 @@ class LeaveController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$securityContext->isGranted('ROLE_ADMIN');
         $employee = $user->getEmployee();
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
@@ -65,8 +64,7 @@ class LeaveController extends Controller
         $pagnationParameters = array(
             'firstResult' => ($offset * $maxResults),
             'maxResults' => $maxResults,
-            'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
-            'isGeneralManager' => $securityContext->isGranted('ROLE_GENERAL_MANAGER'),
+            'isGeneralManager' => $isGeneralManager,
             'employee' => $employee,
             'user' => $user
         );
@@ -100,6 +98,7 @@ class LeaveController extends Controller
         return $this->render(
                 $template, array(
                 'leaveRequests' => $leaveRequests,
+                'parentsOfGroups' => $parentsOfGroupLRs,
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
@@ -127,7 +126,7 @@ class LeaveController extends Controller
         $employee = $securityContext->getToken()->getUser()->getEmployee();
         $leaveRequestService = $this->get('opit.model.leave_request');
         $errors = array();
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$securityContext->isGranted('ROLE_ADMIN');
         $unpaidLeaveDetails = array();
         $requestFor = $request->request->get('leave-request-owner');
         $employees = $request->request->get('employee');
@@ -172,7 +171,8 @@ class LeaveController extends Controller
             if ($form->isValid()) {
                 $isLRCreatedByGM = null !== $requestFor;
 
-                if (1 === count($employees) || null === $requestFor || 'own' === $requestFor) {
+                $isOwn = null === $requestFor || 'own' === $requestFor;
+                if (1 === count($employees) || $isOwn) {
                     if ($isLRCreatedByGM) {
                         if (!is_array($employees)) {
                             $employees = array($employee);
@@ -181,10 +181,10 @@ class LeaveController extends Controller
                         $employees = array($employee);
                     }
                     // Single LR is being created
-                    $error = $this->createLeaveRequests($leaveRequest, $employees);
+                    $error = $this->createLeaveRequests($leaveRequest, $employees, false, $isOwn);
                 } elseif (count($employees) > 1) {
                     // MLR is being created
-                    $error = $this->createLeaveRequests($leaveRequest, $employees, true);
+                    $error = $this->createLeaveRequests($leaveRequest, $employees, true, false);
                 } else {
                     // No employee was passed while creating MLR
                     $form->addError(new FormError('No employees are selected for mass leave request.'));
@@ -399,7 +399,7 @@ class LeaveController extends Controller
      * @param type $isMLR
      * @return string
      */
-    protected function createLeaveRequests(LeaveRequest $leaveRequest, array $employees, $isMLR = false)
+    protected function createLeaveRequests(LeaveRequest $leaveRequest, array $employees, $isMLR, $isOwn)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $overlappingLeaves = array();
@@ -411,7 +411,7 @@ class LeaveController extends Controller
             $leaveEndDate = $leave->getEndDate();
             // Check if MLR is being created in the past
             if ($isMLR && ($leaveStartDate < $now || $leaveEndDate < $now)) {
-                return 'You can not create LR for more than one employee in the past.';
+                return 'You can not create leave request for more than one employee in the past at a time.';
             } else {
                 $overlappingLeaves[] = $entityManager->getRepository('OpitNotesLeaveBundle:Leave')->findOverlappingLeavesByDatesEmployees(
                     $leaveStartDate, $leaveEndDate, $employees
@@ -449,6 +449,7 @@ class LeaveController extends Controller
                 'unpaidCategory' => $entityManager->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findOneByName(LeaveCategory::UNPAID),
                 'approvedStatus' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::APPROVED),
                 'forApprovalStatus' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::FOR_APPROVAL),
+                'createdStatus' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::CREATED),
             );
 
             if ($isMLR) {
@@ -468,7 +469,7 @@ class LeaveController extends Controller
 
                 $this->createMLR($leaveRequest, $entityManager, $leaveRequestGroup, $leftToAvail, $employee, $data);
             } else {
-                $error = $this->createSingleLR($leaveRequest, $entityManager, $data, $leftToAvail, $employee);
+                $error = $this->createSingleLR($leaveRequest, $entityManager, $data, $leftToAvail, $employee, $isOwn);
                 if (null !== $error) {
                     return $error;
                 }
@@ -550,11 +551,13 @@ class LeaveController extends Controller
      * @param type $leftToAvail
      * @return string|null
      */
-    protected function createSingleLR(LeaveRequest $leaveRequest, EntityManagerInterface $entityManager, $data, $leftToAvail, $employee)
+    protected function createSingleLR(LeaveRequest $leaveRequest, EntityManagerInterface $entityManager, $data, $leftToAvail, $employee, $isOwn)
     {
         $leaveRequestService = $this->get('opit.model.leave_request');
+        $securityContext = $this->container->get('security.context');
         $leaveRequest->setEmployee($employee);
         $totalLeaveDaysCount = 0;
+        $pastLeaveCount = 0;
         $isValid = true;
 
         foreach ($leaveRequest->getLeaves() as $leave) {
@@ -574,6 +577,10 @@ class LeaveController extends Controller
             if ($totalLeaveDaysCount > $leftToAvail) {
                 $isValid = false;
             } else {
+                if ($leave->getStartDate() < new \DateTime()) {
+                    $pastLeaveCount++;
+                }
+
                 $leave->setNumberOfDays($countLeaveDays);
                 $entityManager->persist($leave);
             }
@@ -581,11 +588,20 @@ class LeaveController extends Controller
 
         if ($isValid) {
             $entityManager->persist($leaveRequest);
-            $status = $data['approvedStatus'];
-            $securityContext = $this->container->get('security.context');
-            $employeeId = $securityContext->getToken()->getUser()->getEmployee()->getId();
-            if ($employeeId === $employee->getId()) {
-                $status = $data['forApprovalStatus'];
+            $status = null;
+            // Check if user is setting LR for himself
+            if ($securityContext->getToken()->getUser()->getEmployee()->getId() === $employee->getId()) {
+                if ($isOwn) {
+                    // Check if all LR leaves are in the past
+                    $isStatusApproved = $pastLeaveCount === count($leaveRequest->getLeaves()) ? true : false;
+                    // If LR has leaves only in the past set status to approved else set
+                    // status to created
+                    $status = true === $isStatusApproved ? $data['approvedStatus'] : $data['createdStatus'];
+                } else {
+                    $status =  $data['approvedStatus'];
+                }
+            } else {
+                $status = $data['approvedStatus'];
             }
             $this->setLRStatusSendNotificationEmail($leaveRequest, $leaveRequest->getEmployee(), $status, $leaveRequestService);
         } else {

@@ -65,10 +65,13 @@ class LeaveRequestRepository extends EntityRepository
             $dq->setParameter(':leaveId', '%'.$searchParams['leaveId'].'%');
         }
 
-        if ($pagnationParameters['isGeneralManager'] || $pagnationParameters['isAdmin']) {
+        if ($pagnationParameters['isGeneralManager']) {
             $statusExpr = $dq->expr()->orX(
                 $dq->expr()->andX(
-                    $dq->expr()->notIn('s.status', ':status'),
+                    $dq->expr()->orX(
+                        $dq->expr()->notIn('s.status', ':status'),
+                        $dq->expr()->eq('lr.isMassLeaveRequest', 1)
+                    ),
                     $dq->expr()->eq('lr.generalManager', ':user')
                 ),
                 $dq->expr()->eq('lr.employee', ':employee')
@@ -79,7 +82,7 @@ class LeaveRequestRepository extends EntityRepository
             $dq->setParameter(':user', $pagnationParameters['user']);
             $dq->setParameter(':status', Status::CREATED);
             $dq->setParameter(':employee', $pagnationParameters['employee']);
-        } elseif (!$pagnationParameters['isGeneralManager'] && !$pagnationParameters['isAdmin']) {
+        } elseif (!$pagnationParameters['isGeneralManager']) {
             $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
             $dq->setParameter(':employee', $pagnationParameters['employee']);
         }

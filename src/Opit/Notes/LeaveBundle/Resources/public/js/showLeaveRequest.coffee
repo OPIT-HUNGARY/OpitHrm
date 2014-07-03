@@ -134,19 +134,28 @@ $(document).ready ->
     isNotMassLR = () ->
         if $('.company-employees:checked').length > 1 then return false else return true
 
-    hasPastDates = () ->
-        isValid = no
+    addPastDateError = ($startDate) ->
+        $errorLabel = createErrorLabel('Start date can not be in the past', 'past-date-error')
+        $startDate.addClass 'error'
+        $startDate.parent().append $errorLabel
+
+    # Check if LR has leaves in the past
+    hasPastDates = (addError) ->
+        hasPDates = no
         $('.start-date').each () ->
             $startDate = $(@)
-            $startDateParent = $startDate.closest 'div'
+            $startDate.removeClass 'error'
+            $startDate.parent().find('.past-date-error').remove()
 
             dateNow = new Date()
             startDate = new Date($startDate.val())
 
             if startDate < dateNow
-                isValid = yes
+                if addError is yes
+                    addPastDateError($startDate)
+                hasPDates = yes
 
-        return isValid
+        return hasPDates
 
     validateGm = () ->
         isValid = yes
@@ -325,19 +334,22 @@ $(document).ready ->
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
         if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validateGm() is yes and validateEmployeesForMLR() is yes
-            if hasPastDates() is yes and isNotMassLR()
-                message = 'Creating a past leave request will effect the time sheet of that period. Do you want to continue?'
-                $('<div id="dialog-show-past-lr-warning"></div>').html(message)
-                    .dialog
-                        title: '<i class="fa fa fa-exclamation-triangle"></i> Creating past leave request'
-                        width: 550
-                        maxHeight: $(window).outerHeight()-100
-                        modal: on
-                        buttons:
-                            Yes: ->
-                                $('#leaveRequestForm').submit()
-                            No: ->
-                                $('#dialog-show-past-lr-warning').dialog 'destroy'        
-            else
+            if isGeneralManager is yes
+                if isNotMassLR() and hasPastDates()
+                    message = 'Creating a past leave request will effect the time sheet of that period. Do you want to continue?'
+                    $('<div id="dialog-show-past-lr-warning"></div>').html(message)
+                        .dialog
+                            title: '<i class="fa fa fa-exclamation-triangle"></i> Creating past leave request'
+                            width: 550
+                            maxHeight: $(window).outerHeight()-100
+                            modal: on
+                            buttons:
+                                Yes: ->
+                                    $('#leaveRequestForm').submit()
+                                No: ->
+                                    $('#dialog-show-past-lr-warning').dialog 'destroy'
+                else
+                    $('#leaveRequestForm').submit()
+            else if hasPastDates(yes) is no
                 $('#leaveRequestForm').submit()
         
