@@ -380,6 +380,10 @@ class UserController extends Controller
         $term = $request->request->get('term');
         $role = $request->attributes->get('role');
 
+        if(null !== $request->request->get('roles')) {
+            $role = $request->request->get('roles');
+        }
+
         if (false === $role) {
             $userService = $this->get('opit.model.user');
             $role = $userService->getInheritedRoles($this->getUser());

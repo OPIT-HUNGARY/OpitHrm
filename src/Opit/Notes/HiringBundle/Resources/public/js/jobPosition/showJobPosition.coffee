@@ -1,7 +1,8 @@
 $(document).ready ->
     $('#job_position_hiring_manager_ac').autocomplete
         source: (request, response) ->
-            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_general_manager'), request, (data) -> response(data)
+            request.roles = ['role_general_manager', 'role_team_manager']
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_team_manager'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#job_position_hiring_manager').val ui.item.id
