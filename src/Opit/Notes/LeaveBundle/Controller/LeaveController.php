@@ -565,9 +565,9 @@ class LeaveController extends Controller
                 $leave->setCategory($data['fullDayCategory']);
             }
 
-            // Check if leave is unpaid
-            if ($data['unpaidCategory']->getId() !== $leave->getCategory()->getId()) {
-                // Get total number of working days between two dates
+            // Check if leave is not to be substracted from entitlement
+            $excludedCategoryIds = Utils::arrayValueRecursive('id', $entityManager->getRepository('OpitNotesLeaveBundle:LeaveCategory')->findNotCountedAsLeaveIds());
+            if (!in_array($leave->getCategory()->getId(), $excludedCategoryIds)) {
                 $totalLeaveDaysCount += $countLeaveDays;
             }
 

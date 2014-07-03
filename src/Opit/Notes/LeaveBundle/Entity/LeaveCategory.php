@@ -12,7 +12,7 @@ use Opit\Notes\CoreBundle\Entity\AbstractBase;
  *
  * @ORM\Table(name="notes_leave_categories")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Opit\Notes\LeaveBundle\Entity\LeaveCategoryRepository")
  */
 class LeaveCategory extends AbstractBase
 {
