@@ -431,6 +431,19 @@ class LeaveController extends Controller
 
         if ($isMLR) {
             $leaveRequestGroup = $this->createLRGroup($leaveRequest, $entityManager, $fullDayCategory);
+            // Change status of all overlapping leave requests to rejected
+            foreach ($overlappingLeaves[0] as $overlappingLeave) {
+                $overlappingLeaveLR = $overlappingLeave->getLeaveRequest();
+
+                $statesLeaveRequests = new StatesLeaveRequests();
+                $statesLeaveRequests->setLeaveRequest($overlappingLeaveLR);
+                $statesLeaveRequests->setStatus($statusRejected);
+
+                $overlappingLeaveLR->addState($statesLeaveRequests);
+
+                $entityManager->persist($statesLeaveRequests);
+                $entityManager->persist($overlappingLeave);
+            }
         }
 
         foreach ($employees as $employee) {
@@ -453,19 +466,6 @@ class LeaveController extends Controller
             );
 
             if ($isMLR) {
-                // Change status of all overlapping leave requests to rejected
-                foreach ($overlappingLeaves[0] as $overlappingLeave) {
-                    $overlappingLeaveLR = $overlappingLeave->getLeaveRequest();
-
-                    $statesLeaveRequests = new StatesLeaveRequests();
-                    $statesLeaveRequests->setLeaveRequest($overlappingLeaveLR);
-                    $statesLeaveRequests->setStatus($statusRejected);
-
-                    $overlappingLeaveLR->addState($statesLeaveRequests);
-
-                    $entityManager->persist($statesLeaveRequests);
-                    $entityManager->persist($overlappingLeave);
-                }
 
                 $this->createMLR($leaveRequest, $entityManager, $leaveRequestGroup, $leftToAvail, $employee, $data);
             } else {
