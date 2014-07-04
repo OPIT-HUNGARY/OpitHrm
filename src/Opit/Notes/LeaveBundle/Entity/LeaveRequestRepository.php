@@ -165,7 +165,7 @@ class LeaveRequestRepository extends EntityRepository
     public function findEmployeesLRCount($employeeId, $startDate = '', $endDate = '', $finalizedOnly = false)
     {
         $dq = $this->createQueryBuilder('lr');
-        $dq->select('count(lr)')
+        $dq->select('count(distinct lr)')
                 ->where('lr.employee = :employee')
                 ->andwhere('l.startDate > :startDate')
                 ->andWhere('l.endDate < :endDate')
