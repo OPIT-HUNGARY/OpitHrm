@@ -87,7 +87,7 @@ $('#delete').on 'click', ->
     deleteGroup(ids, names)
     
 
-$('#list-table').on 'click', '.order-text', ->
+$('#main-wrapper').on 'click', '.order-text', ->
     $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), listUrl, 'list-table', 'searchForm'
-$('#list-table').on 'click', '.fa-sort', ->
+$('#main-wrapper').on 'click', '.fa-sort', ->
     $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), listUrl, 'list-table', 'searchForm'

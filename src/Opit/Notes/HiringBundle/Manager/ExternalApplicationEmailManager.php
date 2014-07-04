@@ -55,7 +55,7 @@ class ExternalApplicationEmailManager
 
         $this->mailer->setRecipient($applicant->getEmail());
         $this->mailer->setSubject(
-            '[OPIT] - Successfully applied for ' . $jobPosition->getJobTitle() . ' (' . $jobPosition->getJobPositionId() . ')'
+            '[OPIT-HRM] - Successfully applied for ' . $jobPosition->getJobTitle() . ' (' . $jobPosition->getJobPositionId() . ')'
         );
         $this->mailer->setBodyByTemplate('OpitNotesHiringBundle:Mail:externalApplicationSuccessful.html.twig', $templateVars);
 
