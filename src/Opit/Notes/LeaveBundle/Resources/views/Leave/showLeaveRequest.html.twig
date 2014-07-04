@@ -107,7 +107,7 @@
                         <label for="own">Own</label>
                     </li>
                     <li class="white-space-nowrap">
-                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}caddFormFieldsetChildhecked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
+                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}checked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
                         <label for="other-employees">Other employees</label>
                     </li>
                 </ul>
@@ -117,7 +117,7 @@
                 <ul class="no-style option-list-scrollable">
                     {% for employee in employees %}
                     <li class="white-space-nowrap">
-                        <input type="checkbox" id="company-employee-{{ employee.id }}" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top" {% if employee.id in selectedEmployees %}checked="checked"{% endif %}>
+                        <input type="checkbox" id="company-employee-{{ employee.id }}" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top" {% if employee in selectedEmployees %}checked="checked"{% endif %}>
                         <label for="company-employee-{{ employee.id }}" class="vertical-align-top">{{ employee.employeeName }}</label>
                     </li>
                     {% endfor %}

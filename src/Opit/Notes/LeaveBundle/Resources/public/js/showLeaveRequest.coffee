@@ -15,7 +15,7 @@ $('form#leaveRequestForm').on 'change', '.start-date', ->
 $('form#leaveRequestForm').on 'change', '.end-date', ->
     checkDatesOverlapping $(@)
 
-$('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
+#$('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
 
 createErrorLabel = (errorMessage, errorClass = '', attributes = []) ->
     $errorLabel = $('<label>')
@@ -137,7 +137,7 @@ $(document).ready ->
     addPastDateError = ($startDate) ->
         $errorLabel = createErrorLabel('Start date can not be in the past', 'past-date-error')
         $startDate.addClass 'error'
-        $startDate.parent().append $errorLabel
+        $startDate.closest('div').append $errorLabel
 
     # Check if LR has leaves in the past
     hasPastDates = (addError) ->
@@ -199,7 +199,7 @@ $(document).ready ->
         else
             $leaveWrapper.append $leave
 
-        $leave.append createLeaveDeleteButton()
+            $leave.append createLeaveDeleteButton()
         
         $errorList = $leave.find('ul')
         $errorListParent = $errorList.parent()
@@ -308,6 +308,8 @@ $(document).ready ->
     # Register request for radio event listener
     $('.leave-request-owner').on 'change', ->
         showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
+        if 'for-employees' == $(@).val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
+            $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
             
     $collectionHolder.children().each (index) ->
         $(@).find('label:first').remove()
