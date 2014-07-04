@@ -255,7 +255,7 @@ class TimeSheetController extends Controller
 
         // Get the days of the actual month.
         $endDate = clone $startDate;
-        $endDate->add(new \DateInterval("P1M"));
+        $endDate->modify('last day of this month');
         $daysOfMonth = Utils::diffDays($startDate, $endDate);
 
         return $this->render(
