@@ -248,8 +248,8 @@ class AdminUserController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $groupId = $request->attributes->get('id');
 
-        $requestGroup = str_replace(' ', '_', $request->request->get('value'));
-        $groupRoleName = 'ROLE_' . strtoupper($requestGroup);
+        $requestGroup = $request->request->get('value');
+        $groupRoleName = 'ROLE_' . strtoupper(str_replace(' ', '_', $requestGroup));
         $groupName = ucfirst($requestGroup);
 
         if ('new' === $groupId) {
