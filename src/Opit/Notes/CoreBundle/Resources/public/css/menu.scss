@@ -16,6 +16,7 @@
     padding: 0 10px 0 10px;
     margin: -3px 3px 0 0;
     line-height: 30px;
+    z-index: 99;
     @include box-sizing(border-box);
     
     &.clone {
@@ -36,7 +37,6 @@
         margin-right:50px;
         margin-top:7px;
         border:none;
-        z-index: 99;
 
         &:hover {
             border: 1px solid #777777;
