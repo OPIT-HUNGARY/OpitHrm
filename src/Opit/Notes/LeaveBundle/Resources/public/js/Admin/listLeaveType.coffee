@@ -85,7 +85,7 @@ deleteLeaveType = () ->
     url = Routing.generate 'OpitNotesLeaveBundle_admin_delete_leave_type'
     $(document).data('notes').funcs.deleteAction('Leave type delete', 'leave type(s)', url, '.list-delete-leavetype')
 
-$('#list-table').on 'click', '.order-text', ->
+$('#form-leavetype').on 'click', '.order-text', ->
     $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesLeaveBundle_admin_list_leave_types', 'list-table', 'searchForm'
-$('#list-table').on 'click', '.fa-sort', ->
+$('#form-leavetype').on 'click', '.fa-sort', ->
     $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesLeaveBundle_admin_list_leave_types', 'list-table', 'searchForm'
