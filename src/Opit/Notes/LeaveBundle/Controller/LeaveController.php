@@ -265,7 +265,7 @@ class LeaveController extends Controller
         $leaveRequestService = $this->get('opit.model.leave_request');
         $currentUser = $securityContext->getToken()->getUser();
         $entityManager = $this->getDoctrine()->getManager();
-        $ids = $request->request->get('id');
+        $ids = $request->request->get('deleteMultiple');
 
         if (!is_array($ids)) {
             $ids = array($ids);

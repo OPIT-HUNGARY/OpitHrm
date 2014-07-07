@@ -49,6 +49,22 @@ $(document).ready ->
             type: 'travel request'
         }
 
+    # Delete button
+    $('#delete').click ->
+        do deleteTravelRequest
+
+    # Delete icon in the table row
+    $('#main-wrapper').on "click", ".deleteSingeTravelRequest", ->
+        event.preventDefault()
+        $checkbox = $(@).closest('tr').find ':checkbox'
+        $checkbox.prop 'checked', true
+        do deleteTravelRequest
+
+    # Call the deleteAction from the app main.js
+    deleteTravelRequest = () ->
+        url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
+        $(document).data('notes').funcs.deleteAction('Travel request delete', 'travel request(s)', url, '.deleteMultiple')
+
     $travelList.on 'click', '.order-text', ->
         $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitNotesTravelBundle_travel_list', 'travel_list'
         

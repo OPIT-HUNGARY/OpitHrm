@@ -208,7 +208,7 @@ class TravelController extends Controller
     public function deleteTravelRequestAction(Request $request)
     {
         $securityContext = $this->get('security.context');
-        $ids = $request->request->get('id');
+        $ids = $request->request->get('deleteMultiple');
         if (!is_array($ids)) {
             $ids = array($ids);
         }

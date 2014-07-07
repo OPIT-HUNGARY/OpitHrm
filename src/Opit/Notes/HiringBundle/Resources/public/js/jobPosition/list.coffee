@@ -16,42 +16,24 @@ $(document).ready ->
             return
           return
 
-    $('#main-wrapper').on 'click', '.delete-job-position', (event) ->
-            event.preventDefault()
-            $deleteButton = $(@)
-            jobPositionId = $deleteButton.data 'request'
-            message = "Are you sure you want to delete job position #{ jobPositionId }?"
-            title = 'Delete job positon'
+    # Delete button
+    $('#delete').click ->
+        do deleteJobPosition
 
-            $('<div id="dialog-show-details-jp"></div>').html(message)
-                .dialog
-                    title: '<i class="fa fa fa-exclamation-triangle"></i> ' + title
-                    width: 550
-                    maxHeight: $(window).outerHeight()-100
-                    modal: on
-                    buttons:
-                        Yes: ->
-                            $.ajax
-                                method: 'POST'
-                                url: $deleteButton.attr('href')
-                                data: 'id': $deleteButton.data('id')
-                            .done (data) ->
-                                $.ajax
-                                    type: 'POST'
-                                    url: Routing.generate 'OpitNotesHiringBundle_job_position_list'
-                                    data: "resetForm" : 1
-                                .done (list)->
-                                    $('#job_position_list').html list
-                                    $(document).data('notes').funcs.initListPageListeners()
-                                    $(document).data('notes').funcs.initDeleteMultipleListener()
-                                $('#dialog-show-details-jp').dialog 'destroy'
-                                return
-                        No: ->
-                            $('#dialog-show-details-jp').dialog 'destroy'
-                            return
+    # Delete icon in the table row
+    $('#main-wrapper').on "click", ".delete-job-position", ->
+        event.preventDefault()
+        $checkbox = $(@).closest('tr').find ':checkbox'
+        $checkbox.prop 'checked', true
+        do deleteJobPosition
+
+    # Call the deleteAction from the app main.js
+    deleteJobPosition = () ->
+        url = Routing.generate 'OpitNotesHiringBundle_job_position_delete'
+        $(document).data('notes').funcs.deleteAction('Job position delete', 'job position(s)', url, '.deleteMultiple')
 
     $('#job_position_list').on 'click', '.fa-sort', ->
-        $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesHiringBundle_job_position_list', 'job_position_list'
+            $(document).data('notes').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitNotesHiringBundle_job_position_list', 'job_position_list'
 
     $('#job_position_list').on 'click', '.order-text', ->
         $orderIcon = $(@).parent().find('.fa-sort')

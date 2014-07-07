@@ -35,7 +35,7 @@ showRoleDialog = (id, name, description, url, title, flashMessage) ->
         $('.ui-dialog-buttonset .ui-button:first-child .ui-button-text').text 'Edit'
               
 deleteGroup = (id, name) ->
-    if not not name
+    if name
         $selfDialog = $('<div>').html "Are you sure you want to delete #{ propertyName }(s) \"#{ name }\"?"
         $selfDialog.dialog
             width: 400

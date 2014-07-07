@@ -175,7 +175,7 @@ class JobPositionController extends Controller
         $securityContext = $this->container->get('security.context');
         $entityManager = $this->getDoctrine()->getManager();
         $currentUser = $securityContext->getToken()->getUser();
-        $ids = $request->request->get('id');
+        $ids = $request->request->get('deleteMultiple');
 
         if (!is_array($ids)) {
             $ids = array($ids);

@@ -84,13 +84,14 @@ $.extend true, $(document).data('notes'),
                             $(document).data('notes').funcs.showAlert data, 'create', 'Deletion not allowed for roles with relations', true
                         else
                           $(identifier+':checked').closest('tr').remove()
-                          return
+
+                        $(document).data('notes').funcs.initListPageListeners()
+                        $(document).data('notes').funcs.initDeleteMultipleListener()
+                        $(document).data('notes').funcs.initPager()
+                        return
                       .fail () ->
                           $('<div></div>').html('The '+message+' could not be deleted due to an error.').dialog
                               title: 'Error'
-                      $(document).data('notes').funcs.initListPageListeners()
-                      $(document).data('notes').funcs.initDeleteMultipleListener()
-                      $(document).data('notes').funcs.initPager()
                       $(@).dialog 'close'
                       return
                   No: ->

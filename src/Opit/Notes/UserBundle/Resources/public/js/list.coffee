@@ -42,14 +42,18 @@ $(document).ready ->
         $(document).data('OpitNotesUserBundle').funcs.userEdit($(@).data('user-id'), $(document).data('notes').funcs.showAlert)
         return
 
-    deleteUser = () ->
-      url = Routing.generate 'OpitNotesUserBundle_user_delete'
-      return $(document).data('notes').funcs.deleteAction 'User delete', 'user(s)', url, '.deleteMultiple'
+    # Delete button
+    $('#delete').click ->
+        do deleteUser
 
     # Delete icon in the table row
     $('#userlistWrapper').on 'click', '.delete-single-user', ->
         $(document).data('notes').funcs.resetAndSelectSingle $(@)
         do deleteUser
+
+    deleteUser = () ->
+      url = Routing.generate 'OpitNotesUserBundle_user_delete'
+      return $(document).data('notes').funcs.deleteAction 'User delete', 'user(s)', url, '.deleteMultiple'
 
     $('#userlistWrapper').on 'click', '.reset-password', ->
         _self = $(@)

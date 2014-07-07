@@ -43,7 +43,7 @@ $.extend true, $(document).data('notes'),
             
             $('#list-table input[type="checkbox"]').on 'change', ->
                 $(document).data('notes').funcs.changeDeleteButton()
-        
+
         # TODO: Remove any component specific code and make the API fully reusable.
         initListPageListeners: () ->
             $('.icon-disabled').on 'click', (event)->
@@ -54,76 +54,6 @@ $.extend true, $(document).data('notes'),
                     return not @.disabled).checkAll $(document).data('notes').funcs.changeDeleteButton
                 return
 
-            $('#list-table .deleteSingeTravelRequest').click (event) ->
-                event.preventDefault()
-                $(document).data('notes').funcs.deleteSingleRequest 'request', $(@)
-
-            $('#delete').off('click.deleteList').on 'click.deleteList', ->
-                if $('#userlistWrapper').length is 1
-                    title = 'User delete'
-                    message = 'user(s)'
-                    url = Routing.generate 'OpitNotesUserBundle_user_delete'
-                    $(document).data('notes').funcs.deleteAction(title, message, url, '.deleteMultiple')
-                    return false
-                else if $('#travel_list').length is 1
-                    warningMessage = 'Are you sure you want to delete the selected travel requests?'
-                    checkBoxClass = '.deleteMultiple'
-                    url = Routing.generate 'OpitNotesTravelBundle_travel_delete'
-                    title = 'Travel request removal'
-                    errorText = 'The travel request could not be deleted due to an error.'
-                else if $('#leave_list').length is 1
-                    warningMessage = 'Are you sure you want to delete the selected leave requests?'
-                    checkBoxClass = '.deleteMultiple'
-                    url = Routing.generate 'OpitNotesLeaveBundle_leaverequest_delete'
-                    title = 'Leave request removal'
-                    errorText = 'The leave request could not be deleted due to an error.'
-                else if $('#job_position_list').length is 1
-                    warningMessage = 'Are you sure you want to delete the selected job positions?'
-                    checkBoxClass = '.deleteMultiple'
-                    url = Routing.generate 'OpitNotesHiringBundle_job_position_delete'
-                    title = 'Job position removal'
-                    errorText = 'The job position could not be deleted due to an error.'
-                else if $('#applicant_list').length is 1
-                    warningMessage = 'Are you sure you want to delete the selected applicants?'
-                    checkBoxClass = '.deleteMultiple'
-                    url = Routing.generate 'OpitNotesHiringBundle_applicant_delete'
-                    title = 'Applicant removal'
-                    errorText = 'The applicant could not be deleted due to an error.'
-                else
-                    return false
-
-                requests = []
-                selectedRequests = []
-                $(checkBoxClass).each ->
-                    if $(@).is ':checked'
-                        requests.push $(@).val()
-                        selectedRequests.push $(@).parent().parent()
-
-                $('<div></div>').html(warningMessage).dialog
-                    title: title
-                    buttons:
-                        Yes: ->
-                            $.ajax
-                              method: 'POST'
-                              url: url
-                              data: 'id': requests
-                            .done (data) ->
-                                $(selectedRequests).each ->
-                                    $(@).remove()
-                                return
-                            .fail () ->
-                                $('<div></div>').html(errorText).dialog
-                                    title: 'Error'
-                            $(@).dialog 'close'
-                            return
-                        No: ->
-                            $(@).dialog 'close'
-                            return
-                    close: ->
-                        $(@).dialog 'destroy'
-                        return
-                return
-        
         setPagerNumbering: () ->
             offset = $('#pager').data 'offset'
             pages = $('#pager').data 'pages'

@@ -1,37 +1,19 @@
 $(document).ready ->
-    $('#main-wrapper').on 'click', '.delete-applicant', (event) ->
-            event.preventDefault()
-            $deleteButton = $(@)
-            applicantName = $deleteButton.data 'request'
-            message = "Are you sure you want to delete applicantion of  #{ applicantName }?"
-            title = 'Delete applicant'
+    # Delete button
+    $('#delete').click ->
+        do deleteApplicant
 
-            $('<div id="dialog-show-details-applicant"></div>').html(message)
-                .dialog
-                    title: '<i class="fa fa fa-exclamation-triangle"></i> ' + title
-                    width: 550
-                    maxHeight: $(window).outerHeight()-100
-                    modal: on
-                    buttons:
-                        Yes: ->
-                            $.ajax
-                                method: 'POST'
-                                url: $deleteButton.attr('href')
-                                data: 'id': $deleteButton.data('id')
-                            .done (data) ->
-                                $.ajax
-                                    type: 'POST'
-                                    url: Routing.generate 'OpitNotesHiringBundle_applicant_list'
-                                    data: "resetForm" : 1
-                                .done (list)->
-                                    $('#applicant_list').html list
-                                    $(document).data('notes').funcs.initListPageListeners()
-                                    $(document).data('notes').funcs.initDeleteMultipleListener()
-                                $('#dialog-show-details-applicant').dialog 'destroy'
-                                return
-                        No: ->
-                            $('#dialog-show-details-applicant').dialog 'destroy'
-                            return
+    # Delete icon in the table row
+    $('#main-wrapper').on "click", ".delete-applicant", ->
+        event.preventDefault()
+        $checkbox = $(@).closest('tr').find ':checkbox'
+        $checkbox.prop 'checked', true
+        do deleteApplicant
+
+    # Call the deleteAction from the app main.js
+    deleteApplicant = () ->
+        url = Routing.generate 'OpitNotesHiringBundle_applicant_delete'
+        $(document).data('notes').funcs.deleteAction('Applicant delete', 'applicant(s)', url, '.deleteMultiple')
 
     $('#applicant_list').on 'change', '.changeState', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeApplicantStatus, {
