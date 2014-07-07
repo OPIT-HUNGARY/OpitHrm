@@ -21,15 +21,16 @@ class LeaveDateRepository extends EntityRepository
     /**
      * Find all leave dates by parameters
      *
-     * @param array $searchParams
+     * @param array $searchProperties
      * @return array \Opit\Notes\LeaveBundle\Entity\LeaveDate objects
      */
-    public function findAllFiltered($searchParams = array())
+    public function findAllFiltered($searchProperties = array())
     {
         $startYear = $endYear = date('Y');
         $startMonth = 1;
         $endMonth = 12;
-        $orderParams = isset($searchParams['order']) ? $searchParams['order'] : array();
+        $orderParams = isset($searchProperties['order']) ? $searchProperties['order'] : array();
+        $searchParams = isset($searchProperties['search']) ? $searchProperties['search'] : array();
 
         $qb = $this->createQueryBuilder('ld');
         // Get the date range
@@ -66,7 +67,7 @@ class LeaveDateRepository extends EntityRepository
             );
         }
         $qb->setParameters($parameters);
-        
+
         if (isset($orderParams['field']) && $orderParams['field'] && isset($orderParams['dir']) && $orderParams['dir']) {
             $qb->orderBy('ld.'.$orderParams['field'], $orderParams['dir']);
         } else {
@@ -102,7 +103,7 @@ class LeaveDateRepository extends EntityRepository
 
     /**
      * Count leave working days between date range
-     * 
+     *
      * @param Datetime $startDate
      * @param Datetime $endDate
      * @param integer $category
@@ -128,7 +129,7 @@ class LeaveDateRepository extends EntityRepository
 
     /**
      * Get administrative leave between dates
-     * 
+     *
      * @param Datetime $startDate
      * @param Datetime $endDate
      * @return type
