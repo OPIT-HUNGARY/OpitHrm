@@ -34,5 +34,5 @@ monolog:
             type:       swift_mailer
             from_email: %monolog_mail_from%
             to_email:   %monolog_mail_to%
-            subject:    '[OPIT-HRM] Application alert'
+            subject:    '[%application_name%] Application alert'
             level:      error
