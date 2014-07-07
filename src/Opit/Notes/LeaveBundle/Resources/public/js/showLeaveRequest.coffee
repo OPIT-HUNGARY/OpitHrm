@@ -199,7 +199,7 @@ $(document).ready ->
         else
             $leaveWrapper.append $leave
 
-            $leave.append createLeaveDeleteButton()
+        $leave.append createLeaveDeleteButton()
         
         $errorList = $leave.find('ul')
         $errorListParent = $errorList.parent()
@@ -216,7 +216,6 @@ $(document).ready ->
         return $leave
 
     showRequestFor = ($self, $leaveRequestUser, $addFormFieldset, $employeeSelector) ->
-        $('.formFieldsetChild').remove()
         displayNone = 'display-none-important'
         if $self.val() is 'for-employees'
             # Add event listener on the employee checkboxes
@@ -232,7 +231,12 @@ $(document).ready ->
 
             $employeeSelector.removeAttr 'disabled'
 
-            $leave = createLeave()
+            if $('.formFieldsetChild').length is 0
+                $leave = createLeave()
+            else
+                $leave = $('.formFieldsetChild')
+
+            $leave.find('.leave-category').parent().hide()
             $leave.find('.deleteFormFieldsetChild').remove()
 
         else if $self.val() is 'own'
@@ -275,8 +279,9 @@ $(document).ready ->
             $forAll.html('Uncheck all')
         else
             $forAll.html('Check all')
-    
+
     $forAll.on 'click', ->
+        $('.formFieldsetChild .leave-category').parent().toggle()
         $companyEmployees.checkAll (list) =>
             changeLabel list
             
@@ -301,26 +306,27 @@ $(document).ready ->
     $addFormFieldset = $('.addFormFieldsetChild')
     $employeeSelector = $('#employee-selector')
 
-    # Trigger showRequestFor if selection is present
-    if $('.leave-request-owner:checked').length > 0
-        showRequestFor $('.leave-request-owner:checked'), $leaveRequestUser, $addFormFieldset, $employeeSelector
-
-    # Register request for radio event listener
-    $('.leave-request-owner').on 'change', ->
-        showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
-        if 'for-employees' == $(@).val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
-            $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
-            
     $collectionHolder.children().each (index) ->
         $(@).find('label:first').remove()
         if $(@).find('.isLocked').val() == '1'
             $(@).addClass 'disabled'
             $('.addFormFieldsetChild').removeClass 'display-none-important'
         createLeave($(@))
-        
+
+    # Trigger showRequestFor if selection is present
+    if $('.leave-request-owner:checked').length > 0
+        showRequestFor $('.leave-request-owner:checked'), $leaveRequestUser, $addFormFieldset, $employeeSelector
+
+    # Register request for radio event listener
+    $('.leave-request-owner').on 'change', ->
+        $('.formFieldsetChild').remove()
+        showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
+        if 'for-employees' == $(@).val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
+            $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
+
     $('.addFormFieldsetChild').on 'click', ->
         createLeave()
-        
+
     $('.disabled .deleteFormFieldsetChild, .disabled .addFormFieldsetChild').each ->
         $(@).remove()
         

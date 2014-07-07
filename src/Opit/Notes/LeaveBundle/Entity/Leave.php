@@ -238,10 +238,35 @@ class Leave
      */
     public function validateStartDate(ExecutionContextInterface $context)
     {
-        if (null !== $this && $this->getStartDate()->format('Y-m-d') > $this->getEndDate()->format('Y-m-d')) {
+        $startDate = $this->getStartDate();
+        $endDate = $this->getEndDate();
+
+        if (null !== $startDate && null !== $endDate && $startDate->format('Y-m-d') > $endDate->format('Y-m-d')) {
             $context->addViolationAt(
                 'startDate',
-                sprintf('Start date can not be in the past.')
+                sprintf('Start date can not be bigger than end date.')
+            );
+        }
+    }
+
+    /**
+     * Check if start and end date has value set
+     * 
+     * @param \Symfony\Component\Validator\ExecutionContextInterface $context
+     */
+    public function validateStartEndDate(ExecutionContextInterface $context)
+    {
+        if (null === $this->getStartDate()) {
+            $context->addViolationAt(
+                'startDate',
+                sprintf('Start date can not be empty.')
+            );
+        }
+
+        if (null === $this->getEndDate()) {
+            $context->addViolationAt(
+                'endDate',
+                sprintf('End date can not be empty.')
             );
         }
     }
