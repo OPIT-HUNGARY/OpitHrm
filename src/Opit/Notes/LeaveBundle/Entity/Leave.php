@@ -230,4 +230,19 @@ class Leave
             }
         }
     }
+
+    /**
+     * Check if start date is bigger than end date
+     *
+     * @Assert\Callback
+     */
+    public function validateStartDate(ExecutionContextInterface $context)
+    {
+        if (null !== $this && $this->getStartDate()->format('Y-m-d') > $this->getEndDate()->format('Y-m-d')) {
+            $context->addViolationAt(
+                'startDate',
+                sprintf('Start date can not be in the past.')
+            );
+        }
+    }
 }

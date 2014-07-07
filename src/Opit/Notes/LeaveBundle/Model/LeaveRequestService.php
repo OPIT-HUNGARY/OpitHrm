@@ -20,6 +20,7 @@ use Opit\Notes\LeaveBundle\Entity\LeaveRequest;
 use Opit\Notes\UserBundle\Entity\Employee;
 use Opit\Notes\LeaveBundle\Entity\Leave;
 use Opit\Notes\LeaveBundle\Entity\LeaveCategory;
+use Opit\Notes\LeaveBundle\Entity\StatesLeaveRequests;
 use Opit\Component\Utils\Utils;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\Notes\LeaveBundle\Manager\LeaveNotificationManager;
@@ -392,6 +393,45 @@ class LeaveRequestService
             $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::REJECTED);
             $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, false, $status);
             $this->statusManager->addStatus($leaveRequest, Status::REJECTED);
+        }
+    }
+
+    /**
+     * Removes related leave request leave instances.
+     *
+     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
+     * @param ArrayCollection $children
+     */
+    public function removeChildNodes(LeaveRequest $leaveRequest, $children)
+    {
+        foreach ($children as $child) {
+            if (false === $leaveRequest->getLeaves()->contains($child)) {
+                $child->setLeaveRequest();
+                $this->entityManager->remove($child);
+            }
+        }
+    }
+
+    /**
+     * Method to reject overlapping leaves leave request
+     * 
+     * @param array $overlappingLeaves
+     */
+    public function rejectOverlappingLeavesLR(array $overlappingLeaves)
+    {
+        $statusRejected = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::REJECTED);
+
+        foreach ($overlappingLeaves as $overlappingLeave) {
+            $overlappingLeaveLR = $overlappingLeave->getLeaveRequest();
+
+            $statesLeaveRequests = new StatesLeaveRequests();
+            $statesLeaveRequests->setLeaveRequest($overlappingLeaveLR);
+            $statesLeaveRequests->setStatus($statusRejected);
+
+            $overlappingLeaveLR->addState($statesLeaveRequests);
+
+            $this->entityManager->persist($statesLeaveRequests);
+            $this->entityManager->persist($overlappingLeave);
         }
     }
 
