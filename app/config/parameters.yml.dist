@@ -24,7 +24,7 @@ parameters:
     max_pages: 3
 
     default_currency:   EUR
-    version_number: '3.0.0-beta'
+    version_number: '3.0.5-beta'
 
     ldap_host: ~
     ldap_domain_name_short: ~
