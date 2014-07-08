@@ -240,10 +240,6 @@ $(document).ready ->
                 $leave = $('.formFieldsetChild')
 
             toggleLeaveCategory $leave
-
-            if 'for-employees' == $self.val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
-                $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
-
             $leave.find('.deleteFormFieldsetChild').remove()
 
         else if $self.val() is 'own'
@@ -255,6 +251,9 @@ $(document).ready ->
             $addFormFieldset.removeClass displayNone
 
             $employeeSelector.attr 'disabled', 'disabled'
+
+        # Update scrollbar for employee container
+        $('form#leaveRequestForm .option-list-scrollable').last().mCustomScrollbar 'update'
 
     $('.changeState').on 'change', ->
         $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeLeaveRequestStatus, {
@@ -319,6 +318,10 @@ $(document).ready ->
             $(@).addClass 'disabled'
             $('.addFormFieldsetChild').removeClass 'display-none-important'
         createLeave($(@))
+
+    # Init custom scrollbars on page load
+    if $('form#leaveRequestForm .mCustomScrollBox').length is 0
+        $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
 
     # Trigger showRequestFor if selection is present
     if $('.leave-request-owner:checked').length > 0
