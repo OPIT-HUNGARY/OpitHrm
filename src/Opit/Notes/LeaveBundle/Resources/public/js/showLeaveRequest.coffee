@@ -215,15 +215,18 @@ $(document).ready ->
         $leaveWrapper.insertBefore $('.addFormFieldsetChild')
         return $leave
 
+    toggleLeaveCategory = ($leave) ->
+        if $('.company-employees:checked').length > 1
+            $leave.find('.leave-category').parent().hide()
+        else
+            $leave.find('.leave-category').parent().show()
+
     showRequestFor = ($self, $leaveRequestUser, $addFormFieldset, $employeeSelector) ->
         displayNone = 'display-none-important'
         if $self.val() is 'for-employees'
             # Add event listener on the employee checkboxes
             $('.company-employees').on 'change.category', ->
-                if $('.company-employees:checked').length > 1
-                    $leave.find('.leave-category').parent().hide()
-                else
-                    $leave.find('.leave-category').parent().show()
+                toggleLeaveCategory $leave
 
             $leaveRequestUser.parent().addClass displayNone
             $addFormFieldset.addClass displayNone
@@ -236,7 +239,11 @@ $(document).ready ->
             else
                 $leave = $('.formFieldsetChild')
 
-            $leave.find('.leave-category').parent().hide()
+            toggleLeaveCategory $leave
+
+            if 'for-employees' == $self.val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
+                $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
+
             $leave.find('.deleteFormFieldsetChild').remove()
 
         else if $self.val() is 'own'
@@ -270,10 +277,10 @@ $(document).ready ->
         select: (event, ui) ->
             $('#leave_request_general_manager').val ui.item.id
             return
-            
+
     $forAll = $('#forAll')
     $companyEmployees = $('.company-employees')
-    
+
     changeLabel = (list) ->
         if $(list).filter(':checked').length is list.length
             $forAll.html('Uncheck all')
@@ -321,8 +328,6 @@ $(document).ready ->
     $('.leave-request-owner').on 'change', ->
         $('.formFieldsetChild').remove()
         showRequestFor $(@), $leaveRequestUser, $addFormFieldset, $employeeSelector
-        if 'for-employees' == $(@).val() and $('form#leaveRequestForm .mCustomScrollBox').length is 0
-            $('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
 
     $('.addFormFieldsetChild').on 'click', ->
         createLeave()
