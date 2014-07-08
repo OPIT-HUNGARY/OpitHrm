@@ -16,80 +16,79 @@
 {% endblock %}            
             
 {% block body %}
-    <div id="mainWrapper" class="margin-center">
-        <div id="welcomeWrapper" class="float-left">
-            <div id="welcomeText" class="color-black align-left">
-                {% if (application_name != null and application_name != 'OPIT-HRM') %}
-                    {{ application_name }}
-                {% else %}
-                    <img src="{{ asset('images/logo.png') }}" width="170" alt="" />
-                {% endif %}
-            </div>
-        </div>
-        <div id="featuresForm" class="float-right">
-
-            <div class="home-box width-100">
-                <div class="float-left margin-top-30">
-                    <h1><i class="fa fa-cogs color-light-green"></i>  Admininstration</h1>
-                </div>
-                <div class="float-right margin-top-30 margin-right-15 width-200">
-                    <ul class="fa-ul">
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>User Management</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Management</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Management</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="home-box width-100">
-                <div class="float-left margin-top-30">
-                    <h1><i class="fa fa-bar-chart-o color-light-green"></i>  Reports </h1>
-                </div>
-                <div class="float-right margin-top-30 margin-right-15 width-200">
-                    <ul class="fa-ul">
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Generate Time Sheets</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>View Time Sheets</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="home-box width-100">
-                <div class="float-left margin-top-30">
-                    <h1><i class="fa fa-tags color-light-green"></i>  Modules</h1>
-                </div>
-                <div class="float-right align-left margin-top-30 margin-right-15 width-200">
-                    <ul class="fa-ul">
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Management</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Management</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Hiring Management</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="home-box width-100">
-                <div class="float-left margin-top-30">
-                    <h1><i class="fa fa-plus-square color-light-green"></i>  Others</h1>
-                </div>
-                <div class="float-right align-left margin-top-30 margin-right-15 width-200">
-                    <ul class="fa-ul">
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>WorkFlow Support</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Easy LDAP Integration</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Currency Conversion</li>
-                        <li><i class="fa-li fa fa-check-square color-light-green"></i>Team Calendar</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div id="welcomeWrapper" class="float-left">
-            <div id="welcomeText" class="color-black align-left"><b>H</b>uman</br>&nbsp;&nbsp;<b>R</b>esource</br>&nbsp;&nbsp;<b style="color:#c71e25;">M</b>anagement</div>
-        </div>
-        <div id="loginForm" class="float-left">
-            <div>
-            {% if error %}
-                    <div class="error color-red margin-bottom-10">{{ error.message }}</div>
+<div id="mainWrapper" class="margin-center margin-top-30">
+    <div id="welcomeWrapper" class="float-left">
+        <div id="welcomeText" class="color-black align-left">
+            {% if (application_name != null and application_name != 'OPIT-HRM') %}
+                {{ application_name }}
+            {% else %}
+                <img src="{{ asset('images/logo.png') }}" width="170" alt="" />
             {% endif %}
-            {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'attr': {'id':'login'} }) }}
+
+            <div class="margin-top-100">
+                <span class="bold">H</span>uman<br />
+                <span class="bold">R</span>esource<br />
+                <span class="bold color-ferrari-red">M</span>anagement
             </div>
         </div>
-
+        <div id="loginForm" class="margin-top-100">
+            {% if error %}
+                <div class="error color-red margin-bottom-10">{{ error.message }}</div>
+            {% endif %}
+            {{ form(form, {'action': path('OpitNotesUserBundle_check'), 'method': 'POST', 'id':'login' }) }}
+        </div>
     </div>
+    <div id="featuresForm" class="float-right">
+        <div class="home-box width-100">
+            <div class="float-left margin-top-30">
+                <h1><i class="fa fa-cogs color-light-green"></i>  Admininstration</h1>
+            </div>
+            <div class="float-right margin-top-30 margin-right-15 width-200">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>User Management</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Management</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Management</li>
+                </ul>
+            </div>
+        </div>
+        <div class="home-box width-100">
+            <div class="float-left margin-top-30">
+                <h1><i class="fa fa-bar-chart-o color-light-green"></i>  Reports </h1>
+            </div>
+            <div class="float-right margin-top-30 margin-right-15 width-200">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Generate Time Sheets</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>View Time Sheets</li>
+                </ul>
+            </div>
+        </div>
+        <div class="home-box width-100">
+            <div class="float-left margin-top-30">
+                <h1><i class="fa fa-tags color-light-green"></i>  Modules</h1>
+            </div>
+            <div class="float-right align-left margin-top-30 margin-right-15 width-200">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Travel Management</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Leave Management</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Hiring Management</li>
+                </ul>
+            </div>
+        </div>
+        <div class="home-box width-100">
+            <div class="float-left margin-top-30">
+                <h1><i class="fa fa-plus-square color-light-green"></i>  Others</h1>
+            </div>
+            <div class="float-right align-left margin-top-30 margin-right-15 width-200">
+                <ul class="fa-ul">
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>WorkFlow Support</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Easy LDAP Integration</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Currency Conversion</li>
+                    <li><i class="fa-li fa fa-check-square color-light-green"></i>Team Calendar</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {# Remove the footer from the login template #}

@@ -16,6 +16,7 @@ $greyColor: rgba(140, 140, 140, 1);
 $darkGrey: rgba(100, 100, 100, 1);
 $darkerGrayColor: rgba(80, 80, 80, 1);
 $darkBlack: rgb(0, 0, 0);
+$middleBlack: rgba(0, 0, 0, 0.4);
 $lightBlack: rgba(0, 0, 0, 0.8);
 $aquamarine: rgb(127, 255, 212);
 $aquamarineTransparent: rgba(127, 255, 212, 0.8);
@@ -125,4 +126,11 @@ $menuBgGrey: rgba(148, 193, 28, 1);
     -webkit-column-count: $count;
     -moz-column-count: $count;
     column-count: $count;
+}
+
+@mixin background-size($size) {
+     -webkit-background-size: $size;
+    -moz-background-size: $size;
+    -o-background-size: $size;
+    background-size: $size;
 }

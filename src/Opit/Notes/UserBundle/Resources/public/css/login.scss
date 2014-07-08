@@ -7,104 +7,83 @@
 
 html {
     background: url('../../../images/bg-office.jpg') no-repeat center center fixed;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    @include background-size(cover);
 }
 
 #mainWrapper{
     width:60%;
     min-width:980px;
+    height:622px;
 
     #welcomeWrapper{
         width: 30%;
-        height: 180px;
-        text-indent: 15px;
-        background-color: $aquamarine;
-        opacity:0.8;
-        filter:alpha(opacity=80); /* For IE8 and earlier */
+        height: 100%;
+        padding-left: 15px;
+        background-color: $aquamarine; /* For IE8 and earlier */
+        background-color: $aquamarineTransparent;
+        @include box-sizing(border-box);
 
         #welcomeText{
             font-size: 2em;
         }
 
-        #welcomeUnderText{
-            font-size: .8em;
-            margin-top: -10px;;
-        }
     }
 
     #loginForm{
-        //clear:both;
-        background-color: $aquamarine;
-        width: 30%;
-        height: 265px;
-        background: $aquamarineTransparent;
-
-        > div{
-            margin:20px;
+        #login{
+            .placeholder{
+                margin: -30px 0 0 10px;
+            }
         }
 
-        form{
+        input{
+            width:240px;
+            height:30px;
+            outline:none;
+            border:1px solid transparent;
+            background-color: #FAFFBD;
+            padding: 2px 5px;
+            text-indent: 25px;
+            @include border-radius(0px); /* Overwrites default border radius */
+        }
 
-            #login{
+        input:focus{
+            border:solid 1px $defaultDarkColor;
+        }
 
-                .placeholder{
-                    margin: -30px 0 0 10px;
-                }
-            }
+        label{
+            display:none;
+        }
 
-            input{
-                width:240px;
-                height:30px;
-                outline:none;
-                border:1px solid transparent;
-                background-color: #FAFFBD;
-                padding: 2px 5px;
-                text-indent: 25px;
-                @include border-radius(0px);
-            }
-
-            input:focus{
-                border:solid 1px $defaultDarkColor;
-            }
-
-            label{
-                display:none;
-            }
-
-            button{
-                border:0;
-                outline:0;
-                padding:8px 30px 8px 30px;
-            }
+        button{
+            border:0;
+            outline:0;
+            padding:8px 30px 8px 30px;
         }
     }
 
     #featuresForm{
         width: 69.5%;
-        min-height: 600px;
-        text-indent: 20px;      
+        height: 100%;
+        text-indent: 20px;
+        background-color: $darkBlack; /* For IE8 and earlier */
+        background-color: $lightBlack;
 
         li{
             margin:0 0 0 20px;
             text-indent: 5px;
         }
-    }
-}
 
-.home-box {
-    color: #fafafa;
-    padding: .5em;
-    margin: 0 auto;
-    background-color: #000000;
-    min-height: 142px;
-    border-bottom: 1px solid #b6b6b6;
-    opacity:0.8;
-    filter:alpha(opacity=80); /* For IE8 and earlier */
-    &:hover{
-        opacity:0.9;
-        filter:alpha(opacity=90); /* For IE8 and earlier */ 
+        .home-box {
+            color: $snowColor;
+            padding: .5em;
+            margin: 0 auto;
+            min-height: 155px;
+            border-bottom: 1px solid $defaultDarkColor;
+            @include box-sizing(border-box);
+            &:hover{
+                background-color: $middleBlack;
+            }
+        }
     }
 }
