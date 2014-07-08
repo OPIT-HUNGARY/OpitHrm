@@ -32,10 +32,8 @@ $.extend true, $(document).data('notes'),
                     name = $(@).attr 'name'
                     id = $(@).attr('id')
                     $input = $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
-                    if $(@).val()
-                        $input.val $.datepicker.formatDate($.datepicker.ISO_8601, new Date($(@).val()))
                     $(@).datepicker()
-    
+
         deleteSingleRequest: (type, self) ->
             $checkbox = self.closest('tr').find(':checkbox')
             $checkbox.prop 'checked', true
@@ -202,6 +200,8 @@ $.fn.datepicker = (options = {}, parameters) ->
     defaultOptions =
         altField: '#altDate' + $(@).attr('id')
         altFormat: $.datepicker.ISO_8601
+        dateFormat: $.datepicker.ISO_8601
+
     # Merge passed options
     $.extend true, defaultOptions, options
 
@@ -218,6 +218,11 @@ $.fn.datepicker = (options = {}, parameters) ->
         return
 
     __picker.apply this, [defaultOptions]
+
+    # Apply default date formats if values are present
+    if $(@).val()
+        $(@).val $.datepicker.formatDate(defaultOptions.dateFormat, new Date($(@).val()))
+        $(defaultOptions.altField).val $.datepicker.formatDate(defaultOptions.altFormat, new Date($(@).val()))
 
     if options.showOn isnt 'button'
         $wrapper = defaultParameters.wrapper
