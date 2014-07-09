@@ -50,7 +50,7 @@ class GroupsRepository extends EntityRepository
             throw new CommonException('Given parameter "'.$userId.'" has to be of type integer.');
         
         $dq = $this->createQueryBuilder('g')
-                ->select('g.id, g.name')
+                ->select('g.id, g.name, g.role')
                 ->InnerJoin('g.users', 'u', 'WITH', 'u.id = :user_id')
                 ->setParameter('user_id', $userId)
                 ->getQuery();

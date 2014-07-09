@@ -74,7 +74,7 @@ class LeaveRequestService
         $isLocked = array();
         $isDeleteable = array();
         $isForApproval = array();
-        
+
         foreach ($leaveRequests as $leaveRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($leaveRequest);
             $currentStatusNames[$leaveRequest->getId()] = $currentStatus->getName();
@@ -108,9 +108,14 @@ class LeaveRequestService
     public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest, $currentUser)
     {
         $currentUserId = $currentUser->getId();
-        
+
+        // Is granted not used because role admin inherits role general manager
+        $localUserRoles = $this->entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($currentUserId);
+        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
+        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
+
         // If user is admin he is always allowed to delete
-        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$this->securityContext->isGranted('ROLE_ADMIN')) {
+        if ($isGeneralManager) {
             // Check if user is general manager of leave request
             if ($leaveRequest->getGeneralManager()->getId() === $currentUserId) {
                 return true;
@@ -121,13 +126,13 @@ class LeaveRequestService
         } elseif ($leaveRequest->getEmployee()->getUser()->getId() === $currentUserId) {
             return null !== $leaveRequest->getLeaveRequestGroup() ? false : $this->isLRPastLeaveDateDeleteable($leaveRequest);
         }
-        
+
         return false;
     }
-    
+
     /**
      * Check if leave request contains leave in the past
-     * 
+     *
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @return boolean
      */
@@ -350,7 +355,7 @@ class LeaveRequestService
         }
 
         return $result;
-    } 
+    }
 
     /**
      * Compare the date overlapping between leave requests
@@ -380,10 +385,10 @@ class LeaveRequestService
 
         return $dateOverlappings;
     }
-    
+
     /**
      * Reject the leave requests related to leaves, send a notification and email about it
-     * 
+     *
      * @param array $leaves
      * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $lr
      */
@@ -417,7 +422,7 @@ class LeaveRequestService
 
     /**
      * Method to reject overlapping leaves leave request
-     * 
+     *
      * @param array $overlappingLeaves
      */
     public function rejectOverlappingLeavesLR(array $overlappingLeaves)

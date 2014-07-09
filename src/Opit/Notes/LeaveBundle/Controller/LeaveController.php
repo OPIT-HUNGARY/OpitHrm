@@ -46,11 +46,15 @@ class LeaveController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$securityContext->isGranted('ROLE_ADMIN');
         $employee = $user->getEmployee();
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
         $parentsOfGroupLRs = array();
+
+        // Is granted not used because role admin inherits role general manager
+        $localUserRoles = $entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($user->getId());
+        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
+        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
 
         // Calculating the leave days for the current employee.
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
@@ -122,9 +126,15 @@ class LeaveController extends Controller
         $leaveRequestId = $request->attributes->get('id');
         $isNewLeaveRequest = 'new' === $leaveRequestId ? true : false;
         $securityContext = $this->container->get('security.context');
-        $employee = $securityContext->getToken()->getUser()->getEmployee();
+        $user = $securityContext->getToken()->getUser();
+        $employee = $user->getEmployee();
         $leaveRequestService = $this->get('opit.model.leave_request');
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER') && !$securityContext->isGranted('ROLE_ADMIN');
+
+        // Is granted not used because role admin inherits role general manager
+        $localUserRoles = $entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($user->getId());
+        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
+        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
+
         $requestFor = $request->request->get('leave-request-owner');
         $employees = $request->request->get('employee');
         $leavesLength = 0;
