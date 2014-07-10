@@ -74,7 +74,7 @@ $('#delete').click ->
     do deleteLeaveCategory
 
 # Delete icon in the table row
-$('#form-leavecategory').on "click", ".delete-single-leavecategory", ->
+$('#form-leavecategory').on 'click', '.delete-single-leavecategory', (event) ->
     event.preventDefault()
     $checkbox = $(@).closest('tr').find ':checkbox'
     $checkbox.prop 'checked', true
