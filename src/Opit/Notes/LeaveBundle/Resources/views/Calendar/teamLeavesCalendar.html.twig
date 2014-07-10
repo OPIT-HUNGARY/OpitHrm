@@ -6,6 +6,7 @@
     {{ parent() }}
     {% stylesheets
         'libs/fullcalendar/css/fullcalendar.css'
+        '@OpitNotesLeaveBundle/Resources/public/css/leaveCalendar.scss'
     output='css/opitnotesleave/fullcalendar.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -20,12 +21,14 @@
     {% endjavascripts %}
 {% endblock %}
 {% block body %}
-    <h1 class="width-55">Team leaves calendar</h1>
-    <hr class="width-55" />
-    <div id="team-leaves-calendar" class="width-55"></div>
-    <hr class="width-55" />
-    <h2 class="width-55">Team employees</h2>
-    <div class="margin-bottom-20 display-block width-55">
+<div id="leave-calendar-container" class="width-55">
+    <span id="export-button" class="fc-button fc-button-today fc-state-default fc-corner-left fc-corner-right">export <i class="fa fa-upload"></i></span>
+    <h1 class="">Team leaves calendar</h1>
+    <hr />
+    <div id="team-leaves-calendar"></div>
+    <hr />
+    <h2>Team employees</h2>
+    <div class="margin-bottom-20 display-block">
     {% for employee in employees %}
         {% set employeeClass = employee.employeeName|replace(' ', '_') ~ '-' ~ employee.id %}
         <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employeeClass }}" data-class="{{ employeeClass }}">
@@ -37,4 +40,5 @@
         </div>
     {% endfor %}
     </div>
+</div>
 {% endblock %}

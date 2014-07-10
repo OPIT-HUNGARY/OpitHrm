@@ -37,6 +37,28 @@ $.fn.bgPainter = (options = {}, container) ->
     $( "<style>#{ styles }</style>" ).appendTo 'head'
     return
 
+# Register visual export button event listeners
+$('#leave-calendar-container #export-button').hover(
+    -> $(@).addClass('fc-state-hover'),
+    -> $(@).removeClass('fc-state-hover')
+)
+
+# Register calendar export event listener
+$('#leave-calendar-container #export-button').on 'click.export', ->
+    # Fetch current calendar view object
+    $calendarView = $("#team-leaves-calendar").fullCalendar 'getView'
+    # We want to send data as attachment, traditional form submission is used
+    url = Routing.generate 'OpitNotesLeaveBundle_calendar_team_leaves_export'
+    data =
+        start: $.datepicker.formatDate($.datepicker.ISO_8601, new Date($calendarView.visStart)),
+        end: $.datepicker.formatDate($.datepicker.ISO_8601, new Date($calendarView.visEnd)),
+        title: $calendarView.title
+
+    # Call form submission helper
+    $.fn.download(url, data)
+
+    return
+
 $(document).ready ->
     $("#team-leaves-calendar").fullCalendar
         editable: false,

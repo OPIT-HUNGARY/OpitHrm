@@ -3,6 +3,7 @@
     {{ parent() }}
     {% stylesheets
         'libs/fullcalendar/css/fullcalendar.css'
+        '@OpitNotesLeaveBundle/Resources/public/css/leaveCalendar.scss'
     output='css/opitnotesuser/show_user_summary.css' filter='?yui_css,cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}

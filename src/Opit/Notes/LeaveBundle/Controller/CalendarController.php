@@ -14,11 +14,15 @@ namespace Opit\Notes\LeaveBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\Notes\UserBundle\Entity\Employee;
 use Opit\Notes\StatusBundle\Entity\Status;
+use Opit\Component\ICalendar as ICal;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of CalendarController
@@ -43,9 +47,15 @@ class CalendarController extends Controller
         $employees = $this->getTeamsEmployees($securityContext->getToken()->getUser()->getEmployee());
 
         if (!$partial) {
-            return $this->render('OpitNotesLeaveBundle:Calendar:teamLeavesCalendar.html.twig', array('employees' => $employees));
+            return $this->render(
+                'OpitNotesLeaveBundle:Calendar:teamLeavesCalendar.html.twig',
+                array('employees' => $employees)
+            );
         } else {
-            return $this->render('OpitNotesLeaveBundle:Calendar:_teamLeavesCalendar.html.twig', array('employees' => $employees));
+            return $this->render(
+                'OpitNotesLeaveBundle:Calendar:_teamLeavesCalendar.html.twig',
+                array('employees' => $employees)
+            );
         }
     }
 
@@ -77,7 +87,7 @@ class CalendarController extends Controller
 
         // loop through all leave requests
         foreach ($leaveRequests as $leaveRequest) {
-            // loop hrough all leave request leaves
+            // loop through all leave request leaves
             $employee = $leaveRequest->getEmployee();
             foreach ($leaveRequest->getLeaves() as $leave) {
                 // set leave data
@@ -95,6 +105,69 @@ class CalendarController extends Controller
     }
 
     /**
+     * Exports team employee leaves in iCalendar format
+     *
+     * @Route("/secured/calendar/team/leaves/export", name="OpitNotesLeaveBundle_calendar_team_leaves_export")
+     * @Method({"POST"})
+     * @Secure(roles="ROLE_USER")
+     * @Template()
+     */
+    public function exportTeamEmployeeLeavesAction(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $securityContext = $this->container->get('security.context');
+        $employee = $securityContext->getToken()->getUser()->getEmployee();
+        $statusManager = $this->get('opit.manager.leave_status_manager');
+
+        $teamsEmployees = $this->getTeamsEmployees($employee);
+        // get all approved leave requests employees are in
+        $leaveRequests = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')
+            ->findEmployeesLeaveRequests(
+                $teamsEmployees,
+                $request->request->get('start'),
+                $request->request->get('end'),
+                Status::APPROVED
+            );
+
+        $iCal = new ICal\ICalendar();
+
+        // loop through all leave requests
+        foreach ($leaveRequests as $leaveRequest) {
+            // loop through all leave request leaves
+            $employee = $leaveRequest->getEmployee();
+            $currentStatus = $statusManager->getCurrentStatusMetaData($leaveRequest);
+            foreach ($leaveRequest->getLeaves() as $leave) {
+                $iCalEvent = new ICal\ICalendarEvent();
+                $iCalEvent->setDtStamp($currentStatus->getCreated());
+                $iCalEvent->setSummary(
+                    ucwords($employee->getEmployeeName()) . ' - ' . $leave->getCategory()->getName()
+                );
+                $iCalEvent->setDtStart($leave->getStartDate());
+                $iCalEvent->setDtEnd($leave->getEndDate());
+                $iCalEvent->addCategory($leave->getCategory()->getName());
+
+                $iCal->addEvent($iCalEvent);
+            }
+        }
+
+        $iCalContent = $iCal->render();
+        $filename = Utils::sanitizeString(
+            $this->container->getParameter('application_name') . '-' .$request->request->get('title')
+        ) . '.ics';
+
+        $response = new Response();
+        $response->headers->set('Cache-Control', 'private');
+        $response->headers->set('Content-type', 'text/calendar');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '";');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Content-length', strlen(utf8_decode($iCalContent)));
+        $response->sendHeaders();
+        $response->setContent($iCalContent);
+
+        return $response;
+    }
+
+    /**
      *
      * @param type $employee
      * @return type
@@ -109,7 +182,8 @@ class CalendarController extends Controller
             $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAll();
         } else {
             // if employee is not part of any team get his data only
-            $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')->findTeamEmployees($employee->getId());
+            $teamsEmployees = $entityManager->getRepository('OpitNotesUserBundle:Employee')
+                ->findTeamEmployees($employee->getId());
         }
 
         return $teamsEmployees;

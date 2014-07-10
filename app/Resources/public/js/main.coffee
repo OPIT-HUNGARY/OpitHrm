@@ -293,8 +293,6 @@ $.fn.dialog = (options) ->
     $(@).on 'dialogresizestop', (event, ui) ->
         $(@).mCustomScrollbar 'update'
 
-# Prototype extensions
-        
 $.fn.checkAll = (callback, selector) ->
     $el = if selector then $(selector) else $(@)
     checkAll = if $el.filter(':checked').length is $el.not(':disabled').length then false else true
@@ -304,7 +302,22 @@ $.fn.checkAll = (callback, selector) ->
 
     if callback
         callback($el)
-        
+
+# jQuery plugin to submit data via post using a temporary form
+$.fn.download = (url, data = {}) ->
+    inputs = '';
+    jQuery.each data, (key, value) ->
+        inputs += '<input type="hidden" name="' + key + '" value="' + value + '" />'
+        return
+
+    jQuery('<form action="' + url + '" method="post">' + inputs + '</form>')
+        .appendTo('body')
+        .submit()
+        .remove();
+
+    return
+
+# Prototype extensions
 String.prototype.capitalize = () ->
     result = @.trim()
     return result.charAt(0).toUpperCase() + result.slice(1)

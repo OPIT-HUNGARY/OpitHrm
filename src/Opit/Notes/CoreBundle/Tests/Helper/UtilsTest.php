@@ -221,4 +221,17 @@ class UtilsTest extends TypeTestCase
 
         $this->assertEquals('ROLE_ADMIN', $result2[0], 'Utils::arrayValuesToUpper String input, result is not uppercase.');
     }
+
+    public function testSanitizeString()
+    {
+        $input = "Opit-HRM - December 2014";
+        $result = Utils::sanitizeString($input);
+
+        $this->assertEquals('opit-hrm-december2014', $result, 'Utils::sanitizeString Content does not match.');
+
+        $input2 = "Opit-HRM  Sven Henneböle - December ?! 2014";
+        $result2 = Utils::sanitizeString($input2);
+
+        $this->assertEquals('opit-hrmsvenhenneble-december2014', $result2, 'Utils::sanitizeString Content including special chars does not match.');
+    }
 }

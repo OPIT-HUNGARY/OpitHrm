@@ -113,7 +113,7 @@ class Utils
                 }
             }
         }
-        
+
         return $errors;
     }
 
@@ -244,5 +244,21 @@ class Utils
         });
 
         return $arr;
+    }
+
+    /**
+     * Sanitizes strings by removing special chars (e.g. file names)
+     *
+     * @param string $text
+     * @return string sanitized file name
+     */
+    public static function sanitizeString($text)
+    {
+        // Replace spaces first
+        $text = preg_replace('/\s+/', '', $text);
+        // Remove any special characters
+        $text = preg_replace('/[^a-zA-Z0-9\.\-_]/', '', $text);
+
+        return strtolower($text);
     }
 }
