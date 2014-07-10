@@ -34,6 +34,7 @@ class ApplicantController extends Controller
      *
      * @Route("/secured/applicant/show/{id}", name="OpitNotesHiringBundle_applicant_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"GET", "POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -154,6 +155,7 @@ class ApplicantController extends Controller
      *
      * @Route("/secured/applicant/list", name="OpitNotesHiringBundle_applicant_list")
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"GET", "POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -215,6 +217,7 @@ class ApplicantController extends Controller
      *
      * @Route("/secured/applicant/delete", name="OpitNotesHiringBundle_applicant_delete")
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -333,6 +336,7 @@ class ApplicantController extends Controller
      * Retrieves and displays applicant status history
      *
      * @Route("/secured/applicant/states/history/{id}", name="OpitNotesHiringBundle_status_history", requirements={"id"="\d+"})
+     * @Secure(roles="ROLE_TEAM_MANAGER")
      * @Method({"POST"})
      * @Template()
      */

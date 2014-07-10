@@ -50,11 +50,7 @@ class LeaveController extends Controller
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();
         $parentsOfGroupLRs = array();
-
-        // Is granted not used because role admin inherits role general manager
-        $localUserRoles = $entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($user->getId());
-        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
-        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
+        $isGeneralManager = $this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER');
 
         // Calculating the leave days for the current employee.
         $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
@@ -68,6 +64,7 @@ class LeaveController extends Controller
             'firstResult' => ($offset * $maxResults),
             'maxResults' => $maxResults,
             'isGeneralManager' => $isGeneralManager,
+            'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
             'employee' => $employee,
             'user' => $user
         );
@@ -129,11 +126,7 @@ class LeaveController extends Controller
         $user = $securityContext->getToken()->getUser();
         $employee = $user->getEmployee();
         $leaveRequestService = $this->get('opit.model.leave_request');
-
-        // Is granted not used because role admin inherits role general manager
-        $localUserRoles = $entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($user->getId());
-        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
-        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
+        $isGeneralManager = $this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER');
 
         $requestFor = $request->request->get('leave-request-owner');
         $employees = $request->request->get('employee');

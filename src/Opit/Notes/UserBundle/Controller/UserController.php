@@ -34,7 +34,7 @@ class UserController extends Controller
 {
     /**
      * @Route("/secured/user/list", name="OpitNotesUserBundle_user_list")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function listAction()
@@ -43,7 +43,7 @@ class UserController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         /* TODO: Add special behavior for admin users to view and re-enable users
         $securityContext = $this->get('security.context');
-        if ($securityContext->isGranted('ROLE_ADMIN')) {
+        if ($securityContext->isGranted('ROLE_SYSTEM_ADMIN')) {
             $filters = $entityManager->getFilters();
             $filters->disable('softdeleteable');
         }*/
@@ -116,7 +116,7 @@ class UserController extends Controller
      * To generate add/edit item form
      *
      * @Route("/secured/user/show/{id}", name="OpitNotesUserBundle_user_show", requirements={"id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"GET"})
      * @Template()
      */
@@ -142,7 +142,7 @@ class UserController extends Controller
      * To add/edit user in Notes
      *
      * @Route("/secured/user/add/{id}", name="OpitNotesUserBundle_user_add", requirements={"id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function addUserAction()
@@ -152,7 +152,7 @@ class UserController extends Controller
         $result = array('response' => 'error');
         $statusCode = 200;
         $errors = array();
-        $isAdmin = $this->get('security.context')->isGranted('ROLE_ADMIN') ? true : false;
+        $isAdmin = $this->get('security.context')->isGranted('ROLE_SYSTEM_ADMIN') ? true : false;
         $userService = $this->get('opit.model.user');
         $id = $isAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
 
@@ -197,7 +197,7 @@ class UserController extends Controller
      * To delete user in Notes
      *
      * @Route("/secured/user/delete", name="OpitNotesUserBundle_user_delete")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function deleteUserAction()
@@ -285,6 +285,7 @@ class UserController extends Controller
      *
      * @Route("/secured/user/changepassword", name="OpitNotesUserBundle_user_change_password")
      * @Secure(roles="ROLE_USER")
+     * @Method({"POST", "GET"})
      * @Template()
      */
     public function changePasswordAction()

@@ -79,22 +79,28 @@ class TravelRequestRepository extends EntityRepository
         }
         
         $params['user'] = $pagnationParameters['currentUser'];
-        // If general manager, filter created travel requests unless current user is the owner
-        if ($pagnationParameters['isGeneralManager']) {
-            $params['status'] = Status::CREATED;
-            $statusExpr = $qb->expr()->orX(
-                $qb->expr()->andX(
-                    $qb->expr()->notIn('s.status', ':status'),
-                    $qb->expr()->eq('tr.generalManager', ':user')
-                ),
-                $qb->expr()->eq('tr.user', ':user')
-            );
-            $qb->leftJoin('tr.states', 's')
-                ->andWhere($statusExpr);
+
+        if (!$pagnationParameters['isAdmin']) {
+            // If general manager, filter created travel requests unless current user is the owner
+            if ($pagnationParameters['isGeneralManager']) {
+                $params['status'] = Status::CREATED;
+                $statusExpr = $qb->expr()->orX(
+                    $qb->expr()->andX(
+                        $qb->expr()->notIn('s.status', ':status'),
+                        $qb->expr()->eq('tr.generalManager', ':user')
+                    ),
+                    $qb->expr()->eq('tr.user', ':user')
+                );
+                $qb->leftJoin('tr.states', 's')
+                    ->andWhere($statusExpr);
+            } else {
+                $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
+            }
         } else {
-            $qb->andWhere($qb->expr()->eq('tr.user', ':user'));
+            unset($params['user']);
         }
         
+
         $qb->setParameters($params)
             ->setFirstResult($pagnationParameters['firstResult'])
             ->setMaxResults($pagnationParameters['maxResults']);

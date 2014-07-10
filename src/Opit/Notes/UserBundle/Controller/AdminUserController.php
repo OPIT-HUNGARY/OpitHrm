@@ -37,7 +37,7 @@ class AdminUserController extends Controller
      * To generate list job title
      *
      * @Route("/secured/admin/list/jobtitle", name="OpitNotesUserBundle_admin_list_jobtitle")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function listJobTitleAction(Request $request)
@@ -68,6 +68,7 @@ class AdminUserController extends Controller
      *
      * @Route("/secured/admin/show/jobtitle/{id}", name="OpitNotesUserBundle_admin_show_jobtitle", requirements={"id" = "\d+"})
      * @Method({"GET"})
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function showJobTitleFormAction(Request $request)
@@ -94,7 +95,7 @@ class AdminUserController extends Controller
      * To generate add/edit job title form
      *
      * @Route("/secured/admin/add/jobtitle/{id}", name="OpitNotesUserBundle_admin_add_jobtitle", requirements={ "id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function addJobTitleAction(Request $request)
@@ -139,6 +140,7 @@ class AdminUserController extends Controller
      * To delete job titles in Notes
      *
      * @Route("/secured/admin/delete/jobtitle", name="OpitNotesUserBundle_admin_delete_jobtitle")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function deleteJobTitleAction(Request $request)
@@ -173,57 +175,8 @@ class AdminUserController extends Controller
     }
 
     /**
-     * Returns a jobTitle request object
-     *
-     * @param integer $jobTitleId
-     * @return mixed  jobTitle object or null
-     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    protected function getJobTitle($jobTitleId = null)
-    {
-        $request = $this->getRequest();
-        $em = $this->getDoctrine()->getManager();
-
-        if (null === $jobTitleId) {
-            $jobTitleId = $request->request->get('id');
-        }
-
-        $jobTitle = $em->getRepository('OpitNotesUserBundle:JobTitle')->find($jobTitleId);
-
-        if (!$jobTitle) {
-            throw $this->createNotFoundException('Missing job title for id "' . $jobTitleId . '"');
-        }
-
-        return $jobTitle;
-    }
-
-    /**
-     * Get an array about which job titles are assigned to users.
-     *
-     * @return array $disabledJobTitles key is job title id, value is the number of relations.
-     */
-    private function getAssignedJobTitlesToUsers()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $users = $em->getRepository('OpitNotesUserBundle:User')->findAll();
-        $disabledJobTitles = array();
-
-        foreach ($users as $u) {
-            $userJobTitle = $u->getEmployee()->getJobTitle();
-            if (null !== $userJobTitle) {
-                if (isset($disabledJobTitles[$userJobTitle->getId()])) {
-                    $disabledJobTitles[$userJobTitle->getId()] += 1;
-                } else {
-                    $disabledJobTitles[$userJobTitle->getId()] = 1;
-                }
-            }
-        }
-        return $disabledJobTitles;
-    }
-
-    /**
      * @Route("/secured/admin/groups/list", name="OpitNotesUserBundle_admin_groups_list")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function groupsListAction(Request $request)
@@ -239,7 +192,7 @@ class AdminUserController extends Controller
 
     /**
      * @Route("/secured/admin/groups/show/{id}", name="OpitNotesUserBundle_admin_groups_show", requirements={ "id" = "new|\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
@@ -279,7 +232,7 @@ class AdminUserController extends Controller
 
     /**
      * @Route("/secured/admin/groups/delete", name="OpitNotesUserBundle_admin_groups_delete")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
@@ -314,7 +267,7 @@ class AdminUserController extends Controller
 
     /**
      * @Route("/secured/admin/teams/list", name="OpitNotesUserBundle_admin_teams_list")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function teamsListAction(Request $request)
@@ -330,7 +283,7 @@ class AdminUserController extends Controller
 
     /**
      * @Route("/secured/admin/teams/show/{id}", name="OpitNotesUserBundle_admin_teams_show", requirements={ "id" = "new|\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
@@ -355,7 +308,7 @@ class AdminUserController extends Controller
 
     /**
      * @Route("/secured/admin/teams/delete", name="OpitNotesUserBundle_admin_teams_delete")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
@@ -442,5 +395,54 @@ class AdminUserController extends Controller
             'propertyValues' => $teams,
             'numberOfRelations' => $numberOfRelations
         );
+    }
+
+    /**
+     * Returns a jobTitle request object
+     *
+     * @param integer $jobTitleId
+     * @return mixed  jobTitle object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getJobTitle($jobTitleId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $jobTitleId) {
+            $jobTitleId = $request->request->get('id');
+        }
+
+        $jobTitle = $em->getRepository('OpitNotesUserBundle:JobTitle')->find($jobTitleId);
+
+        if (!$jobTitle) {
+            throw $this->createNotFoundException('Missing job title for id "' . $jobTitleId . '"');
+        }
+
+        return $jobTitle;
+    }
+
+    /**
+     * Get an array about which job titles are assigned to users.
+     *
+     * @return array $disabledJobTitles key is job title id, value is the number of relations.
+     */
+    private function getAssignedJobTitlesToUsers()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository('OpitNotesUserBundle:User')->findAll();
+        $disabledJobTitles = array();
+
+        foreach ($users as $u) {
+            $userJobTitle = $u->getEmployee()->getJobTitle();
+            if (null !== $userJobTitle) {
+                if (isset($disabledJobTitles[$userJobTitle->getId()])) {
+                    $disabledJobTitles[$userJobTitle->getId()] += 1;
+                } else {
+                    $disabledJobTitles[$userJobTitle->getId()] = 1;
+                }
+            }
+        }
+        return $disabledJobTitles;
     }
 }

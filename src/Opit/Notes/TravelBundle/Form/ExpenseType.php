@@ -25,12 +25,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ExpenseType extends AbstractType
 {
-    private $isGranted;
     private $isNew;
+    private $employee;
     
-    public function __construct($roleFlag = false, $isNew = false)
+    public function __construct($employee, $roleFlag = false, $isNew = false)
     {
-        $this->isGranted = $roleFlag;
+        $this->employee = $employee;
         $this->isNew = $isNew;
     }
     
@@ -42,39 +42,21 @@ class ExpenseType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $userAcOptions = array();
         $entityManager = $options['em'];
-        $user = $options['data']->getUser();
-        $taxId = null;
-        $bankName = null;
-        $bankAccountNumber = null;
-        $employeeName = null;
-
-        if (null !== $user) {
-            $taxId = ($tid = $options['data']->getTaxIdentification()) ? $tid : $user->getEmployee()->getTaxIdentification();
-            $bankName = ($bName = $options['data']->getBankName()) ? $bName : $user->getEmployee()->getBankname();
-            $bankAccountNumber =
-                ($bAccNumber = $options['data']->getBankAccountNumber()) ? $bAccNumber : $user->getEmployee()->getBankAccountNumber();
-            $employeeName =
-                ($eName = $options['data']->getUser()->getEmployee()->getEmployeeName()) ? $eName : $user->getEmployee()->getEmployeeName();
-        }
         
-        if ($options['data']->getUser() instanceof \Opit\Notes\UserBundle\Entity\User) {
-            if (false === $this->isGranted) {
-                $userAcOptions['disabled'] = true;
-            }
-        }
-        
-        $builder->add('user_name', 'text', array_merge(array(
-            'label' => 'Employee name',
-            'mapped' => false,
-            'data' => $employeeName,
-            'attr' => array('placeholder' => 'Name', 'class' => 'te-claim')
-        ), $userAcOptions));
+        $builder->add('user_name', 'text',
+            array(
+                'label' => 'Employee name',
+                'mapped' => false,
+                'data' => $this->employee->getEmployeeName(),
+                'attr' => array('placeholder' => 'Name', 'class' => 'te-claim'),
+                'disabled' => true
+            )
+        );
         
         $builder->add('taxIdentification', 'text', array(
             'label' => 'Tax id',
-            'data' => $taxId,
+            'data' => $this->employee->getTaxIdentification(),
             'attr' => array('placeholder' => 'Tax id', 'class' => 'te-claim')
         ));
         
@@ -93,13 +75,13 @@ class ExpenseType extends AbstractType
         
         $builder->add('bankName', 'text', array(
             'label' => 'Bank name',
-            'data' => $bankName,
+            'data' => $this->employee->getBankName(),
             'attr' => array('placeholder' => 'Bank name', 'class' => 'te-claim')
         ));
         
         $builder->add('bankAccountNumber', 'text', array(
             'label' => 'Bank account number',
-            'data' => $bankAccountNumber,
+            'data' => $this->employee->getBankAccountNumber(),
             'attr' => array('placeholder' => 'Bank account number', 'class' => 'te-claim')
         ));
         

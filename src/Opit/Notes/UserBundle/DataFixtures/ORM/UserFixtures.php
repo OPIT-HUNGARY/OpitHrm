@@ -58,6 +58,23 @@ class UserFixtures extends AbstractDataFixture
 
         $manager->persist($testAdmin);
 
+        $testSystemAdmin = new User();
+        $testSystemAdmin->setUsername('systemadmin');
+        $testSystemAdmin->setEmployee($this->createEmployee());
+        $password = $encoder->encodePassword('systemadmin', '');
+        $testSystemAdmin->setPassword($password);
+        $testSystemAdmin->setEmail('systemadmin@mail.local');
+        $testSystemAdmin->setIsActive(1);
+        if ('test' === $this->getCurrentEnvironment()) {
+            $testSystemAdmin->setIsFirstLogin(0);
+        } else {
+            $testSystemAdmin->setIsFirstLogin(1);
+        }
+        $testSystemAdmin->setLdapEnabled(0);
+        $testSystemAdmin->addGroup($this->getReference('system-admin-group'));
+
+        $manager->persist($testSystemAdmin);
+
         if (in_array($this->getCurrentEnvironment(), array('dev', 'test'))) {
 
             for ($i = 0; $i < 10; $i++) {

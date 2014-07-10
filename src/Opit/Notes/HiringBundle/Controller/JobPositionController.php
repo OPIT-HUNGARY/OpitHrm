@@ -31,6 +31,7 @@ class JobPositionController extends Controller
      *
      * @Route("/secured/job/show/{id}", name="OpitNotesHiringBundle_job_position_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"GET", "POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -119,6 +120,7 @@ class JobPositionController extends Controller
      *
      * @Route("/secured/job/list", name="OpitNotesHiringBundle_job_position_list")
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"GET", "POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -167,6 +169,7 @@ class JobPositionController extends Controller
      *
      * @Route("/secured/job/delete", name="OpitNotesHiringBundle_job_position_delete")
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"POST"})
      * @Template()
      * @throws AccessDeniedException
      */
@@ -203,6 +206,7 @@ class JobPositionController extends Controller
      *
      * @Route("/secured/job/show/details", name="OpitNotesHiringBundle_job_show_details")
      * @Secure(roles="ROLE_TEAM_MANAGER")
+     * @Method({"POST"})
      * @Template()
      */
     public function showDetailsAction(Request $request)

@@ -73,14 +73,15 @@ class TravelRequestService
         $isStatusLocked = true;// status can not be changed
         $unlockedStates = array();
         $currentUser = $this->securityContext->getToken()->getUser();
+        $currentStatusId = $currentUser->getId();
 
-        if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
+        if ($travelRequest->getUser()->getId() === $currentStatusId) {
             // Show add travel expense in case travel expense is approved.
-            if (Status::APPROVED === $currentStatus->getId()) {
+            if (Status::APPROVED === $currentStatusId) {
                 $isTEAddLocked = false;
             }
 
-            if (in_array($currentStatus->getId(), array(Status::CREATED, Status::REVISE))) {
+            if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
                 $isEditLocked = false;
             }
             
@@ -88,18 +89,32 @@ class TravelRequestService
                 $unlockedStates = array(Status::FOR_APPROVAL);
             }
             
-            if (in_array($currentStatus->getId(), array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
+            if (in_array($currentStatusId, array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
                 $isStatusLocked = false;
             }
         } elseif ($this->isUserGeneralManager($travelRequest)) {
-            if (Status::FOR_APPROVAL === $currentStatus->getId()) {
+            if (Status::FOR_APPROVAL === $currentStatusId) {
                 $isStatusLocked = false;
             }
         }
 
         // Unlock edit mode for admins at all times
         if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-            $isEditLocked = false;// travel request can be edited
+            $isStatusLocked = false;
+            $isTEAddLocked = true;
+            $isEditLocked = false;
+
+            if (Status::APPROVED === $currentStatusId) {
+                $isEditLocked = true;
+                $isTEAddLocked = false;
+            } elseif (Status::PAID === $currentStatusId) {
+                $isEditLocked = true;
+            } elseif (Status::REJECTED === $currentStatusId) {
+                $isEditLocked = true;
+                $isStatusLocked = true;
+            } elseif (Status::FOR_APPROVAL === $currentStatusId) {
+                $isEditLocked = true;
+            }
         }
         
         return array(
@@ -159,7 +174,7 @@ class TravelRequestService
         $valid = false;
         
         // checks if travel request is being modified by an admin
-        if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+        if ($this->securityContext->isGranted('ROLE_ADMIN') || $this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
             return true;
         }
 
@@ -200,12 +215,8 @@ class TravelRequestService
                     return false;
                 }
             } elseif ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                $trCurrentStatus = $this->statusManager->getCurrentStatus($travelRequest)->getId();
-                if (Status::APPROVED === $trCurrentStatus || Status::PAID === $trCurrentStatus) {
-                    $isEditLocked = true;
-                } else {
-                    $isEditLocked = false;
-                }
+                $isEditLocked = false;
+                $isStatusLocked = false;
             }
         }
 

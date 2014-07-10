@@ -579,7 +579,7 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                     $(@).parent().find('input[type=hidden]').val $(@).val().replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3-$1-$2")
             $.ajax
                 method: 'POST'
-                url: Routing.generate 'OpitNotesTravelBundle_expense_show_details'
+                url: Routing.generate 'OpitNotesTravelBundle_expense_show_details', 'trId': $('#travelRequestPreview').attr 'data-tr-id'
                 data: 'preview=1&' + $form.serialize()
             .done (data) ->
                 $preview = $('<div id="dialog-travelrequest-preview"></div>').html data

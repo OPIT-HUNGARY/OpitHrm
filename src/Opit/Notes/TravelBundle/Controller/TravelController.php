@@ -47,7 +47,6 @@ class TravelController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getFilters()->disable('softdeleteable');
         $user = $this->getUser();
-        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
         $pagnationParameters = array(
@@ -55,7 +54,7 @@ class TravelController extends Controller
             'maxResults' => $config['max_results'],
             'currentUser' => $user,
             'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
-            'isGeneralManager' => $isGeneralManager,
+            'isGeneralManager' => $securityContext->isGranted('ROLE_GENERAL_MANAGER'),
         );
         
         $allRequests = array();
@@ -83,7 +82,6 @@ class TravelController extends Controller
             'numberOfPages' => $numberOfPages,
             'maxPages' => $config['max_pages'],
             'offset' => ($offset + 1),
-            'isFirstLogin' => $user->getIsFirstLogin(),
             'states' => $entityManager->getRepository('OpitNotesStatusBundle:Status')->getStatusNameId()
         );
 
@@ -217,8 +215,7 @@ class TravelController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $travelRequest = $this->getTravelRequest($id);
             // check if user has sufficient role to delete travel request
-            if ($securityContext->isGranted('ROLE_ADMIN') ||
-                true === $securityContext->isGranted('DELETE', $travelRequest)) {
+            if ($securityContext->isGranted('ROLE_GENERAL_MANAGER') || $travelRequest->getUser()->getId() === $securityContext->getToken()->getUser()->getId()) {
                 
                 $travelExpense = $travelRequest->getTravelExpense();
                 
@@ -264,7 +261,7 @@ class TravelController extends Controller
     protected function setTravelRequestForm(TravelRequest $travelRequest, EntityManager $entityManager, $isNewTravelRequest)
     {
         $form = $this->createForm(
-            new TravelType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelRequest),
+            new TravelType($this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER'), $isNewTravelRequest),
             $travelRequest,
             array('em' => $entityManager)
         );
@@ -282,6 +279,7 @@ class TravelController extends Controller
     {
         $request = $this->getRequest();
         $entityManager = $this->getDoctrine()->getManager();
+        $securityContext = $this->get('security.context');
         
         if (null === $travelRequestId) {
             $travelRequestId = $request->request->get('id');
@@ -293,10 +291,10 @@ class TravelController extends Controller
             throw $this->createNotFoundException('Missing travel request for id "' . $travelRequestId . '"');
         }
         
-        if (true !== $this->get('security.context')->isGranted('VIEW', $travelRequest)) {
-                throw new AccessDeniedException(
-                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
-                );
+        if ($travelRequest->getUser()->getId() !== $securityContext->getToken()->getUser()->getId() && !$securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
+            throw new AccessDeniedException(
+                'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+            );
         }
         
         return $travelRequest;
@@ -312,8 +310,7 @@ class TravelController extends Controller
     {
         $securityContext = $this->get('security.context');
         if ($isNewTravelRequest) {
-            if (true !== $securityContext->isGranted('ROLE_ADMIN') &&
-                true !== $securityContext->isGranted('VIEW', $travelRequest)) {
+            if ($travelRequest->getUser()->getId() !== $securityContext->getToken()->getUser()->getId() && $securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
                 throw new AccessDeniedException(
                     'Access denied for travel request ' . $travelRequest->getTravelRequestId()
                 );

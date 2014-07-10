@@ -47,34 +47,23 @@
                     </select>
                 </td>
                 <td>
-                    {% set viewTR %}
-                        <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="View travel request">
-                            <i class="fa fa-list-alt"></i>
-                        </a>
-                    {% endset %}
-
-                    {% set editTR %}
-                        <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request">
-                            <i class="fa fa-pencil-square-o"></i>
-                        </a>
-                    {% endset %}
-
-                    {% set deleteTR %}
-                        <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                    {% endset %}
-
                     <a href="#" class="status-history" title="Status history">
                         <i class="fa fa-book" data-id="{{ travelRequest.id }}"></i>
                     </a>
                     {% if isLocked[travelRequest.id]['isTREditLocked'] == 0 %}
-                       {{ editTR }}
+                        <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request">
+                            <i class="fa fa-pencil-square-o"></i>
+                        </a>
                     {% else %}
-                       {{ viewTR }}
+                        <a href="{{ path('OpitNotesTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="View travel request">
+                            <i class="fa fa-list-alt"></i>
+                        </a>
                     {% endif %}
-                    {% if is_granted('ROLE_ADMIN') or is_granted('DELETE', travelRequest) %}
-                       {{ deleteTR }}
+
+                    {% if is_granted('ROLE_GENERAL_MANAGER') or app.user.id == travelRequest.user.id %}
+                        <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
                     {% else %}
                        <a href="#" class="icon-disabled"><i class="fa fa-trash-o"></i></a>
                     {% endif %}
@@ -93,10 +82,10 @@
                             {% set teStatus = teIds[travelRequest.id].status %}
                             {% set trEmployeeName = travelRequest.user.employee.employeeName %}
                             {% set appEmployeeName = app.user.employee.employeeName %}
-                            {% if teStatus != states['Created'] or (trEmployeeName == appEmployeeName) %}
+                            {% if teStatus != states['Created'] or (trEmployeeName == appEmployeeName) or is_granted('ROLE_ADMIN') %}
                                 <a href="{{ path('OpitNotesTravelBundle_expense_show', { 'id': travelRequest.travelExpense.id, 'trId': travelRequest.id}) }}" class="small-button">
-                                    <i class="fa {% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName) %} fa-pencil-square-o {% else %} fa-list-alt {% endif %}"></i>
-                                    <span>{% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName) %} Edit {% else %} Preview {% endif %} - {{ teIds[travelRequest.id].statusName }}</span>
+                                    <i class="fa {% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName or is_granted('ROLE_ADMIN')) %} fa-pencil-square-o {% else %} fa-list-alt {% endif %}"></i>
+                                    <span>{% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName or is_granted('ROLE_ADMIN')) %} Edit {% else %} Preview {% endif %} - {{ teIds[travelRequest.id].statusName }}</span>
                                 </a>
                                 {% if teStatus == states['Approved'] or teStatus == states['For Approval'] %}
                                 <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[travelRequest.id].id }) }}" class="small-button print-view">

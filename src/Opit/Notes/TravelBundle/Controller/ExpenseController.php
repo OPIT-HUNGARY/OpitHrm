@@ -52,7 +52,7 @@ class ExpenseController extends Controller
 
         if (!$securityContext->isGranted('ROLE_ADMIN')) {
             foreach ($travelExpenses as $trExpense) {
-                if (true === $securityContext->isGranted('VIEW', $trExpense)) {
+                if ($trExpense->getTravelRequest()->getUser()->getId() === $securityContext->getToken()->getUser()->getId()) {
                     $allowedTEs->add($trExpense);
                 }
             }
@@ -180,18 +180,19 @@ class ExpenseController extends Controller
     /**
      * To generate details form for travel expenses
      *
-     * @Route("/secured/expense/show/details", name="OpitNotesTravelBundle_expense_show_details")
+     * @Route("/secured/expense/show/details/{trId}", name="OpitNotesTravelBundle_expense_show_details", requirements={ "id" = "\d+"})
      * @Template()
      */
-    public function showDetailsAction()
+    public function showDetailsAction($trId)
     {
         $travelExpense = new TravelExpense();
         $request = $this->getRequest();
         $entityManager = $this->getDoctrine()->getManager();
         $travelExpensePreview = $request->request->get('preview');
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
 
         if (null !== $travelExpensePreview) {
-            $form = $this->createForm(new ExpenseType(), $travelExpense, array('em' => $entityManager));
+            $form = $this->createForm(new ExpenseType($travelRequest->getUser()->getEmployee()), $travelExpense, array('em' => $entityManager));
             $form->handleRequest($request);
         } else {
             $travelExpense = $this->getTravelExpense();
@@ -225,8 +226,7 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense($id);
 
             // Ensure that no travel requests without permission get deleted
-            if ($securityContext->isGranted('ROLE_ADMIN') ||
-                true === $securityContext->isGranted('DELETE', $travelExpense)) {
+            if ($travelExpense->getTravelRequest()->getUser()->getId() === $securityContext->getToken()->getUser()->getId() || $securityContext->isGranted('ROLE_ADMIN')) {
                 $entityManager->remove($travelExpense);
             }
         }
@@ -429,8 +429,7 @@ class ExpenseController extends Controller
     protected function isAccessGranted($travelRequest)
     {
         $securityContext = $this->get('security.context');
-        if (false === $securityContext->isGranted('ROLE_ADMIN') &&
-            false === $securityContext->isGranted('VIEW', $travelRequest)) {
+        if ($travelRequest->getUser()->getId() !== $securityContext->getToken()->getUser()->getId() && !$securityContext->isGranted('ROLE_ADMIN')) {
             throw $this->createNotFoundException('You are not permitted to view or edit the travel expense!');
         }
 
@@ -453,7 +452,10 @@ class ExpenseController extends Controller
     protected function handleForm($isNewTravelExpense, $travelRequest, $travelExpense, EntityManager $entityManager, $children, $request)
     {
         $form = $this->createForm(
-            new ExpenseType($this->get('security.context')->isGranted('ROLE_ADMIN'), $isNewTravelExpense),
+            new ExpenseType(
+                $travelRequest->getUser()->getEmployee(),
+                $isNewTravelExpense
+            ),
             $travelExpense,
             array('em' => $entityManager)
         );

@@ -42,7 +42,8 @@ class AdminLeaveController extends Controller
      * To generate list leave categories
      *
      * @Route("/secured/admin/list/leave/categories", name="OpitNotesLeaveBundle_admin_list_leave_categories")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function listLeaveCategoriesAction()
@@ -91,7 +92,8 @@ class AdminLeaveController extends Controller
      * To generate add/edit leave category form
      *
      * @Route("/secured/admin/add/leave/category/{id}", name="OpitNotesLeaveBundle_admin_add_leave_category", requirements={ "id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"POST"})
      * @Template()
      */
     public function addLeaveCategoryAction()
@@ -137,6 +139,7 @@ class AdminLeaveController extends Controller
      * To generate show leave category form
      *
      * @Route("/secured/admin/show/leave/category/{id}", name="OpitNotesLeaveBundle_admin_show_leave_category", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"GET"})
      * @Template()
      */
@@ -166,6 +169,7 @@ class AdminLeaveController extends Controller
      * To delete leave categories in Notes
      *
      * @Route("/secured/admin/delete/leave/category", name="OpitNotesLeaveBundle_admin_delete_leave_category")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function deleteLeaveCategoryAction()
@@ -198,35 +202,11 @@ class AdminLeaveController extends Controller
     }
 
     /**
-     * Returns a leave category object
-     *
-     * @param integer $leaveCategoryId
-     * @return mixed  leaveCategory object or null
-     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    protected function getLeaveCategory($leaveCategoryId = null)
-    {
-        $request = $this->getRequest();
-        $em = $this->getDoctrine()->getManager();
-
-        if (null === $leaveCategoryId) {
-            $leaveCategoryId = $request->request->get('id');
-        }
-
-        $leaveCategory = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->find($leaveCategoryId);
-
-        if (!$leaveCategory) {
-            throw $this->createNotFoundException('Missing job title for id "' . $leaveCategoryId . '"');
-        }
-
-        return $leaveCategory;
-    }
-
-    /**
      * To generate list Administrative Leave/Working Day
      *
      * @Route("/secured/admin/list/leave/dates", name="OpitNotesLeaveBundle_admin_list_leave_dates")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function listLeaveDateAction()
@@ -259,6 +239,7 @@ class AdminLeaveController extends Controller
      * To generate show Administrative Leave/Working Day form
      *
      * @Route("/secured/admin/show/leave/date/{id}", name="OpitNotesLeaveBundle_admin_show_leave_date", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"GET"})
      * @Template()
      */
@@ -290,35 +271,11 @@ class AdminLeaveController extends Controller
     }
 
     /**
-     * Returns a leave date object
-     *
-     * @param integer $leaveDateId
-     * @return mixed  leaveDate object or null
-     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    protected function getLeaveDate($leaveDateId = null)
-    {
-        $request = $this->getRequest();
-        $em = $this->getDoctrine()->getManager();
-
-        if (null === $leaveDateId) {
-            $leaveDateId = $request->request->get('id');
-        }
-
-        $leaveDate = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->find($leaveDateId);
-
-        if (!$leaveDate) {
-            throw $this->createNotFoundException('Missing job title for id "' . $leaveDateId . '"');
-        }
-
-        return $leaveDate;
-    }
-
-    /**
      * To generate add/edit Administrative Leave/Working Day form
      *
      * @Route("/secured/admin/add/leave/date/{id}", name="OpitNotesLeaveBundle_admin_add_leave_date", requirements={ "id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"POST"})
      * @Template()
      */
     public function addLeaveDateAction()
@@ -360,6 +317,7 @@ class AdminLeaveController extends Controller
      * To delete Administrative Leave/Working Day in Notes
      *
      * @Route("/secured/admin/delete/leave/date", name="OpitNotesLeaveBundle_admin_delete_leave_date")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function deleteLeaveDateAction()
@@ -391,7 +349,8 @@ class AdminLeaveController extends Controller
      * To generate list Administrative Leave/Working Day types
      *
      * @Route("/secured/admin/list/leave/types", name="OpitNotesLeaveBundle_admin_list_leave_types")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function listLeaveTypeAction()
@@ -438,6 +397,7 @@ class AdminLeaveController extends Controller
      * To generate show Administrative Leave/Working Day type form
      *
      * @Route("/secured/admin/show/leave/type/{id}", name="OpitNotesLeaveBundle_admin_show_leave_type", requirements={"id" = "\d+"})
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"GET"})
      * @Template()
      */
@@ -464,35 +424,11 @@ class AdminLeaveController extends Controller
     }
 
     /**
-     * Returns a Administrative Leave/Working Day type object
-     *
-     * @param integer $leaveTypeId
-     * @return mixed  leaveType object or null
-     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    protected function getLeaveType($leaveTypeId = null)
-    {
-        $request = $this->getRequest();
-        $em = $this->getDoctrine()->getManager();
-
-        if (null === $leaveTypeId) {
-            $leaveTypeId = $request->request->get('id');
-        }
-
-        $leaveType = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->find($leaveTypeId);
-
-        if (!$leaveType) {
-            throw $this->createNotFoundException('Missing leave type for id "' . $leaveTypeId . '"');
-        }
-
-        return $leaveType;
-    }
-
-    /**
      * To generate add/edit Administrative Leave/Working Day type form
      *
      * @Route("/secured/admin/add/leave/type/{id}", name="OpitNotesLeaveBundle_admin_add_leave_type", requirements={ "id" = "\d+"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"POST"})
      * @Template()
      */
     public function addLeaveTypeAction()
@@ -539,6 +475,7 @@ class AdminLeaveController extends Controller
      * To delete Administrative Leave/Working Day types in Notes
      *
      * @Route("/secured/admin/delete/leave/type", name="OpitNotesLeaveBundle_admin_delete_leave_type")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      */
     public function deleteLeaveTypeAction()
@@ -570,7 +507,8 @@ class AdminLeaveController extends Controller
      * To generate list leave options
      *
      * @Route("/secured/admin/list/leave/options", name="OpitNotesLeaveBundle_admin_list_leave_settings")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function listLeaveSettingsAction()
@@ -604,7 +542,8 @@ class AdminLeaveController extends Controller
      * To show leave option
      *
      * @Route("/secured/admin/show/leave/option/{id}", name="OpitNotesLeaveBundle_admin_show_leave_setting", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET"})
      * @Template()
      */
     public function showLeaveSettingAction(Request $request)
@@ -634,7 +573,8 @@ class AdminLeaveController extends Controller
      * To save leave setting
      *
      * @Route("/secured/admin/save/leavesetting", name="OpitNotesLeaveBundle_admin_save_leave_setting")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"POST"})
      * @Template()
      */
     public function saveLeaveSettingAction()
@@ -744,5 +684,80 @@ class AdminLeaveController extends Controller
             }
         }
         return $leaveSetting;
+    }
+
+    /**
+     * Returns a leave category object
+     *
+     * @param integer $leaveCategoryId
+     * @return mixed  leaveCategory object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getLeaveCategory($leaveCategoryId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $leaveCategoryId) {
+            $leaveCategoryId = $request->request->get('id');
+        }
+
+        $leaveCategory = $em->getRepository('OpitNotesLeaveBundle:LeaveCategory')->find($leaveCategoryId);
+
+        if (!$leaveCategory) {
+            throw $this->createNotFoundException('Missing job title for id "' . $leaveCategoryId . '"');
+        }
+
+        return $leaveCategory;
+    }
+
+    /**
+     * Returns a Administrative Leave/Working Day type object
+     *
+     * @param integer $leaveTypeId
+     * @return mixed  leaveType object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getLeaveType($leaveTypeId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $leaveTypeId) {
+            $leaveTypeId = $request->request->get('id');
+        }
+
+        $leaveType = $em->getRepository('OpitNotesLeaveBundle:LeaveType')->find($leaveTypeId);
+
+        if (!$leaveType) {
+            throw $this->createNotFoundException('Missing leave type for id "' . $leaveTypeId . '"');
+        }
+
+        return $leaveType;
+    }
+
+    /**
+     * Returns a leave date object
+     *
+     * @param integer $leaveDateId
+     * @return mixed  leaveDate object or null
+     * @throws Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getLeaveDate($leaveDateId = null)
+    {
+        $request = $this->getRequest();
+        $em = $this->getDoctrine()->getManager();
+
+        if (null === $leaveDateId) {
+            $leaveDateId = $request->request->get('id');
+        }
+
+        $leaveDate = $em->getRepository('OpitNotesLeaveBundle:LeaveDate')->find($leaveDateId);
+
+        if (!$leaveDate) {
+            throw $this->createNotFoundException('Missing job title for id "' . $leaveDateId . '"');
+        }
+
+        return $leaveDate;
     }
 }

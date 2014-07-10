@@ -1,5 +1,4 @@
 <?php
-
 /*
  *  This file is part of the {Bundle}.
  *
@@ -9,19 +8,16 @@
  *  file that was distributed with this source code.
  */
 
-namespace Opit\Notes\LeaveBundle\Model;
+namespace Opit\Notes\LeaveBundle\Model\Exception;
 
 /**
- * Leave Entitlement interface.
+ * Description of LeaveRequestServiceException
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
- * @version 1.0
- * @package Notes
- * @subpackage HolidayBundle
+ * @package Opit
+ * @subpackage Notes
  */
-interface LeaveEntitlementEmployeeInterface
+class LeaveRequestServiceException extends \RuntimeException
 {
-    public function getDateOfBirth();
-    public function getJoiningDate();
-    public function getNumberOfChildren();
+    //put your code here
 }

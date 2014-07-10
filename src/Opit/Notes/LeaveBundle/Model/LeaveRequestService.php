@@ -50,7 +50,7 @@ class LeaveRequestService
      * @param \Opit\Notes\LeaveBundle\Manager\LeaveStatusManager $statusManager
      * @param \Opit\Notes\TravelBundle\Manager\AclManager $aclManager
      */
-    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager, $applicationName)
+    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
@@ -69,6 +69,9 @@ class LeaveRequestService
      */
     public function setLeaveRequestListingRights($leaveRequests, $currentUser)
     {
+        // Only usable if token is present
+        $this->isAllowed();
+
         $currentStatusNames = array();
         $leaveRequestStates = array();
         $isLocked = array();
@@ -80,14 +83,16 @@ class LeaveRequestService
             $currentStatusNames[$leaveRequest->getId()] = $currentStatus->getName();
 
             $isTRLocked = $this->setLeaveRequestAccessRights($leaveRequest, $currentStatus);
-
+            $isLocked[$leaveRequest->getId()] = $isTRLocked;
             $leaveRequestStates[$leaveRequest->getId()] = $this->getNextAvailableStates($leaveRequest);
 
-            $isLocked[$leaveRequest->getId()] = $isTRLocked;
-
-            $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest, $currentUser);
-
-            $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
+            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+                $isDeleteable[$leaveRequest->getId()] = true;
+                $isForApproval[$leaveRequest->getId()] = false;
+            } else {
+                $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest, $currentUser);
+                $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
+            }
         }
 
         return array(
@@ -107,15 +112,17 @@ class LeaveRequestService
      */
     public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest, $currentUser)
     {
+        // Only usable if token is present
+        $this->isAllowed();
+
+        if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
         $currentUserId = $currentUser->getId();
 
-        // Is granted not used because role admin inherits role general manager
-        $localUserRoles = $this->entityManager->getRepository('OpitNotesUserBundle:Groups')->findUserGroupsArray($currentUserId);
-        $localUserRoles = Utils::arrayValueRecursive('role', $localUserRoles);
-        $isGeneralManager = in_array('ROLE_GENERAL_MANAGER', $localUserRoles);
-
         // If user is admin he is always allowed to delete
-        if ($isGeneralManager) {
+        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
             // Check if user is general manager of leave request
             if ($leaveRequest->getGeneralManager()->getId() === $currentUserId) {
                 return true;
@@ -156,27 +163,41 @@ class LeaveRequestService
      */
     public function setLeaveRequestAccessRights(LeaveRequest $leaveRequest, Status $currentStatus)
     {
-        $isEditLocked = true;// leave request can not be edited
-        $isStatusLocked = true;// status can not be changed
+        // Only usable if token is present
+        $this->isAllowed();
+
+        $isEditLocked = true; // leave request can not be edited
+        $isStatusLocked = true; // status can not be changed
         $unlockedStates = array();
         $currentEmployee = $this->securityContext->getToken()->getUser()->getEmployee();
         $isGeneralManager = $this->isUserGeneralManager($leaveRequest);
 
-        if ($leaveRequest->getEmployee()->getId() === $currentEmployee->getId()) {
-            if (in_array($currentStatus->getId(), array(Status::CREATED, Status::REVISE))) {
-                $isEditLocked = false;
-            }
+        if (!$this->securityContext->isGranted('ROLE_ADMIN')) {
+            if ($leaveRequest->getEmployee()->getId() === $currentEmployee->getId()) {
+                if (in_array($currentStatus->getId(), array(Status::CREATED, Status::REVISE))) {
+                    $isEditLocked = false;
+                }
 
-            if ($isGeneralManager) {
-                $unlockedStates = array(Status::FOR_APPROVAL);
-            }
+                if ($isGeneralManager) {
+                    $unlockedStates = array(Status::FOR_APPROVAL);
+                }
 
-            if (in_array($currentStatus->getId(), array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
-                $isStatusLocked = false;
+                if (in_array($currentStatus->getId(), array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
+                    $isStatusLocked = false;
+                }
+            } elseif ($isGeneralManager) {
+                if (Status::FOR_APPROVAL === $currentStatus->getId()) {
+                    $isStatusLocked = false;
+                }
             }
-        } elseif ($isGeneralManager) {
-            if (Status::FOR_APPROVAL === $currentStatus->getId()) {
-                $isStatusLocked = false;
+        } else {
+            $isEditLocked = false;
+            $isStatusLocked = false;
+            if (in_array($currentStatus->getId(), array(Status::REJECTED, Status::APPROVED))) {
+                $isEditLocked = true;
+                $isStatusLocked = true;
+            } elseif (Status::FOR_APPROVAL === $currentStatus->getId()) {
+                $isEditLocked = true;
             }
         }
 
@@ -443,4 +464,12 @@ class LeaveRequestService
         }
     }
 
+    protected function isAllowed()
+    {
+        $token = $this->securityContext->getToken();
+
+        if (null === $token) {
+            throw new Exception\LeaveRequestServiceException('The security context contains no authentication token. This service cannot be used.');
+        }
+    }
 }

@@ -41,7 +41,8 @@ class AdminController extends Controller
      * List expense types
      *
      * @Route("/travel/admin/travelexpensetype/list", name="OpitNotesTravelBundle_admin_travelexpensetype_list")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET"})
      * @Template()
      */
     public function listExpenseTypeAction(Request $request)
@@ -77,8 +78,8 @@ class AdminController extends Controller
      * Show expense type
      *
      * @Route("/travel/admin/travelexpensetype/show/{id}", name="OpitNotesTravelBundle_admin_travelexpensetype_show", requirements={ "id" = "new|\d+"})
-     * @Secure(roles="ROLE_ADMIN")
-     * @Method({"POST"})
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function expenseTypeShowAction()
@@ -112,7 +113,7 @@ class AdminController extends Controller
 
     /**
      * @Route("/travel/admin/expensetype/delete", name="OpitNotesTravelBundle_admin_expensetype_delete")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Method({"POST"})
      * @Template()
      */
@@ -148,7 +149,7 @@ class AdminController extends Controller
      * To generate list per diem
      *
      * @Route("/travel/admin/list/perdiem", name="OpitNotesTravelBundle_admin_list_perdiem")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function listPerDiemAction()
@@ -168,7 +169,7 @@ class AdminController extends Controller
      * To show per diem
      *
      * @Route("/travel/admin/show/perdiem/{id}", name="OpitNotesTravelBundle_admin_show_perdiem", defaults={"id" = "new"}, requirements={ "id" = "\d|new"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function showPerDiemAction(Request $request)
@@ -197,7 +198,7 @@ class AdminController extends Controller
      * To save per diem
      *
      * @Route("/travel/admin/save/perdiem", name="OpitNotesTravelBundle_admin_save_perdiem")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function savePerDiemAction()
@@ -319,7 +320,7 @@ class AdminController extends Controller
      *
      * @Route("/travel/admin/transportation_type/list", name="OpitNotesTravelBundle_admin_transportationtype_list")
      * @Method({"GET", "POST"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function listTransportationTypesAction(Request $request)
@@ -352,7 +353,7 @@ class AdminController extends Controller
      *
      * @Route("/travel/admin/transportation_type/show/{id}", name="OpitNotesTravelBundle_admin_transportationtype_show", requirements={ "id" = "new|\d+"}, defaults={"id" = "new"})
      * @Method({"GET", "POST"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      * @Template()
      */
     public function showTransportationTypeAction(Request $request, $id)
@@ -394,7 +395,7 @@ class AdminController extends Controller
      *
      * @Route("/travel/admin/transportation_type/delete", name="OpitNotesTravelBundle_admin_transportationtype_delete")
      * @Method({"POST"})
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_SYSTEM_ADMIN")
      */
     public function deleteTransportationTypesAction(Request $request)
     {

@@ -65,26 +65,25 @@ class LeaveRequestRepository extends EntityRepository
             $dq->setParameter(':leaveId', '%'.$searchParams['leaveId'].'%');
         }
 
-        if ($pagnationParameters['isGeneralManager']) {
-            $statusExpr = $dq->expr()->orX(
-                $dq->expr()->andX(
-                    $dq->expr()->orX(
-                        $dq->expr()->notIn('s.status', ':status'),
-                        $dq->expr()->eq('lr.isMassLeaveRequest', 1)
-                    ),
-                    $dq->expr()->eq('lr.generalManager', ':user')
-                ),
-                $dq->expr()->eq('lr.employee', ':employee')
-            );
-            $dq->leftJoin('lr.states', 's', 'WITH')
-                ->andWhere($statusExpr);
+        if (!$pagnationParameters['isAdmin']) {
+            if ($pagnationParameters['isGeneralManager']) {
+                $statusExpr = $dq->expr()->orX(
+                    $dq->expr()->andX(
+                        $dq->expr()->orX(
+                            $dq->expr()->notIn('s.status', ':status'), $dq->expr()->eq('lr.isMassLeaveRequest', 1)
+                        ), $dq->expr()->eq('lr.generalManager', ':user')
+                    ), $dq->expr()->eq('lr.employee', ':employee')
+                );
+                $dq->leftJoin('lr.states', 's', 'WITH')
+                    ->andWhere($statusExpr);
 
-            $dq->setParameter(':user', $pagnationParameters['user']);
-            $dq->setParameter(':status', Status::CREATED);
-            $dq->setParameter(':employee', $pagnationParameters['employee']);
-        } elseif (!$pagnationParameters['isGeneralManager']) {
-            $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
-            $dq->setParameter(':employee', $pagnationParameters['employee']);
+                $dq->setParameter(':user', $pagnationParameters['user']);
+                $dq->setParameter(':status', Status::CREATED);
+                $dq->setParameter(':employee', $pagnationParameters['employee']);
+            } elseif (!$pagnationParameters['isGeneralManager']) {
+                $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
+                $dq->setParameter(':employee', $pagnationParameters['employee']);
+            }
         }
 
         // Order the result, mass leave request needs to be opposite of grouping

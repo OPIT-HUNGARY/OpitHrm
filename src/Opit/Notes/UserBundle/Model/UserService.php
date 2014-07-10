@@ -29,6 +29,7 @@ class UserService
     protected $encoder;
     protected $password;
     protected $systemRoles;
+    protected $options;
 
     public function __construct(EmailManagerInterface $mail, EncoderFactoryInterface $encoder, $systemRoles = array())
     {
@@ -36,6 +37,7 @@ class UserService
         $this->encoder = $encoder;
         $this->password = '';
         $this->systemRoles = $systemRoles;
+        $this->options['applicationName'];
     }
 
     /**
@@ -47,7 +49,7 @@ class UserService
      */
     public function sendNewPasswordMail(UserInterface $user, $isReset = false)
     {
-        $applicationName = $this->container->getParameter('application_name');
+        $applicationName = $this->options['applicationName'];
         $subject = '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - New account created';
         $template = 'newAccount';
 
