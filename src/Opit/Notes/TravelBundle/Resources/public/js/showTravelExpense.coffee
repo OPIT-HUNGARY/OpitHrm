@@ -491,7 +491,7 @@ $formFieldset = $('<div>').addClass 'formFieldset padding-bottom-5 margin-top-20
 
 $generalFormFieldset = $formFieldset.clone().addClass 'generalFormFieldset clearfix padding-10'
 $expensesPaidByMe = $formFieldset.clone().append $('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html 'Expenses paid by me <i class="fa fa-question-circle"></i>'
-$expensesPaidByOpit = $formFieldset.clone().append $('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html 'Expenses paid by opit <i class="fa fa-question-circle"></i>'
+$expensesPaidByOpit = $formFieldset.clone().append $('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html 'Expenses paid by company <i class="fa fa-question-circle"></i>'
 
 $('#travelExpense').prepend $expensesPaidByOpit
 $('#travelExpense').prepend $expensesPaidByMe
@@ -504,7 +504,7 @@ $generalFormFieldset.append $generalFormFields
 $expensesPaidByOpitDesc = $('<div>')
                             .addClass('formFieldsetDescription')
                             .addClass('short-description display-none position-absolute padding-5')
-                            .html 'Expenses paid by OPIT (already paid by OPIT).'
+                            .html 'Expenses paid by company (already paid by Company).'
 
 $expensesPaidByMeDesc = $('<div>')
                             .addClass('formFieldsetDescription')
