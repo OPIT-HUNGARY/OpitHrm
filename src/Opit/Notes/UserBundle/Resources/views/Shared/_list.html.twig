@@ -36,7 +36,7 @@
                             <input name="delete-user[]" {% if attribute(value, 'id') in disabledRoles %}disabled{% endif %} type="checkbox" class="deleteMultiple" value="{{ key }}" >
                         {% endif %}
                     {% elseif  attribute(value, 'username') is defined %}
-                        <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ key }}" {% if key == app.user.id %}disabled="disabled"{% endif %}>
+                        <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ key }}" {% if key == app.user.id or 0 == value['allowedToEdit'] %}disabled="disabled"{% endif %}>
                     {% else %}
                         <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ key }}" >
                     {% endif %}
@@ -49,7 +49,7 @@
                     </td>
                 {% elseif propertyName == 'username' %}
                     <td >
-                        <span class="list-username clickable text-decoration-underline cursor-pointer" data-user-id="{{ key }}">
+                        <span {% if 1 == value['allowedToEdit'] %}class="list-username clickable text-decoration-underline cursor-pointer"{% endif %} data-user-id="{{ key }}">
                             {{ attribute(value, propertyName)|join(', ') }}
                         </span>
                     </td>
@@ -69,11 +69,14 @@
                 </td>
                 {% endif %}
                 <td>
+                    {% if value['allowedToEdit'] is not defined or 1 == value['allowedToEdit'] %}
                     {% set title %}
                         {% if 'groups' in app.request.attributes.get('_route') %}
                             role
                         {% elseif 'travelexpensetype' in app.request.attributes.get('_route') or 'expensetype' in app.request.attributes.get('_route') %}
                             expense type
+                        {% elseif 'teams' in app.request.attributes.get('_route') %}
+                            team
                         {% else %}
                             user
                         {% endif %}
@@ -106,6 +109,7 @@
                         {% endif %}
                     {% else %}
                         {{ actionIcons }}
+                    {% endif %}
                     {% endif %}
                 </td>
             </tr>

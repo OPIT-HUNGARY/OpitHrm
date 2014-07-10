@@ -11,11 +11,9 @@
                 <ul>
                     <li><a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}"><i class="fa fa-home"></i>Information Board</a></li>
                 </ul>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <ul>
-                        <li id="loggedInUser" class="cursor-pointer menu-link edit" data-user-id="{{ app.user.id }}" data-user-id="{{app.user.id}}"><i class="fa fa-pencil-square-o"></i>&nbsp;Edit Info</li>
-                    </ul>
-                {% endif %}
+                <ul>
+                    <li id="loggedInUser" class="cursor-pointer menu-link edit" data-user-id="{{ app.user.id }}" data-user-id="{{app.user.id}}"><i class="fa fa-pencil-square-o"></i>&nbsp;Edit Info</li>
+                </ul>
                 <ul class="menu-link">
                     <li id="changePassword" class="cursor-pointer menu-link" data-user-id="{{ app.user.id }}"><i class="fa fa-key"></i>&nbsp;Reset Password</li>
                 </ul>

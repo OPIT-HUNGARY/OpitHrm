@@ -55,7 +55,6 @@ class EmployeeType extends AbstractType
     {
         $config = $this->container->getParameter('opit_notes_user');
         $leaveConfig = $this->container->getParameter('opit_notes_leave');
-        $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
 
         $builder->add('employeeName', 'text', array(
             'attr' => array(
@@ -132,7 +131,7 @@ class EmployeeType extends AbstractType
         ));
 
         // Add admin only forms
-        if (true === $isAdmin) {
+        if ($this->container->get('security.context')->isGranted('ROLE_SYSTEM_ADMIN')) {
             $builder->add('jobTitle', 'entity', array(
                 'class' => 'OpitNotesUserBundle:JobTitle',
                 'property' => 'title',

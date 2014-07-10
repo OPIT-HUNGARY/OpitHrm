@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of ContactType
@@ -59,7 +60,7 @@ class UserShowType extends AbstractType
     {
         $dataArr = $builder->getData();
         $config = $this->container->getParameter('opit_notes_user');
-        $isAdmin = $this->container->get('security.context')->isGranted('ROLE_ADMIN');
+        $isSystemAdmin = $this->container->get('security.context')->isGranted('ROLE_SYSTEM_ADMIN');
         $userId = null;
 
         // If we modify an existed user.
@@ -68,7 +69,7 @@ class UserShowType extends AbstractType
         }
 
         // If the current user has admin role then the field will be changeable
-        if (true === $isAdmin) {
+        if (true === $isSystemAdmin) {
             $builder->add('username', 'text', array('attr' => array(
                 'placeholder' => 'Username'
             )));
@@ -80,9 +81,19 @@ class UserShowType extends AbstractType
 
         $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
 
-        if (true === $isAdmin) {
+        if (true === $isSystemAdmin) {
             $builder->add('groups', 'entity', array(
                 'class' => 'OpitNotesUserBundle:Groups',
+                'query_builder' => function (EntityRepository $er) {
+                    $dq = $er->createQueryBuilder('g');
+
+                    if (!$this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
+                        $dq->where('g.role IN (:allowedRoled)');
+                        $dq->setParameter(':allowedRoled', $this->container->getParameter('security.role_hierarchy.roles')['ROLE_SYSTEM_ADMIN']);
+                    }
+
+                    return $dq;
+                },
                 'property' => 'name',
                 'multiple' => true,
                 'expanded' => true
