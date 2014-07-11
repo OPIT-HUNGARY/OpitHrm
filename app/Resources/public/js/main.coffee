@@ -27,12 +27,8 @@ $.extend true, $(document).data('notes'),
 
         initDateInputs: ($container) ->
             $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
-            if not Modernizr.inputtypes.date
-                $dateInputs.each ->
-                    name = $(@).attr 'name'
-                    id = $(@).attr('id')
-                    $input = $(@).after '<input type="hidden" name="'+name+'" id="altDate'+id+'" />'
-                    $(@).datepicker()
+            $dateInputs.each ->
+                $(@).datepicker({}, {testNativeSupport: on})
 
         deleteSingleRequest: (type, self) ->
             $checkbox = self.closest('tr').find(':checkbox')
@@ -181,7 +177,30 @@ $.extend true, $(document).data('notes'),
                             $toggleIcon.toggleClass 'fa-chevron-down'
                             $parent.next().slideToggle()
                 $parent.append $toggleIcon
-                    
+
+###
+ * String interpolate plugin
+ *
+ * Usage:
+ *  $.fn.interpolate(template, object, syntax);
+ *
+ * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
+ * @version 1.0
+ * @depends jQuery
+ *
+ * @param {string} t The template string
+ * @param {object} o The object with replace values
+ * @param {regexp} s An optional regexp pattern (default: {key})
+ *
+ * @returns {string} The interpolated template
+###
+$.fn.interpolate = (t, o, s) ->
+   m = if not s then /{([^{}]*)}/g else s
+   if s then m = s
+   t.replace m, (a, b) ->
+       r = o[b]
+       if typeof r is 'string' or typeof r is 'number' then r else a
+
 ###
  * jQuery datepicker extension
  * Datepicker extended by custom rendering possibility
@@ -191,25 +210,35 @@ $.extend true, $(document).data('notes'),
  * @depends jQuery
  *
  * @param object  options List of options
+ * @param object  parameters List of parameters
 ###
 __picker = $.fn.datepicker
 
-$.fn.datepicker = (options = {}, parameters) ->
-    $self = @
+$.fn.datepicker = (options = {}, parameters = {}) ->
+    $self = $(@)
 
     defaultOptions =
-        altField: '#altDate' + $(@).attr('id')
+        altField: '#altDate' + $self.attr('id')
         altFormat: $.datepicker.ISO_8601
         dateFormat: $.datepicker.ISO_8601
 
     # Merge passed options
     $.extend true, defaultOptions, options
 
+    # Extension only works on single DOM elements, native datepicker will apply in case of collections
+    # Use initDateInputs() instead!
+    if $self.length > 1
+        console.warn 'Datepicker input is a collection. Custom extension are disabled.'
+        __picker.apply this, [defaultOptions]
+        return $self
+
     defaultParameters =
         wrapper: $('<span class="position-relative datepicker-wrapper"></span>')
+        altTemplate: '<input type="hidden" name="{name}" id="altDate{id}" />'
         indicatorIcon: $('<i>')
         deleteIcon: $('<i>')
         testNativeSupport: off
+
     # Merge passed parameters
     $.extend true, defaultParameters, parameters
 
@@ -219,19 +248,26 @@ $.fn.datepicker = (options = {}, parameters) ->
 
     __picker.apply this, [defaultOptions]
 
+    # Insert the required alt field used for sanitized formats
+    $self.after $.fn.interpolate(
+        defaultParameters.altTemplate
+        name: $self.attr('name'), id: $self.attr('id')
+    )
+
     # Apply default date formats if values are present
-    if $(@).val()
-        $(@).val $.datepicker.formatDate(defaultOptions.dateFormat, new Date($(@).val()))
-        $(defaultOptions.altField).val $.datepicker.formatDate(defaultOptions.altFormat, new Date($(@).val()))
+    currentDate = new Date $self.val()
+    altId = $.fn.interpolate defaultOptions.altField, $self.attr('id')
+    if $self.val()
+        $self.val $.datepicker.formatDate(defaultOptions.dateFormat, currentDate)
+        $(altId).val $.datepicker.formatDate(defaultOptions.altFormat, currentDate)
 
     if options.showOn isnt 'button'
         $wrapper = defaultParameters.wrapper
         $deleteIcon = defaultParameters.deleteIcon
         $calendarIcon = defaultParameters.indicatorIcon
 
-        $self.attr
-            readonly: 'readonly'
-        .addClass 'icon-prefix-indent display-inline-block'
+        $self.attr readonly: 'readonly'
+            .addClass 'icon-prefix-indent display-inline-block'
 
         $self.wrap $wrapper
 
@@ -253,7 +289,7 @@ $.fn.datepicker = (options = {}, parameters) ->
         # Register delete icon display events
         $self.closest('.datepicker-wrapper')
             .on 'mouseenter.datepicker', 'input, i.fa-times-circle',  ->
-                if $self.val() != ''
+                if $self.val() isnt ''
                     $deleteIcon.addClass 'display-inline-block-important'
             .on 'mouseleave.datepicker', 'input, i.fa-times-circle',  ->
                 $deleteIcon.removeClass 'display-inline-block-important'

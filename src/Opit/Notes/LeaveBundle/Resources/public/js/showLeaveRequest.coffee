@@ -184,8 +184,8 @@ $(document).ready ->
     # function to create and insert a leave into the interface
     createLeave = ($leave) ->
         if typeof $leave is 'object'
-            $leave.find('.start-date').parent().addClass 'display-inline-block'
-            $leave.find('.end-date').parent().addClass 'display-inline-block margin-left-5'
+            $leave.find('.start-date').closest('div').addClass 'display-inline-block'
+            $leave.find('.end-date').closest('div').addClass 'display-inline-block margin-left-5'
             
         index = $collectionHolder.data 'index'
         $collectionHolder.data('index', index + 1)
