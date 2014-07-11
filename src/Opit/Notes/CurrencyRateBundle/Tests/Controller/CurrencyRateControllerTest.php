@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of CurrencyRateControllerTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -35,7 +35,7 @@ class CurrencyRateControllerTest extends WebTestCase
             'PHP_AUTH_PW'   => 'admin',
         ));
     }
-    
+
     /**
      * test GetConvertedRateOfCurrency action
      */
@@ -59,11 +59,11 @@ class CurrencyRateControllerTest extends WebTestCase
             'GetConvertedRateOfCurrencyAction: Missing array key "HUF".'
         );
     }
-    
+
     /**
      * test GetExchangeRates action
      */
-    public function testGetExchangeRatesAction()
+    public function testFetchExchangeRatesAction()
     {
         $crawler = $this->client->request(
             'GET',
@@ -71,13 +71,11 @@ class CurrencyRateControllerTest extends WebTestCase
         );
         $content = $this->client->getResponse()->getContent();
 
-        $decodedJson = json_decode($content, true);
-        
         $this->assertTrue(
             $this->client->getResponse()->isSuccessful(),
-            'GetExchangeRatesAction: Retrieved response failed.'
+            'FetchExchangeRatesAction: Retrieved response failed.'
         );
-        $this->assertJson($content, 'GetExchangeRatesAction: The content is not a JSON object.');
+        $this->assertJson($content, 'FetchExchangeRatesAction: The content is not a JSON object.');
         // MNB today's rates will be only present from the afternoon. No secure way
         // to test for exchange rates.
         /*$this->assertTrue(

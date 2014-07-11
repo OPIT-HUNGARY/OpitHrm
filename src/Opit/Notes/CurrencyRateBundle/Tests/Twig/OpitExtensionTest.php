@@ -15,7 +15,7 @@ use Opit\Notes\CurrencyRateBundle\Twig\OpitExtension;
 
 /**
  * Description of OpitExtensionTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -27,30 +27,33 @@ class OpitExtensionTest extends \PHPUnit_Framework_TestCase
      * @var \Opit\Notes\CurrencyRateBundle\Twig\OpitExtension
      */
     private $opitExtension;
-    
+
+    /**
+     * Set up the test.
+     */
     public function setUp()
     {
-        $mockExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService')
+        $mockExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface')
             ->disableOriginalConstructor()
-            ->getMock();
-        
+            ->getMockForAbstractClass();
+
         $this->opitExtension = new OpitExtension($mockExch);
     }
-    
+
     /**
      * testing convertCurrency method.
      */
     public function testConvertCurrency()
     {
-        $mockExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService')
+        $mockExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('convertCurrency'))
-            ->getMock();
-        
+            ->getMockForAbstractClass();
+
         $mockExch->expects($this->once())
             ->method('convertCurrency')
             ->will($this->returnValue(10));
-        
+
         $opitExtension = new OpitExtension($mockExch);
         
         $this->assertEquals(
@@ -59,7 +62,7 @@ class OpitExtensionTest extends \PHPUnit_Framework_TestCase
             'ConvertCurrency: The expected and the given values are not equal.'
         );
     }
-    
+
     /**
      * testing getName method.
      */
@@ -71,7 +74,7 @@ class OpitExtensionTest extends \PHPUnit_Framework_TestCase
             'GetName: The expected and the given values are not equal.'
         );
     }
-    
+
     /**
      * testing getName method.
      */

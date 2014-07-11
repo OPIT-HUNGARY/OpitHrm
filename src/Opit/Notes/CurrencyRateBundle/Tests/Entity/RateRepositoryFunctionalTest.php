@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of RateRepositoryFunctionalTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -35,11 +35,23 @@ class RateRepositoryFunctionalTest extends WebTestCase
     {
         static::$kernel = static::createKernel();
         static::$kernel->boot();
+
         $this->em = static::$kernel->getContainer()
             ->get('doctrine')
             ->getManager();
     }
-    
+
+    /**
+     * test FindAllByDateInterval method
+     */
+    public function testFindAllByDateInterval()
+    {
+        $rate = $this->em->getRepository("OpitNotesCurrencyRateBundle:Rate")
+                    ->findAllByDates(new \DateTime('yesterday'), new \DateTime('today'));
+
+        $this->assertNotNull($rate, 'FindAllByDates: The given result is null.');
+    }
+
     /**
      * test FindFirstRate method
      */
@@ -47,10 +59,10 @@ class RateRepositoryFunctionalTest extends WebTestCase
     {
         $rate = $this->em->getRepository("OpitNotesCurrencyRateBundle:Rate")
                     ->findFirstRate();
-        
+
         $this->assertNotNull($rate, 'FindFirstRate: The given result is null.');
     }
-    
+
     /**
      * test FindLastRate method
      */
@@ -58,10 +70,10 @@ class RateRepositoryFunctionalTest extends WebTestCase
     {
         $rate = $this->em->getRepository("OpitNotesCurrencyRateBundle:Rate")
                     ->findLastRate();
-        
+
         $this->assertNotNull($rate, 'FindLastRate: The given result is null.');
     }
-    
+
     /**
      * test HasRate method
      */
@@ -72,7 +84,7 @@ class RateRepositoryFunctionalTest extends WebTestCase
 
         $this->assertTrue($rate, 'HasRate: The given result is null.');
     }
-    
+
     /**
      * test FindRateByCodeAndDate method
      */
@@ -83,7 +95,7 @@ class RateRepositoryFunctionalTest extends WebTestCase
 
         $this->assertNotNull($rate, 'FindRateByCodeAndDate: The given result is null.');
     }
-    
+
     /**
      * test GetRatesArray
      */
@@ -94,7 +106,7 @@ class RateRepositoryFunctionalTest extends WebTestCase
 
         $this->assertNotNull($rate, 'GetRatesArray: The given result is null.');
     }
-    
+
     /**
      * tear down
      */

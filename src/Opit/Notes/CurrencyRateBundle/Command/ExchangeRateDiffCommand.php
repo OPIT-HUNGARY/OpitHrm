@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -27,24 +27,24 @@ class ExchangeRateDiffCommand extends AbstractExchangeRateCommand
     protected function configure()
     {
         parent::configure();
-        
+
         $this->setName('exchange:rates:diff')
-             ->setDescription('Diff the local database\'s with MNB\'s rates.')
-             ->setHelp(
+            ->setDescription('Diff the local database\'s with MNB\'s rates.')
+            ->setHelp(
 <<<EOT
 The <info>%command.name%</info> command diff the rates in the local database:
 
     <info>%command.full_name%</info>
 
 You can optionally specify the following options:
-    
+
    <comment>--start</comment> option to fetch rates from the start date: <info>%command.full_name% --start</info> optional, the default value is the first rate\'s date.
    <comment>--end</comment> option to fetch rates to the end date: <info>%command.full_name% --end</info> optional, the default value is the current date.
    <comment>--currency</comment> option to fetch rates of the given currencies: <info>%command.full_name% --currency</info> optional, the default value is the all currency code.
 EOT
-             );
+            );
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->isNotRequiredOptions['start'] = true;
@@ -54,7 +54,7 @@ EOT
         $this->resultOfFetching = $this->exchangeService->getDiffExchangeRates(
             $this->validateCommandOptions($this->inputOptions, $output)
         );
-       
+
         parent::execute($input, $output);
     }
 }

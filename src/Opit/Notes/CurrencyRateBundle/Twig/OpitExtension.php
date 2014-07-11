@@ -2,16 +2,16 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
 namespace Opit\Notes\CurrencyRateBundle\Twig;
 
-use Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService;
+use Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface;
 
 /**
  * Twig OpitTravelExtension class
@@ -25,19 +25,19 @@ class OpitExtension extends \Twig_Extension
 {
     /**
      * Exchange Rate service instance.
-     * @var \Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService 
+     * @var \Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface 
      */
     protected $rateService;
 
     /**
      * Constructor
-     * @param \Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService $rateService
+     * @param \Opit\Notes\CurrencyRateBundle\Model\ExchangeRateInterface $rateService
      */
-    public function __construct(ExchangeRateService $rateService)
+    public function __construct(ExchangeRateInterface $rateService)
     {
         $this->rateService = $rateService;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -47,10 +47,10 @@ class OpitExtension extends \Twig_Extension
             'convertCurrency' => new \Twig_Function_Method($this, 'convertCurrency'),
         );
     }
-    
+
     /**
      * Convert currency rate from the origin currency code to the destinaton currency code.
-     * 
+     *
      * @param string $originCode currency code
      * @param string $destinationCode currency code
      * @param integer $value value of the rate
@@ -62,12 +62,12 @@ class OpitExtension extends \Twig_Extension
         if (!($dateTime instanceof \DateTime)) {
             $dateTime = new \DateTime($dateTime);
         }
-        
+
         $convertedValue = $this->rateService->convertCurrency($originCode, $destinationCode, $value, $dateTime);
-        
+
         return $convertedValue;
     }
-    
+
     /**
      * Get the extension's name.
      * @return string name of the extension

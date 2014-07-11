@@ -34,6 +34,8 @@ use JMS\Serializer\Annotation as Serializer;
 abstract class AbstractBase
 {
     /**
+     * @Serializer\Expose
+     * @Serializer\XmlAttribute
      * @ORM\Column(type="datetime")
      * @Gedmo\Timestampable(on="create")
      */

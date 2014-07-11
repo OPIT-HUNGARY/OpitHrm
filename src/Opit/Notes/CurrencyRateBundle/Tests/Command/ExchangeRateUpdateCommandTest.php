@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of ExchangeRateUpdateCommandTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
@@ -26,13 +26,12 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class ExchangeRateUpdateCommandTest extends WebTestCase
 {
-    
     /**
      *
      * @var \Opit\Notes\CurrencyRateBundle\Command\ExchangeRateUpdateCommand
      */
     private $command;
-    
+
     /**
      * Set up the testing
      */
@@ -40,10 +39,10 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
     {
         $kernel = $this->createKernel();
         $kernel->boot();
-        
+
         $application = new Application($kernel);
         $application->add(new ExchangeRateUpdateCommand());
-        
+
         $this->command = $application->find('exchange:rates:update');
     }
 
@@ -56,7 +55,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
         $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
         // Get the last week's friday.
         $yesterday = date('Y-m-d', strtotime('yesterday'));
-        
+
         $commandTester1 = new CommandTester($this->command);
         $commandTester1->execute(
             array(
@@ -69,7 +68,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
             $commandTester1->getDisplay(),
             'Execute: CommandTester1 is failed.'
         );
-        
+
         $commandTester2 = new CommandTester($this->command);
         $commandTester2->execute(
             array(
@@ -83,7 +82,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
             $commandTester2->getDisplay(),
             'Execute: CommandTester2 is failed.'
         );
-        
+
         $commandTester3 = new CommandTester($this->command);
         $commandTester3->execute(
             array(
@@ -98,6 +97,6 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
             $commandTester3->getDisplay(),
             'Execute: CommandTester3 is failed.'
         );
-        
+
     }
 }

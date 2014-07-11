@@ -13,6 +13,7 @@ namespace Opit\Notes\CurrencyRateBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\Notes\CoreBundle\Entity\AbstractBase;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Rate
@@ -33,6 +34,7 @@ class Rate extends AbstractBase
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Exclude
      */
     private $id;
 
@@ -41,6 +43,7 @@ class Rate extends AbstractBase
      *
      * @ORM\JoinColumn(name="currency_code", referencedColumnName="code", nullable=true)
      * @ORM\ManyToOne(targetEntity="Currency", inversedBy="rates")
+     * @Serializer\XmlList(inline = true, entry = "code")
      */
     private $currencyCode;
 

@@ -26,7 +26,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class ExchangeRateDiffCommandTest extends WebTestCase
 {
-
     /**
      *
      * @var \Opit\Notes\CurrencyRateBundle\Command\ExchangeRateInsertCommand

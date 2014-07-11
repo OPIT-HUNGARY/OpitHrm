@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -26,7 +26,7 @@ class RateRepository extends EntityRepository
 {
     /**
      * Has an existing rate in the database with the passed datetime and currency
-     * 
+     *
      * @param string $code the currency code
      * @param \DateTime $datetime the datetime of the searching
      * @return boolean
@@ -37,13 +37,32 @@ class RateRepository extends EntityRepository
                    ->select('COUNT(r.id)');
         $this->setQueriyBuilderConditons($qb, $code, $datetime);
         $q = $qb->getQuery();
-        
+
         return (bool) $q->getSingleScalarResult();
     }
-    
+
+    /**
+     * Find all rates by date interval.
+     *
+     * @param \DateTime $startDate of datetimes.
+     * @param \DateTime $endDate of datetimes.
+     * @return array of Rate entities.
+     */
+    public function findAllByDates(\DateTime $startDate, \DateTime $endDate)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $qb->where('r.created >= :start AND r.created <= :end')
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate);
+        $q = $qb->getQuery();
+
+        return $q->getResult();
+    }
+
     /**
      * Find the last rate.
-     * 
+     *
      * @return Rate A rate instance.
      */
     public function findLastRate()
@@ -52,13 +71,13 @@ class RateRepository extends EntityRepository
                    ->orderBy('r.created', 'DESC')
                    ->setMaxResults(1);
         $q = $qb->getQuery();
-        
+
         return $q->getOneOrNullResult();
     }
-    
+
     /**
      * Find the first rate.
-     * 
+     *
      * @return Rate A rate instance.
      */
     public function findFirstRate()
@@ -67,13 +86,13 @@ class RateRepository extends EntityRepository
                    ->orderBy('r.created', 'ASC')
                    ->setMaxResults(1);
         $q = $qb->getQuery();
-        
+
         return $q->getOneOrNullResult();
     }
-    
+
     /**
      * Find rate entity by currency code and datetime
-     * 
+     *
      * @param string $code currency code
      * @param \DateTime $datetime searched datetime
      * @return Rate entity
@@ -83,13 +102,13 @@ class RateRepository extends EntityRepository
         $qb = $this->createQueryBuilder('r');
         $this->setQueriyBuilderConditons($qb, $code, $datetime);
         $q = $qb->getQuery();
-        
+
         return $q->getOneOrNullResult();
     }
-    
+
     /**
      * Set the query builder object with conditions.
-     * 
+     *
      * @param QueryBuilder $qb
      * @param string $code the currency code
      * @param \DateTime $datetime the searched datetime
@@ -100,7 +119,7 @@ class RateRepository extends EntityRepository
         $datetimeCopy = clone $datetime;
         $start = $datetime->setTime(0, 0, 0);
         $end = $datetimeCopy->setTime(23, 59, 59);
-        
+
         //set the common conditions.
         $qb->where('r.currencyCode = :code')
             ->andWhere('r.created >= :start AND r.created <= :end')
@@ -108,18 +127,18 @@ class RateRepository extends EntityRepository
             ->setParameter('start', $start)
             ->setParameter('end', $end);
     }
-    
+
     public function getRatesArray(\DateTime $date)
     {
         $rarrRates = array();
         $created = clone $date;
         // Set time to 0 to match all days rates
         $rates = $this->findByCreated($created->setTime(0, 0, 0));
-        
+
         foreach ($rates as $rate) {
             $rarrRates[$rate->getCurrencyCode()->getCode()] = $rate->getRate();
         }
-        
+
         return $rarrRates;
     }
 }

@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -33,6 +33,17 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opit_notes_currency_rate');
+
+        $rootNode
+            ->children()
+                ->scalarNode('exchange_service')
+                    ->isRequired()
+                    ->validate()
+                    ->ifNotInArray(array('opit.service.exchange_rates.mnb'))
+                        ->thenInvalid('Invalid exchange rate service "%s"')
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

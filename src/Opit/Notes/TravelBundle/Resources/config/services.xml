@@ -22,7 +22,7 @@
         <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="rate.exchange_service" />
+            <argument type="service" id="opit.service.exchange_rates.default" />
             <argument>%currency_config%</argument>
         </service>
         <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
@@ -44,7 +44,6 @@
             </call>
         </service>
         <service id="opit.manager.pdf_manager" class="%opit.manager.pdf_manager.class%"></service>
-        <service id="rate.exchange_service" alias="opit.service.exchange_rates" />
         <service id="opit.manager.travel_notification_manager" class="%opit.manager.travel_notification_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>

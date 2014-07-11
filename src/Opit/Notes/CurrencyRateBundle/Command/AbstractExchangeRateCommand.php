@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -29,19 +29,19 @@ class AbstractExchangeRateCommand extends ContainerAwareCommand
 {
     /**
      * Input interface options
-     * @var mixin 
+     * @var mixin
      */
     protected $inputOptions;
-    
+
     /**
      * Result of the fetching
-     * @var mixin|boolean 
+     * @var mixin|boolean
      */
     protected $resultOfFetching;
-    
+
     /**
      * Logger object
-     * @var Symfony\Bridge\Monolog\Logger 
+     * @var Symfony\Bridge\Monolog\Logger
      */
     protected $logger;
 
@@ -50,16 +50,16 @@ class AbstractExchangeRateCommand extends ContainerAwareCommand
      * @var Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService
      */
     protected $exchangeService;
-    
+
     /**
      * Set force save option
      * @var boolean
      */
     protected $isForce;
-    
+
     /**
      * Set which options are not required.
-     * @var mixin 
+     * @var mixin
      */
     protected $isNotRequiredOptions;
 
@@ -77,14 +77,14 @@ The <info>%command.name%</info> command fetching the given rates and load into t
     <info>%command.full_name%</info>
 
 You can optionally specify the following options:
-    
+
    <comment>--start</comment> option to fetch rates from the start date: <info>%command.full_name% --start</info>
    <comment>--end</comment> option to fetch rates to the end date: <info>%command.full_name% --end</info>
    <comment>--currency</comment> option to fetch rates of the given currencies: <info>%command.full_name% --currency</info>
 EOT
             );
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // If the remote's response is not empty save the rates.
@@ -106,13 +106,14 @@ EOT
             $output->writeln('<comment>Couldn\'t fetch rates from MNB (empty response).</comment>');
             $output->writeln('<comment>The sync is cancelled.</comment>');
         }
-        
+
         $this->logger->info(sprintf('[|%s] %s command is ended.', Utils::getClassBasename($this), $this->getName()));
     }
-    
+
     /**
      * Initalize the command class.
-     * 
+     * Set up the concrete exchange rate service.
+     *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
@@ -120,15 +121,16 @@ EOT
     {
         $this->logger = $this->getContainer()->get('logger');
         $this->logger->info(sprintf('[|%s] %s command is called.', Utils::getClassBasename($this), $this->getName()));
-        
-        $this->exchangeService = $this->getContainer()->get('rate.exchange_service');
+
+        // Call the concrete exchange rate service by alias.
+        $this->exchangeService = $this->getContainer()->get('opit.service.exchange_rates.default');
         $this->inputOptions = $input->getOptions();
     }
 
     /**
      * Validate the command input options
      * Validate the dates and currency codes, if these are not valid then return with false.
-     * 
+     *
      * @param mixin $inputOptions
      * @param Logger $this->logger
      * @param Symfony\Component\Console\Output\OutputInterface $output
@@ -138,7 +140,7 @@ EOT
     {
         $options = array();
         $this->logger = $this->getContainer()->get('logger');
-        
+
         if ($inputOptions['start']) {
 
             if (!Utils::validateDate($inputOptions['start'], 'Y-m-d')) {
@@ -191,13 +193,13 @@ EOT
             }
             $options['currencyNames'] = strtoupper($inputOptions['currency']);
         }
-        
+
         return $options;
     }
-    
+
     /**
      * Check the passed array containing all required fields for remote fetch.
-     * 
+     *
      * @param array $options
      * @return boolean true if the passed array contains all required fields.
      */

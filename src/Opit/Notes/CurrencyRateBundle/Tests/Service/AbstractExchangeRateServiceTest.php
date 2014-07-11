@@ -11,39 +11,29 @@
 
 namespace Opit\Notes\CurrencyRateBundle\Tests\Service;
 
-use Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService;
+use Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
- * Description of ExchangeRateServiceTest
- * 
+ * Description of AbstractExchangeRateServiceTest
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Opit
  * @subpackage Notes
  */
-class ExchangeRateServiceTest extends WebTestCase
+class AbstractExchangeRateServiceTest extends WebTestCase
 {
-    /**
-     * @var \Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService
-     */
-    private $exch;
-    
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
-    
+
     /**
      * @var Symfony\Bridge\Monolog\Logger
      */
     private $logger;
-    
-    /**
-     * @var string
-     */
-    private $mnbUrl;
-    
+
     /**
      * Set up for the testing
      */
@@ -51,85 +41,28 @@ class ExchangeRateServiceTest extends WebTestCase
     {
         static::$kernel = static::createKernel();
         static::$kernel->boot();
-        
+
         $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
         $this->logger = static::$kernel->getContainer()->get('logger');
-        $this->mnbUrl = 'http://www.mnb.hu/arfolyamok.asmx?wsdl';
-        
-        $this->exch = new ExchangeRateService($this->em, $this->logger, 1.0, $this->mnbUrl);
     }
-    
-    /**
-     * testGetHufRate
-     */
-    public function testGetHufRate()
-    {
-        $this->assertEquals(1.0, $this->exch->getHufRate(), 'GetHufRate: The rate of HUF is not (float) 1.0 .');
-    }
-    
-    /**
-     * testConvertCurrency
-     */
-    public function testConvertCurrency()
-    {
-        $mockExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService')
-            ->setConstructorArgs(array($this->em, $this->logger, 1.0, $this->mnbUrl))
-            ->setMethods(array('getRateOfCurrency', 'getHufRate'))
-            ->getMock();
-        
-        $mockExch->expects($this->at(0))
-            ->method('getRateOfCurrency')
-            ->with('GBP', new \DateTime('2014-01-05'))
-            ->will($this->returnValue(360.0));
-        
-        $mockExch->expects($this->at(1))
-            ->method('getRateOfCurrency')
-            ->with('EUR', new \DateTime('2014-01-05'))
-            ->will($this->returnValue(300.0));
-        
-        $mockExch->expects($this->at(2))
-            ->method('getHufRate')
-            ->will($this->returnValue(1.0));
-        
-        $mockExch->expects($this->at(3))
-            ->method('getRateOfCurrency')
-            ->with('EUR', new \DateTime('2014-01-05'))
-            ->will($this->returnValue(300.0));
- 
-        $this->assertEquals(
-            10,
-            $mockExch->convertCurrency('EUR', 'GBP', 12, new \DateTime('2014-01-05')),
-            'ConvertCurrency: The expected and the converted values are not equal.'
-        );
-        $this->assertEquals(
-            12,
-            $mockExch->convertCurrency('EUR', 'EUR', 12, new \DateTime('2014-01-05')),
-            'ConvertCurrency: The expected and the converted values are not equal.'
-        );
-        $this->assertEquals(
-            3600,
-            $mockExch->convertCurrency('EUR', 'HUF', 12, new \DateTime('2014-01-05')),
-            'ConvertCurrency: The expected and the converted values are not equal.'
-        );
-    }
-    
+
     /**
      * testGetCurrentExchangeRates
      */
     public function testGetCurrentExchangeRates()
     {
         // Set up a mocked Exchange Service.
-        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService')
-            ->setConstructorArgs(array($this->em, $this->logger, 1.0, $this->mnbUrl))
-            ->setMethods(array('getExchangeRates'))
-            ->getMock();
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($this->em, $this->logger))
+            ->setMethods(array('getCurrentExchangeRates'))
+            ->getMockForAbstractClass();
         // Configure the getExchangRates method.
         $stubExch->expects($this->any())
-            ->method('getExchangeRates')
+            ->method('getCurrentExchangeRates')
             ->will($this->returnValue(array('EUR' => array('2014-02-01' => '313.6'))));
-        
+
         $resultArray = $stubExch->getCurrentExchangeRates();
-        
+
         $this->assertTrue(is_array($resultArray), 'GetCurrentExchangeRates: The result is not an array.');
         $this->assertArrayHasKey('EUR', $resultArray, 'GetCurrentExchangeRates: missing currency code.');
         $this->assertArrayNotHasKey(
@@ -143,7 +76,31 @@ class ExchangeRateServiceTest extends WebTestCase
             'GetCurrentExchangeRates: The expected and given rate value are not equal.'
         );
     }
-    
+
+    /**
+     * testGetExchangeRates
+     */
+    public function testGetExchangeRates()
+    {
+        // Get the last week's friday.
+        $lastFridayDate = new \DateTime('last friday');
+        // Set up the options array
+        $options = array(
+            'startDate' => $lastFridayDate,
+            'endDate' => $lastFridayDate,
+            'currencyNames' => 'EUR,GBP,USD'
+        );
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($this->em, $this->logger))
+            ->getMockForAbstractClass();
+        $result = $stubExch->getExchangeRates($options);
+
+        $this->assertNotEmpty($result, 'GetExchangeRates: empty response.');
+        $this->assertTrue(is_array($result), 'GetExchangeRates: The result is not an array.');
+    }
+
     /**
      * testGetRatesByDate
      */
@@ -171,7 +128,7 @@ class ExchangeRateServiceTest extends WebTestCase
         $rate2->expects($this->any())
             ->method('getRate')
             ->will($this->returnValue(208.4));
-        
+
         // Set up the mocked rate repository.
         $rateRepository = $this->getMockedRateRepository();
         $rateRepository->expects($this->any())
@@ -179,12 +136,21 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue(array($rate1, $rate2)));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $result = $exch->getRatesByDate();
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->setMethods(array('getRatesByDate'))
+            ->getMockForAbstractClass();
+
+        $stubExch->expects($this->any())
+            ->method('getRatesByDate')
+            ->will($this->returnValue(array($rate1, $rate2)));
+
+        $result = $stubExch->getRatesByDate();
         $resultRate1 = $result[0];
         $resultRate2 = $result[1];
-        
+
         $this->assertTrue(is_array($result), 'GetRatesByDate: The result is not an array.');
         $this->assertTrue(2 === count($result), 'GetRatesByDate: The number of the elements is not equals to 2.');
         $this->assertEquals(
@@ -198,7 +164,7 @@ class ExchangeRateServiceTest extends WebTestCase
             'GetRatesByDate: The second rate\'s value is not equals to the expected value.'
         );
     }
-    
+
     /**
      * testGetRateOfCurrency
      */
@@ -218,7 +184,7 @@ class ExchangeRateServiceTest extends WebTestCase
         $rate->expects($this->any())
             ->method('getCreated')
             ->will($this->returnValue('2014-02-02 14:15:00'));
-        
+
         // Set up the mocked rate repository
         $rateRepository = $this->getMockedRateRepository();
         $rateRepository->expects($this->any())
@@ -226,14 +192,18 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue($rate));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $value = $exch->getRateOfCurrency('GBP', new \DateTime('2014-02-02 14:15:00'));
-        
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $value = $stubExch->getRateOfCurrency('GBP', new \DateTime('2014-02-02 14:15:00'));
+
         $this->assertEquals(354.2, $value, 'GetRateOfCurrency: The expected and the given values are not equal.');
         $this->assertNotNull($value, 'GetRateOfCurrency: The given value is null.');
     }
-    
+
     /**
      * @expectedException \Doctrine\Common\CommonException
      */
@@ -246,11 +216,15 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue(null));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $exch->getRateOfCurrency('GBP');
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $stubExch->getRateOfCurrency('GBP');
     }
-    
+
     /**
      * testGetLastLocalRateDate
      */
@@ -270,7 +244,7 @@ class ExchangeRateServiceTest extends WebTestCase
         $rate->expects($this->any())
             ->method('getCreated')
             ->will($this->returnValue(new \DateTime('2014-12-02 14:36:32')));
-        
+
         // Set up the mocked rate repository
         $rateRepository = $this->getMockedRateRepository();
         $rateRepository->expects($this->any())
@@ -278,17 +252,21 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue($rate));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $dateOfLastRate = $exch->getLastLocalRateDate();
-        
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $dateOfLastRate = $stubExch->getLastLocalRateDate();
+
         $this->assertEquals(
             '2014-12-02 00:00:00',
             $dateOfLastRate->format('Y-m-d H:i:s'),
             'GetLastLocalRateDate: The expected date and the last local rate\'s date are not equal.'
         );
     }
-    
+
     /**
      * @expectedException \Doctrine\Common\CommonException
      */
@@ -301,71 +279,31 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue(null));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $exch->getLastLocalRateDate();
-    }
-    
-    /**
-     * testGetExchangeRates
-     * 
-     * This method works with live data, which from the MNB's service
-     */
-    public function testGetExchangeRates()
-    {
-        // Get the last week's friday.
-        $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
-        
-        $options = array(
-            'startDate' => $lastFridayDate,
-            'endDate' => $lastFridayDate,
-            'currencyNames' => 'EUR,GBP,USD'
-        );
-        $response = $this->exch->getExchangeRates($options);
 
-        $this->assertNotEmpty($response, 'GetExchangeRates: empty response.');
-        $this->assertArrayHasKey('EUR', $response, 'GetExchangeRates: misssing currency code.');
-        $this->assertArrayHasKey(
-            $lastFridayDate,
-            $response['EUR'],
-            sprintf('GetExchangeRates: The %s key does not exist in the response array.', $lastFridayDate)
-        );
-        $this->assertArrayNotHasKey('CHF', $response, 'GetExchangeRates: CHF currency code is in the response array.');
-        $this->assertFalse($this->exch->getExchangeRates(array('startDate' => date('tomorrow'))));
-        $this->assertFalse($this->exch->getExchangeRates(array('startDate' => '2014-02-30')));
-        $this->assertFalse(
-            $this->exch->getExchangeRates(array('startDate' => '2014-02-20', 'endDate' => '2014-02-31'))
-        );
-        $this->assertFalse(
-            $this->exch->getExchangeRates(array('startDate' => '2014-02-20', 'currencyNames' => 'TFS8'))
-        );
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $stubExch->getLastLocalRateDate();
     }
-    
-    /**
-     * @expectedException \Symfony\Component\Routing\Exception\MissingMandatoryParametersException
-     */
-    public function testGetExchangeRatesMissingStartDateException()
-    {
-        // Set up the mocked rate repository
-        $rateRepository = $this->getMockedRateRepository();
-        $rateRepository->expects($this->any())
-            ->method('findRateByCodeAndDate')
-            ->will($this->returnValue(null));
-        // Set up the mocked entity manager.
-        $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $exch->getExchangeRates(array());
-    }
-    
+
     /**
      * testGetMissingExchangeRates
      */
     public function testGetMissingExchangeRates()
     {
-        // Get the last week's thursday.
-        $lastThursdayDate = date('Y-m-d', strtotime('last Thursday'));
-      
+        // Exchange ratesa for the fetchExchangeRates method.
+        $exchangeRates = array(
+            'CHF' => array(
+                '2014-01-20' => 244.46,
+                '2014-01-21' => 245.14,
+            ),
+            'EUR' => array(
+                '2014-01-20' => 300.55,
+                '2014-01-21' => 302.97,
+            ),
+        );
         // Set up the mocked currency repository
         $currencyRepository = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Entity\CurrencyRepository')
             ->disableOriginalConstructor()
@@ -373,80 +311,85 @@ class ExchangeRateServiceTest extends WebTestCase
         $currencyRepository->expects($this->any())
             ->method('getAllCurrencyCodes')
             ->will($this->returnValue(array('EUR', 'CHF')));
-        
+
         $entityManager = $this->getMockedEntityManager($currencyRepository);
 
-        // Create a mocked Exchange Service.
-        $stubExch = $this->getMock(
-            'Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService',
-            array('getLastLocalRateDate'),
-            array($entityManager, $this->logger, 1.0, $this->mnbUrl)
-        );
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->setMethods(array('getLastLocalRateDate'))
+            ->getMockForAbstractClass();
+
         // Configure the getLastLocalRateDate() method for the exchange service stub.
         $stubExch->expects($this->at(0))
             ->method('getLastLocalRateDate')
-            ->will($this->returnValue(new \DateTime($lastThursdayDate)));
+            ->will($this->returnValue(new \DateTime('2014-01-20')));
+
+        // Configure the fetchExchangeRates() method for the exchange service stub.
+        $stubExch->expects($this->any())
+            ->method('fetchExchangeRates')
+            ->will($this->returnValue($exchangeRates));
 
         $response = $stubExch->getMissingExchangeRates(array());
-        
+
         $this->assertNotEmpty($response, 'GetMissingExchangeRate: empty response.');
         $this->assertArrayHasKey('EUR', $response, 'GetMissingExchangeRate: missing currency code.');
         $this->assertArrayHasKey(
-            $lastThursdayDate,
+            '2014-01-20',
             $response['EUR'],
-            sprintf('GetMissingExchangeRate: The %s key does not exist in the response array.', $lastThursdayDate)
+            sprintf('GetMissingExchangeRate: The %s key does not exist in the response array.', '2014-01-20')
         );
         $this->assertArrayNotHasKey(
             'GBP',
             $response,
             'GetMissingExchangeRate: GBP currency code is in the response array.'
         );
-       
-        $stubExch2 = $this->getMock(
-            'Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService',
-            array('getLastLocalRateDate'),
-            array($entityManager, $this->logger, 1.0, $this->mnbUrl)
-        );
-        $stubExch2->expects($this->at(0))
-            ->method('getLastLocalRateDate')
-            ->will($this->returnValue(new \DateTime('today')));
-        
-        $noMissingRates = $stubExch2->getMissingExchangeRates(array());
-        
-        $this->assertFalse($noMissingRates);
     }
-    
+
     /**
      * testGetDiffExchangeRates
      */
     public function testGetDiffExchangeRates()
     {
-        // Get the last week's Monday.
-        $lastMondayDate = date('Y-m-d', strtotime('last Monday'));
-        
-        // Create a mocked Exchange Service.
-        $stubExch = $this->getMock(
-            'Opit\Notes\CurrencyRateBundle\Service\ExchangeRateService',
-            array('getFirstLocalRateDate'),
-            array($this->em, $this->logger, 1.0, $this->mnbUrl)
+        // Exchange ratesa for the fetchExchangeRates method.
+        $exchangeRates = array(
+            'USD' => array(
+                '2014-01-20' => 244.46,
+                '2014-01-21' => 245.14,
+            ),
+            'EUR' => array(
+                '2014-01-20' => 300.55,
+                '2014-01-21' => 302.97,
+            ),
         );
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($this->em, $this->logger))
+            ->setMethods(array('getFirstLocalRateDate'))
+            ->getMockForAbstractClass();
+
         // Configure the getLastLocalRateDate() method for the exchange service stub.
         $stubExch->expects($this->any())
             ->method('getFirstLocalRateDate')
-            ->will($this->returnValue(new \DateTime($lastMondayDate)));
-        
+            ->will($this->returnValue(new \DateTime('2014-01-21')));
+
+        // Configure the fetchExchangeRates() method for the exchange service stub.
+        $stubExch->expects($this->any())
+            ->method('fetchExchangeRates')
+            ->will($this->returnValue($exchangeRates));
+
         $response = $stubExch->getDiffExchangeRates(array());
-        
+
         $this->assertNotEmpty($response, 'GetDiffExchangeRates: empty response.');
         $this->assertArrayHasKey('EUR', $response, 'GetDiffExchangeRates: missing currency code.');
         $this->assertArrayHasKey('USD', $response, 'GetDiffExchangeRates: missing currency code.');
         $this->assertArrayHasKey(
-            $lastMondayDate,
+            '2014-01-21',
             $response['USD'],
-            sprintf('GetDiffExchangeRates: The %s key does not exist in the response array.', $lastMondayDate)
+            sprintf('GetDiffExchangeRates: The %s key does not exist in the response array.', '2014-01-21')
         );
     }
-    
+
     /**
      * @expectedException \Doctrine\Common\CommonException
      */
@@ -459,11 +402,15 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue(null));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $exch->getFirstLocalRateDate();
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $stubExch->getFirstLocalRateDate();
     }
-    
+
     public function testGetFirstLocalRateDate()
     {
         // Create mocked rate entity.
@@ -480,7 +427,7 @@ class ExchangeRateServiceTest extends WebTestCase
         $rate->expects($this->any())
             ->method('getCreated')
             ->will($this->returnValue(new \DateTime('2014-01-02 14:12:02')));
-        
+
         // Set up the mocked rate repository
         $rateRepository = $this->getMockedRateRepository();
         $rateRepository->expects($this->any())
@@ -488,21 +435,26 @@ class ExchangeRateServiceTest extends WebTestCase
             ->will($this->returnValue($rate));
         // Set up the mocked entity manager.
         $entityManager = $this->getMockedEntityManager($rateRepository);
-        
-        $exch = new ExchangeRateService($entityManager, $this->logger, 1.0, $this->mnbUrl);
-        $dateOfFirstRate = $exch->getFirstLocalRateDate();
-        
+
+        // Mocking the abstract exchange service class.
+        $stubExch = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Service\AbstractExchangeRateService')
+            ->setConstructorArgs(array($entityManager, $this->logger))
+            ->getMockForAbstractClass();
+
+        $stubExch->getFirstLocalRateDate();
+        $dateOfFirstRate = $stubExch->getFirstLocalRateDate();
+
         $this->assertEquals(
             '2014-01-02 00:00:00',
             $dateOfFirstRate->format('Y-m-d H:i:s'),
             'GetFirstLocalRateDate: The expected date and the last local rate\'s date are not equal.'
         );
     }
-    
+
     /**
      * Get a mocked Entity Manager
-     * 
-     * @param Mock $rateRepository object
+     *
+     * @param Mock $repository object
      * @return Mock $entityManager
      */
     private function getMockedEntityManager($repository)
@@ -513,13 +465,13 @@ class ExchangeRateServiceTest extends WebTestCase
         $entityManager->expects($this->any())
             ->method('getRepository')
             ->will($this->returnValue($repository));
-        
+
         return $entityManager;
     }
-    
+
     /**
      * Get a mocked RateRepository object.
-     * 
+     *
      * @return Mock $rateRepository
      */
     private function getMockedRateRepository()
@@ -527,7 +479,7 @@ class ExchangeRateServiceTest extends WebTestCase
         $rateRepository = $this->getMockBuilder('Opit\Notes\CurrencyRateBundle\Entity\RateRepository')
             ->disableOriginalConstructor()
             ->getMock();
-        
+
         return $rateRepository;
     }
 }

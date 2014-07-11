@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -15,15 +15,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\CurrencyRateBundle\Entity\Rate;
-
+use JMS\Serializer\Annotation as Serializer;
 /**
  * Currency
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
  * @subpackage CurrencyRateBundle
- * 
+ *
  * @ORM\Table(name="notes_currencies")
  * @ORM\Entity(repositoryClass="Opit\Notes\CurrencyRateBundle\Entity\CurrencyRepository")
  */
@@ -31,7 +31,7 @@ class Currency
 {
     /**
      * @var string
-     * 
+     *
      * @ORM\Column(name="code", type="string", length=3)
      * @ORM\Id
      */
@@ -41,10 +41,12 @@ class Currency
      * @var string
      *
      * @ORM\Column(name="description", type="string", length=100)
+     * @Serializer\Exclude
      */
     private $description;
 
     /**
+     * @Serializer\Exclude
      * @ORM\OneToMany(targetEntity="Rate", mappedBy="currencyCode", cascade={"persist", "remove"})
      */
     private $rates;
@@ -58,14 +60,14 @@ class Currency
     public function setCode($code)
     {
         $this->code = $code;
-    
+
         return $this;
     }
 
     /**
      * Get code
      *
-     * @return string 
+     * @return string
      */
     public function getCode()
     {
@@ -81,20 +83,20 @@ class Currency
     public function setDescription($description)
     {
         $this->description = $description;
-    
+
         return $this;
     }
 
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
         return $this->description;
     }
-   
+
     /**
      * Constructor
      */
@@ -102,7 +104,7 @@ class Currency
     {
         $this->rates = new ArrayCollection();
     }
-    
+
     /**
      * Add rates
      *
@@ -112,7 +114,7 @@ class Currency
     public function addRate(Rate $rates)
     {
         $this->rates[] = $rates;
-    
+
         return $this;
     }
 
@@ -129,16 +131,16 @@ class Currency
     /**
      * Get rates
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRates()
     {
         return $this->rates;
     }
-    
+
     /**
      * Get the today's rate
-     * 
+     *
      * @param \DateTime $datetime
      * @return Rate A rate object
      */
@@ -148,13 +150,13 @@ class Currency
         $datetimeCopy = clone $datetime;
         $start = $datetime->setTime(0, 0, 0);
         $end = $datetimeCopy->setTime(23, 59, 59);
-        
+
         $criteria = new Criteria();
         $criteria->where(Criteria::expr()->gte('created', $start));
         $criteria->andWhere(Criteria::expr()->lte('created', $end));
-        
+
         $result = $this->getRates()->matching($criteria);
-        
+
         return $result->isEmpty() ? null : $result->first();
     }
 }

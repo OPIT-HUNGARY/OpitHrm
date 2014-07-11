@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -28,22 +28,22 @@ class ExchangeRateInsertCommand extends AbstractExchangeRateCommand
     protected function configure()
     {
         parent::configure();
-        
+
         $this->setName('exchange:rates:insert')
-             ->setDescription('Insert the given rates into the local database.')
-             ->addOption(
-                 'current',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Insert only the current rates into the local database.'
-             )
-             ->addOption(
-                 'missing',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Insert the missing rates into the local database.'
-             )
-             ->setHelp(
+            ->setDescription('Insert the given rates into the local database.')
+            ->addOption(
+                'current',
+                null,
+                InputOption::VALUE_NONE,
+                'Insert only the current rates into the local database.'
+            )
+            ->addOption(
+                'missing',
+                null,
+                InputOption::VALUE_NONE,
+                'Insert the missing rates into the local database.'
+            )
+            ->setHelp(
 <<<EOT
 The <info>%command.name%</info> command fetching the given rates and insert into the database:
 
@@ -56,17 +56,17 @@ You can optionally specify the following options:
    <comment>--end</comment> option to fetch rates to the end date: <info>%command.full_name% --end</info>
    <comment>--currency</comment> option to fetch rates of the given currencies: <info>%command.full_name% --currency</info>
 EOT
-             );
+            );
     }
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::init($input);
-        
+
         // If current is setted  then fetch the current rates.
         if (isset($this->inputOptions['current']) && $this->inputOptions['current']) {
-            $this->resultOfFetching = $this->exchangeService->getCurrentExchangeRates();
-        
+            $this->resultOfFetching = $this->exchangeService->fetchCurrentExchangeRates();
+
         } elseif (isset($this->inputOptions['missing']) && $this->inputOptions['missing']) {
             $this->isNotRequiredOptions['start'] = true;
             $this->resultOfFetching = $this->exchangeService->getMissingExchangeRates(
@@ -79,13 +79,13 @@ EOT
                 );
                 exit(0);
             }
-            
+
         } else {
-            $this->resultOfFetching = $this->exchangeService->getExchangeRates(
+            $this->resultOfFetching = $this->exchangeService->fetchExchangeRates(
                 $this->validateCommandOptions($this->inputOptions, $output)
             );
         }
-        
+
         parent::execute($input, $output);
     }
 }
