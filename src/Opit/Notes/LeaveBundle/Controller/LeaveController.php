@@ -622,7 +622,7 @@ class LeaveController extends Controller
      */
     protected function setLRStatusSendNotificationEmail(LeaveRequest $lr, Employee $employee, Status $status, LeaveRequestService $leaveRequestService)
     {
-        $this->get('opit.manager.leave_status_manager')->forceStatus($status->getId(), $lr, $lr->getGeneralManager());
+        $this->get('opit.manager.leave_status_manager')->forceStatus($status->getId(), $lr);
         $leaveRequestService->prepareMassLREmail($lr, $employee->getUser()->getEmail(), array(), $status);
 
         // set a notification to the employee about the leave request

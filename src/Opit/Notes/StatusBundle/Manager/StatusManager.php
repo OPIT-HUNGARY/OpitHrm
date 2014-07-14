@@ -67,6 +67,12 @@ abstract class StatusManager implements StatusManagerInterface
 
         $this->entityManager->persist($resourceState);
 
+        // Set the GM of the resource as the creator of the state if no token is present
+        // This will happen for status changes triggered through emails.
+        if ((method_exists($resourceState, 'getCreatedUser') && method_exists($resource, 'getGeneralManager')) && null === $resourceState->getCreatedUser()) {
+            $resourceState->setCreatedUser($resource->getGeneralManager());
+        }
+
         // Exclude current status from next states to prepare the email
         $nextStates = $this->getNextStates($status);
         unset($nextStates[$statusId]);
