@@ -45,7 +45,7 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
     $('.formFieldsetChild').each (index, element) ->
         $startDate = $(element).find '.start-date'
         $endDate = $(element).find '.end-date'
-
+        $parent = $self.closest('div')
         # Check DOMs are notthe same (checking the DOM level) in order to avoid to compoare itself values.
         # Compare the Dom's first element show the level. Otherwise it will not work.
         if $startDate[0] != $currentStartDate[0]
@@ -55,13 +55,13 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
                 # Prevent to add more error class on the element
                 if $self.hasClass('error') is no
                     $self.addClass 'error'
-                    $self.parent().append createErrorLabel(
+                    $parent.append createErrorLabel(
                         'Dates are overlapping: ' + $startDate.val() + ' and ' + $endDate.val(),
                         'overlap-error',
                         [{'property': 'data-start-date', 'value': $startDate.val()}, {'property': 'data-end-date', 'value': $endDate.val()}]
                     )
                 else
-                    $errorLabel = $self.parent().find 'label.overlap-error'
+                    $errorLabel = $parent.find 'label.overlap-error'
                     # Refresh the dates of error message
                     if ($errorLabel.data 'start-date' != $startDate) and ($errorLabel.data 'end-date' != $endDate)
                         $errorLabel.html 'Date overlapping with: ' + $startDate.val() + ' ' + $endDate.val()
@@ -72,7 +72,7 @@ validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
             else
                 # If there is not overlapping remove the error class
                 $self.removeClass 'error'
-                $self.parent().find('label.overlap-error').remove()
+                $parent.find('label.overlap-error').remove()
     return isValid
 
 $(document).ready ->
