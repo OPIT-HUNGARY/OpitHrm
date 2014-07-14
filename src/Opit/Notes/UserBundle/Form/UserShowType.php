@@ -96,7 +96,8 @@ class UserShowType extends AbstractType
                 },
                 'property' => 'name',
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
+                'label_attr' => array('id' => 'idGroups')
             ));
 
             $builder->add('isActive', 'choice', array(

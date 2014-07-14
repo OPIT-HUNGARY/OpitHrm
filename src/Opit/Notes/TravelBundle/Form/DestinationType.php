@@ -40,7 +40,7 @@ class DestinationType extends AbstractType
             'class'  => 'OpitNotesTravelBundle:TransportationType',
             'property' => 'name',
             'required' => 'true',
-            'empty_value' => 'Choose...',
+            'empty_value' => '-Select-',
             'label'=>'Transportation type',
             'query_builder' => function (EntityRepository $repository) {
                 // Extend query to filter out softdeleted entities

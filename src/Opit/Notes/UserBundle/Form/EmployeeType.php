@@ -94,7 +94,8 @@ class EmployeeType extends AbstractType
             'property' => 'teamName',
             'required' => false,
             'multiple' => true,
-            'expanded' => true
+            'expanded' => true,
+            'label_attr' => array('id' => 'idTeam')
         ));
 
         $builder->add('numberOfChildren', 'integer', array(
@@ -104,21 +105,24 @@ class EmployeeType extends AbstractType
                 'min' => 0,
                 'max' => 30,
                 'placeholder' => 'Number of children'
-            )
+            ),
+            'label_attr' => array('id' => 'idNoc')
         ));
 
         $builder->add('joiningDate', 'date', array(
             'widget' => 'single_text',
             'attr' => array(
                 'placeholder' => 'Joining date'
-            )
+            ),
+            'label_attr' => array('id' => 'idJoiningDate')
         ));
 
         $builder->add('dateOfBirth', 'date', array(
             'widget' => 'single_text',
             'attr' => array(
                 'placeholder' => 'Date of birth'
-            )
+            ),
+            'label_attr' => array('id' => 'idDob')
         ));
 
         $builder->add('workingHours', 'integer', array(
@@ -135,7 +139,8 @@ class EmployeeType extends AbstractType
             $builder->add('jobTitle', 'entity', array(
                 'class' => 'OpitNotesUserBundle:JobTitle',
                 'property' => 'title',
-                'multiple' => false
+                'multiple' => false,
+                'label_attr' => array('id' => 'idJobTitle')
             ));
 
             // If the leave settings configuration is disabled then this form option will be viewed

@@ -9,7 +9,8 @@
     User list - {{ parent() }}
 {% endblock %}
 {% block body %}
-<h1>User list</h1>
+<h1 class="margin-bottom-01em-important">User list</h1>
+<div class="listing-description">Users for the portal can be managed from here.</div>
     {% include 'OpitNotesUserBundle:Shared:_searchForm.html.twig' with { 'order_field': 'u.id' } %}
     <div id="userlistWrapper">
         <table>

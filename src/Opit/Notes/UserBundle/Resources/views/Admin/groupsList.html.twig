@@ -15,9 +15,13 @@
     </script>
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        '@OpitNotesCoreBundle/Resources/public/js/ToolTipHelp.coffee'
         output='js/opitnotesuser/admin_groups_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
-    {% endjavascripts %}    
+    {% endjavascripts %}
+    <script type="text/javascript">
+        $(document).data('notes').funcs.showHideToolTip();
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -26,7 +30,8 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="margin-bottom-01em-important">Role list</h1>
+    <h1 class="margin-bottom-01em-important" id="idRole">Role list<i class="fa fa-info-circle cursor-pointer margin-left-5"></i></h1>
+{% include 'OpitNotesUserBundle:Admin:_roleHelp.html.twig' %}
 {% include 'OpitNotesCoreBundle:Shared:_order.html.twig' %}
 <div class="listing-description">Roles can be created from here.They can be assigned to users to manage their access in the portal.</div>
     <table>

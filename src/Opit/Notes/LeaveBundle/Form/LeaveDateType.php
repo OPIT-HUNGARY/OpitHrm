@@ -43,7 +43,8 @@ class LeaveDateType extends AbstractType
             'class' => 'OpitNotesLeaveBundle:LeaveType',
             'property' => 'name',
             'multiple' => false,
-            'data' => $dataArr->getHolidayType()
+            'data' => $dataArr->getHolidayType(),
+            'label_attr' => array('id' => 'idLeaveType')
         ));
     }
     
