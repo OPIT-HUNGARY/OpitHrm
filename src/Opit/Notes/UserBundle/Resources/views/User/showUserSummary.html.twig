@@ -13,44 +13,44 @@
 {% endblock %}
 {% block body %}
 <h1>Information Board</h1>
-    <div id="employeeInfoWrapper" style="min-width:980px;">
+    <div id="employeeInfoWrapper" class="clearfix">
         <div class="float-left width-290 summary-box margin-right-5">
             <h3><i class="fa fa-user"></i>  Employee Info </h3>
-            <table cellpadding="0" cellspacing="0" class="width-100">
+            <table class="width-100">
                 <tr>
-                    <td width="33%">Name:</td>
+                    <td class="width-32">Name:</td>
                     <td>{{ employee.employeeName|e }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Joining:</td>
+                    <td>Joining:</td>
                     <td>{{ employee.joiningDate|date('d  F  Y') }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Birth Date:</td>
+                    <td>Birth Date:</td>
                     <td>{{ employee.dateOfBirth|date('d  F  Y') }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Children:</td>
+                    <td>Children:</td>
                     <td>{{ employee.numberOfChildren|e }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Tax-ID:</td>
+                    <td>Tax-ID:</td>
                     <td>{{ employee.taxIdentification }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Bank Name:</td>
+                    <td>Bank Name:</td>
                     <td>{{ employee.bankName|e }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">BAN:</td>
+                    <td>BAN:</td>
                     <td>{{ employee.bankAccountNumber|e }}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Job Title:</td>
+                    <td>Job Title:</td>
                     <td>{%if employee.jobTitle.title is defined %}{{ employee.jobTitle.title|e }}{% endif %}</td>
                 </tr>
                 <tr>
-                    <td width="30%">Work Hours:</td>
+                    <td>Work Hours:</td>
                     <td>{{ employee.workingHours|e }}</td>
                 </tr>
             </table>
@@ -60,6 +60,7 @@
         {% endif %}
         {% if bundleExist('OpitNotesLeaveBundle') %}
             {{ render(controller('OpitNotesLeaveBundle:Leave:employeeLeavesinfoBoard')) }}
+            <div class="clearfix"></div>
             {{ render(controller('OpitNotesLeaveBundle:Calendar:showTeamLeavesCalendar', {
                 'partial': true
             })) }}
