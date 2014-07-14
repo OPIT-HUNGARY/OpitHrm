@@ -138,6 +138,7 @@ class LeaveController extends Controller
             $leaveRequest->setEmployee($employee);
         } else {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
+            $requestFor = false === $leaveRequest->getIsMassLeaveRequest() ? 'own' : 'other-employees';
 
             foreach ($leaveRequest->getLeaves() as $leave) {
                 $leavesLength += $leave->getNumberOfDays();
