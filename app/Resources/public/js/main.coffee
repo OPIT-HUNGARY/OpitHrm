@@ -225,13 +225,6 @@ $.fn.datepicker = (options = {}, parameters = {}) ->
     # Merge passed options
     $.extend true, defaultOptions, options
 
-    # Extension only works on single DOM elements, native datepicker will apply in case of collections
-    # Use initDateInputs() instead!
-    if $self.length > 1
-        console.warn 'Datepicker input is a collection. Custom extension are disabled.'
-        __picker.apply this, [defaultOptions]
-        return $self
-
     defaultParameters =
         wrapper: $('<span class="position-relative datepicker-wrapper"></span>')
         altTemplate: '<input type="hidden" name="{name}" id="altDate{id}" />'
@@ -247,6 +240,12 @@ $.fn.datepicker = (options = {}, parameters = {}) ->
         return
 
     __picker.apply this, [defaultOptions]
+
+    # Extension only works on single DOM elements, native datepicker will apply in case of collections
+    # Use initDateInputs() instead!
+    if $self.length > 1
+        console.warn 'Datepicker input is a collection. Custom extension are disabled.'
+        return $self
 
     # Insert the required alt field used for sanitized formats
     $self.after $.fn.interpolate(
@@ -280,9 +279,7 @@ $.fn.datepicker = (options = {}, parameters = {}) ->
 
         # Adding calendar icon.
         $calendarIcon.addClass 'fa fa-calendar position-absolute input-prefix-position cursor-pointer'
-        $calendarIcon.click ->
-            $(@).parent().parent().children('input').focus()
-            $(@).addClass 'display-none-important'
+        $calendarIcon.click -> $self.focus()
 
         $self.before $calendarIcon
 
