@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -34,7 +34,7 @@ class TravelExpenseService
     protected $entityManager;
     protected $config;
     protected $exchangeService;
-    
+
     public function __construct($securityContext, EntityManagerInterface $entityManager, ExchangeRateInterface $exchangeService, $config = array())
     {
         $this->securityContext = $securityContext;
@@ -42,10 +42,10 @@ class TravelExpenseService
         $this->exchangeService = $exchangeService;
         $this->config = $config;
     }
-    
+
     /**
      * Method to calculate the advances for the travel
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return \Opit\Notes\TravelBundle\Entity\TravelExpense
      */
@@ -56,13 +56,13 @@ class TravelExpenseService
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
                 $totalAdvanceSpent += $userPaidExpenses->getAmount();
         }
-        
+
         return $travelExpense;
     }
-    
+
     /**
      * Method to calculate the per diem for the travel expense
-     * 
+     *
      * @param string $arrivalDateTime
      * @param string $departureDateTime
      * @return array
@@ -74,7 +74,7 @@ class TravelExpenseService
 
         $arrivalTimeHour = intval($arrivalDateTime->format('H'));
         $arrivalDate = $arrivalDateTime->format('Y-m-d');
-        
+
         $perDiemAmount = 0;
         $daysBetweenArrivalDeparture = 0;
         $totalTravelHoursOnSameDay = 0;
@@ -83,9 +83,10 @@ class TravelExpenseService
         $arrivalDayTravelHours = 0;
         $departureDayPerDiem = 0;
         $arrivalDayPerDiem = 0;
-        
+        $fullDays = 0;
+
         if ($departureDate !== $arrivalDate) {
-            
+
             while ($departureTimeHour < 24) {
                 $departureTimeHour++;
                 $departureDayTravelHours++;
@@ -95,9 +96,9 @@ class TravelExpenseService
                 $this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')->findAmountToPay(
                     $departureDayTravelHours
                 );
-            
+
             $perDiemAmount += $departureDayPerDiem;
-            
+
             while ($arrivalTimeHour > 0) {
                 $arrivalTimeHour--;
                 $arrivalDayTravelHours++;
@@ -106,16 +107,16 @@ class TravelExpenseService
             $arrivalDayPerDiem =
                 $this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
                 ->findAmountToPay($arrivalDayTravelHours);
-            
+
             $perDiemAmount += $arrivalDayPerDiem;
-            
+
             $daysBetweenArrivalDeparture = date_diff($departureDateTime, $arrivalDateTime);
             $fullDays = $daysBetweenArrivalDeparture->days - 1;
 
             $daysBetweenPerDiem =
                 ($this->entityManager->getRepository('OpitNotesTravelBundle:TEPerDiem')
                 ->findAmountToPay(24) * $fullDays);
-            
+
             $perDiemAmount += $daysBetweenPerDiem;
         } else {
             $totalTravelHoursOnSameDay = 0;
@@ -139,10 +140,10 @@ class TravelExpenseService
             'totalPerDiem' => $perDiemAmount
         );
     }
-    
+
     /**
      * Method to sum and add all employee and company paid expenses
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return array
      */
@@ -167,15 +168,15 @@ class TravelExpenseService
                 $this->getMidRate()
             );
         }
-        
+
         return array(
             'companyPaidExpenses' => $expensesPaidbyCompany, 'employeePaidExpenses' => $expensesPaidByEmployee
         );
     }
-    
+
     /**
      * Method to set edit rights for travel request depending on its current status
-     * 
+     *
      * @param integer $travelRequest
      * @param integer $currentUser
      * @param integer $currentStatusId
@@ -216,35 +217,35 @@ class TravelExpenseService
 
     /**
      * Method to add company and employee paid expenses to travel expense
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return \Opit\Notes\TravelBundle\Model\ArrayCollection
      */
     public function addChildNodes(TravelExpense $travelExpense)
     {
         $children = new ArrayCollection();
-        
+
         foreach ($travelExpense->getCompanyPaidExpenses() as $companyPaidExpenses) {
             $children->add($companyPaidExpenses);
         }
-            
+
         foreach ($travelExpense->getUserPaidExpenses() as $userPaidExpenses) {
             $children->add($userPaidExpenses);
         }
-        
+
         $travelExpenseAdvancesReceived = $travelExpense->getAdvancesReceived();
         if (null !== $travelExpenseAdvancesReceived) {
             foreach ($travelExpense->getAdvancesReceived() as $teAdvancesReceived) {
                 $children->add($teAdvancesReceived);
             }
         }
-        
+
         return $children;
     }
-    
+
     /**
      * Method to remove child nodes
-     * 
+     *
      * @param TravelExpense $travelExpense
      * @param ArrayCollection $children
      */
@@ -264,16 +265,16 @@ class TravelExpenseService
                     $getter = 'getAdvancesReceived';
                     break;
             }
-            
+
             if (null !== $getter && false === $travelExpense->$getter()->contains($child)) {
                 $child->setTravelExpense();
                 $this->entityManager->remove($child);
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @return array Travel request costs in HUF and EUR
      */
@@ -317,16 +318,16 @@ class TravelExpenseService
                 $midRate
             );
         }
-        
+
         return array('HUF' => $approvedCostsHUF, 'EUR' => $approvedCostsEUR);
     }
-    
+
     /**
      * Get the travel expense's midrate
-     * 
+     *
      * Today's date has to be taken unless the travel expense's for approval status was set.
      * ALWAYS the first "for approval" status fixes the expense's midrate.
-     * 
+     *
      * @return \DateTime The midrate datetime object.
      */
     public function getMidRate()
@@ -334,22 +335,22 @@ class TravelExpenseService
         $status = $this->entityManager->getRepository('OpitNotesStatusBundle:Status')->find(Status::FOR_APPROVAL);
         $teStatus = $this->entityManager->getRepository('OpitNotesTravelBundle:StatesTravelExpenses')
                                  ->findOneByStatus($status, array('id' => 'ASC'));
-        
+
         // Set the midrate of last month
         $teDate = $teStatus ? $teStatus->getCreated() : new \DateTime('today');
         $midRateDate = clone $teDate;
         $midRateDate->setDate($midRateDate->format('Y'), $midRateDate->format('m'), $this->config['mid_rate']['day']);
         $midRateDate->modify($this->config['mid_rate']['modifier']);
-        
+
         // TODO: handle empty rates.
-        
+
         return $midRateDate;
     }
-    
+
     /**
      * Get company and user paid expenses and put them in an array depending on the
      * currency they have
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelExpense $travelExpense
      * @return array
      */
@@ -372,17 +373,17 @@ class TravelExpenseService
             $employeePaidExpenseCurrency = $employeePaidExpense->getCurrency()->getCode();
             $sumOfEmployeePaidExpensesByCurrencies[$employeePaidExpenseCurrency] += $employeePaidExpenseAmount;
         }
-        
+
         return array(
             'employeePaidExpenses' => $sumOfEmployeePaidExpensesByCurrencies,
             'companyPaidExpenses' => $sumOfCompanyPaidExpensesByCurrencies
         );
     }
-    
+
     public function getAdvanceAmounts($employeePaidExpenses, $travelExpense)
     {
         $advacesPayback = array();
-        
+
         // loop through all available currencies
         foreach ($employeePaidExpenses as $currency => $amount) {
             $isAdvanceReceived = false;
@@ -390,15 +391,15 @@ class TravelExpenseService
             foreach ($travelExpense->getAdvancesReceived() as $advanceReceived) {
                 $advanceCurrencyCode = $advanceReceived->getCurrency()->getCode();
                 if ($advanceCurrencyCode == $currency) {
-                    
+
                     // set flag that an advance was received in currency
                     $isAdvanceReceived = true;
                     $advanceAmount = $advanceReceived->getAdvancesReceived();
-                    
+
                     // calculate which needs to be paid back in currency
                     $advancePayback = $advanceAmount - $amount;
                     $payableToEmployee = 0;
-                    
+
                     // if advance payback smaller 0, company needs to pay employee
                     if ($advancePayback < 0) {
                         // convert minus to plus
@@ -415,10 +416,10 @@ class TravelExpenseService
                 }
             }
         }
-        
+
         return $advacesPayback;
     }
-    
+
     private function getAmountsArray($advanceReceived, $amountSpent, $advancePayback, $payableToEmployee, $currency)
     {
         $amountInHUF = 0;

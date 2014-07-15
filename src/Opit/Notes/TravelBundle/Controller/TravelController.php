@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
 use Opit\Notes\StatusBundle\Entity\Status;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormError;
 
@@ -56,16 +55,16 @@ class TravelController extends Controller
             'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
             'isGeneralManager' => $securityContext->isGranted('ROLE_GENERAL_MANAGER'),
         );
-        
+
         $allRequests = array();
         if ($isSearch) {
             $allRequests = $request->request->all();
         }
-        
+
         $travelRequests = $entityManager
             ->getRepository('OpitNotesTravelBundle:TravelRequest')
             ->findAllByFiltersPaginated($pagnationParameters, $allRequests);
-        
+
         $listingRights = $this->get('opit.model.travel_request')
             ->setTravelRequestListingRights($travelRequests);
         $teIds = $listingRights['teIds'];
@@ -90,7 +89,7 @@ class TravelController extends Controller
         } else {
             $template = 'OpitNotesTravelBundle:Travel:_list.html.twig';
         }
-        
+
         return $this->render($template, $templateVars);
     }
 
@@ -108,7 +107,7 @@ class TravelController extends Controller
         $travelRequestPreview = $request->request->get('preview');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
-        
+
         // for creating entities for the travel request preview
         if (null !== $travelRequestPreview) {
             $form = $this->createForm(new TravelType(), $travelRequest, array('em' => $entityManager));
@@ -116,12 +115,12 @@ class TravelController extends Controller
         } else {
             $travelRequest = $this->getTravelRequest();
         }
-        
+
         $estimatedCosts = $this->get('opit.model.travel_expense')
             ->getTRCosts($travelRequest);
-        
+
         $currencyConfig = $this->container->getParameter('currency_config');
-        
+
         return array(
             'travelRequest' => $travelRequest,
             'estimatedCostsEUR' => $estimatedCosts['EUR'],
@@ -129,7 +128,7 @@ class TravelController extends Controller
             'currencyFormat' => $currencyConfig['currency_format']
         );
     }
-    
+
     /**
      * Method to show and edit travel request
      *
@@ -149,15 +148,15 @@ class TravelController extends Controller
         $statusManager = $this->get('opit.manager.travel_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
-        
+
         $isEditLocked = false;
         $editRights = $this->get('opit.model.travel_request')
             ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
-        
+
         if (false === $editRights && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
             $isEditLocked = true;
         }
-        
+
         if (false !== $isNewTravelRequest) {
             $travelRequestStates = $statusManager->getNextStates($currentStatus);
             $generalManager = $travelRequest->getGeneralManager()->getUsername();
@@ -180,13 +179,11 @@ class TravelController extends Controller
             $children,
             $forApproval
         );
-        
+
         if (true === $form) {
             return $this->redirect($this->generateUrl('OpitNotesTravelBundle_travel_list'));
         }
 
-        $this->isAccessGranted($isNewTravelRequest, $travelRequest);
-        
         return array(
             'form' => $form->createView(),
             'travelRequest' => $travelRequest,
@@ -195,7 +192,7 @@ class TravelController extends Controller
             'isStatusLocked' => $editRights['isStatusLocked']
         );
     }
-    
+
     /**
      * Method to delete one or more travel requests
      *
@@ -210,27 +207,27 @@ class TravelController extends Controller
         if (!is_array($ids)) {
             $ids = array($ids);
         }
-        
+
         foreach ($ids as $id) {
             $entityManager = $this->getDoctrine()->getManager();
             $travelRequest = $this->getTravelRequest($id);
             // check if user has sufficient role to delete travel request
             if ($securityContext->isGranted('ROLE_GENERAL_MANAGER') || $travelRequest->getUser()->getId() === $securityContext->getToken()->getUser()->getId()) {
-                
+
                 $travelExpense = $travelRequest->getTravelExpense();
-                
+
                 if (null !== $travelExpense) {
                     $entityManager->remove($travelExpense);
                 }
                 $entityManager->remove($travelRequest);
             }
         }
-        
+
         $entityManager->flush();
-        
+
         return new JsonResponse('0');
     }
-    
+
     /**
      * Method to change state of travel expense
      *
@@ -243,16 +240,16 @@ class TravelController extends Controller
         $data = $request->request->get('status');
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')
             ->find($data['foreignId']);
-        
+
         // Set comment content or null
         $comment = isset($data['comment']) && $data['comment'] ? $data['comment'] : null;
 
         return $this->get('opit.model.travel_request')
             ->changeStatus($travelRequest, $data['id'], false, $comment);
     }
-    
+
     /**
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param EntityManager $entityManager
      * @param boolean $isNewTravelRequest
@@ -265,12 +262,12 @@ class TravelController extends Controller
             $travelRequest,
             array('em' => $entityManager)
         );
-        
+
         return $form;
     }
-    
+
     /**
-     * 
+     *
      * @param integer $travelRequestId
      * @return \Opit\Notes\TravelBundle\Entity\TravelRequest
      * @throws CreateNotFoundException
@@ -279,45 +276,20 @@ class TravelController extends Controller
     {
         $request = $this->getRequest();
         $entityManager = $this->getDoctrine()->getManager();
-        $securityContext = $this->get('security.context');
-        
+
         if (null === $travelRequestId) {
             $travelRequestId = $request->request->get('id');
         }
-        
+
         $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($travelRequestId);
-        
+
         if (!$travelRequest) {
             throw $this->createNotFoundException('Missing travel request for id "' . $travelRequestId . '"');
         }
-        
-        if ($travelRequest->getUser()->getId() !== $securityContext->getToken()->getUser()->getId() && !$securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            throw new AccessDeniedException(
-                'Access denied for travel request ' . $travelRequest->getTravelRequestId()
-            );
-        }
-        
+
         return $travelRequest;
     }
-    
-    /**
-     * 
-     * @param boolean $isNewTravelRequest
-     * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
-     * @throws AccessDeniedException
-     */
-    protected function isAccessGranted($isNewTravelRequest, TravelRequest $travelRequest)
-    {
-        $securityContext = $this->get('security.context');
-        if ($isNewTravelRequest) {
-            if ($travelRequest->getUser()->getId() !== $securityContext->getToken()->getUser()->getId() && $securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-                throw new AccessDeniedException(
-                    'Access denied for travel request ' . $travelRequest->getTravelRequestId()
-                );
-            }
-        }
-    }
-    
+
     protected function handleForm($form, $request, $travelRequest, $children, $forApproval = null)
     {
         $entityManager = $this->getDoctrine()->getManager();
@@ -349,11 +321,11 @@ class TravelController extends Controller
                 return true;
             }
         }
-                
+
         return $form;
     }
 
-   /**
+    /**
      * To send travel leave summary
      *
      * @Route("/secured/travel/employeesummary", name="OpitNotesLeaveBundle_travel_employeesummary")
@@ -363,7 +335,7 @@ class TravelController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
-        
+
         //travel request info
         $totalTravelRequestCount = $em->getRepository('OpitNotesTravelBundle:TravelRequest')->findEmployeeTravelRequest($user->getID());
 
@@ -372,7 +344,7 @@ class TravelController extends Controller
                         ->findEmployeeNotPendingTravelRequest($user->getID()
         );
         $pendingTravelRequestCount = $totalTravelRequestCount-$notPendingTravelRequestCount;
-        
+
         //travel expense info
         $totalTravelExpenseCount = $em->getRepository('OpitNotesTravelBundle:TravelExpense')->findEmployeeTravelExpenseCount($user->getID());
         $notPendingTravelExpenseCount = $em
@@ -390,5 +362,4 @@ class TravelController extends Controller
                     'notPendingTravelExpenseCount' => $notPendingTravelExpenseCount
                     ));
     }
-
 }

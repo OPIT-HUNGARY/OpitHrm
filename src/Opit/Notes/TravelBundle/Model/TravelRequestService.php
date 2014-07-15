@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -39,7 +39,7 @@ class TravelRequestService
     protected $statusManager;
     protected $aclManager;
     protected $travelNotification;
-    
+
     public function __construct(
         SecurityContext $securityContext,
         EntityManagerInterface $entityManager,
@@ -53,15 +53,21 @@ class TravelRequestService
         $this->aclManager = $aclManager;
         $this->travelNotificationManager = $travelNotificationManager;
     }
-    
+
+    /**
+     * User is a general manager or not
+     *
+     * @param \Opit\Notes\TravelBundle\Model\TravelResourceInterface $travelRequest
+     * @return boolean
+     */
     public function isUserGeneralManager(TravelResourceInterface $travelRequest)
     {
         return $travelRequest->getGeneralManager()->getId() === $this->securityContext->getToken()->getUser()->getId();
     }
 
-
     /**
-     * 
+     * Set travel request access rights
+     *
      * @param Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer Opit\Notes\StatusBundle\Entity\Status $currentStatus
      * @return array
@@ -73,9 +79,9 @@ class TravelRequestService
         $isStatusLocked = true;// status can not be changed
         $unlockedStates = array();
         $currentUser = $this->securityContext->getToken()->getUser();
-        $currentStatusId = $currentUser->getId();
+        $currentStatusId = $currentStatus->getId();
 
-        if ($travelRequest->getUser()->getId() === $currentStatusId) {
+        if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
             // Show add travel expense in case travel expense is approved.
             if (Status::APPROVED === $currentStatusId) {
                 $isTEAddLocked = false;
@@ -84,11 +90,11 @@ class TravelRequestService
             if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
                 $isEditLocked = false;
             }
-            
+
             if ($this->isUserGeneralManager($travelRequest)) {
                 $unlockedStates = array(Status::FOR_APPROVAL);
             }
-            
+
             if (in_array($currentStatusId, array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
                 $isStatusLocked = false;
             }
@@ -107,8 +113,10 @@ class TravelRequestService
             if (Status::APPROVED === $currentStatusId) {
                 $isEditLocked = true;
                 $isTEAddLocked = false;
+                $isStatusLocked = true;
             } elseif (Status::PAID === $currentStatusId) {
                 $isEditLocked = true;
+                $isStatusLocked = true;
             } elseif (Status::REJECTED === $currentStatusId) {
                 $isEditLocked = true;
                 $isStatusLocked = true;
@@ -116,21 +124,27 @@ class TravelRequestService
                 $isEditLocked = true;
             }
         }
-        
+
         return array(
             'isTREditLocked' => $isEditLocked,
             'isAddTravelExpenseLocked' => $isTEAddLocked,
             'isStatusLocked' => $isStatusLocked
         );
     }
-    
+
+    /**
+     * Set travel request listing rights
+     *
+     * @param Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequests
+     * @return arrzy
+     */
     public function setTravelRequestListingRights($travelRequests)
     {
         $currentStatusNames = array();
         $teIds = array();
         $travelRequestStates = array();
         $isLocked = array();
-        
+
         //loop through all travel requests
         foreach ($travelRequests as $travelRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($travelRequest);
@@ -154,7 +168,7 @@ class TravelRequestService
 
             $isLocked[$travelRequest->getId()] = $isTRLocked;
         }
-        
+
         return array(
             'teIds' => $teIds,
             'travelRequestStates' => $travelRequestStates,
@@ -162,17 +176,17 @@ class TravelRequestService
             'isLocked' => $isLocked
         );
     }
-    
+
     /**
      * Method to check if user is allowed to modify the travel request
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @return boolean
      */
     public function validateTROwner(TravelRequest $travelRequest)
     {
         $valid = false;
-        
+
         // checks if travel request is being modified by an admin
         if ($this->securityContext->isGranted('ROLE_ADMIN') || $this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
             return true;
@@ -182,13 +196,13 @@ class TravelRequestService
         if ($travelRequest->getUser()->getId() === $this->securityContext->getToken()->getUser()->getId()) {
             $valid = true;
         }
-        
+
         return $valid;
     }
-    
+
     /**
      * Method to set edit rights for travel request
-     * 
+     *
      * @param \Opit\Notes\UserBundle\Entity\User $user
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param boolean $isNewTravelRequest
@@ -205,7 +219,16 @@ class TravelRequestService
             $isStatusLocked = true;
             $isEditLocked = false;
         } else {
-            if ($userId === $travelRequest->getUser()->getId()) {
+            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+                $isEditLocked = false;
+                $isStatusLocked = false;
+                if (in_array($currentStatusId, array(Status::APPROVED, Status::REJECTED))) {
+                    $isEditLocked = true;
+                    $isStatusLocked = true;
+                } elseif ($currentStatusId === Status::FOR_APPROVAL) {
+                    $isEditLocked = true;
+                }
+            } elseif ($userId === $travelRequest->getUser()->getId()) {
                 if (Status::CREATED !== $currentStatusId && Status::REVISE !== $currentStatusId) {
                     return false;
                 }
@@ -214,36 +237,33 @@ class TravelRequestService
                 if (Status::FOR_APPROVAL !== $currentStatusId) {
                     return false;
                 }
-            } elseif ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                $isEditLocked = false;
-                $isStatusLocked = false;
             }
         }
 
         return array('isEditLocked' => $isEditLocked, 'isStatusLocked' => $isStatusLocked);
     }
-    
+
     /**
      * Method to add accomodation and destination to travel request
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function addChildNodes(TravelRequest $travelRequest)
     {
         $children = new ArrayCollection();
-        
+
         foreach ($travelRequest->getDestinations() as $destination) {
             $children->add($destination);
         }
-        
+
         foreach ($travelRequest->getAccomodations() as $accomodation) {
             $children->add($accomodation);
         }
-        
+
         return $children;
     }
-    
+
     /**
      * Removes related travel request instances.
      *
@@ -260,10 +280,10 @@ class TravelRequestService
             }
         }
     }
-    
+
     /**
      * Method to get all selectable states for travel request
-     * 
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param type $statusManager
      * @return array
@@ -273,22 +293,23 @@ class TravelRequestService
         $currentStatus = $this->statusManager->getCurrentStatus($travelRequest);
         $currentStatusName = $currentStatus->getName();
         $currentStatusId = $currentStatus->getId();
-        
+
         // handle "paid" status
         $excludeStatusIds = array();
         $relExpenseStatus = $this->statusManager->getCurrentStatus($travelRequest->getTravelExpense());
         if (!$relExpenseStatus || $relExpenseStatus->getId() != Status::APPROVED) {
             array_push($excludeStatusIds, Status::PAID);
         }
-        
+
         $trSelectableStates = $this->statusManager->getNextStates($currentStatus, $excludeStatusIds);
         $trSelectableStates[$currentStatusId] = $currentStatusName;
-        
+
         return $trSelectableStates;
     }
-    
+
     /**
-     * 
+     * Change status
+     *
      * @param \Opit\Notes\TravelBundle\Entity\TravelRequest $travelRequest
      * @param integer $statusId
      * @param boolean $validationDisabled
@@ -312,12 +333,12 @@ class TravelRequestService
                     }
                     break;
             }
-            
+
             $status = $this->statusManager->addStatus($travelRequest, $statusId, $comment);
-            
+
             // send a new notification when travel request or expense status changes
             $this->travelNotificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
-            
+
             return new JsonResponse();
         } else {
             return new JsonResponse('error');
