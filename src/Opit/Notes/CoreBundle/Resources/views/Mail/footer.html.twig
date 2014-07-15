@@ -3,12 +3,12 @@
         <td>
             <br />
             Thanks,<br />
-            {% if (application_name != null and application_name != 'OPIT-HRM') %}{{ application_name }}{% else %}OPIT-HRM{% endif %} Team
+            {% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %} Team
         </td>
     </tr>
     <tr>
         <td>
-            Autosent by OPIT-HRM 2014 - v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %} - An initiative of <a href="http://www.opit.hu/">OPIT Consulting KFT</a>, Hungary
+            &copy; 2013-{{ "now"|date("Y") }} - Autosent by OPIT-HRM {% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %} - An initiative of <a href="http://www.opit.hu/">OPIT Consulting KFT</a>, Hungary
         </td>
     </tr>
 </table>

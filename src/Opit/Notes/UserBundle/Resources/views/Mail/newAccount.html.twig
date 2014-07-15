@@ -1,6 +1,6 @@
 {% set loginPageLink %}
 <a href="{{ path('OpitNotesUserBundle_security_login') }}">
-    NOTES
+    {% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}
 </a>
 {% endset %}
 <div style="margin: 0 0 10px 0;">Hi {{ templateVars['user'].employee.employeeNameFormatted }}</div>

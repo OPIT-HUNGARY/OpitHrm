@@ -65,7 +65,7 @@
                 {% endif %}
                  by logging into 
                 <a href="{{ templateVars['url'] }}" style="color: #82CAFF;">
-                    NOTES
+                    {% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}
                 </a>.
             </td>
         </tr>

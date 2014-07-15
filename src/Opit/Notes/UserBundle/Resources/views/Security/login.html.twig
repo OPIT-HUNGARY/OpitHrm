@@ -19,12 +19,11 @@
 <div id="mainWrapper" class="margin-center margin-top-30">
     <div id="welcomeWrapper" class="float-left">
         <div id="welcomeText" class="color-black align-left">
-            {% if (application_name != null and application_name != 'OPIT-HRM') %}
-                {{ application_name }}
+            {% if (application_name is defined and application_name != 'OPIT-HRM') %}
+                {{ application_name is not empty ? application_name : 'OPIT-HRM' }}
             {% else %}
                 <img src="{{ asset('images/logo.png') }}" width="170" alt="" />
             {% endif %}
-
             <div class="margin-top-100">
                 <span class="bold">H</span>uman<br />
                 <span class="bold">R</span>esource<br />

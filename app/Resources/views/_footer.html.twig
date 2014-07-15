@@ -1,0 +1,18 @@
+{% set version = (version_number is defined) ? version_number : 3.0 %}
+
+<span>&copy; 2013-{{ "now"|date("Y") }} - {% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}</span>
+{% if basic is not defined or basic is null %}
+<a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-dark-grey">{#- No leading/trailing whitespace -#}{% if true -%}
+    {{ version }}
+{%- endif %}
+</a>
+{% else %}
+    {{ version }}
+{% endif %}
+&nbsp;-&nbsp;
+{% if (basic is not defined or basic is null) and (ldap_enabled is defined and ldap_enabled) %}
+    LDAP <i class="fa fa-check"></i>&nbsp;-&nbsp;
+{% endif %}
+<span>
+    An initiative of <a href="http://www.opit.hu" class="color-dark-grey" target="_blank">OPIT Consulting KFT</a>, Hungary
+</span>

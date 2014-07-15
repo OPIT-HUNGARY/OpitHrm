@@ -19,11 +19,13 @@
 {% block header %}
     <header>
         <a href="{{ path('OpitNotesUserBundle_user_show_infoboard') }}" id="siteLogo" class="float-left color-black text-decoration-none margin-bottom-20 margin-left-20 margin-top-10">
-            {% if (application_name != null and application_name != 'OPIT-HRM') %}</span>
-                <span class="display-block">{{ application_name }}</span>
+            {% if (application_name is defined and application_name != 'OPIT-HRM') %}
+                <span class="display-block">{{ application_name is not empty ? application_name : 'OPIT-HRM' }}</span>
                 <span></span>
             {% else %}
-                <span class="display-block"><img src="{{ asset('images/logo.png') }}" width="105" alt="" /></span>
+                <span class="display-block">
+                    <img src="{{ asset('images/logo.png') }}" width="105" alt="" />
+                </span>
             {% endif %}
         </a>
         <div id="notifications">

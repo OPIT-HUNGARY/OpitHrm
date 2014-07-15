@@ -7,7 +7,7 @@
         <meta charset="utf-8">
         <meta http-equiv="content-language" content="en">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{% block title %}{% if (application_name != null and application_name != 'OPIT-HRM') %}{{ application_name }}{% else %}OPIT-HRM{% endif %}{% endblock %}</title>
+        <title>{% block title %}{% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}{% endblock %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" href="{{ asset("favicon.ico") }}" />
@@ -41,15 +41,7 @@
         </div>
         {% block footer %}
         <footer class="background-color-lightest-grey padding-5 align-center position-fixed width-100 bottom-0 color-dark-grey font-size-d9-em z-index-10">
-            <span>OPIT-HRM 2014 -</span>
-            <a href='{{ path('OpitNotesUserBundle_default_versions') }}' class="color-dark-grey">{% if true -%}
-                v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}
-            {%- endif %}</a>
-            &nbsp;-&nbsp;
-            {% if ldap_enabled is defined and ldap_enabled %}
-                LDAP <i class="fa fa-check"></i>&nbsp;-&nbsp;
-            {% endif %}
-            <span>An initiative of <a href="http://www.opit.hu" class="color-dark-grey" target="_blank">OPIT Consulting KFT</a>, Hungary</span>
+            {% include '::_footer.html.twig' %}
             <span class="float-right background-color-green color-white padding-2 margin-right-5 box-radius-5">
                 Hello. {{ app.user.employee is defined ? app.user.employee.employeeName : app.user.username}}!
             </span>

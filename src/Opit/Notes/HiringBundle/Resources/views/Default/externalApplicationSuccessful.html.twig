@@ -30,6 +30,6 @@
 {% endblock %}
 {% block footer %}
     <footer class="color-dark-grey box-shadow-0 align-center">
-        {% if (application_name != null and application_name != 'OPIT-HRM') %}{{ application_name }}{% else %}OPIT-HRM{% endif %} 2014 - v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}  -  An initiative of <a href="http://opit.hu" class="color-dark-grey">OPIT Consulting KFT</a>, Hungary
+        {% include '::_footer.html.twig' with { 'basic': true } %}
     </footer>
 {% endblock %}
