@@ -27,7 +27,7 @@ class Leave
      * @var \DateTime
      *
      * @ORM\Column(name="start_date", type="date")
-     * @Assert\NotBlank(message="Start date cannot be empty.")
+     * @Assert\NotBlank(message="Start date can not be empty.")
      * @Assert\Type("\DateTime")
      */
     protected $startDate;
@@ -36,7 +36,7 @@ class Leave
      * @var \DateTime
      *
      * @ORM\Column(name="end_date", type="date")
-     * @Assert\NotBlank(message="End date cannot be empty.")
+     * @Assert\NotBlank(message="End date can not be empty.")
      * @Assert\Type("\DateTime")
      */
     protected $endDate;
@@ -245,28 +245,6 @@ class Leave
             $context->addViolationAt(
                 'startDate',
                 sprintf('Start date can not be bigger than end date.')
-            );
-        }
-    }
-
-    /**
-     * Check if start and end date has value set
-     * 
-     * @param \Symfony\Component\Validator\ExecutionContextInterface $context
-     */
-    public function validateStartEndDate(ExecutionContextInterface $context)
-    {
-        if (null === $this->getStartDate()) {
-            $context->addViolationAt(
-                'startDate',
-                sprintf('Start date can not be empty.')
-            );
-        }
-
-        if (null === $this->getEndDate()) {
-            $context->addViolationAt(
-                'endDate',
-                sprintf('End date can not be empty.')
             );
         }
     }

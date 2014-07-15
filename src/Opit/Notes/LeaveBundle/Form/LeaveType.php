@@ -35,8 +35,8 @@ class LeaveType extends AbstractType
     {
         $builder->add('startDate', 'date', array(
             'widget' => 'single_text',
-            'label'=>'Start date',
-            'required' => true,
+            'label' => 'Start date',
+            'error_bubbling' => true,
             'attr' => array(
                 'placeholder' => 'Start date',
                 'class' => 'start-date'
@@ -45,8 +45,8 @@ class LeaveType extends AbstractType
 
         $builder->add('endDate', 'date', array(
             'widget' => 'single_text',
-            'label'=>'End date',
-            'required' => true,
+            'label' => 'End date',
+            'error_bubbling' => true,
             'attr' => array(
                 'placeholder' => 'End date',
                 'class' => 'end-date'
@@ -54,7 +54,8 @@ class LeaveType extends AbstractType
         ));
 
         $builder->add('description', 'textarea', array(
-            'label'=>'Description',
+            'label' => 'Description',
+            'required' => false,
             'attr' => array(
                 'placeholder' => 'Description',
                 'class' => 'textarea-non-resizeable width-280 description',
@@ -63,13 +64,13 @@ class LeaveType extends AbstractType
         ));
 
         $builder->add('category', 'entity', array(
-            'class'=>'OpitNotesLeaveBundle:LeaveCategory',
+            'class' => 'OpitNotesLeaveBundle:LeaveCategory',
             'property' => 'name',
             'attr' => array('class' => 'leave-category')
         ));
     }
 
-   /**
+    /**
      * Sets the default form options
      *
      * @param object $resolver An OptionsResolver interface object
@@ -77,7 +78,7 @@ class LeaveType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Opit\Notes\LeaveBundle\Entity\Leave',
+            'data_class' => 'Opit\Notes\LeaveBundle\Entity\Leave'
         ));
     }
     /**
