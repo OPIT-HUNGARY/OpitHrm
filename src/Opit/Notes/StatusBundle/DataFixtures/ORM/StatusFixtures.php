@@ -71,7 +71,6 @@ class StatusFixtures extends AbstractDataFixture
         $this->addReference('approved', $approved);// Approved
         $this->addReference('rejected', $rejected);// Rejected
         $this->addReference('paid', $paid);// Paid
-
     }
 
      /**
@@ -88,6 +87,6 @@ class StatusFixtures extends AbstractDataFixture
      */
     protected function getEnvironments()
     {
-        return array('prod', 'dev');
+        return array('prod', 'dev', 'test');
     }
 }

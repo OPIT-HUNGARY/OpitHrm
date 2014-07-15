@@ -59,15 +59,15 @@
 
     <div id="changeStateWrapper">
         <h3 class="display-inline-block margin-top-0">Change status: </h3>
-        {% if isStatusLocked %}
-        <select class="changeState dropdown-disabled" disabled="disabled">
-            <option>{{ leaveRequestStates|first }}</option>
-        </select>
-        {% else %}
+        {% if is_granted('status', leaveRequest) %}
         <select class="changeState " data-lr="{{ leaveRequest.id }}">
             {% for key, value in leaveRequestStates %}
                 <option data-id="{{ key }}" value="{{ key }}">{{ value }}</option>
             {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ leaveRequestStates|first }}</option>
         </select>
         {% endif %}
     </div>
@@ -90,15 +90,10 @@
         <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
         {{ form_errors(form) }}
     </div>
-    {% if isEditLocked == '1' %}
-        {% set disabled = 'disabled' %}
-    {% else %}
-        {% set disabled = '' %}
-    {% endif %}
-    <form action="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{{ disabled }}">
+    <form action="{{ path('OpitNotesLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{% if not is_granted('edit', leaveRequest) %}disabled{% endif %}">
         <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
             <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Request for</h3>
-            {% if isGeneralManager and isEditLocked != '1' and isLRLocked != '1' %}
+            {% if isGeneralManager %}
             <div class="margin-left-1-em display-inline-block vertical-align-top">
                 <label class="padding-bottom-5 bold">Select</label>
                 <ul class="no-style option-list-scrollable">

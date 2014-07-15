@@ -16,14 +16,14 @@ use Opit\Notes\LeaveBundle\Entity\LeaveStatusWorkflow;
 use Opit\Notes\StatusBundle\DataFixtures\ORM\AbstractDataFixture;
 
 /**
- * status bundle status workflow fixtures
+ * Leave bundle status workflow fixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package Notes
- * @subpackage StatusBundle
+ * @subpackage LeaveBundle
  */
-class LeaveLeaveStatusWorkflowFixtures extends AbstractDataFixture
+class LeaveStatusWorkflowFixtures extends AbstractDataFixture
 {
     /**
      *
@@ -90,6 +90,6 @@ class LeaveLeaveStatusWorkflowFixtures extends AbstractDataFixture
      */
     protected function getEnvironments()
     {
-        return array('prod', 'dev');
+        return array('prod', 'dev', 'test');
     }
 }

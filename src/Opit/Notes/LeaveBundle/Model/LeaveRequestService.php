@@ -67,30 +67,24 @@ class LeaveRequestService
      * @param object $leaveRequests
      * @return array
      */
-    public function setLeaveRequestListingRights($leaveRequests, $currentUser)
+    public function getLRStatusData($leaveRequests)
     {
         // Only usable if token is present
         $this->isAllowed();
 
         $currentStatusNames = array();
         $leaveRequestStates = array();
-        $isLocked = array();
-        $isDeleteable = array();
         $isForApproval = array();
 
         foreach ($leaveRequests as $leaveRequest) {
             $currentStatus = $this->statusManager->getCurrentStatus($leaveRequest);
             $currentStatusNames[$leaveRequest->getId()] = $currentStatus->getName();
 
-            $isTRLocked = $this->setLeaveRequestAccessRights($leaveRequest, $currentStatus);
-            $isLocked[$leaveRequest->getId()] = $isTRLocked;
             $leaveRequestStates[$leaveRequest->getId()] = $this->getNextAvailableStates($leaveRequest);
 
             if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-                $isDeleteable[$leaveRequest->getId()] = true;
                 $isForApproval[$leaveRequest->getId()] = false;
             } else {
-                $isDeleteable[$leaveRequest->getId()] = $this->isLeaveRequestDeleteable($leaveRequest, $currentUser);
                 $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
             }
         }
@@ -98,43 +92,8 @@ class LeaveRequestService
         return array(
             'leaveRequestStates' => $leaveRequestStates,
             'currentStatusNames' => $currentStatusNames,
-            'isLocked' => $isLocked,
-            'isDeleteable' => $isDeleteable,
             'isForApproval' => $isForApproval
         );
-    }
-
-    /**
-     * Method to check if leave request is deleteable by the user.
-     *
-     * @param \Opit\Notes\LeaveBundle\Entity\LeaveRequest $leaveRequest
-     * @return boolean
-     */
-    public function isLeaveRequestDeleteable(LeaveRequest $leaveRequest, $currentUser)
-    {
-        // Only usable if token is present
-        $this->isAllowed();
-
-        if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
-        $currentUserId = $currentUser->getId();
-
-        // If user is admin he is always allowed to delete
-        if ($this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
-            // Check if user is general manager of leave request
-            if ($leaveRequest->getGeneralManager()->getId() === $currentUserId) {
-                return true;
-            } else {
-                // If leave request is child of an MLR
-                return null !== $leaveRequest->getLeaveRequestGroup() ? false : $this->isLRPastLeaveDateDeleteable($leaveRequest);
-            }
-        } elseif ($leaveRequest->getEmployee()->getUser()->getId() === $currentUserId) {
-            return null !== $leaveRequest->getLeaveRequestGroup() ? false : $this->isLRPastLeaveDateDeleteable($leaveRequest);
-        }
-
-        return false;
     }
 
     /**
@@ -166,7 +125,6 @@ class LeaveRequestService
         // Only usable if token is present
         $this->isAllowed();
 
-        $isEditLocked = true; // leave request can not be edited
         $isStatusLocked = true; // status can not be changed
         $unlockedStates = array();
         $currentEmployee = $this->securityContext->getToken()->getUser()->getEmployee();
@@ -174,10 +132,6 @@ class LeaveRequestService
 
         if (!$this->securityContext->isGranted('ROLE_ADMIN')) {
             if ($leaveRequest->getEmployee()->getId() === $currentEmployee->getId()) {
-                if (in_array($currentStatus->getId(), array(Status::CREATED, Status::REVISE))) {
-                    $isEditLocked = false;
-                }
-
                 if ($isGeneralManager) {
                     $unlockedStates = array(Status::FOR_APPROVAL);
                 }
@@ -191,20 +145,13 @@ class LeaveRequestService
                 }
             }
         } else {
-            $isEditLocked = false;
             $isStatusLocked = false;
             if (in_array($currentStatus->getId(), array(Status::REJECTED, Status::APPROVED))) {
-                $isEditLocked = true;
                 $isStatusLocked = true;
-            } elseif (Status::FOR_APPROVAL === $currentStatus->getId()) {
-                $isEditLocked = true;
             }
         }
 
-        return array(
-            'isEditLocked' => $isEditLocked,
-            'isStatusLocked' => $isStatusLocked
-        );
+        return $isStatusLocked;
     }
 
     /**

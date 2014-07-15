@@ -86,8 +86,7 @@ class LeaveController extends Controller
             }
         }
 
-        $listingRights = $this->get('opit.model.leave_request')
-            ->setLeaveRequestListingRights($leaveRequests, $user);
+        $statusData = $this->get('opit.model.leave_request')->getLRStatusData($leaveRequests);
 
         if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
             $template = 'OpitNotesLeaveBundle:Leave:_list.html.twig';
@@ -96,16 +95,15 @@ class LeaveController extends Controller
         }
 
         return $this->render(
-                $template, array(
+            $template, array(
                 'leaveRequests' => $leaveRequests,
                 'parentsOfGroups' => $parentsOfGroupLRs,
                 'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
                 'maxPages' => $config['max_pages'],
-                'listingRights' => $listingRights,
-                'isGeneralManager' => $isGeneralManager
-                )
+                'statusData' => $statusData,
+            )
         );
     }
 
@@ -137,22 +135,24 @@ class LeaveController extends Controller
             $leaveRequest->setEmployee($employee);
         } else {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($leaveRequestId);
+
+            if (null === $leaveRequest) {
+                throw $this->createNotFoundException('Missing leave request.');
+            }
+
             $requestFor = false === $leaveRequest->getIsMassLeaveRequest() ? 'own' : 'other-employees';
 
             foreach ($leaveRequest->getLeaves() as $leave) {
                 $leavesLength += $leave->getNumberOfDays();
                 $children->add($leave);
             }
+        }
 
-            if (null === $leaveRequest) {
-                throw $this->createNotFoundException('Missing leave request.');
-            }
 
-            if ($employee !== $leaveRequest->getEmployee() && !$isGeneralManager) {
-                throw new AccessDeniedException(
-                    'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
-                );
-            }
+        if (!$securityContext->isGranted('view', $leaveRequest)) {
+            throw new AccessDeniedException(
+                'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
+            );
         }
 
         $leaveRequest->setIsCreatedByGM($isGeneralManager);
@@ -165,6 +165,12 @@ class LeaveController extends Controller
         );
 
         if ($request->isMethod("POST")) {
+
+            if (!$securityContext->isGranted('edit', $leaveRequest)) {
+                throw new AccessDeniedException(
+                    'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
+                );
+            }
 
             $form->handleRequest($request);
 
@@ -192,25 +198,21 @@ class LeaveController extends Controller
                 }
             }
         }
+
         $isForApproval = $currentStatus->getId() === Status::FOR_APPROVAL;
 
         return $this->render(
-            'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig', array_merge(
-                array(
-                    'form' => $form->createView(),
-                    'isNewLeaveRequest' => $isNewLeaveRequest,
-                    'leaveRequestStates' => $leaveRequestStates,
-                    'leaveRequest' => $leaveRequest,
-                    'errors' => Utils::getErrorMessages($form),
-                    'isGeneralManager' => $isGeneralManager,
-                    'isForApproval' => $isForApproval,
-                    'requestFor' => $requestFor,
-                    'selectedEmployees' => $employees,
-                    'isLRLocked' => (Status::REJECTED === $statusManager->getCurrentStatus($leaveRequest))
-                ),
-                $isNewLeaveRequest ? array('isStatusLocked' => true,
-                    'isEditLocked' => false) : $leaveRequestService->setLeaveRequestAccessRights($leaveRequest, $currentStatus),
-                $isGeneralManager ? array('employees' => $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAll()) : array()
+            'OpitNotesLeaveBundle:Leave:showLeaveRequest.html.twig', array(
+                'form' => $form->createView(),
+                'isNewLeaveRequest' => $isNewLeaveRequest,
+                'leaveRequestStates' => $leaveRequestStates,
+                'leaveRequest' => $leaveRequest,
+                'errors' => Utils::getErrorMessages($form),
+                'isGeneralManager' => $isGeneralManager,
+                'isForApproval' => $isForApproval,
+                'requestFor' => $requestFor,
+                'selectedEmployees' => $employees,
+                'employees' => $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAll()
             )
         );
     }
@@ -232,6 +234,12 @@ class LeaveController extends Controller
 
         if (null === $leaveRequest) {
             throw $this->createNotFoundException('Missing leave request.');
+        }
+
+        if (!$this->get('security.context')->isGranted('view', $leaveRequest)) {
+            throw new AccessDeniedException(
+                'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
+            );
         }
 
         $children = new ArrayCollection();
@@ -266,8 +274,6 @@ class LeaveController extends Controller
     public function deleteLeaveRequestAction(Request $request)
     {
         $securityContext = $this->container->get('security.context');
-        $leaveRequestService = $this->get('opit.model.leave_request');
-        $currentUser = $securityContext->getToken()->getUser();
         $entityManager = $this->getDoctrine()->getManager();
         $ids = $request->request->get('deleteMultiple');
 
@@ -278,10 +284,7 @@ class LeaveController extends Controller
         foreach ($ids as $id) {
             $leaveRequest = $entityManager->getRepository('OpitNotesLeaveBundle:LeaveRequest')->find($id);
 
-            if ($currentUser->getEmployee() !== $leaveRequest->getEmployee() &&
-                !$this->get('security.context')->isGranted('ROLE_ADMIN') &&
-                !$this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER') &&
-                $leaveRequest->getCreatedUser()->getId() !== $currentUser->getId()) {
+            if (!$this->get('security.context')->isGranted('delete', $leaveRequest)) {
                 throw new AccessDeniedException(
                 'Access denied for leave.'
                 );
@@ -292,9 +295,9 @@ class LeaveController extends Controller
                 // Remove the leave request group.
                 // This will remove the joined request leaves too.
                 $entityManager->remove($leaveRequest->getLeaveRequestGroup());
-            } elseif ($leaveRequestService->isLeaveRequestDeleteable($leaveRequest, $currentUser)) {
-                $entityManager->remove($leaveRequest);
             }
+
+            $entityManager->remove($leaveRequest);
         }
 
         $entityManager->flush();

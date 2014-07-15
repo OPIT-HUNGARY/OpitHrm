@@ -11,6 +11,7 @@
         <parameter key="opit.model.leave_request.class">Opit\Notes\LeaveBundle\Model\LeaveRequestService</parameter>
         <parameter key="opit.listener.leave_request_post_listener.class">Opit\Notes\LeaveBundle\EventListener\LeaveRequestPostListener</parameter>
         <parameter key="opit.twig.opit_leave_bundle_extension.class">Opit\Notes\LeaveBundle\Twig\OpitExtension</parameter>
+        <parameter key="opit.security.authorization.voter.leave_acccess_voter.class">Opit\Notes\LeaveBundle\Security\Authorization\Voter\LeaveAccessVoter</parameter>
     </parameters>
 
     <services>
@@ -48,6 +49,10 @@
         </service>
         <service id="opit.twig.opit_leave_bundle_extension.class" class="%opit.twig.opit_leave_bundle_extension.class%">
             <tag name="twig.extension" />
+        </service>
+        <service id="opit.security.authorization.voter.leave_acccess_voter" class="%opit.security.authorization.voter.leave_acccess_voter.class%" public="false">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <tag name="security.voter" />
         </service>
     </services>
 
