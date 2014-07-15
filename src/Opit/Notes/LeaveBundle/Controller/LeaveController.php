@@ -122,14 +122,13 @@ class LeaveController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $leaveRequestId = $request->attributes->get('id');
         $isNewLeaveRequest = 'new' === $leaveRequestId ? true : false;
-        $securityContext = $this->container->get('security.context');
+        $securityContext = $this->get('security.context');
         $user = $securityContext->getToken()->getUser();
         $employee = $user->getEmployee();
-        $leaveRequestService = $this->get('opit.model.leave_request');
-        $isGeneralManager = $this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER');
+        $isGeneralManager = $securityContext->isGranted('ROLE_GENERAL_MANAGER');
 
         $requestFor = $request->request->get('leave-request-owner');
-        $employees = $request->request->get('employee');
+        $employees = $request->request->get('employee', array());
         $leavesLength = 0;
         $children = new ArrayCollection();
 
@@ -170,13 +169,14 @@ class LeaveController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $isOwn = null === $requestFor || 'own' === $requestFor;
-                if (1 === count($employees) || $isOwn) {
-                    if (!is_array($employees)) {
-                        $employees = array($employee);
-                    }
-                    // Single LR is being created
-                    $error = $this->createLeaveRequests($leaveRequest, $employees, false, $isOwn, $leavesLength, $children);
+                if (null === $requestFor || 'own' === $requestFor) {
+                    $employees = array($employee);
+
+                    // Single leave request for own employee
+                    $error = $this->createLeaveRequests($leaveRequest, $employees, false, true, $leavesLength, $children);
+                } elseif (1 === count($employees)) {
+                    // Single leave request for other employee
+                    $error = $this->createLeaveRequests($leaveRequest, $employees, false, false, $leavesLength, $children);
                 } elseif (count($employees) > 1) {
                     // MLR is being created
                     $error = $this->createLeaveRequests($leaveRequest, $employees, true, false);
