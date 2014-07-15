@@ -466,6 +466,10 @@ class LeaveRequest extends AbstractBase
 
             foreach ($collection as $otherElement) {
                 if ($current !== $otherElement) {
+                    if (!$otherElement->getStartDate() || !$otherElement->getEndDate()) {
+                        continue;
+                    }
+
                     // Checking the date overlapping with other leaves.
                     if (($current->getStartDate() <= $otherElement->getEndDate()) &&
                         ($otherElement->getStartDate() <= $current->getEndDate())) {
