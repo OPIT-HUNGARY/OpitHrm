@@ -78,6 +78,13 @@ class UserController extends Controller
             }
 
             $employeeName = $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '';
+            //calculate employee annual leave entitlement
+            if($user->getEmployee()->getEntitledLeaves()){
+                $empLeaveEntitlement = $user->getEmployee()->getEntitledLeaves();
+            }else{
+                $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
+                $empLeaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($user->getEmployee());
+            }
 
             //create new array for user containing its properties
             $propertyValues[$user->getId()] = array(
@@ -87,7 +94,8 @@ class UserController extends Controller
                 'isActive' => $user->getIsActive(),
                 'ldapEnabled' => $user->isLdapEnabled(),
                 'roles' => $roles,
-                'allowedToEdit' => $this->isSystemAdminAllowedToEdit($user->getId())
+                'allowedToEdit' => $this->isSystemAdminAllowedToEdit($user->getId()),
+                'leaveEntitlement' => $empLeaveEntitlement
             );
         }
 
