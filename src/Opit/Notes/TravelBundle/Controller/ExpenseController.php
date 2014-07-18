@@ -354,8 +354,8 @@ class ExpenseController extends Controller
         $generalManager = $travelRequest->getGeneralManager()->getEmployee()->getEmployeeName();
         $employee = $travelRequest->getUser()->getEmployee()->getEmployeeName();
 
-        $teStatus = $statusManager->getCurrentStatusMetaData($travelExpense);
-        $createDateTime = $teStatus->getCreated();
+        $approvedState = $statusManager->getTravelStateByStatusId($travelExpense, Status::APPROVED);
+        $approvedDateTime = null === $approvedState ? null : $approvedState->getCreated();
 
         $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
         $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
@@ -378,10 +378,13 @@ class ExpenseController extends Controller
             'OpitNotesTravelBundle:Expense:viewTravelExpense.html.twig',
             array(
                 'action' => $action,
-                'travelExpense' => $travelExpense, 'print' => true, 'generalManager' => $generalManager,
+                'travelExpense' => $travelExpense,
+                'print' => true,
+                'generalManager' => $generalManager,
                 'advancesPayback' => $advanceAmounts,
                 'totalAmountPayableInHUF' => $totalAmountPayableInHUF,
-                'employee' => $employee, 'datetime' => $createDateTime,
+                'employee' => $employee,
+                'datetime' => $approvedDateTime,
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
                 'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],

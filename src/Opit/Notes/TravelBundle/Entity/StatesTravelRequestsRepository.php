@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the {Bundle}.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -25,7 +25,7 @@ class StatesTravelRequestsRepository extends EntityRepository
 {
     /**
      * Get the current status of a travel request
-     * 
+     *
      * @param integer $trId travel request id
      * @return null|Opit\Notes\TravelBundle\Entity\StatesTravelRequests
      */
@@ -40,10 +40,10 @@ class StatesTravelRequestsRepository extends EntityRepository
 
         return $travelRequestState->getOneOrNullResult();
     }
-    
+
     /**
      * Get the second last status of a travel request
-     * 
+     *
      * @param mixed $id An id or TravelRequest object
      * @return Opit\Notes\TravelBundle\Entity\StatesTravelRequests
      */
@@ -55,15 +55,15 @@ class StatesTravelRequestsRepository extends EntityRepository
             ->add('orderBy', 'tr.id DESC')
             ->setMaxResults(2)
             ->getQuery();
-        
+
         $results = $qb->getResult();
-        
+
         return isset($results[1]) ? $results[1] : null;
     }
-    
+
     /**
      * Get the count of the statuses of a travel request
-     * 
+     *
      * @param mixed $id An id or TravelRequest object
      * @return integer The states count
      */
@@ -74,7 +74,27 @@ class StatesTravelRequestsRepository extends EntityRepository
             ->where('tr.travelRequest = :id')
             ->setParameter(':id', $id)
             ->getQuery();
-        
+
         return $qb->getSingleScalarResult();
+    }
+
+    /**
+     * Find a travel request's status by status id and travel request id
+     *
+     * @param integer $trId
+     * @param integer $statusId
+     * @return null|Opit\Notes\TravelBundle\Entity\StatesTravelRequests
+     */
+    public function findStatusByStatusId($trId, $statusId)
+    {
+        $travelRequestState = $this->createQueryBuilder('tr')
+            ->where('tr.travelRequest = :teId')
+            ->andWhere('tr.status = :statusId')
+            ->setParameter(':trId', $trId)
+            ->setParameter(':statusId', $statusId)
+            ->setMaxResults(1)
+            ->getQuery();
+
+        return $travelRequestState->getOneOrNullResult();
     }
 }

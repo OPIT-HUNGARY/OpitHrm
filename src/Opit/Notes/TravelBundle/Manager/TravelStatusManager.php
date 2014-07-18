@@ -179,6 +179,27 @@ class TravelStatusManager extends StatusManager
     }
 
     /**
+     * Get the travel resource's state by the resource id and status id.
+     *
+     * @param \Opit\Notes\TravelBundle\Entity\TravelExpense|\Opit\Notes\TravelBundle\Entity\TravelRequest $resource
+     * @param integer $statusId
+     * @return null|\Opit\Notes\TravelBundle\Entity\TravelExpense|\Opit\Notes\TravelBundle\Entity\TravelRequest
+     */
+    public function getTravelStateByStatusId($resource, $statusId)
+    {
+        if (null === $resource) {
+            return null;
+        }
+
+        $className = Utils::getClassBasename($resource);
+        $status = $this->entityManager
+            ->getRepository('OpitNotesTravelBundle:States' . $className . 's')
+            ->findStatusByStatusId($resource->getId(), $statusId);
+
+        return $status;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getScope()

@@ -87,7 +87,7 @@
                                     <i class="fa {% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName or is_granted('ROLE_ADMIN')) %} fa-pencil-square-o {% else %} fa-list-alt {% endif %}"></i>
                                     <span>{% if (teStatus == states['Created'] or teStatus == states['Revise']) and (trEmployeeName == appEmployeeName or is_granted('ROLE_ADMIN')) %} Edit {% else %} Preview {% endif %} - {{ teIds[travelRequest.id].statusName }}</span>
                                 </a>
-                                {% if teStatus == states['Approved'] or teStatus == states['For Approval'] %}
+                                {% if teStatus == states['Approved'] or teStatus == states['For Approval'] or teStatus == states['Paid'] %}
                                 <a href="{{ path('OpitNotesTravelBundle_expense_view', { 'id': teIds[travelRequest.id].id }) }}" class="small-button print-view">
                                     <i class="fa fa-print"></i>
                                     <span>Print</span>

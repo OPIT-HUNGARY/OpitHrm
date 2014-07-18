@@ -233,7 +233,9 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
 </div>
 
 {% if travelExpense.userPaidExpenses is defined %}
@@ -283,7 +285,9 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
 </div>
 {% endif %}
 {% endif %}
@@ -335,7 +339,9 @@
     &nbsp;&nbsp;{{ employee }}
 </div>
 <div class="signiture">
-    Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
 </div>
 {% endif %}
 {% endif %}
