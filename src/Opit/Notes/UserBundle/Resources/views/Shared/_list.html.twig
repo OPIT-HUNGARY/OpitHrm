@@ -23,7 +23,9 @@
             {% if numberOfRelations is defined %}
             <th>Assigned Users</th>
             {% endif %}
-            <th>Leave Entitlement</th>
+            {% if leaveEntitlement is defined %}
+                <th>Leave Entitlement</th>
+            {% endif %}
             <th><span>Actions</span></th>
         </thead>
         <tbody>
@@ -69,7 +71,9 @@
                     {{ numberOfRelations[attribute(value, 'id')] }}
                 </td>
                 {% endif %}
+                {% if value['leaveEntitlement'] is defined %}
                 <td>{{value['leaveEntitlement']}}</td>
+                {% endif %}
                 <td>
                     {% if value['allowedToEdit'] is not defined or 1 == value['allowedToEdit'] %}
                     {% set title %}

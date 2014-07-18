@@ -56,6 +56,7 @@ class UserController extends Controller
         $isSearch = (bool) $request->request->get('issearch');
         $offset = $request->request->get('offset');
         $config = $this->container->getParameter('pager_config');
+        $templateVars = array();
 
         if ($isSearch) {
             $allRequests = $request->request->all();
@@ -81,9 +82,11 @@ class UserController extends Controller
             //calculate employee annual leave entitlement
             if($user->getEmployee()->getEntitledLeaves()){
                 $empLeaveEntitlement = $user->getEmployee()->getEntitledLeaves();
+                $templateVars['leaveEntitlement'] = true;
             }else{
                 $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
                 $empLeaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($user->getEmployee());
+                $templateVars['leaveEntitlement'] = true;
             }
 
             //create new array for user containing its properties
