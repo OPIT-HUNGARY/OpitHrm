@@ -20,7 +20,6 @@ use Opit\Notes\StatusBundle\Manager\StatusManager;
 use Opit\Notes\TravelBundle\Model\TravelExpenseService;
 use Symfony\Component\Routing\Router;
 use Opit\Component\Email\EmailManagerInterface;
-use Opit\Notes\TravelBundle\Entity\TravelStatusWorkflow;
 
 /**
  * Description of TravelStatusManager
@@ -204,6 +203,5 @@ class TravelStatusManager extends StatusManager
      */
     protected function getScope()
     {
-        return get_class(new TravelStatusWorkflow());
     }
 }

@@ -21,10 +21,10 @@ use Opit\Notes\StatusBundle\Entity\Status;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @package Opit
  * @subpackage Notes
- * 
+ *
  * @ORM\Entity(repositoryClass="Opit\Notes\StatusBundle\Entity\StatusWorkflowRepository")
  */
-class TravelStatusWorkflow extends StatusWorkflow
+class TravelExpenseStatusWorkflow extends StatusWorkflow
 {
 
     /**
@@ -101,5 +101,4 @@ class TravelStatusWorkflow extends StatusWorkflow
     {
         return $this->status;
     }
-
 }

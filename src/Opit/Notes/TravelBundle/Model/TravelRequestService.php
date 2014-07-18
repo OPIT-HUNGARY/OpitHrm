@@ -14,7 +14,7 @@ namespace Opit\Notes\TravelBundle\Model;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Notes\TravelBundle\Entity\TravelRequest;
-use Opit\Notes\TravelBundle\Manager\TravelStatusManager;
+use Opit\Notes\TravelBundle\Manager\TravelRequestStatusManager;
 use Opit\Notes\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,7 +43,7 @@ class TravelRequestService
     public function __construct(
         SecurityContext $securityContext,
         EntityManagerInterface $entityManager,
-        TravelStatusManager $statusManager,
+        TravelRequestStatusManager $statusManager,
         AclManager $aclManager,
         TravelNotificationManager $travelNotificationManager
     ) {
@@ -294,14 +294,7 @@ class TravelRequestService
         $currentStatusName = $currentStatus->getName();
         $currentStatusId = $currentStatus->getId();
 
-        // handle "paid" status
-        $excludeStatusIds = array();
-        $relExpenseStatus = $this->statusManager->getCurrentStatus($travelRequest->getTravelExpense());
-        if (!$relExpenseStatus || $relExpenseStatus->getId() != Status::APPROVED) {
-            array_push($excludeStatusIds, Status::PAID);
-        }
-
-        $trSelectableStates = $this->statusManager->getNextStates($currentStatus, $excludeStatusIds);
+        $trSelectableStates = $this->statusManager->getNextStates($currentStatus);
         $trSelectableStates[$currentStatusId] = $currentStatusName;
 
         return $trSelectableStates;

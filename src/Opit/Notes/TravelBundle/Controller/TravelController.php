@@ -145,7 +145,7 @@ class TravelController extends Controller
         $forApproval = $request->attributes->get('fa');
         $isNewTravelRequest = "new" !== $travelRequestId;
         $travelRequest = ($isNewTravelRequest) ? $this->getTravelRequest($travelRequestId) : new TravelRequest();
-        $statusManager = $this->get('opit.manager.travel_status_manager');
+        $statusManager = $this->get('opit.manager.travel_request_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
 

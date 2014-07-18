@@ -68,7 +68,7 @@ class DefaultController extends Controller
 
             $entityManager->remove($token);
             $entityManager->flush();
-            $this->get('opit.manager.travel_status_manager')->addStatus($travel, $status->getId());
+            $this->get('opit.manager.travel_'.$travelTypeName.'_status_manager')->addStatus($travel, $status->getId());
         }
 
         return $this->render(

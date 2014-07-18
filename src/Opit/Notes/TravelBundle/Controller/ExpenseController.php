@@ -114,7 +114,7 @@ class ExpenseController extends Controller
 
         // te = Travel Expense
         $travelExpenseStates = array();
-        $statusManager = $this->get('opit.manager.travel_status_manager');
+        $statusManager = $this->get('opit.manager.travel_expense_status_manager');
 
         // get travel expense current status
         $currentStatus = $statusManager->getCurrentStatus($travelExpense);
@@ -347,7 +347,7 @@ class ExpenseController extends Controller
     {
         $currencyConfig = $this->container->getParameter('currency_config');
         $travelExpenseService = $this->get('opit.model.travel_expense');
-        $statusManager = $this->get('opit.manager.travel_status_manager');
+        $statusManager = $this->get('opit.manager.travel_expense_status_manager');
 
         $travelExpense = $this->getTravelExpense($travelExpenseId);
         $travelRequest = $travelExpense->getTravelRequest();
@@ -467,7 +467,7 @@ class ExpenseController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $statusManager = $this->get('opit.manager.travel_status_manager');
+                $statusManager = $this->get('opit.manager.travel_expense_status_manager');
                 $isNew = $travelExpense->getId();
                 $travelExpense = $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense);
 
@@ -499,7 +499,7 @@ class ExpenseController extends Controller
         $travelExpense = $entityManager->getRepository('OpitNotesTravelBundle:TravelExpense')
             ->find($foreignId);
 
-        $status = $this->get('opit.manager.travel_status_manager')->addStatus($travelExpense, $statusId, $comment);
+        $status = $this->get('opit.manager.travel_expense_status_manager')->addStatus($travelExpense, $statusId, $comment);
 
         // send a new notification when travel request or expense status changes
         $notificationManager = $this->container->get('opit.manager.travel_notification_manager');

@@ -31,7 +31,7 @@ class Version20140626093909 extends AbstractMigration
         // Status workflow data migration (scoped)
         $workflow = $this->connection->fetchAll("SELECT parent_id, status_id FROM notes_status_workflow WHERE discr = 'default'");
         $workflowValues = array();
-        foreach (array('travel', 'leave') as $discr) {
+        foreach (array('travelExpense', 'leave') as $discr) {
             foreach ($workflow as $values) {
                 $workflowValues[] = "(". ($values['parent_id'] ? $values['parent_id'] : 'NULL') . ", " . $values['status_id'] . ", '" . $discr . "')";
             }
@@ -46,6 +46,7 @@ class Version20140626093909 extends AbstractMigration
         // Insert status and status workflow
         $this->addSql("INSERT INTO notes_status (id, name) VALUES (13, 'Hired'), (12, 'Interview failed'), (11, 'Interview passed'), (10, 'Scheduled interview'), (7, 'Scheduled written exam'), (9, 'Written exam failed'), (8, 'Written exam passed')");
         $this->addSql("INSERT INTO notes_status_workflow (id, parent_id, status_id, discr) VALUES (15, NULL, 1, 'applicant'), (16, 1, 7, 'applicant'), (17, 11, 7, 'applicant'), (18, 8, 7, 'applicant'), (19, 7, 8, 'applicant'), (20, 7, 9, 'applicant'), (21, 1, 10, 'applicant'), (22, 11, 10, 'applicant'), (23, 8, 10, 'applicant'), (24, 10, 11, 'applicant'), (25, 10, 12, 'applicant'), (26, 1, 5, 'applicant'), (27, 10, 5, 'applicant'), (28, 11, 5, 'applicant'), (29, 12, 5, 'applicant'), (30, 7, 5, 'applicant'), (31, 8, 5, 'applicant'), (32, 9, 5, 'applicant'), (33, 8, 13, 'applicant'), (34, 11, 13, 'applicant')");
+        $this->addSql("INSERT INTO notes_status_workflow (id, parent_id, status_id, discr) VALUES (35, NULL, 1, 'travelRequest'), (36, 1, 2, 'travelRequest'), (37, 2, 3, 'travelRequest'), (38, 2, 4, 'travelRequest'), (39, 3, 2, 'travelRequest'), (40, 2, 5, 'travelRequest')");
     }
 
     public function down(Schema $schema)
@@ -62,7 +63,7 @@ class Version20140626093909 extends AbstractMigration
         $this->addSql("ALTER TABLE notes_notifications DROP applicant_id");
 
         // Revert workflow data migration
-        $this->addSql("UPDATE notes_status_workflow SET discr = 'default' WHERE discr = 'travel'");
+        $this->addSql("UPDATE notes_status_workflow SET discr = 'default' WHERE discr = 'travelExpense'");
         $this->addSql("DELETE FROM notes_status_workflow WHERE discr <> 'default'");
         // Delete hiring states
         $this->addSql("DELETE FROM notes_status WHERE id > 6");
