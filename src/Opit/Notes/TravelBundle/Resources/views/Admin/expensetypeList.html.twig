@@ -38,10 +38,8 @@
     </tr>
 </table>
 <div id="list-reply-message"></div>
-{% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
-    'propertyNames': propertyNames,
-    'propertyValues': propertyValues,
-    'hideReset': ''
+{% include 'OpitNotesTravelBundle:Admin:_expensetypeList.html.twig' with {
+    'expenseTypes': expenseTypes
     } %}
 {% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
         'fieldName': 'expenseType',

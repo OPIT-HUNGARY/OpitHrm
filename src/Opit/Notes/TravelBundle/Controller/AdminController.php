@@ -42,7 +42,7 @@ class AdminController extends Controller
      *
      * @Route("/travel/admin/travelexpensetype/list", name="OpitNotesTravelBundle_admin_travelexpensetype_list")
      * @Secure(roles="ROLE_SYSTEM_ADMIN")
-     * @Method({"GET"})
+     * @Method({"GET", "POST"})
      * @Template()
      */
     public function listExpenseTypeAction(Request $request)
@@ -60,7 +60,7 @@ class AdminController extends Controller
         }
 
         if ($request->request->get('showList')) {
-            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+            $template = 'OpitNotesTravelBundle:Admin:_expensetypeList.html.twig';
         } else {
             $template = 'OpitNotesTravelBundle:Admin:expensetypeList.html.twig';
         }
@@ -68,8 +68,7 @@ class AdminController extends Controller
         return $this->render(
             $template,
             array(
-                'propertyNames' => array('id', 'name'),
-                'propertyValues' => $expenseTypes
+                'expenseTypes' => $expenseTypes
             )
         );
     }
@@ -102,11 +101,9 @@ class AdminController extends Controller
         $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
 
         return $this->render(
-            'OpitNotesUserBundle:Shared:_list.html.twig',
+            'OpitNotesTravelBundle:Admin:_expensetypeList.html.twig',
             array(
-                'propertyNames' => array('id', 'name'),
-                'propertyValues' => $expenseTypes,
-                'hideReset' => ''
+                'expenseTypes' => $expenseTypes
             )
         );
     }
@@ -136,11 +133,9 @@ class AdminController extends Controller
         $expenseTypes = $this->getDoctrine()->getRepository('OpitNotesTravelBundle:TEExpenseType')->findAll();
 
         return $this->render(
-            'OpitNotesUserBundle:Shared:_list.html.twig',
+            'OpitNotesTravelBundle:Admin:_expensetypeList.html.twig',
             array(
-                'propertyNames' => array('id', 'name'),
-                'propertyValues' => $expenseTypes,
-                'hideReset' => ''
+                'expenseTypes' => $expenseTypes
             )
         );
     }

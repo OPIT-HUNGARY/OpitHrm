@@ -182,7 +182,7 @@ class AdminUserController extends Controller
     public function groupsListAction(Request $request)
     {
         if ($request->request->get('showList')) {
-            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+            $template = 'OpitNotesUserBundle:Admin:_groupsList.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Admin:groupsList.html.twig';
         }
@@ -227,7 +227,7 @@ class AdminUserController extends Controller
 
         $group = $this->getDoctrine()->getRepository('OpitNotesUserBundle:Groups')->findAll();
 
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
+        return $this->render('OpitNotesUserBundle:Admin:_groupsList.html.twig', $this->getAllGroups());
     }
 
     /**
@@ -262,7 +262,7 @@ class AdminUserController extends Controller
             return new JsonResponse(array('userRelated' => $userRelatedGroup));
         }
 
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllGroups());
+        return $this->render('OpitNotesUserBundle:Admin:_groupsList.html.twig', $this->getAllGroups());
     }
 
     /**
@@ -273,7 +273,7 @@ class AdminUserController extends Controller
     public function teamsListAction(Request $request)
     {
         if ($request->request->get('showList')) {
-            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+            $template = 'OpitNotesUserBundle:Shared:_teamsList.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Admin:teamsList.html.twig';
         }
@@ -303,7 +303,7 @@ class AdminUserController extends Controller
 
         $entityManager->flush();
 
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
+        return $this->render('OpitNotesUserBundle:Admin:_teamsList.html.twig', $this->getAllTeams());
     }
 
     /**
@@ -329,7 +329,7 @@ class AdminUserController extends Controller
 
         $entityManager->flush();
 
-        return $this->render('OpitNotesUserBundle:Shared:_list.html.twig', $this->getAllTeams());
+        return $this->render('OpitNotesUserBundle:Admin:_teamsList.html.twig', $this->getAllTeams());
     }
 
     /**
@@ -340,7 +340,6 @@ class AdminUserController extends Controller
     protected function getAllGroups()
     {
         $orderParams = $this->getRequest()->get('order');
-        $disabledRoles = array();
         $numberOfRelations = array();
 
         if ($this->getRequest()->get('issearch')) {
@@ -354,18 +353,12 @@ class AdminUserController extends Controller
         }
 
         foreach ($groups as $g) {
-            $users = $g->getUsers();
-            if (0 !== count($users)) {
-                $disabledRoles[] = $g->getId();
-            }
             $numberOfRelations[$g->getId()] = count($g->getUsers());
         }
 
         return array(
-            'propertyNames' => array('id', 'name', 'role'),
-            'propertyValues' => $groups,
-            'hideReset' => true,
-            'disabledRoles' => $disabledRoles,
+            'groups' => $groups,
+            'systemRoles' => array_keys($this->container->getParameter('security.role_hierarchy.roles')),
             'numberOfRelations' => $numberOfRelations
         );
     }
@@ -391,8 +384,7 @@ class AdminUserController extends Controller
         }
 
         return array(
-            'propertyNames' => array('id', 'teamName'),
-            'propertyValues' => $teams,
+            'teams' => $teams,
             'numberOfRelations' => $numberOfRelations
         );
     }

@@ -43,10 +43,10 @@
         </tr>
     </table>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
-        'propertyNames': propertyNames,
-        'propertyValues': propertyValues,
-        'hideReset': hideReset
+    {% include 'OpitNotesUserBundle:Admin:_groupsList.html.twig' with {
+        'groups': groups,
+        'systemRoles': systemRoles,
+        'numberOfRelations': numberOfRelations,
         } %}
     {% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
         'fieldName': 'group',

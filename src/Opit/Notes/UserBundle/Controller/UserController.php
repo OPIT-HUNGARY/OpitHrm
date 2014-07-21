@@ -50,7 +50,6 @@ class UserController extends Controller
         }*/
 
         $groups = $entityManager->getRepository('OpitNotesUserBundle:Groups');
-        $propertyValues = array();
         $request = $this->getRequest();
         $showList = $request->request->get('showList');
         $isSearch = (bool) $request->request->get('issearch');
@@ -59,6 +58,8 @@ class UserController extends Controller
         $templateVars = array();
 
         if ($isSearch) {
+            $templateVars['isSearch'] = true;
+
             $allRequests = $request->request->all();
 
             $users = $entityManager->getRepository('OpitNotesUserBundle:User')
@@ -75,51 +76,32 @@ class UserController extends Controller
 
             //get all user roles and put them in an array
             foreach ($localUserRoles as $role) {
-                $roles[] = $role["name"];
+                $roles[] = $role['name'];
             }
 
-            $employeeName = $user->getEmployee() ? $user->getEmployee()->getEmployeeName() : '';
             //calculate employee annual leave entitlement
             if($user->getEmployee()->getEntitledLeaves()){
-                $empLeaveEntitlement = $user->getEmployee()->getEntitledLeaves();
-                $templateVars['leaveEntitlement'] = true;
+                $templateVars['leaveEntitlement'][$user->getId()] = $user->getEmployee()->getEntitledLeaves();
             }else{
                 $leaveCalculationService = $this->get('opit_notes_leave.leave_calculation_service');
-                $empLeaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($user->getEmployee());
-                $templateVars['leaveEntitlement'] = true;
+                $templateVars['leaveEntitlement'][$user->getId()] = $leaveCalculationService->leaveDaysCalculationByEmployee($user->getEmployee());
             }
-
-            //create new array for user containing its properties
-            $propertyValues[$user->getId()] = array(
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'employeeName' => $employeeName,
-                'isActive' => $user->getIsActive(),
-                'ldapEnabled' => $user->isLdapEnabled(),
-                'roles' => $roles,
-                'allowedToEdit' => $this->isSystemAdminAllowedToEdit($user->getId()),
-                'leaveEntitlement' => $empLeaveEntitlement
-            );
         }
 
-        $numberOfPages = ceil(count($users) / $config['max_results']);
-        // Used by _list template. Alias is needed for odering but cut of for displaying
-        $propertyNames = array("u.username", "u.email", "e.employeeName", "u.isActive", "u.ldapEnabled", "u.roles");
-
-        $templateVars['numberOfPages'] = $numberOfPages;
+        $templateVars['numberOfPages'] = ceil(count($users) / $config['max_results']);
         $templateVars['maxPages'] = $config['max_pages'];
+        $templateVars['users'] = $users;
+
         if (!$request->request->get('incrementOffset')) {
             $templateVars['offset'] = $offset + 1;
         } else {
             $templateVars['offset'] = $offset;
         }
-        $templateVars['propertyNames'] = $propertyNames;
-        $templateVars['propertyValues'] = $propertyValues;
 
         if (null === $showList && (null === $offset && !$isSearch)) {
             $template = 'OpitNotesUserBundle:User:list.html.twig';
         } else {
-            $template = 'OpitNotesUserBundle:Shared:_list.html.twig';
+            $template = 'OpitNotesUserBundle:User:_list.html.twig';
         }
 
         return $this->render($template, $templateVars);

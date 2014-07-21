@@ -1,0 +1,41 @@
+<form class="delete-checkbox-form">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="id"></i>
+                <span class="order-text cursor-pointer">Id</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="name"></i>
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>Assigned Users</th>
+            <th>Actions</th>
+        </tr>
+        {% for group in groups %}
+        <tr>
+            <td class="width-24-fix">
+                {% if group.role in systemRoles %}
+                <i class="fa fa-cog darker-gray-color" title="System role"></i>
+                {% else %}
+                <input name="delete-user[]" type="checkbox" class="deleteMultiple" {% if 0 < numberOfRelations[group.id] %}disabled="disabled"{% endif %}>
+                {% endif %}
+            </td>
+            <td>{{ group.id }}</td>
+            <td>{{ group.name }}</td>
+            <td>{{ numberOfRelations[group.id] }}</td>
+            <td>
+                {% if group.role not in systemRoles and 0 == numberOfRelations[group.id] %}
+                <span class="edit clickable text-decoration-none cursor-pointer" title="Edit role">
+                    <i class="fa fa-pencil-square-o"></i>
+                </span>
+                <span class="remove clickable text-decoration-none cursor-pointer" title="Delete role">
+                    <i class="fa fa-trash-o"></i>
+                </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>

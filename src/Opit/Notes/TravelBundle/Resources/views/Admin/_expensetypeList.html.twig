@@ -1,0 +1,33 @@
+<form class="delete-checkbox-form">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="id"></i>
+                <span class="order-text cursor-pointer">Id</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="name"></i>
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>Actions</th>
+        </tr>
+        {% for expenseType in expenseTypes %}
+        <tr>
+            <td class="width-24-fix">
+                <input name="delete-user[]" type="checkbox" class="deleteMultiple">
+            </td>
+            <td>{{ expenseType.id }}</td>
+            <td>{{ expenseType.name }}</td>
+            <td>
+                <span class="edit clickable text-decoration-none cursor-pointer" title="Edit expense type">
+                    <i class="fa fa-pencil-square-o"></i>
+                </span>
+                <span class="remove clickable text-decoration-none cursor-pointer" title="Delete expense type">
+                    <i class="fa fa-trash-o"></i>
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>

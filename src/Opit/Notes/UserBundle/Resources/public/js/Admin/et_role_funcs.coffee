@@ -64,13 +64,13 @@ deleteGroup = (id, name) ->
 $('#main-wrapper #add').on 'click', ->
     showRoleDialog('new', '', "Create a new #{ propertyName }.", url, "Create #{ propertyName }", "#{ propertyNameCapital } successfully created!")
     
-$('#main-wrapper').on 'click','.edit-group', ->
+$('#main-wrapper').on 'click','.edit', ->
     id = $(@).closest('tr').children('td:nth-child(2)').html()
     name = $(@).closest('tr').children('td:nth-child(3)').html()
     
     showRoleDialog(id, name, "Edit selected #{ propertyName }.", url, "Edit #{ propertyName }", "#{ propertyNameCapital } successfully edited!")
     
-$('#main-wrapper').on 'click','.remove-group', ->
+$('#main-wrapper').on 'click','.remove', ->
     $(document).data('notes').funcs.resetAndSelectSingle $(@)
     parentTr = $(@).closest('tr')
     deleteGroup parentTr.children('td:nth-child(2)').html(), parentTr.children('td:nth-child(3)').html()

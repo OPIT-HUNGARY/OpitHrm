@@ -40,9 +40,9 @@
         </tr>
     </table>
     <div id="list-reply-message"></div>
-    {% include 'OpitNotesUserBundle:Shared:_list.html.twig' with {
-        'propertyNames': propertyNames,
-        'propertyValues': propertyValues
+    {% include 'OpitNotesUserBundle:Admin:_teamsList.html.twig' with {
+        'teams': teams,
+        'numberOfRelations': numberOfRelations
         } %}
     {% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
         'fieldName': 'team',
