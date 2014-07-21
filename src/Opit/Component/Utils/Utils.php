@@ -261,4 +261,25 @@ class Utils
 
         return strtolower($text);
     }
+
+    /**
+     * Get the higher level roles which extend the given role in the role hierarchy.
+     *
+     * @param mixin $hierarchy from the security.
+     * @param string $role
+     * @return array the higher roles.
+     */
+    public static function getHihgerLevelRoles($hierarchy, $role = 'ROLE_USER')
+    {
+        $higherRoles = array(strtoupper($role));
+        // Get those roles which contain the $role.
+        foreach ($hierarchy as $key => $value) {
+            // If the two array have common values.
+            if (array_intersect($higherRoles, $value)) {
+                $higherRoles[] = $key;
+            }
+        }
+
+        return $higherRoles;
+    }
 }

@@ -23,6 +23,7 @@ use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Component\Utils\Utils;
 use Opit\Notes\LeaveBundle\Entity\LogTimesheet;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 
 /**
  * Description of TimeSheetController
@@ -242,8 +243,14 @@ class TimeSheetController extends Controller
             $leaveDatesOfMonth[$leaveDate->getHolidayDate()->format('Y-m-d')] =
                 $leaveDate->getHolidayType()->getName();
         }
-        // Get the employees.
-        $users = $em->getRepository('OpitNotesUserBundle:User')->findAll();
+
+        // Get the role hierarchy.
+        $hierarchy = $this->container->getParameter('security.role_hierarchy.roles');
+        // Get all roles whichy above the user role in the role hierarchy.
+        $higherRoles = Utils::getHihgerLevelRoles($hierarchy);
+        // Get the employees by the roles.
+        $users = $em->getRepository('OpitNotesUserBundle:User')->findUserByEmployeeNameUsingLike('', $higherRoles);
+
         // Grouping users into subarrays.
         $groupedUsers = Utils::groupingArrayByCounter($users, $divison);
 
@@ -295,7 +302,7 @@ class TimeSheetController extends Controller
         $pdfFile = $pdf->exportToPdf(
             $pdfContent,
             $pdfFileName,
-            'NOTES',
+            'OPIT-HRM',
             'Time Sheet',
             'Time Sheet details',
             array('leave', 'time sheet', 'notes'),

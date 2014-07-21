@@ -234,4 +234,34 @@ class UtilsTest extends TypeTestCase
 
         $this->assertEquals('opit-hrmsvenhenneble-december2014', $result2, 'Utils::sanitizeString Content including special chars does not match.');
     }
+
+    public function testGetHihgerLevelRoles()
+    {
+        $hierarchy = array(
+            'ROLE_CUSTOMER' => array(),
+            'ROLE_USER' => array('ROLE_CUSTOMER'),
+            'ROLE_PAYROLL' => array('ROLE_CUSTOMER'),
+            'ROLE_STAKEHOLDER' => array('ROLE_CUSTOMER'),
+            'ROLE_FINANCE' => array('ROLE_CUSTOMER'),
+            'ROLE_TEAM_MANAGER' => array('ROLE_USER'),
+            'ROLE_GENERAL_MANAGER' => array('ROLE_TEAM_MANAGER'),
+            'ROLE_SYSTEM_ADMIN' => array('ROLE_CUSTOMER', 'ROLE_PAYROLL', 'ROLE_STAKEHOLDER', 'ROLE_FINANCE', 'ROLE_USER'),
+            'ROLE_ADMIN' => array('ROLE_GENERAL_MANAGER', 'ROLE_SYSTEM_ADMIN'),
+            'ROLE_SUPER_ADMIN' => array('ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'),
+        );
+        $expectedResult = array(
+            'ROLE_USER',
+            'ROLE_TEAM_MANAGER',
+            'ROLE_GENERAL_MANAGER',
+            'ROLE_SYSTEM_ADMIN',
+            'ROLE_ADMIN',
+            'ROLE_SUPER_ADMIN')
+        ;
+        $role = 'ROLE_USER';
+
+        $result = Utils::getHihgerLevelRoles($hierarchy, $role);
+
+        $this->assertTrue(is_array($result), 'Utils::getHihgerLevelRoles The result is not an array.');
+        $this->assertEquals($expectedResult, $result, 'Utils::getHihgerLevelRoles The expected result is not equal to received result.');
+    }
 }
