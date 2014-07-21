@@ -235,7 +235,7 @@ class UtilsTest extends TypeTestCase
         $this->assertEquals('opit-hrmsvenhenneble-december2014', $result2, 'Utils::sanitizeString Content including special chars does not match.');
     }
 
-    public function testGetHihgerLevelRoles()
+    public function testGetHigherLevelRoles()
     {
         $hierarchy = array(
             'ROLE_CUSTOMER' => array(),
@@ -259,9 +259,9 @@ class UtilsTest extends TypeTestCase
         ;
         $role = 'ROLE_USER';
 
-        $result = Utils::getHihgerLevelRoles($hierarchy, $role);
+        $result = Utils::getHigherLevelRoles($hierarchy, $role);
 
-        $this->assertTrue(is_array($result), 'Utils::getHihgerLevelRoles The result is not an array.');
-        $this->assertEquals($expectedResult, $result, 'Utils::getHihgerLevelRoles The expected result is not equal to received result.');
+        $this->assertTrue(is_array($result), 'Utils::getHigherLevelRoles The result is not an array.');
+        $this->assertEquals($expectedResult, $result, 'Utils::getHigherLevelRoles The expected result is not equal to received result.');
     }
 }

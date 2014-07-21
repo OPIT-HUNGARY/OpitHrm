@@ -246,8 +246,8 @@ class TimeSheetController extends Controller
 
         // Get the role hierarchy.
         $hierarchy = $this->container->getParameter('security.role_hierarchy.roles');
-        // Get all roles whichy above the user role in the role hierarchy.
-        $higherRoles = Utils::getHihgerLevelRoles($hierarchy);
+        // Get all roles which are above the user role in the role hierarchy as time sheet only requires role user and above
+        $higherRoles = Utils::getHigherLevelRoles($hierarchy);
         // Get the employees by the roles.
         $users = $em->getRepository('OpitNotesUserBundle:User')->findUserByEmployeeNameUsingLike('', $higherRoles);
 

@@ -269,7 +269,7 @@ class Utils
      * @param string $role
      * @return array the higher roles.
      */
-    public static function getHihgerLevelRoles($hierarchy, $role = 'ROLE_USER')
+    public static function getHigherLevelRoles($hierarchy, $role = 'ROLE_USER')
     {
         $higherRoles = array(strtoupper($role));
         // Get those roles which contain the $role.
