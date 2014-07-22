@@ -17,6 +17,7 @@
     </script>
     {% javascripts
         '@OpitNotesUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        '@OpitNotesUserBundle/Resources/public/js/Admin/teamList.coffee'
         output='js/opitnotesuser/admin_teams_list.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
@@ -34,7 +35,7 @@
     <table>
         <tr>
             <td class="padding-left-0">
-                <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="add-team" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
                 <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
             </td>
         </tr>
@@ -44,8 +45,4 @@
         'teams': teams,
         'numberOfRelations': numberOfRelations
         } %}
-    {% include 'OpitNotesUserBundle:Shared:_dialog.html.twig' with {
-        'fieldName': 'team',
-        'fieldLabel': 'Team name'
-    } %}
 {% endblock %}

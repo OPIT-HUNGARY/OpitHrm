@@ -22,6 +22,8 @@ use Opit\Notes\UserBundle\Form\JobTitleType;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Notes\UserBundle\Entity\Groups;
 use Opit\Notes\UserBundle\Entity\Team;
+use Opit\Notes\UserBundle\Form\TeamType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Description of AdminController
@@ -273,7 +275,7 @@ class AdminUserController extends Controller
     public function teamsListAction(Request $request)
     {
         if ($request->request->get('showList')) {
-            $template = 'OpitNotesUserBundle:Shared:_teamsList.html.twig';
+            $template = 'OpitNotesUserBundle:Admin:_teamsList.html.twig';
         } else {
             $template = 'OpitNotesUserBundle:Admin:teamsList.html.twig';
         }
@@ -282,15 +284,16 @@ class AdminUserController extends Controller
     }
 
     /**
-     * @Route("/secured/admin/teams/show/{id}", name="OpitNotesUserBundle_admin_teams_show", requirements={ "id" = "new|\d+"})
+     * @Route("/secured/admin/teams/show/{id}", name="OpitNotesUserBundle_admin_teams_show", requirements={ "id" = "new|\d+"}, defaults={"id" = "new"})
      * @Secure(roles="ROLE_SYSTEM_ADMIN")
-     * @Method({"POST"})
+     * @Method({"POST", "GET"})
      * @Template()
      */
-    public function teamsShowAction(Request $request)
+    public function teamShowAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $teamId = $request->attributes->get('id');
+        $employees = new ArrayCollection();
 
         if ('new' === $teamId) {
             $team = new Team();
@@ -298,12 +301,40 @@ class AdminUserController extends Controller
             $team = $entityManager->getRepository('OpitNotesUserBundle:Team')->find($teamId);
         }
 
-        $team->setTeamName($request->request->get('value'));
-        $entityManager->persist($team);
+        foreach ($team->getEmployees() as $employee) {
+            $employees->add($employee);
+        }
 
-        $entityManager->flush();
+        $form = $this->createForm(
+            new TeamType(), $team, array('em' => $entityManager)
+        );
 
-        return $this->render('OpitNotesUserBundle:Admin:_teamsList.html.twig', $this->getAllTeams());
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                // Remove teams from employee
+                foreach ($employees as $employee) {
+                    if (false === $team->getEmployees()->contains($employee)) {
+                        $employee->removeTeam($team);
+                    }
+                }
+
+                // Add teams to employees
+                foreach ($team->getEmployees() as $employee) {
+                    if (false === $employee->getTeams()->contains($team)) {
+                        $employee->addTeam($team);
+                    }
+                }
+
+                $entityManager->persist($team);
+                $entityManager->flush();
+
+                return $this->render('OpitNotesUserBundle:Admin:_teamsList.html.twig', $this->getAllTeams());
+            }
+        }
+
+        return $this->render('OpitNotesUserBundle:Admin:showTeam.html.twig', array('form' => $form->createView()));
     }
 
     /**

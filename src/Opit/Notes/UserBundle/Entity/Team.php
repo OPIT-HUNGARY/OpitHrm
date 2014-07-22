@@ -42,7 +42,7 @@ class Team
     protected $teamName;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Employee", mappedBy="teams")
+     * @ORM\ManyToMany(targetEntity="Employee", mappedBy="teams", cascade = {"persist"})
      */
     protected $employees;
 
