@@ -46,8 +46,9 @@ class GroupsRepository extends EntityRepository
      */
     public function findUserGroupsArray($userId)
     {
-        if(!$userId || !is_int($userId))
+        if(!$userId || !is_int($userId)) {
             throw new CommonException('Given parameter "'.$userId.'" has to be of type integer.');
+        }
         
         $dq = $this->createQueryBuilder('g')
                 ->select('g.id, g.name, g.role')

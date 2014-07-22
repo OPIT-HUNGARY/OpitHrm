@@ -232,6 +232,7 @@ class UserController extends Controller
 
         try {
             foreach ($ids as $id) {
+                $id = (int) $id;
                 // If the logged in user is not equal to deleting user then remove it.
                 if ($loggedInUserId !== (int) $id) {
                     if(!$this->isSystemAdminAllowedToEdit($id)) {
