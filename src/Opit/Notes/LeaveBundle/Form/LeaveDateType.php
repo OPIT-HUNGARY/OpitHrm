@@ -14,6 +14,7 @@ namespace Opit\Notes\LeaveBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of LeaveDateType
@@ -44,7 +45,10 @@ class LeaveDateType extends AbstractType
             'property' => 'name',
             'multiple' => false,
             'data' => $dataArr->getHolidayType(),
-            'label_attr' => array('id' => 'idLeaveType')
+            'label_attr' => array('id' => 'idLeaveType'),
+            'query_builder' => function(EntityRepository $er) {
+                return $er->createQueryBuilder('lt')->orderBy('lt.name', 'ASC');
+            }
         ));
     }
     

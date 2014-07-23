@@ -14,6 +14,7 @@ namespace Opit\Notes\TravelBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of AccomodationType
@@ -62,7 +63,10 @@ class AccomodationType extends AbstractType
             'label' => false,
             'class' => 'OpitNotesCurrencyRateBundle:Currency',
             'property' => 'code',
-            'multiple' => false
+            'multiple' => false,
+            'query_builder' => function(EntityRepository $er) {
+                return $er->createQueryBuilder('c')->orderBy('c.code', 'ASC');
+            }
         ));
     }
     

@@ -44,8 +44,8 @@ class UserPaidExpenseType extends AbstractType
             'empty_value' => 'Choose...',
             'label'=>'Expense type',
             'attr' => array('class' => 'te-expense-type'),
-            'query_builder' => function (EntityRepository $repository) {
-                 return $repository->createQueryBuilder('u')->orderBy('u.name', 'DESC');
+            'query_builder' => function (EntityRepository $er) {
+                 return $er->createQueryBuilder('u')->orderBy('u.name', 'ASC');
             }
         ));
         $builder->add('amount', 'number', array(

@@ -92,7 +92,7 @@ class UserShowType extends AbstractType
                         $dq->setParameter(':allowedRoled', $this->container->getParameter('security.role_hierarchy.roles')['ROLE_SYSTEM_ADMIN']);
                     }
 
-                    return $dq;
+                    return $dq->orderBy('g.name', 'ASC');
                 },
                 'property' => 'name',
                 'multiple' => true,

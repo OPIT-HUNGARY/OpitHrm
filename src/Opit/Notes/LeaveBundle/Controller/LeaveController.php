@@ -212,7 +212,7 @@ class LeaveController extends Controller
                 'isForApproval' => $isForApproval,
                 'requestFor' => $requestFor,
                 'selectedEmployees' => $employees,
-                'employees' => $entityManager->getRepository('OpitNotesUserBundle:Employee')->findAll()
+                'employees' => $entityManager->getRepository('OpitNotesUserBundle:Employee')->findBy(array(), array('employeeName' => 'ASC'))
             )
         );
     }

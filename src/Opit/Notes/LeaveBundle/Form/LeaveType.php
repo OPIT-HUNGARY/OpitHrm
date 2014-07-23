@@ -14,6 +14,7 @@ namespace Opit\Notes\LeaveBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of LeaveType
@@ -66,7 +67,10 @@ class LeaveType extends AbstractType
         $builder->add('category', 'entity', array(
             'class' => 'OpitNotesLeaveBundle:LeaveCategory',
             'property' => 'name',
-            'attr' => array('class' => 'leave-category')
+            'attr' => array('class' => 'leave-category'),
+            'query_builder' => function(EntityRepository $er) {
+                return $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
+            }
         ));
     }
 

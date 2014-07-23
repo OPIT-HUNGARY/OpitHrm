@@ -23,6 +23,7 @@ namespace Opit\Notes\LeaveBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of LeaveCategoryType
@@ -58,7 +59,10 @@ class LeaveCategoryType extends AbstractType
         $builder->add('leaveCategoryDuration', 'entity', array(
             'class' => 'OpitNotesLeaveBundle:LeaveCategoryDuration',
             'property' => 'leaveCategoryDurationName',
-            'label' => 'Duration'
+            'label' => 'Duration',
+            'query_builder' => function(EntityRepository $er) {
+                return $er->createQueryBuilder('lcd')->orderBy('lcd.leaveCategoryDurationName', 'ASC');
+            }
         ));
         $builder->add('isPaid', 'choice', array(
             'choices' => array('0' => 'No', '1' => 'Yes'),

@@ -52,6 +52,7 @@ class TeamType extends AbstractType
                     ->leftJoin('e.user', 'u')
                     ->innerJoin('u.groups', 'g')
                     ->where('g.role IN (:role)')
+                    ->orderBy('e.employeeName', 'ASC')
                     ->setParameter('role', 'ROLE_TEAM_MANAGER');
             }
         ));

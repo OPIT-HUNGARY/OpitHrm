@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Opit\Notes\UserBundle\Form\DataTransformer\SimpleIntegerToStringTransformer;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Description of EmployeeType
@@ -95,6 +96,12 @@ class EmployeeType extends AbstractType
             'required' => false,
             'multiple' => true,
             'expanded' => true,
+            'query_builder' => function (EntityRepository $er) {
+                $dq = $er->createQueryBuilder('t')
+                    ->orderBy('t.teamName', 'ASC');
+
+                return $dq;
+            },
             'label_attr' => array('id' => 'idTeam')
         ));
 
@@ -140,7 +147,10 @@ class EmployeeType extends AbstractType
                 'class' => 'OpitNotesUserBundle:JobTitle',
                 'property' => 'title',
                 'multiple' => false,
-                'label_attr' => array('id' => 'idJobTitle')
+                'label_attr' => array('id' => 'idJobTitle'),
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('j')->orderBy('j.title', 'ASC');
+                }
             ));
 
             // If the leave settings configuration is disabled then this form option will be viewed
