@@ -50,6 +50,9 @@ class RateRepository extends EntityRepository
      */
     public function findAllByDates(\DateTime $startDate, \DateTime $endDate)
     {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(0, 0, 0);
+
         $qb = $this->createQueryBuilder('r');
 
         $qb->where('r.created >= :start AND r.created <= :end')

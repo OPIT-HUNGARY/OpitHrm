@@ -41,9 +41,10 @@ class CurrencyRateControllerTest extends WebTestCase
      */
     public function testGetConvertedRateOfCurrencyAction()
     {
+        // Testing JSON response.
         $crawler = $this->client->request(
             'GET',
-            '/secured/currencyrates/convert',
+            '/secured/currency/convert/rates.json',
             array('codeFrom' => 'EUR', 'codeTo' => 'HUF', 'value' => '1', )
         );
         $content = $this->client->getResponse()->getContent();
@@ -58,29 +59,48 @@ class CurrencyRateControllerTest extends WebTestCase
             array_key_exists('HUF', $decodedJson),
             'GetConvertedRateOfCurrencyAction: Missing array key "HUF".'
         );
+
+        // Testing XML response.
+        $crawler = $this->client->request(
+            'GET',
+            '/secured/currency/convert/rates.xml',
+            array('codeFrom' => 'EUR', 'codeTo' => 'HUF', 'value' => '1', )
+        );
+        $responseXML = $this->client->getResponse();
+
+        $this->assertTrue(
+            $responseXML->headers->contains('Content-Type', 'text/xml; charset=UTF-8'),
+            'GetConvertedRateOfCurrencyAction: The content-type is not a xml.'
+        );
     }
 
     /**
      * test GetExchangeRates action
      */
-    public function testFetchExchangeRatesAction()
+    public function testGetExchangeRatesAction()
     {
         $crawler = $this->client->request(
             'GET',
-            '/secured/currencyrates/view'
+            '/secured/currency/exchange/rates'
         );
         $content = $this->client->getResponse()->getContent();
 
         $this->assertTrue(
             $this->client->getResponse()->isSuccessful(),
-            'FetchExchangeRatesAction: Retrieved response failed.'
+            'GetExchangeRatesAction: Retrieved response failed.'
         );
-        $this->assertJson($content, 'FetchExchangeRatesAction: The content is not a JSON object.');
-        // MNB today's rates will be only present from the afternoon. No secure way
-        // to test for exchange rates.
-        /*$this->assertTrue(
-            array_key_exists('EUR', $decodedJson),
-            'GetExchangeRatesAction: Missing array key "EUR".'
-        );*/
+        $this->assertJson($content, 'GetExchangeRatesAction: The content is not a JSON object.');
+
+        // Testing XML response.
+        $crawler = $this->client->request(
+            'GET',
+            '/secured/currency/exchange/rates.xml'
+        );
+        $responseXML = $this->client->getResponse();
+
+        $this->assertTrue(
+            $responseXML->headers->contains('Content-Type', 'text/xml; charset=UTF-8'),
+            'GetExchangeRatesAction: The content-type is not a xml.'
+        );
     }
 }

@@ -11,35 +11,34 @@
 
 namespace Opit\OpitHrm\CurrencyRateBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcher;
+use FOS\RestBundle\View\View;
 
 /**
- * This controller class is for the ChangeRateBundle.
+ * This rest controller class is for the ChangeRateBundle.
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
  * @subpackage CurrencyRateBundle
  */
-class CurrencyRateController extends Controller
+class CurrencyRateController extends FOSRestController
 {
     /**
      * Returns exchange rates from local database.
      *
-     * @Route("/secured/currencyrates/view", name="OpitOpitHrmCurrencyRateBundle_currencyrates_view")
-     * @Method({"GET"})
-     * @Template()
+     * @Rest\Get("secured/currency/exchange/rates.{_format}", name="OpitOpitHrmCurrencyRateBundle_api_currency_exchange_rates", requirements={"_format"="json|xml"}, defaults={"_format"="json"})
+     * @Rest\QueryParam(name="startDate", nullable=true, requirements="[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])", description="Start date of rates")
+     * @Rest\QueryParam(name="endDate", nullable=true, requirements="[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])", description="End date of rates")
+     * @Rest\View()
+     *
+     * @return array.
      */
-    public function getExchangeRatesAction(Request $request)
+    public function getExchangeRatesAction(ParamFetcher $paramFetcher)
     {
-        $options = $request->query->all();
+        $options = $this->fetchParameters($paramFetcher);
 
         if (!isset($options['startDate'])) {
             $options['startDate'] = new \DateTime('today');
@@ -49,32 +48,50 @@ class CurrencyRateController extends Controller
         $exch = $this->get('opit.service.exchange_rates.default');
         $rates = $exch->getExchangeRates($options);
 
-        $serializer = $this->container->get('jms_serializer');
-        $data = $serializer->serialize($rates, 'json');
-        
-        $response = new Response($data);
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return array('rates' => $rates);
     }
 
     /**
      * To get covnerted rate of currency
      *
-     * @Route("/secured/currencyrates/convert", name="OpitOpitHrmCurrencyRateBundle_currencyrate_convert")
-     * @Method({"GET"})
-     * @Template()
+     * @Rest\Get("secured/currency/convert/rates.{_format}", name="OpitOpitHrmCurrencyRateBundle_api_curreny_convert_rates", requirements={"_format"="json|xml"}, defaults={"_format"="json"})
+     * @Rest\QueryParam(name="codeFrom", strict=true, requirements="[a-zA-Z]{3}", description="The origin currency code")
+     * @Rest\QueryParam(name="codeTo", strict=true, requirements="[a-zA-Z]{3}", description="The destination currency code")
+     * @Rest\QueryParam(name="value", requirements="\d+", default="1", description="The value of origin rate")
+     * @Rest\View()
+     *
+     * @return array
      */
-    public function getConvertedRateOfCurrencyAction(Request $request)
+    public function getConvertedRateOfCurrencyAction(ParamFetcher $paramFetcher)
     {
-        $originCode = $request->query->get('codeFrom');
-        $destinationCode = $request->query->get('codeTo');
-        $value = $request->query->get('value');
+        $options = $this->fetchParameters($paramFetcher);
 
         // Call the concrete exchange rate service by alias.
         $exch = $this->get('opit.service.exchange_rates.default');
-        $convertedValue = $exch->convertCurrency($originCode, $destinationCode, $value);
+        $convertedValue = $exch->convertCurrency($options['codeFrom'], $options['codeTo'], $options['value']);
 
-        return new JsonResponse(array($destinationCode => $convertedValue));
+        return array($options['codeTo'] => $convertedValue);
+    }
+
+    /**
+     * Fetch parameters from URI.
+     *
+     * @param \FOS\RestBundle\Request\ParamFetcher $paramFetcher
+     * @return array of options
+     */
+    private function fetchParameters(ParamFetcher $paramFetcher)
+    {
+        $options = array();
+
+        foreach ($paramFetcher->all() as $criterionName => $criterionValue) {
+            // If the param is a date then create a datetime object
+            if (false !== strpos(strtolower($criterionName), 'date')) {
+                $options[$criterionName] = new \DateTime($criterionValue);
+            } else {
+                $options[$criterionName] = $criterionValue;
+            }
+        }
+
+        return $options;
     }
 }
