@@ -364,10 +364,57 @@ calculatePerDiem = (departureDate, arrivalDate) ->
 convertCurrency = (originCode, destinationCode, value) ->
     curConverter.convertCurrency originCode, destinationCode, value
 
+# Call the change state dialog function from main.
+changeStateModal = ($self) ->
+    $(document).data('notes').funcs.changeStateDialog $self, $(document).data('notes').funcs.changeTravelExpenseStatus,  {
+        foreignId: $self.data('te')
+        type: 'travel expense'
+    }
+    return
+
+# Sending email to payroll when the TE is approved.
+emailToPayrollDialog = ($self) ->
+    $div = $('<div>').addClass 'background-color-lightest-grey padding-5 border-radius-5 default-border font-size-d9-em'
+    $div.html 'Do you want to notify payroll about this travel expense?'
+    $div.append $('<label>').attr('for', 'email_to_payroll').addClass('margin-top-12').html 'Payroll name/email'
+    $div.append $('<input/>').attr('id', 'email_to_payroll_ac').attr('type', 'text').addClass 'width-300'
+    $div.append $('<input/>').attr('id', 'email_to_payroll').attr 'type', 'hidden'
+    # Creating dialog window.
+    $('<div id="dialog-payroll-assign"></div>')
+        .html $div
+        .dialog
+            title: '<i class="fa fa-envelope"></i> Send email to payroll'
+            width: 500
+            buttons:
+                Send: ->
+                    # If the payroll is selected, send email.
+                    if $('#email_to_payroll').val()
+                        $.ajax
+                            method: 'POST'
+                            data: 'payroll_id': $('#email_to_payroll').val(), 'tr_id': $('#travelRequestPreview').attr 'data-tr-id'
+                            url: Routing.generate 'OpitNotesTravelBundle_expense_send_mail_payroll'
+                        .done (data) ->
+                            changeStateModal $self
+                    $(@).dialog 'destroy'
+                    return
+                Close: ->
+                    $(@).dialog 'destroy'
+                    changeStateModal $self
+                    return
+
+    # Autocompleting the input text field.
+    $('#email_to_payroll_ac').autocomplete
+        source: (request, response) ->
+            $.post Routing.generate('OpitNotesUserBundle_user_search', role: 'role_payroll'), request, (data) -> response(data)
+        minLength: 2
+        select: (event, ui) ->
+            $('#email_to_payroll').val ui.item.id
+            return
+
 $(document).ready ->
     # Initialize all and available currencies
     setAvailableCurrencies()
-    
+
     $buttonParent = $('#travelExpense_add_travel_expense').parent()
     $(document).data('notes').funcs.createButton 'Cancel', 'button display-inline-block', '', $buttonParent, 'OpitNotesTravelBundle_travel_list'
     $(document).data('notes').funcs.makeElementToggleAble 'h3', $('.formFieldset'), '.elementContainer'
@@ -479,12 +526,16 @@ $(document).ready ->
             $(@).remove()
         $('.fa-minus-square').each ->
             $(@).remove()
-        
+
     $('.changeState').on 'change', ->
-        $(document).data('notes').funcs.changeStateDialog $(@), $(document).data('notes').funcs.changeTravelExpenseStatus,  {
-            foreignId: $(@).data('te')
-            type: 'travel expense'
-        }
+        # If the status is approved send an email to payroll
+        if parseInt($(@).val()) == 4
+            emailToPayrollDialog $(@)
+        else
+            changeStateModal $(@)
+        # Disable the select
+        $(@).attr 'disabled', 'disabled'
+        $(@).addClass 'dropdown-disabled'
 
 
 $formFieldset = $('<div>').addClass 'formFieldset padding-bottom-5 margin-top-20 margin-bottom-20'
@@ -500,7 +551,7 @@ $('#travelExpense').addClass 'travelForm'
 
 $generalFormFields = $('<div>').addClass 'display-inline-block'
 $generalFormFieldset.append $generalFormFields
-        
+
 $expensesPaidByOpitDesc = $('<div>')
                             .addClass('formFieldsetDescription')
                             .addClass('short-description display-none position-absolute padding-5')
@@ -513,7 +564,7 @@ $expensesPaidByMeDesc = $('<div>')
 
 $expensesPaidByOpit.append $expensesPaidByOpitDesc
 $expensesPaidByMe.append $expensesPaidByMeDesc
-        
+
 $('.formFieldset').on 'change', '.te-expense-type', ->
     $(@).closest('.formFieldsetChild').children('.selected-expense').html $("##{ $(@).attr 'id' } :selected").text()
 

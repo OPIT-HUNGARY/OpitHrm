@@ -11,6 +11,7 @@ $.extend true, $(document).data('notes'),
             $self.parent().find('.fa-spinner').remove()
             $self.prop 'selectedIndex', 0
             $self.removeClass 'dropdown-disabled'
+            $self.removeAttr 'disabled'
                                 
         changeTravelExpenseStatus: (data, $spinner) ->
             $.ajax

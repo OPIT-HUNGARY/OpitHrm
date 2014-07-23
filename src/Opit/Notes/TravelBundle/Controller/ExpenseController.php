@@ -336,6 +336,58 @@ class ExpenseController extends Controller
     }
 
     /**
+     * Sending email to payroll about approved travel expense
+     *
+     * @Route("/secured/expense/send/mail/payroll", name="OpitNotesTravelBundle_expense_send_mail_payroll")
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     */
+    public function sendMailToPayroll(Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $applicationName = $this->container->getParameter('application_name');
+        $currencyConfig = $this->container->getParameter('currency_config');
+
+        // Find the travel request.
+        $trId = (integer) $request->request->get('tr_id');
+        $travelRequest = $entityManager->getRepository('OpitNotesTravelBundle:TravelRequest')->find($trId);
+        // Get the travel expense.
+        $travelExpense = $travelRequest->getTravelExpense();
+        // Find the payroll user.
+        $payrollId = (integer) $request->request->get('payroll_id');
+        $payroll = $entityManager->getRepository('OpitNotesUserBundle:User')->find($payrollId);
+
+        // Calculating the per diem.
+        $travelExpenseService = $this->get('opit.model.travel_expense');
+        $departureDateTime = new \DateTime($travelExpense->getDepartureDateTime()->format('Y-m-d H:i:s'));
+        $arrivalDateTime = new \DateTime($travelExpense->getArrivalDateTime()->format('Y-m-d H:i:s'));
+        $perDiem =  $travelExpenseService->calculatePerDiem(
+            $arrivalDateTime,
+            $departureDateTime
+        );
+        $employee = $travelExpense->getUser()->getEmployee();
+
+        // Sending email to payroll.
+        $templateVars = array(
+            'perDiem' => $perDiem,
+            'travelExpense' => $travelExpense,
+            'currencyFormat' => $currencyConfig['currency_format'],
+            'employee' => $employee
+        );
+        $emailManager = $this->get('opit.component.email_manager');
+        $emailManager->setRecipient($payroll->getEmail());
+        $emailManager->setSubject(
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - Approved travel expense (' . $travelRequest->getTravelRequestId() . ')'
+        );
+        $emailManager->setBodyByTemplate(
+            'OpitNotesTravelBundle:Mail:travelExpenseForPayroll.html.twig',
+            $templateVars
+        );
+        $emailManager->sendMail();
+
+        return new JsonResponse();
+    }
+
+    /**
      * Returns viewTravelExpense page rendered
      *
      * @param integer $travelExpenseId
