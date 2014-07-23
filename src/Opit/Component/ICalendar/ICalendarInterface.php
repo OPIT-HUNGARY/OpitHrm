@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the {Bundle}.
+ *  This file is part of the OPIT-HRM project.
  *
  *  (c) Opit Consulting Kft. <info@opit.hu>
  *
@@ -15,8 +15,8 @@ namespace Opit\Component\ICalendar;
  * Description of ICalendarInterface
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
- * @package Opit
- * @subpackage Notes
+ * @package OPIT-HRM
+ * @subpackage Component
  */
 interface ICalendarInterface
 {

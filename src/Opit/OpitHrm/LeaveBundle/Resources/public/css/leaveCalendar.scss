@@ -1,0 +1,23 @@
+/* 
+    Created on : Jul 10, 2014, 9:43:46 AM
+    Author     : OPIT\OPITHRM
+*/
+
+#leave-calendar-container {
+    position: relative;
+    
+    #export-button {
+        position: absolute;
+        z-index: 10;
+        display: none;
+        right: 2em;
+    }
+    
+    &.width-55 #export-button {
+        right: 0;
+    }
+    
+    &:hover #export-button {
+        display:block;
+    }
+}

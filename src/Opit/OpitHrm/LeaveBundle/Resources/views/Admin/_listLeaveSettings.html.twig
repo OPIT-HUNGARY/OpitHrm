@@ -1,0 +1,22 @@
+{% set index = 0 %}
+{% for leaveGroup in leaveGroups%}
+    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+            {{ leaveGroup.name|underscore|humanize }}
+        </h3>
+        <div class="container formFieldset padding-left-1-em">
+            {% if groupedLeaveSettings[leaveGroup.name] is defined %}
+                {% set leaveSettings = groupedLeaveSettings[leaveGroup.name] %}
+                    {% for leaveSetting in leaveSettings %}
+                        {{ render(controller('OpitOpitHrmLeaveBundle:AdminLeave:showLeaveSetting', { 'index': index, 'id': leaveSetting.getId })) }}
+                        {% set index = index + 1 %}
+                    {% endfor %}
+            {% endif %}
+            <input class="holiday_group_id" type="hidden" value="{{ leaveGroup.id}}"/> 
+        </div>
+        <span class="addLeaveSetting addFormFieldsetChild formFieldsetButton form-fieldset-add-button">
+            <i class="fa fa-plus-square"></i>
+            Add {{ leaveGroup.name|underscore|humanize }}
+        </span>
+    </div>
+{% endfor %}

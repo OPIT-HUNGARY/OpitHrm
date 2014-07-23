@@ -1,0 +1,48 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+
+{% block title %}
+    Team list - {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'teamForm';
+        var valueField = 'team';
+        var url = 'OpitOpitHrmUserBundle_admin_teams_show';
+        var listUrl = 'OpitOpitHrmUserBundle_admin_teams_list';
+        var removeUrl = 'OpitOpitHrmUserBundle_admin_teams_delete';
+        var propertyName = 'team';
+        var propertyNameCapital = 'Team';
+    </script>
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        '@OpitOpitHrmUserBundle/Resources/public/js/Admin/teamList.coffee'
+        output='js/opithrmuser/admin_teams_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<h1 class="margin-bottom-01em-important">Team list</h1>
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Teams can be created from here.They can be assigned to users later on.</div>
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <button id="add-team" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitOpitHrmUserBundle:Admin:_teamsList.html.twig' with {
+        'teams': teams,
+        'numberOfRelations': numberOfRelations
+        } %}
+{% endblock %}

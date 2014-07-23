@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <parameters>
+        <parameter key="opit.listener.job_position_post_listener.class">Opit\OpitHrm\HiringBundle\EventListener\JobPositionPostListener</parameter>
+        <parameter key="opit.manager.job_position_notification_manager.class">Opit\OpitHrm\HiringBundle\Manager\JobPositionNotificationManager</parameter>
+        <parameter key="opit.manager.applicant_status_manager.class">Opit\OpitHrm\HiringBundle\Manager\ApplicantStatusManager</parameter>
+        <parameter key="opit.manager.applicant_notification_manager.class">Opit\OpitHrm\HiringBundle\Manager\ApplicantNotificationManager</parameter>
+        <parameter key="opit.manager.external_application_email_manager.class">Opit\OpitHrm\HiringBundle\Manager\ExternalApplicationEmailManager</parameter>
+    </parameters>
+    <services>
+        <service id="opit.manager.job_position_notification_manager" class="%opit.manager.job_position_notification_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.listener.job_position_post_listener" class="%opit.listener.job_position_post_listener.class%">
+            <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="router" />
+            <tag name="doctrine.event_listener" event="postPersist" />
+            <tag name="doctrine.event_listener" event="postLoad" />
+        </service>
+        <service id="opit.manager.applicant_status_manager" class="%opit.manager.applicant_status_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="opit.component.email_manager" />
+            <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="opit.security.acl.manager" />
+            <argument type="service" id="security.context" />
+            <argument type="service" id="router" />
+            <argument>%application_name%</argument>
+            <call method="setRequest">
+                <argument type="service" id="request" on-invalid="null" strict="false" />
+            </call>
+        </service>
+        <service id="opit.manager.applicant_notification_manager" class="%opit.manager.applicant_notification_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="opit.manager.external_application_email_manager" class="%opit.manager.external_application_email_manager.class%">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="opit.component.email_manager" />
+        </service>
+    </services>
+</container>

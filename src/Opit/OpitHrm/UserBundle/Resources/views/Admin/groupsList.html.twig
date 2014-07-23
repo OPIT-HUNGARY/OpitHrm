@@ -1,0 +1,55 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+    Role list - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'groupForm';
+        var valueField = 'group';
+        var url = 'OpitOpitHrmUserBundle_admin_groups_show';
+        var listUrl = 'OpitOpitHrmUserBundle_admin_groups_list';
+        var removeUrl = 'OpitOpitHrmUserBundle_admin_groups_delete';
+        var propertyName = 'role';
+        var propertyNameCapital = 'Role';
+    </script>
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        '@OpitOpitHrmCoreBundle/Resources/public/js/ToolTipHelp.coffee'
+        output='js/opithrmuser/admin_groups_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+    <script type="text/javascript">
+        $(document).data('opithrm').funcs.showHideToolTip();
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <h1 class="margin-bottom-01em-important" id="idRole">Role list<i class="fa fa-info-circle cursor-pointer margin-left-5"></i></h1>
+{% include 'OpitOpitHrmUserBundle:Admin:_roleHelp.html.twig' %}
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Roles can be created from here.They can be assigned to users to manage their access in the portal.</div>
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    {% include 'OpitOpitHrmUserBundle:Admin:_groupsList.html.twig' with {
+        'groups': groups,
+        'systemRoles': systemRoles,
+        'numberOfRelations': numberOfRelations,
+        } %}
+    {% include 'OpitOpitHrmUserBundle:Shared:_dialog.html.twig' with {
+        'fieldName': 'group',
+        'fieldLabel': 'Role name'
+    } %}
+{% endblock %}    

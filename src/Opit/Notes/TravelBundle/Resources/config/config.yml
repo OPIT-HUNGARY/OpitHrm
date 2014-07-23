@@ -1,6 +1,0 @@
-twig:
-    form:
-        resources:
-            - 'OpitNotesTravelBundle:Form:fields.html.twig'
-
-opit_notes_travel:

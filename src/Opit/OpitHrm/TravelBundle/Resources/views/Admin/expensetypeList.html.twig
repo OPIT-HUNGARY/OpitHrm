@@ -1,0 +1,48 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+    Expense type list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'expenseTypeForm';
+        var valueField = 'expenseType';
+        var url = 'OpitOpitHrmTravelBundle_admin_travelexpensetype_show';
+        var listUrl = 'OpitOpitHrmTravelBundle_admin_travelexpensetype_list';
+        var removeUrl = 'OpitOpitHrmTravelBundle_admin_expensetype_delete';
+        var propertyName = 'expense type';
+        var propertyNameCapital = 'Expense type';
+    </script>
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        output='js/opithrmuser/admin_groups_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block body %}
+<h1 class="margin-bottom-01em-important">Expense Type List</h1>
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Expense types can be created from here.They are used while creating a travel expense request.</div>
+<table>
+    <tr>
+        <td class="padding-left-0">
+            <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
+<div id="list-reply-message"></div>
+{% include 'OpitOpitHrmTravelBundle:Admin:_expensetypeList.html.twig' with {
+    'expenseTypes': expenseTypes
+    } %}
+{% include 'OpitOpitHrmUserBundle:Shared:_dialog.html.twig' with {
+        'fieldName': 'expenseType',
+        'fieldLabel': 'Expense type'
+    } %}
+{% endblock %}

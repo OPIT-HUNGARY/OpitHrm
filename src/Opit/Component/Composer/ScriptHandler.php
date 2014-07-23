@@ -1,7 +1,7 @@
 <?php
 
 /*
- *  This file is part of the {Bundle}.
+ *  This file is part of the OPIT-HRM project.
  *
  *  (c) Opit Consulting Kft. <info@opit.hu>
  *
@@ -21,8 +21,8 @@ use Symfony\Component\Yaml\Exception\ParseException;
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
- * @package Notes
- * @subpackage UserBundle
+ * @package OPIT-HRM
+ * @subpackage Component
  */
 class ScriptHandler
 {

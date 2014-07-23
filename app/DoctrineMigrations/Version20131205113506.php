@@ -15,11 +15,11 @@ class Version20131205113506 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        if ($schema->getTable('notes_tr_destination')->hasIndex('UNIQ_4ACB4B27B2DE2FB7')) {
+        if ($schema->getTable('opithrm_tr_destination')->hasIndex('UNIQ_4ACB4B27B2DE2FB7')) {
             $this->write("<info>Unique index found on transportationType_id, altering...</info>");
-            $this->addSql("ALTER TABLE notes_tr_destination DROP INDEX UNIQ_4ACB4B27B2DE2FB7, ADD INDEX IDX_4ACB4B27B2DE2FB7 (transportationType_id)");
+            $this->addSql("ALTER TABLE opithrm_tr_destination DROP INDEX UNIQ_4ACB4B27B2DE2FB7, ADD INDEX IDX_4ACB4B27B2DE2FB7 (transportationType_id)");
         }
-        $this->addSql("ALTER TABLE notes_travel_request CHANGE opportunity_name opportunity_name VARCHAR(255) DEFAULT NULL");
+        $this->addSql("ALTER TABLE opithrm_travel_request CHANGE opportunity_name opportunity_name VARCHAR(255) DEFAULT NULL");
     }
 
     public function down(Schema $schema)

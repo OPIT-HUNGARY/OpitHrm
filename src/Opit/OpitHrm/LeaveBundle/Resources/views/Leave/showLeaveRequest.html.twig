@@ -1,0 +1,155 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+        {% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/StatusHistory.coffee'
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/showLeaveRequest.coffee'
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/main.coffee'
+    output='js/opithrmleave/show_leave_request.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        <script type="text/javascript">
+            {% if unpaidLeaveDetails['unpaidLeaveDetails'] is defined %}
+                {% if unpaidLeaveDetails['unpaidLeaveDetails']|length > 0 %}
+                    var html = 'Unpaid leaves created for some employees, kindly check for details in the email following this request.';
+                    (function() {
+                      $('<div></div>').html(html).dialog({
+                        title: 'Notification',
+                        width: 550,
+                        buttons: {
+                          'OK': function() {
+                            window.location.href = Routing.generate('OpitOpitHrmLeaveBundle_leave_list');
+                            $(this).dialog('close');
+                          }
+                        },
+                        close: function() {
+                            window.location.href = Routing.generate('OpitOpitHrmLeaveBundle_leave_list');
+                            $(this).dialog('destroy');
+                        }
+                      });
+
+                      return;
+
+                    }).call(this);
+                {% endif %}
+            {% endif %}
+            var isGeneralManager = {% if is_granted('ROLE_GENERAL_MANAGER') %}true{% else %}false{% endif %};
+        </script>
+    {% endjavascripts %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '@OpitOpitHrmTravelBundle/Resources/public/css/module.scss'
+    output='css/opithrmleave/show_leave_request.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block body %}
+    <h1>
+        {% if not isNewLeaveRequest == true %}
+        <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+            <i class="fa fa-book" data-id="{{ leaveRequest.id }}"></i>
+        </a>
+        {% endif %}
+        {% if isNewLeaveRequest == true %}New{% else%}Edit{% endif %} leave request
+    </h1>
+
+    <div id="changeStateWrapper">
+        <h3 class="display-inline-block margin-top-0">Change status: </h3>
+        {% if is_granted('status', leaveRequest) %}
+        <select class="changeState " data-lr="{{ leaveRequest.id }}">
+            {% for key, value in leaveRequestStates %}
+                <option data-id="{{ key }}" value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ leaveRequestStates|first }}</option>
+        </select>
+        {% endif %}
+    </div>
+    
+    <div class="dialog-description default-border-radius">
+        Leave requests can be added or edited from here.
+    </div>
+    
+    {% if leaveRequest.createdUser.id is defined %}
+        {% set lastContactDate = getLRLastNoticeDate(leaveRequest.created) %}
+        {% set lrInfo = 'Kindly contact general manager assigned for this leave request until ' ~ lastContactDate ~ '. Incase of no contact by employee the company hold the rights to approve the leave request.' %}
+        {% if "now"|date("Y-m-d") <= lastContactDate and leaveRequest.createdUser.id != leaveRequest.employee.user.id and isForApproval %}
+            <div class="dialog-description default-border-radius" style="background: #F70D1A;">
+            {{ lrInfo }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div id="reply-message" class="alert-message error-message {% if 0 == form_errors(form)|length %}display-none{% endif %}">
+        <i class="fa fa-exclamation-triangle"></i> <strong>Error messages:</strong>
+        {{ form_errors(form) }}
+    </div>
+    <form action="{{ path('OpitOpitHrmLeaveBundle_leave_show', { 'id': app.request.get('id')}) }}" method="post" id="leaveRequestForm" class="{% if not is_granted('edit', leaveRequest) %}disabled{% endif %}">
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Request for</h3>
+            {% if isGeneralManager %}
+            <div class="margin-left-1-em display-inline-block vertical-align-top">
+                <label class="padding-bottom-5 bold">Select</label>
+                <ul class="no-style option-list-scrollable">
+                    <li class="white-space-nowrap">
+                        <input type="radio" name="leave-request-owner" {% if 'own' == requestFor %}checked="checked"{% endif %} id="own" class="leave-request-owner" value="own" />
+                        <label for="own">Own</label>
+                    </li>
+                    <li class="white-space-nowrap">
+                        <input type="radio" name="leave-request-owner" {% if 'for-employees' == requestFor %}checked="checked"{% endif %} id="other-employees" class="leave-request-owner" value="for-employees" />
+                        <label for="other-employees">Other employees</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="margin-left-1-em display-none-important display-inline-block vertical-align-top" id="employee-selector">
+                <label class="padding-bottom-5 bold"><a id="forAll" href="#">Check all</a></label>
+                <ul class="no-style option-list-scrollable">
+                    {% for employee in employees %}
+                    <li class="white-space-nowrap">
+                        <input type="checkbox" id="company-employee-{{ employee.id }}" name="employee[]" value="{{ employee.id }}" class="company-employees margin-top-2 vertical-align-top" {% if employee.id in selectedEmployees %}checked="checked"{% endif %}>
+                        <label for="company-employee-{{ employee.id }}" class="vertical-align-top">{{ employee.employeeName }}</label>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="margin-left-1-em display-inline-block display-none-important">
+            {{ form_widget(form.user_ac) }}
+            </div>
+            {% else %}
+                <div class="margin-left-1-em">
+                {{ form_widget(form.user_ac) }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Leave dates</h3>
+            <a class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button{% if isGeneralManager %} display-none-important{% endif %}">Add leave date</a>
+        </div>
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">Approvers</h3>
+            <div id="required-approvals" class="margin-left-1-em">
+                <div class="display-inline-block width-300 margin-right-5">
+                {{ form_label(form.team_manager_ac) }}
+                {{ form_widget(form.team_manager_ac) }}
+                </div>
+                <div class="display-inline-block">
+                {{ form_label(form.general_manager_ac) }}
+                {{ form_widget(form.general_manager_ac) }}
+                </div>
+                {{ form_widget(form.general_manager) }}
+                {{ form_widget(form.team_manager) }}
+            </div>
+        </div>
+        {{ form_widget(form.leaves) }}
+        {{ form_widget(form.employee) }}
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.create_leave_request) }}
+        <a href="{{ path('OpitOpitHrmLeaveBundle_leave_list') }}" id="cancel-button" class="button">Cancel</a>
+    </form>    
+{% endblock %}

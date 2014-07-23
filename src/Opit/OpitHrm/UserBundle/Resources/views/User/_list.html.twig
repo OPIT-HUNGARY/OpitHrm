@@ -1,0 +1,86 @@
+<form class="delete-checkbox-form">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="u.username"></i>
+                <span class="order-text cursor-pointer">Username</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="u.email"></i>
+                <span class="order-text cursor-pointer">Email</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="e.employeeName"></i>
+                <span class="order-text cursor-pointer">Employee Name</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="u.isActive"></i>
+                <span class="order-text cursor-pointer">Is Active</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="u.ldapEnabled"></i>
+                <span class="order-text cursor-pointer">Ldap Enabled</span>
+            </th>
+            <th>
+                <span class="order-text cursor-pointer">Roles</span>
+            </th>
+            <th>Leave Entitlement</th>
+            <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td class="width-24-fix">
+                <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ user.id }}" {% if user.id == app.user.id %}disabled="disabled"{% endif %}>
+            </td>
+            <td>
+                <span class="list-username clickable text-decoration-underline cursor-pointer" data-user-id="{{ user.id }}">
+                    {{ user.username }}
+                </span>
+            </td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.employee.employeeName }}</td>
+            <td>
+                {% if user.isActive %}<i class="fa fa-check font-size-d8-em"></i>{% endif %}
+            </td>
+            <td>
+                {% if user.ldapEnabled %}<i class="fa fa-check font-size-d8-em"></i>{% endif %}
+            </td>
+            <td>
+                {% for role in user.roles %}
+                    {{ role.name }}
+                {% endfor %}
+            </td>
+            <td>{{ leaveEntitlement[user.id] }}</td>
+            <td>
+                <span class="reset-password clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Reset password">
+                    <i class="fa fa-undo"></i>
+                </span>
+                <span class="list-username clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Edit user">
+                    <i class="fa fa-pencil-square-o"></i>
+                </span>
+                {% if user.id != app.user.id %}
+                <span class="delete-single-user clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Delete user">
+                    <i class="fa fa-trash-o"></i>
+                 </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {# Display a no results message #}
+    {% if isSearch is defined %}
+        {% include 'OpitOpitHrmCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': users|length > 0 } %}
+    {% endif %}
+
+    {% if numberOfPages is defined and numberOfPages > 0 %}
+        {% include 'OpitOpitHrmUserBundle:Shared:_pager.html.twig' with
+            {
+                'numberOfPages': numberOfPages,
+                'maxPages': maxPages,
+                'offset': offset,
+                'url': path('OpitOpitHrmUserBundle_user_list')
+            }
+        %}
+    {% endif %}
+</form>

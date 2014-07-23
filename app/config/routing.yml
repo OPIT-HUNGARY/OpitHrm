@@ -1,43 +1,43 @@
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
 
-OpitNotesCoreBundle:
-    resource: "@OpitNotesCoreBundle/Controller/"
+OpitOpitHrmCoreBundle:
+    resource: "@OpitOpitHrmCoreBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_user:
-    resource: "@OpitNotesUserBundle/Controller/"
+opit_opithrm_user:
+    resource: "@OpitOpitHrmUserBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_notification:
-    resource: "@OpitNotesNotificationBundle/Controller/"
+opit_opithrm_notification:
+    resource: "@OpitOpitHrmNotificationBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_status:
-    resource: "@OpitNotesStatusBundle/Controller/"
+opit_opithrm_status:
+    resource: "@OpitOpitHrmStatusBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_leave:
-    resource: "@OpitNotesLeaveBundle/Controller/"
+opit_opithrm_leave:
+    resource: "@OpitOpitHrmLeaveBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_currency_rate:
-    resource: "@OpitNotesCurrencyRateBundle/Controller/"
+opit_opithrm_currency_rate:
+    resource: "@OpitOpitHrmCurrencyRateBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_travel:
-    resource: "@OpitNotesTravelBundle/Controller/"
+opit_opithrm_travel:
+    resource: "@OpitOpitHrmTravelBundle/Controller/"
     type:     annotation
     prefix:   /
 
-opit_notes_hiring:
-    resource: "@OpitNotesHiringBundle/Controller/"
+opit_opithrm_hiring:
+    resource: "@OpitOpitHrmHiringBundle/Controller/"
     type:     annotation
     prefix:   /
 

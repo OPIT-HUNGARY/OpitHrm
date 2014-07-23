@@ -1,3 +1,0 @@
-_welcome:
-    pattern:  /
-    defaults: { _controller: OpitNotesUserBundle:Default:index }

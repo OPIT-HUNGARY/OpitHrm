@@ -26,14 +26,14 @@ class AppKernel extends Kernel
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
             new JMS\SerializerBundle\JMSSerializerBundle(),
-            new Opit\Notes\CoreBundle\OpitNotesCoreBundle(),
-            new Opit\Notes\UserBundle\OpitNotesUserBundle(),
-            new Opit\Notes\TravelBundle\OpitNotesTravelBundle(),
-            new Opit\Notes\CurrencyRateBundle\OpitNotesCurrencyRateBundle(),
-            new Opit\Notes\LeaveBundle\OpitNotesLeaveBundle(),
-            new Opit\Notes\StatusBundle\OpitNotesStatusBundle(),
-            new Opit\Notes\NotificationBundle\OpitNotesNotificationBundle(),
-            new Opit\Notes\HiringBundle\OpitNotesHiringBundle(),
+            new Opit\OpitHrm\CoreBundle\OpitOpitHrmCoreBundle(),
+            new Opit\OpitHrm\UserBundle\OpitOpitHrmUserBundle(),
+            new Opit\OpitHrm\TravelBundle\OpitOpitHrmTravelBundle(),
+            new Opit\OpitHrm\CurrencyRateBundle\OpitOpitHrmCurrencyRateBundle(),
+            new Opit\OpitHrm\LeaveBundle\OpitOpitHrmLeaveBundle(),
+            new Opit\OpitHrm\StatusBundle\OpitOpitHrmStatusBundle(),
+            new Opit\OpitHrm\NotificationBundle\OpitOpitHrmNotificationBundle(),
+            new Opit\OpitHrm\HiringBundle\OpitOpitHrmHiringBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -15,7 +15,7 @@ class Version20140626142141 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
 
-        $this->addSql("ALTER TABLE notes_transportation_type ADD deletedAt DATETIME DEFAULT NULL");
+        $this->addSql("ALTER TABLE opithrm_transportation_type ADD deletedAt DATETIME DEFAULT NULL");
     }
 
     public function down(Schema $schema)
@@ -23,6 +23,6 @@ class Version20140626142141 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
 
-        $this->addSql("ALTER TABLE notes_transportation_type DROP deletedAt");
+        $this->addSql("ALTER TABLE opithrm_transportation_type DROP deletedAt");
     }
 }

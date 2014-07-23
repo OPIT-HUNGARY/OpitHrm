@@ -15,8 +15,8 @@ class Version20131125170325 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_users ADD employeeName VARCHAR(25) NOT NULL");
-        $this->addSql("CREATE UNIQUE INDEX UNIQ_8E744D49BAFFBE7F ON notes_users (employeeName)");
+        $this->addSql("ALTER TABLE opithrm_users ADD employeeName VARCHAR(25) NOT NULL");
+        $this->addSql("CREATE UNIQUE INDEX UNIQ_8E744D49BAFFBE7F ON opithrm_users (employeeName)");
     }
 
     public function down(Schema $schema)
@@ -24,7 +24,7 @@ class Version20131125170325 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("DROP INDEX UNIQ_8E744D49BAFFBE7F ON notes_users");
-        $this->addSql("ALTER TABLE notes_users DROP employeeName");
+        $this->addSql("DROP INDEX UNIQ_8E744D49BAFFBE7F ON opithrm_users");
+        $this->addSql("ALTER TABLE opithrm_users DROP employeeName");
     }
 }

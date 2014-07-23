@@ -1,4 +1,4 @@
-$.extend true, $(document).data('notes'),
+$.extend true, $(document).data('opithrm'),
     funcs:
         ###*
          * Helper to submit server side order queries on lists
@@ -22,9 +22,9 @@ $.extend true, $(document).data('notes'),
                data: 'showList=1&' + $form.serialize()
              .done (data) ->
                 $toReplace = $('#' + toRelplace).html data
-                $(document).data('notes').funcs.initPager()
-                $(document).data('notes').funcs.initListPageListeners()
-                $(document).data('notes').funcs.initDeleteMultipleListener()
+                $(document).data('opithrm').funcs.initPager()
+                $(document).data('opithrm').funcs.initListPageListeners()
+                $(document).data('opithrm').funcs.initDeleteMultipleListener()
                 $toReplace.find('th').eq($self.parent().index()).find('i').addClass(if order is 'desc' then 'fa-sort-desc' else 'fa-sort-asc')
         
         changeDeleteButton: (disableInputCheck = false) ->
@@ -42,7 +42,7 @@ $.extend true, $(document).data('notes'),
             $deleteButton.removeClass 'delete'
             
             $('#list-table input[type="checkbox"]').on 'change', ->
-                $(document).data('notes').funcs.changeDeleteButton()
+                $(document).data('opithrm').funcs.changeDeleteButton()
 
         # TODO: Remove any component specific code and make the API fully reusable.
         initListPageListeners: () ->
@@ -51,7 +51,7 @@ $.extend true, $(document).data('notes'),
 
             $('#list-table th .fa-trash-o').click ->
                 $('.deleteMultiple').filter(() ->
-                    return not @.disabled).checkAll $(document).data('notes').funcs.changeDeleteButton
+                    return not @.disabled).checkAll $(document).data('opithrm').funcs.changeDeleteButton
                 return
 
         setPagerNumbering: () ->
@@ -92,10 +92,10 @@ $.extend true, $(document).data('notes'),
                 $newPagerItem.insertAfter $('#pager .fa-caret-left')        
         
         reInitializeListTableListeners: () ->
-            $(document).data('notes').funcs.setPagerNumbering()
-            $(document).data('notes').funcs.initListPageListeners()
-            $(document).data('notes').funcs.initPager()
-            $(document).data('notes').funcs.initDeleteMultipleListener()
+            $(document).data('opithrm').funcs.setPagerNumbering()
+            $(document).data('opithrm').funcs.initListPageListeners()
+            $(document).data('opithrm').funcs.initPager()
+            $(document).data('opithrm').funcs.initDeleteMultipleListener()
         
         initPager: () ->
             paginateAction = ($form, requestUrl, requestData) ->
@@ -106,7 +106,7 @@ $.extend true, $(document).data('notes'),
                 .done (data) ->
                     if data.indexOf('error') < 0
                         $('#list-table').parent().replaceWith data
-                    $(document).data('notes').funcs.reInitializeListTableListeners()
+                    $(document).data('opithrm').funcs.reInitializeListTableListeners()
                     $field = $('#list-table').find('[data-field="' + $form.find('#order_field').val() + '"]')
                     $field.addClass 'fa-sort-' + $form.find('#order_dir').val()
 

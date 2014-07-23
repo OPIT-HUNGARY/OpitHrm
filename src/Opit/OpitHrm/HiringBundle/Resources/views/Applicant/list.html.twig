@@ -1,0 +1,37 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+        Applicant list - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/StatusHistory.coffee'
+        '@OpitOpitHrmCoreBundle/Resources/public/js/SearchForm.coffee'
+        '@OpitOpitHrmHiringBundle/Resources/public/js/applicant/list.coffee'
+        '@OpitOpitHrmHiringBundle/Resources/public/js/applicant/changeApplicantStatus.coffee'
+    output='js/opithrmhiring/list_applicant.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <h1>Applicant list</h1>
+    {% include 'OpitOpitHrmHiringBundle:Applicant:_searchForm.html.twig' with { 'order_field': 'jp.id' } %}
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <a href="{{ path('OpitOpitHrmHiringBundle_applicant_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
+                <button id="delete" class="button delete button-disabled" disabled="disabled"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <div id="applicant_list">
+        {% include 'OpitOpitHrmHiringBundle:Applicant:_list.html.twig' %}
+    </div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% form_theme form 'OpitOpitHrmUserBundle:Form:form_template.html.twig' %}
+
+{% set labelWrapperClasses = ['vertical-align-top', 'item-input-box-header', 'float-left height-20', 'color-white', 'background-section-color-grey', 'bold', 'padding-4'] %}
+{% if form.vars.value.getId() is not null %}
+    {% set title = "Edit leave category"  %}
+    {% set desc = "Edit an existing leave category." %}
+{% else %}
+    {% set title = "Create leave category"  %}
+    {% set desc = "Create a new leave category." %}
+{% endif %}
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+{{ form_start(form, {'attr': { 'id': 'addleavecategory_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
+        <div class="float-left width-24">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.name) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.name, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+        </div>
+        <div class="float-left width-48">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.description) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.description, {'attr': {'class': 'height-50 width-96 default-border-radius'}}) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+        <div class="float-left width-30">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.leaveCategoryDuration) }}
+            </div>
+            <div class="vertical-align-top item-input-box height-60 float-left margin-bottom-10 padding-3">
+                {{ form_widget(form.leaveCategoryDuration, {'attr': {'class': 'width-96 default-border-radius'}}) }}
+                {{ form_errors(form.leaveCategoryDuration) }}
+            </div>
+        </div>
+        <div class="float-left width-24">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.isPaid) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.isPaid, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.isPaid) }}
+            </div>
+        </div>
+        <div class="float-left width-48">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.isCountedAsLeave) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.isCountedAsLeave, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.isCountedAsLeave) }}
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}

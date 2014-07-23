@@ -1,0 +1,85 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        'libs/fullcalendar/css/fullcalendar.css'
+        '@OpitOpitHrmLeaveBundle/Resources/public/css/leaveCalendar.scss'
+    output='css/opithrmuser/show_user_summary.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+{% block title %}
+    Employee Summary - {{ parent() }}
+{% endblock %}
+{% block body %}
+<h1>Information Board</h1>
+    <div id="employeeInfoWrapper" class="clearfix">
+        <div class="float-left width-290 summary-box margin-right-5">
+            <h3><i class="fa fa-user"></i>  Employee Info </h3>
+            <table class="width-100">
+                <tr>
+                    <td class="width-32">Name:</td>
+                    <td>{{ employee.employeeName|e }}</td>
+                </tr>
+                <tr>
+                    <td>Joining:</td>
+                    <td>{{ employee.joiningDate|date('d  F  Y') }}</td>
+                </tr>
+                <tr>
+                    <td>Birth Date:</td>
+                    <td>{{ employee.dateOfBirth|date('d  F  Y') }}</td>
+                </tr>
+                <tr>
+                    <td>Children:</td>
+                    <td>{{ employee.numberOfChildren|e }}</td>
+                </tr>
+                <tr>
+                    <td>Tax-ID:</td>
+                    <td>{{ employee.taxIdentification }}</td>
+                </tr>
+                <tr>
+                    <td>Bank Name:</td>
+                    <td>{{ employee.bankName|e }}</td>
+                </tr>
+                <tr>
+                    <td>BAN:</td>
+                    <td>{{ employee.bankAccountNumber|e }}</td>
+                </tr>
+                <tr>
+                    <td>Job Title:</td>
+                    <td>{%if employee.jobTitle.title is defined %}{{ employee.jobTitle.title|e }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>Work Hours:</td>
+                    <td>{{ employee.workingHours|e }}</td>
+                </tr>
+            </table>
+        </div>
+        {% if bundleExist('OpitOpitHrmTravelBundle') %}
+            {{ render(controller('OpitOpitHrmTravelBundle:Travel:employeeTravelInfoBoard')) }}
+        {% endif %}
+        {% if bundleExist('OpitOpitHrmLeaveBundle') %}
+            {{ render(controller('OpitOpitHrmLeaveBundle:Leave:employeeLeavesinfoBoard')) }}
+            <div class="clearfix"></div>
+            {{ render(controller('OpitOpitHrmLeaveBundle:Calendar:showTeamLeavesCalendar', {
+                'partial': true
+            })) }}
+        {% endif %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/list.coffee'
+    output='js/opithrmuser/list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+    {% endjavascripts %}
+    {% if bundleExist('OpitOpitHrmLeaveBundle') %}
+        {% javascripts
+            'libs/fullcalendar/js/fullcalendar.min.js'
+            '@OpitOpitHrmLeaveBundle/Resources/public/js/Calendar/teamLeavesCalendar.coffee'
+            output='js/team_leaves_calendar.js' filter='?yui_js' %}
+            <script type="text/javascript" src="{{ asset(asset_url) }}" ></script>
+        {% endjavascripts %}
+    {% endif %}
+{% endblock %}

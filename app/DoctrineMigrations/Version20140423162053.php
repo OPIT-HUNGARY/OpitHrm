@@ -15,14 +15,14 @@ class Version20140423162053 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        if ($schema->getTable('notes_users')->hasIndex('UNIQ_8E744D49F85E0677')) {
-            $this->addSql("DROP INDEX UNIQ_8E744D49F85E0677 ON notes_users");
+        if ($schema->getTable('opithrm_users')->hasIndex('UNIQ_8E744D49F85E0677')) {
+            $this->addSql("DROP INDEX UNIQ_8E744D49F85E0677 ON opithrm_users");
         }
-        if ($schema->getTable('notes_users')->hasIndex('UNIQ_8E744D49E7927C74')) {
-            $this->addSql("DROP INDEX UNIQ_8E744D49E7927C74 ON notes_users");
+        if ($schema->getTable('opithrm_users')->hasIndex('UNIQ_8E744D49E7927C74')) {
+            $this->addSql("DROP INDEX UNIQ_8E744D49E7927C74 ON opithrm_users");
         }
-        if ($schema->getTable('notes_users')->hasIndex('UNIQ_8E744D49BFA0107D')) {
-            $this->addSql("DROP INDEX UNIQ_8E744D49BFA0107D ON notes_users");
+        if ($schema->getTable('opithrm_users')->hasIndex('UNIQ_8E744D49BFA0107D')) {
+            $this->addSql("DROP INDEX UNIQ_8E744D49BFA0107D ON opithrm_users");
         }
     }
 

@@ -15,7 +15,7 @@ class Version20140627103830 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_job_position ADD external_token VARCHAR(255) DEFAULT NULL");
+        $this->addSql("ALTER TABLE opithrm_job_position ADD external_token VARCHAR(255) DEFAULT NULL");
     }
 
     public function down(Schema $schema)
@@ -23,6 +23,6 @@ class Version20140627103830 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_job_position DROP external_token");
+        $this->addSql("ALTER TABLE opithrm_job_position DROP external_token");
     }
 }

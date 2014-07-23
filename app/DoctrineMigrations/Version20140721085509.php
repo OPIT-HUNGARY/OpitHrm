@@ -16,13 +16,13 @@ class Version20140721085509 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
 
-        $exists = $this->connection->fetchColumn("SELECT COUNT(id) AS `exists` FROM notes_status_workflow WHERE discr = 'travel'");
+        $exists = $this->connection->fetchColumn("SELECT COUNT(id) AS `exists` FROM opithrm_status_workflow WHERE discr = 'travel'");
 
         // Skip if data already migrated
         $this->skipIf((bool) !$exists, "Travel status workflow migration already done, this migration will be skipped.");
 
-        $this->addSql("UPDATE notes_status_workflow SET discr = 'travelExpense' WHERE discr = 'travel'");
-        $this->addSql("INSERT INTO notes_status_workflow (parent_id, status_id, discr) VALUES (NULL, 1, 'travelRequest'), (1, 2, 'travelRequest'), (2, 3, 'travelRequest'), (2, 4, 'travelRequest'), (3, 2, 'travelRequest'), (2, 5, 'travelRequest')");
+        $this->addSql("UPDATE opithrm_status_workflow SET discr = 'travelExpense' WHERE discr = 'travel'");
+        $this->addSql("INSERT INTO opithrm_status_workflow (parent_id, status_id, discr) VALUES (NULL, 1, 'travelRequest'), (1, 2, 'travelRequest'), (2, 3, 'travelRequest'), (2, 4, 'travelRequest'), (3, 2, 'travelRequest'), (2, 5, 'travelRequest')");
     }
 
     public function down(Schema $schema)

@@ -25,6 +25,6 @@ doctrine:
         driver:   %database_driver%
         host:     %database_host%
         port:     %database_port%
-        dbname:   'notes_test'
+        dbname:   'opithrm_test'
         user:     %database_user%
         password: %database_password%

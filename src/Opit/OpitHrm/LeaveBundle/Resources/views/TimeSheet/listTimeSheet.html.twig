@@ -1,0 +1,29 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+        Time Sheet list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <h1 class="margin-bottom-01em-important">Time sheet list</h1>
+    <div class="listing-description">Time sheets can be viewed from here. Role user and above are considered in time sheet.</div>
+    {% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+    <div id="list-reply-message"></div>
+    <div id="leave_list">
+        {% include 'OpitOpitHrmLeaveBundle:TimeSheet:_listTimeSheet.html.twig' %}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/listTimeSheet.coffee'
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/main.coffee'
+        '@OpitOpitHrmUserBundle/Resources/public/js/list.coffee'
+    output='js/opithrmleave/timesheet_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}

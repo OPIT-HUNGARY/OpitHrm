@@ -1,0 +1,77 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+        {% if travelRequest.id is empty or travelRequest.id == 'new' %}
+        New travel request
+        {% else %}
+        Edit travel request
+        {% endif %}
+        - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/StatusHistory.coffee'
+        '@OpitOpitHrmTravelBundle/Resources/public/js/showTravelRequest.coffee'
+    output='js/opithrmtravel/show_travel_request.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        '@OpitOpitHrmTravelBundle/Resources/public/css/showTravelRequest.scss'
+        '@OpitOpitHrmTravelBundle/Resources/public/css/module.scss'
+    output='css/opithrmtravel/show_travel_request.css' filter='?yui_css,cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}        
+        
+{% block body %}
+    <h1>
+        {% if travelRequest.id is empty or travelRequest.id == 'new' %}
+            New Travel Request
+        {% else %}
+            <a href="#" class="status-history float-right status-history margin-top-10 margin-right-10 visibility-hidden" title="Status history">
+                <i class="fa fa-book" data-id="{{ travelRequest.id }}"></i>
+            </a>
+            Edit Travel Request ({{ travelRequest.travelRequestId }})
+        {% endif %}
+    </h1>
+
+    <div id="changeStateWrapper" class="display-block">
+        <h3 class="display-inline-block margin-top-0">Change status:</h3>
+        {% if isStatusLocked == '0' %}
+        <select data-tr="{{ travelRequest.id }}" class="changeState display-inline-block">
+            {% for key, value in travelRequestStates %}
+            <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+        {% else %}
+        <select class="changeState dropdown-disabled" disabled="disabled">
+            <option>{{ travelRequestStates|first }}</option>
+        </select>
+        {% endif %}
+    </div>
+    <div class="dialog-description default-border-radius">
+        Travel request can be added or edited from here.
+    </div>
+    
+    {% if form_errors(form)|length > 0 %}
+    <div class="alert-message error-message">
+        <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
+        {{ form_errors(form) }}
+    </div>
+    {% endif %}
+    {% if isEditLocked == '1' %}
+        {% set disabled = 'disabled' %}
+    {% else %}
+        {% set disabled = '' %}
+    {% endif %}
+        {{ form(form, {
+            'action': (path('OpitOpitHrmTravelBundle_travel_show', { 'id': app.request.get('id')})),
+            'method': 'POST',
+            'attr': {'id': 'travelRequestForm', 'class': disabled},
+            'errors': false
+           })
+        }}    
+{% endblock %}

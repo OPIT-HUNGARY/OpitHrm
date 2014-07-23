@@ -15,7 +15,7 @@ class Version20140424163508 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_users CHANGE ldapEnabled ldapEnabled TINYINT(1) DEFAULT '0' NOT NULL");
+        $this->addSql("ALTER TABLE opithrm_users CHANGE ldapEnabled ldapEnabled TINYINT(1) DEFAULT '0' NOT NULL");
     }
 
     public function down(Schema $schema)
@@ -23,6 +23,6 @@ class Version20140424163508 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_users CHANGE ldapEnabled ldapEnabled TINYINT(1) DEFAULT NULL");
+        $this->addSql("ALTER TABLE opithrm_users CHANGE ldapEnabled ldapEnabled TINYINT(1) DEFAULT NULL");
     }
 }

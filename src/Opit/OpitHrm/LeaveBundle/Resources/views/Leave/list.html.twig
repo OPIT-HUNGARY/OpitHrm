@@ -1,0 +1,40 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+        Leave request list - {{ parent() }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/SearchForm.coffee'
+        '@OpitOpitHrmCoreBundle/Resources/public/js/StatusHistory.coffee'
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/list.coffee'
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/main.coffee'
+    output='js/opithrmleave/list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <h1>Leave request list</h1>
+    {% include 'OpitOpitHrmLeaveBundle:Leave:_searchForm.html.twig' with { 'order_field': 'lr.id' } %}
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <a href="{{ path('OpitOpitHrmLeaveBundle_leave_show') }}"><button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button></a>
+                <button id="delete" class="button delete button-disabled" disabled="disabled"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <div id="leave-entitlement" class="background-color-light-grey margin-bottom-10 padding-10 border-radius-5">
+        <strong>Annual leave entitlement:</strong> {{ leaveDays }} day(s).
+    </div>
+    <div id="leave_list">
+        {% include 'OpitOpitHrmLeaveBundle:Leave:_list.html.twig' %}
+    </div>    
+{% endblock %}

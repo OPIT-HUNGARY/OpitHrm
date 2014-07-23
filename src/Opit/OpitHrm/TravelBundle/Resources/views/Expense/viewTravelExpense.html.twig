@@ -1,0 +1,369 @@
+{% block stylesheets %}
+    {% if action is defined and action == 'export' %}
+        {# TCDPF cannot handle versioned absolute assets, cut the query #}
+        {% set printAsset = asset('bundles/opithrmtravel/css/travelExpensePrintView.css')|split('?') %}
+        <link rel="stylesheet" type="text/css" media="print" href="{{ printAsset[0] }}" />
+    {% else %}
+        {% stylesheets
+            'bundles/bmatznerfontawesome/css/font-awesome.min.css'
+            '@OpitOpitHrmTravelBundle/Resources/public/css/travelExpensePrintView.scss'
+            output='css/opithrmtravel/travel_expense_print.css' filter='?yui_css, cssrewrite'%}
+            <link rel="stylesheet" type="text/css" media="all" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endif %}
+{% endblock %}
+
+<a href="{{ path('OpitOpitHrmTravelBundle_expense_export', {'id': app.request.get('id')}) }}">
+    <i class="fa fa-file-pdf-o fa-2x icons position-fixed fix-right-10 fix-top-30"></i>
+</a>
+<i class="fa fa-print fa-2x icons position-fixed fix-right-50"></i>
+<br />
+<img src="{{ asset('images/opitLogo.png') }}" id="opitLogo" width="100px" height="23px" />
+<h3>Travel Expense Report  /  Kiküldetési költségelszámolás - {{ trId }}</h3>
+
+{# User info #}
+<table class="bordered">
+    <tr>
+        <td colspan="2" class="table-title">
+            User info
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">Employee Name  /  Dolgozó neve</td>
+        {% if travelExpense.user.employee.employeeName is defined %}
+        <td>{{ travelExpense.user.employee.employeeName }}</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="bold">Tax id  /  Adóazonosító</td>
+        <td>{{ travelExpense.taxIdentification }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Bank account number  /  Bankszámlaszám</td>
+        <td>{{ travelExpense.bankAccountNumber }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Bank name  /  Bank neve</td>
+        <td>{{ travelExpense.bankName }}</td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+{# Reason for travel #}
+<table>
+    <tr>
+        <td colspan="2" class="table-title">
+            Reason for travel  /  Utazás oka
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">{{ travelExpense.travelRequest.tripPurpose }}</td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+{# Travel dates #}
+<table class="bordered" >
+    <tr>
+        <td colspan="4" class="table-title">
+            Travel dates  /  Utazási dátumok
+        </td>
+    </tr>
+    <tr class="bold">
+        <td></td>
+        <td>Date  /  Dátum</td>
+        <td>Time  /  Idő</td>
+        <td>Country  /  Ország</td>
+    </tr>
+    <tr>
+        <td class="bold">Departure  /  Indulás</td>
+        <td>{{ travelExpense.departureDateTime|date('Y-m-d') }}</td>
+        <td>{{ travelExpense.departureDateTime|date('H:i') }}</td>
+        <td>{{ travelExpense.departureCountry }}</td>
+    </tr>
+    <tr>
+        <td class="bold">Arrival  /  Érkezés</td>
+        <td>{{ travelExpense.arrivalDateTime|date('Y-m-d') }}</td>
+        <td>{{ travelExpense.arrivalDateTime|date('H:i') }}</td>
+        <td>{{ travelExpense.arrivalCountry }}</td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+<table>
+    <tr>
+        <td colspan="2" class="table-title">
+            Per diem  /  Napidíj
+        </td>
+    </tr>
+    <tr>
+        <td class="bold">Per Diem in EUR  /  Napidíj EUR-ban</td>
+        <td>{{ perDiem['totalPerDiem']|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} EUR</td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+<table class="bordered">
+    <tr>
+        <td colspan="5" class="table-title">Advances info  /  Előleg információ</td>
+    </tr>
+    <tr>
+        <td class="bold" style="width: 100px;">Advances received  /  Felvett előleg</td>
+        <td class="bold" style="width: 100px;">Amount spent  /  Elköltött előleg</td>
+        <td class="bold" style="width: 185px;">Advances payback (to OPIT)  /  Előleg visszafizetés</td>
+        <td class="bold" style="width: 185px;">Payable to employee (by OPIT in HUF)  /  Elszámolandó</td>
+        <td class="bold" style="width: 80px;">Currency  /  Pénznem</td>
+    </tr>
+    {% for advancePayback in advancesPayback %}
+    <tr>
+        <td>{{ formatAmount(advancePayback['advanceReceived'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency'])  }}</td>
+        <td>{{ formatAmount(advancePayback['amountSpent'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}</td>
+        <td>{{ formatAmount(advancePayback['advancePayback'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}</td>
+        <td>{{ formatAmount(advancePayback['payableToEmployee'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, advancePayback['currency']) }}
+            {% if advancePayback['currency'] != 'HUF' %}
+                {% if advancePayback['payableToEmployee'] != '0' %}
+                {% if advancePayback['amountInHUF'] != '0' %}
+                ({{ formatAmount(advancePayback['amountInHUF'], currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'HUF') }} HUF)
+                {% endif %}
+                {% endif %}
+            {% endif %}
+        </td>
+        <td>{{ advancePayback['currency'] }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{ formatAmount(totalAmountPayableInHUF, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'HUF') }} HUF</td>
+        <td></td>
+    </tr>
+</table>
+<div class="height-20"></div>
+
+{# Total amount of expenses #}
+<table class="bordered">
+    <tr>
+        <td colspan="2" class="table-title">
+            Total amount of expenses  /  Összes költség
+        </td>
+    </tr>
+    {% set expensePaidByCompany = 0 %}
+    {% set companyPaidExpensesTitle %}
+        <td class="bold" style="width:400px;">
+            Expenses paid by company (already paid by OPIT)  /<br />
+            Cég által fizetett költségek (OPIT által kifizetve)
+        </td>
+    {% endset %}
+            <tr>
+            {% if '0' == expensePaidByCompany %}
+                {{ companyPaidExpensesTitle }}
+                {% set expensePaidByCompany = 1 %}
+            {% else %}
+                <td></td>
+            {% endif %}
+            <td class="white-space-nowrap" style="width:250px;">
+            {% for currency, cost in companyPaidExpenses %}
+                {% if '0' != cost %}
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
+                {% endif %}
+            {% endfor %}                
+            </td>
+            </tr>
+    {% if '0' == expensePaidByCompany %}
+        <tr>
+            {{ companyPaidExpensesTitle }}
+            <td>0</td>
+            <td></td>
+        </tr>
+    {% endif %}
+    
+    {% set expensePaidByEmployee = 0 %}
+    {% set employeePaidExpenseTitle %}
+        <td class="bold" style="width:400px;">
+            Expenses paid by employee  /<br />
+            Dolgozó által fizetett költségek
+        </td>
+    {% endset %}
+            <tr>
+            {% if '0' == expensePaidByEmployee %}
+                {{ employeePaidExpenseTitle }}
+                {% set expensePaidByEmployee = 1 %}
+            {% else %}
+            <td></td>
+            {% endif %}
+            <td class="white-space-nowrap" style="width:250px;">
+            {% for currency, cost in employeePaidExpenses %}
+                {% if '0' != cost %}
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
+                {% endif %}
+            {% endfor %}
+            </td>
+            </tr>
+    {% if '0' == expensePaidByEmployee %}
+        <tr>
+            {{ employeePaidExpenseTitle }}
+            <td>0</td>
+            <td></td>
+        </tr>
+    {% endif %}
+   
+    {% set totalExpenses = (expensesPaidByEmployee + expensesPaidByCompany + perDiem['totalPerDiem']) %}
+    <tr class="bold">
+        <td>
+            Total expenses in HUF  /  Összes költség HUF-ban
+        </td>
+        <td class="white-space-nowrap">
+            {{ convertCurrency('EUR','HUF', totalExpenses, midRate)|round|number_format(0, '', currencyFormat.thousands_sep) }} HUF
+        </td>
+    </tr>
+    <tr class="bold">
+        <td>
+            Total expenses in EUR  /  
+            Összes költség EUR-ban
+        </td>
+        <td class="white-space-nowrap">
+            {{ totalExpenses|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }} EUR
+        </td>
+    </tr>
+</table>
+<div class="height-20"></div>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    &nbsp;&nbsp;{{ employee }}
+</div>
+<div class="signiture">
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
+</div>
+
+{% if travelExpense.userPaidExpenses is defined %}
+{% if travelExpense.userPaidExpenses|length > 0 %}
+<div class="page-break-after"></div>
+
+{# Employee paid expenses #}
+<table class="bordered">
+    <tr>
+        <td colspan="3" class="table-title">
+            Employee paid expenses
+        </td>
+    </tr>
+    {% for userPaidExpenses in travelExpense.userPaidExpenses %}
+    <tr>
+        <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold width-315">Destination</td>
+        <td class="width-315">{{ userPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Description</td>
+        <td class="width-315">{{ userPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Expense type</td>
+        <td class="width-315">{{ userPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Amount</td>
+        <td class="width-315">{{ formatAmount(userPaidExpenses.amount, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, userPaidExpenses.currency.code) }}
+            {{ userPaidExpenses.currency.code }}
+        </td>        
+    </tr>
+    <tr>
+        <td class="bold width-315">Date</td>
+        <td class="width-315">{{ userPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    <tr height="10px">
+        <td style="border:none;"></td>
+    </tr>
+    
+    {% endfor %}
+</table>
+<div class="height-20"></div>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    &nbsp;&nbsp;{{ employee }}
+</div>
+<div class="signiture">
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}
+
+{% if travelExpense.companyPaidExpenses is defined %}
+{% if travelExpense.companyPaidExpenses|length > 0 %}
+<div class="page-break-after"></div>
+
+{# Company paid expenses #}
+<table class="bordered">
+    <tr>
+        <td colspan="3" class="table-title">
+            Company paid expenses
+        </td>
+    </tr>
+    {% for companyPaidExpenses in travelExpense.companyPaidExpenses %}
+    <tr>
+        <td class="incrementation" rowspan="5">{{ loop.index }}</td>
+        <td class="bold width-315">Destination</td>
+        <td class="width-315">{{ companyPaidExpenses.destination }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Description</td>
+        <td class="width-315">{{ companyPaidExpenses.description }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Expense type</td>
+        <td class="width-315">{{ companyPaidExpenses.expenseType.name }}</td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Amount</td>
+        <td class="width-315">{{ formatAmount(companyPaidExpenses.amount, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, companyPaidExpenses.currency.code) }}
+            {{ companyPaidExpenses.currency.code }}
+        </td>
+    </tr>
+    <tr>
+        <td class="bold width-315">Date</td>
+        <td class="width-315">{{ companyPaidExpenses.date|date('Y-m-d') }}</td>
+    </tr>
+    <tr height="10px">
+        <td style="border:none;"></td>
+    </tr>
+
+    {% endfor %}
+</table>
+<div class="height-20"></div>
+<div class="signiture" style="background-color:white;">
+    ____________________<br />
+    &nbsp;&nbsp;{{ employee }}
+</div>
+<div class="signiture">
+    {% if datetime is not null %}
+        Approved by {{ generalManager }} on {{ datetime|date('Y-m-d H:i') }}.
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}
+<div class="page-break-after"></div>
+<table class="bordered">
+    <tr>
+        <td colspan="2" class="table-title">
+            Exchange rates
+        </td>
+    </tr>
+    {% for key, value in rates %}
+        <tr>
+            <td class="bold">{{ key }}</td>
+            <td>{{ value|number_format(currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep) }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="height-20"></div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+{% javascripts
+    '@OpitOpitHrmTravelBundle/Resources/public/js/travelExpensePrintView.coffee'
+output='js/opithrmtravel/travel_expense_print.js' filter='?yui_js' %}
+    <script type="text/javascript" src="{{ asset_url }}" ></script>
+{% endjavascripts %}

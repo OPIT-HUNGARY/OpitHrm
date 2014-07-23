@@ -1,5 +1,5 @@
-$(document).data 'notes', {}
-$.extend true, $(document).data('notes'),
+$(document).data 'opithrm', {}
+$.extend true, $(document).data('opithrm'),
     funcs:
         changeStateDialog: ($dropdown, callback, options = {}) ->
             $.extend options, {
@@ -10,20 +10,20 @@ $.extend true, $(document).data('notes'),
 
             throw "Upps, something went wrong." if not options.foreignId?
 
-            $.post Routing.generate('OpitNotesStatusBundle_status_change_show'), options, (data) ->
+            $.post Routing.generate('OpitOpitHrmStatusBundle_status_change_show'), options, (data) ->
                 $('<div></div>').html(data).dialog
                     width: 500
                     title: '<i class="fa fa-exclamation-triangle"></i> ' + ((if options.type? then options.type.toString() else '') + ' status change').capitalize()
                     buttons:
                         Yes: ->
-                            callback $(@).find('form').serialize(), $(document).data('notes').funcs.disableStatusDropdown($dropdown)
+                            callback $(@).find('form').serialize(), $(document).data('opithrm').funcs.disableStatusDropdown($dropdown)
                             $(@).dialog 'destroy'
                         No: ->
-                            $(document).data('notes').funcs.enableStatusDropdown $dropdown
+                            $(document).data('opithrm').funcs.enableStatusDropdown $dropdown
                             $(@).dialog 'destroy'
                     close: ->
                         $(@).dialog 'destroy'
-                        $(document).data('notes').funcs.enableStatusDropdown $dropdown
+                        $(document).data('opithrm').funcs.enableStatusDropdown $dropdown
 
         initDateInputs: ($container) ->
             $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
@@ -41,7 +41,7 @@ $.extend true, $(document).data('notes'),
                     Yes: ->
                         $.ajax
                           method: 'POST'
-                          url: if type is 'expense' then Routing.generate 'OpitNotesTravelBundle_expense_delete' else Routing.generate 'OpitNotesTravelBundle_travel_delete'
+                          url: if type is 'expense' then Routing.generate 'OpitOpitHrmTravelBundle_expense_delete' else Routing.generate 'OpitOpitHrmTravelBundle_travel_delete'
                           data: 'id': self.data 'id'
                         .done (data) ->
                             if data is '0' then self.parent().parent().remove()
@@ -49,8 +49,8 @@ $.extend true, $(document).data('notes'),
                         .fail () ->
                             $('<div></div>').html("The travel #{ type } could not be deleted due to an error.").dialog
                                 title: 'Error'
-                        $(document).data('notes').funcs.initListPageListeners()
-                        $(document).data('notes').funcs.initPager()
+                        $(document).data('opithrm').funcs.initListPageListeners()
+                        $(document).data('opithrm').funcs.initPager()
                         $(@).dialog 'close'
                         return
                     No: ->
@@ -75,13 +75,13 @@ $.extend true, $(document).data('notes'),
                         data: $(identifier).serialize()
                       .done (data) ->
                         if data[0]?.userRelated
-                            $(document).data('notes').funcs.showAlert data, 'create', 'Deletion not allowed for roles with relations', true
+                            $(document).data('opithrm').funcs.showAlert data, 'create', 'Deletion not allowed for roles with relations', true
                         else
                           $(identifier+':checked').closest('tr').remove()
 
-                        $(document).data('notes').funcs.initListPageListeners()
-                        $(document).data('notes').funcs.initDeleteMultipleListener()
-                        $(document).data('notes').funcs.initPager()
+                        $(document).data('opithrm').funcs.initListPageListeners()
+                        $(document).data('opithrm').funcs.initDeleteMultipleListener()
+                        $(document).data('opithrm').funcs.initPager()
                         return
                       .fail () ->
                           $('<div></div>').html('The '+message+' could not be deleted due to an error.').dialog
@@ -372,7 +372,7 @@ $(document).ajaxComplete (event, XMLHttpRequest, ajaxOptions) ->
     
 $(document).ajaxError (event, request, settings, thrownError) ->
     if window.location.href.indexOf('login') <= -1 and 401 is request.status
-        loginUrl = Routing.generate 'OpitNotesUserBundle_security_login'
+        loginUrl = Routing.generate 'OpitOpitHrmUserBundle_security_login'
         $sessionTimeout = $('<div id="dialog-travelrequest-preview"></div>').html "Your session has timed out please <a href='#{ loginUrl }'>login</a> again."
         $sessionTimeout.dialog
             title: '<i class="fa fa-exclamation-circle"></i> Session timeout'
@@ -460,7 +460,7 @@ loadWeather = (location, woeid, reinit = false) ->
 
 $(document).ready ->
     # init date picker plugin
-    $(document).data('notes').funcs.initDateInputs()
+    $(document).data('opithrm').funcs.initDateInputs()
     # init tooltips
     $('[title]').each ->
         if $(@).hasClass 'tipsy-notification'

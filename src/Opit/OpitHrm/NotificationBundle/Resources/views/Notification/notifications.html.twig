@@ -1,0 +1,138 @@
+<div class="notification-type-title">Travel request</div>
+{% if '0' == travelRequests|length %}
+<h5>
+    You have no travel request notifications.
+</h5>
+{% endif %}
+{% for travelRequest in travelRequests %}
+    <div class="notification {% if 2 == travelRequest.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ travelRequest.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ travelRequest.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ travelRequest.id }}">
+            {% set msg = travelRequest.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitOpitHrmTravelBundle_travel_show', { 'id': travelRequest.travelRequest.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+<div class="notification-type-title">Travel expense</div>
+{% if '0' == travelExpenses|length %}
+<h5>
+    You have no travel expense notifications.
+</h5>
+{% endif %}
+{% for teNotification in travelExpenses %}
+    <div class="notification {% if 2 == teNotification.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ teNotification.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ teNotification.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ teNotification.id }}">
+            {% set msg = teNotification.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitOpitHrmTravelBundle_expense_show', { 'id': teNotification.travelExpense.id, 'trId': teNotification.travelExpense.travelRequest.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<div class="notification-type-title">Leave request</div>
+{% if '0' == leaveRequests|length %}
+<h5>
+    You have no leave request notifications.
+</h5>
+{% endif %}
+{% for lrNotification in leaveRequests %}
+    <div class="notification {% if 2 == lrNotification.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ lrNotification.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ lrNotification.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ lrNotification.id }}">
+            {% set msg = lrNotification.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitOpitHrmLeaveBundle_leave_show', { 'id': lrNotification.leaveRequest.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<div class="notification-type-title">Job position</div>
+{% if '0' == jobPositions|length %}
+<h5>
+    You have no job position notifications.
+</h5>
+{% endif %}
+{% for jpNotification in jobPositions %}
+    <div class="notification {% if 2 == jpNotification.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ jpNotification.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ jpNotification.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ jpNotification.id }}">
+            {% set msg = jpNotification.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitOpitHrmHiringBundle_job_position_show', { 'id': jpNotification.jobPosition.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<div class="notification-type-title">Applicant</div>
+{% if '0' == applicants|length %}
+<h5>
+    You have no applicant notifications.
+</h5>
+{% endif %}
+{% for applicantNotification in applicants %}
+    <div class="notification {% if 2 == applicantNotification.read.id %}unread{% endif %}">
+        <div class="notification-header">
+            <div class="notification-header-datetime">
+                {{ applicantNotification.dateTime|date('Y-m-d H:i:s') }}
+            </div>
+            <div class="notification-header-delete">
+                <i class="fa fa-trash-o" data-id="{{ applicantNotification.id }}"></i>
+            </div>
+        </div>
+        <div class="notification-message" data-id="{{ applicantNotification.id }}">
+            {% set msg = applicantNotification.message %}
+            {{ msg }}
+            {% if 'approved' not in msg and 'rejected' not in msg %}
+            <a class="notification-details" href="{{ path('OpitOpitHrmHiringBundle_applicant_show', { 'id': applicantNotification.applicant.id}) }}">
+                details
+            </a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

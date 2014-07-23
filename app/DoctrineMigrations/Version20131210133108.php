@@ -15,8 +15,8 @@ class Version20131210133108 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("CREATE TABLE notes_jobs (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(100) NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
-        $this->addSql("ALTER TABLE notes_users ADD job_id INT DEFAULT NULL");
+        $this->addSql("CREATE TABLE opithrm_jobs (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(100) NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        $this->addSql("ALTER TABLE opithrm_users ADD job_id INT DEFAULT NULL");
     }
 
     public function down(Schema $schema)
@@ -24,7 +24,7 @@ class Version20131210133108 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("DROP TABLE notes_jobs");
-        $this->addSql("ALTER TABLE notes_users DROP job_id");
+        $this->addSql("DROP TABLE opithrm_jobs");
+        $this->addSql("ALTER TABLE opithrm_users DROP job_id");
     }
 }

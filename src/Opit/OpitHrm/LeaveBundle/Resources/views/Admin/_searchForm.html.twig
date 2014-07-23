@@ -1,0 +1,24 @@
+{% extends 'OpitOpitHrmCoreBundle:Shared:search.html.twig' %}
+
+{% block forms %}
+<div class="searchProperty">
+    <label>Year</label>
+    <ul class="no-style scrollbar">
+        {% for year in years %}
+        <li class="white-space-nowrap">
+            <input type="checkbox" name="search[year][]" id="search_year_{{loop.index}}" value="{{year}}"> <label class="display-inline" for="search_year_{{loop.index}}">{{year}}</label>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="searchProperty">
+    <label>Type</label>
+    <ul class="no-style scrollbar">
+        {% for type in types %}
+        <li class="white-space-nowrap">
+            <input type="checkbox" name="search[type][]" id="search_type_{{loop.index}}" value="{{type.id}}"> <label class="display-inline" for="search_type_{{loop.index}}">{{type}}</label>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

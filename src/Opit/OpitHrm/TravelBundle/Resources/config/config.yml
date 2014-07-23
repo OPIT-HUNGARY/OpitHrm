@@ -1,0 +1,6 @@
+twig:
+    form:
+        resources:
+            - 'OpitOpitHrmTravelBundle:Form:fields.html.twig'
+
+opit_opit_hrm_travel:

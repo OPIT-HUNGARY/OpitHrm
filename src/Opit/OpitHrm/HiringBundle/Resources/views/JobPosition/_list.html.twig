@@ -1,0 +1,97 @@
+<form class="delete-checkbox-form">
+    <table id="list-table" class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="jp.id"></i>
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="jp.jobTitle"></i>
+                <span class="order-text cursor-pointer">Job title</span>
+            </th>
+            <th>
+                No. of positions
+            </th>
+            <th>
+                No. of applicants
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="jp.created"></i>
+                <span class="order-text cursor-pointer">Created</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="jp.hiringManager"></i>
+                <span class="order-text cursor-pointer">Hiring manager</span>
+            </th>
+            <th>Active</th>
+            <th>Actions</th>
+        </tr>
+        {% for jobPosition in jobPositions %}
+        {% set id = jobPosition.id %}
+        {% set isEditable = (is_granted('ROLE_ADMIN') or jobPosition.createdUser.id == app.user.id) %}
+        <tr>
+            <td>
+                <input type="checkbox" class="deleteMultiple" name="deleteMultiple[]" {% if 0 == isEditable %}disabled="disabled"{% endif %} value="{{ id }}" />
+            </td>
+            <td>
+                <span class="jp-details clickable text-decoration-underline cursor-pointer" data-jp-id="{{ id }}">{{ jobPosition.jobPositionId }}</span>
+            </td>
+            <td>
+                {{ jobPosition.jobTitle }}
+            </td>
+            <td>
+                {{ jobPosition.numberOfPositions }}
+            </td>
+            <td>
+                {{ jobPosition.applicants|length }}
+            </td>
+            <td>
+                {{ jobPosition.created|date('d  F  Y (D)') }}
+            </td>
+            <td>
+                {{ jobPosition.hiringManager.employee.employeeName }}
+            </td>
+            <td>
+                {% if 1 == jobPosition.isActive %}Yes{% else %}No{% endif %}
+            </td>
+            <td>
+                {% if isEditable %}
+                <a href="{{ path('OpitOpitHrmHiringBundle_job_position_show', { 'id': id}) }}" title="Edit job position">
+                    <i class="fa fa-pencil-square-o fa-1x"></i>
+                </a>
+                {% else %}                    
+                <a href="{{ path('OpitOpitHrmHiringBundle_job_position_show', { 'id': id}) }}" title="View job position">
+                    <i class="fa fa-list-alt fa-1x"></i>
+                </a>
+                {% endif %}
+                
+                {% if isEditable %}
+                <a href="{{ path('OpitOpitHrmHiringBundle_job_position_delete') }}" title="Delete job position" class="delete-job-position" data-id="{{ id }}" data-request="{{ jobPosition.jobPositionId }}">
+                    <i class="fa fa-trash-o fa-1x"></i>
+                </a>
+                {% endif %}
+
+                {% if isEditable %}
+                <a href="{{ path('OpitOpitHrmHiringBundle_applicant_show', {'jobPositionId': jobPosition.id }) }}" title="Add applicant">
+                    <i class="fa fa-male fa-1x"></i>
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% include 'OpitOpitHrmCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': jobPositions } %}
+
+    {% if numberOfPages is defined and numberOfPages > 0 %}
+        {% include 'OpitOpitHrmUserBundle:Shared:_pager.html.twig' with
+            {
+                'numberOfPages': numberOfPages,
+                'maxNumberOfPages': maxPages,
+                'offset': offset,
+                'url': path('OpitOpitHrmHiringBundle_job_position_list')
+            }
+        %}
+    {% endif %}
+</form>

@@ -1,0 +1,33 @@
+{% extends 'OpitOpitHrmCoreBundle:Shared:search.html.twig' %}
+
+{% block forms %}
+<div class="searchProperty">
+    <label for="searchEmployeeName">Employee name</label>
+    <input type="text" name="employeeName" id="searchEmployeeName" />
+</div>
+<div class="searchProperty">
+    <label for="searchDepartureCountry">Departure country</label>
+    <input type="text" name="departureCountry" id="searchDepartureCountry" />
+</div>
+<div class="searchProperty">
+    <label for="searchArrivalCountry">Arrival country</label>
+    <input type="text" name="arrivalCountry" id="searchArrivalCountry" />
+</div>
+<br />
+<div class="searchProperty">
+    <label for="searchDepartureDateFrom">Departure date from</label>
+    <input type="date" name="departureDateFrom" id="searchDepartureDateFrom" />
+</div>
+<div class="searchProperty">
+    <label for="searchDepartureDateTo">Departure date to</label>
+    <input type="date" name="departureDateTo" id="searchDepartureDateTo" />
+</div>
+<div class="searchProperty">
+    <label for="searchArrivalDateFrom">Arrival date from</label>
+    <input type="date" name="arrivalDateFrom" id="searchArrivalDateFrom" />
+</div>
+<div class="searchProperty">
+    <label for="searchArrivalDateTo">Arrival date to</label>
+    <input type="date" name="arrivalDateTo" id="searchArrivalDateTo" />
+</div>
+{% endblock %}

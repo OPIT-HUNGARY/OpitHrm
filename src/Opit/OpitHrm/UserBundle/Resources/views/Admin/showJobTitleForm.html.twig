@@ -1,0 +1,33 @@
+{% form_theme form 'OpitOpitHrmUserBundle:Form:form_template.html.twig' %}
+{% if form.vars.value.getId() is not null %}
+    {% set title = "Edit job title"  %}
+    {% set desc = "Edit an existing job title." %}
+{% else %}
+    {% set title = "Create job title"  %}
+    {% set desc = "Create a new job title." %}
+{% endif %}
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+{{ form_start(form, {'attr': { 'id': 'addjobtitle_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
+        <div class="float-left width-24">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-section-color-grey bold padding-4">
+                {{ form_label(form.title) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.title, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+        </div>
+        <div class="float-left width-48">
+            <div class="vertical-align-top item-input-box-header float-left height-20 color-white background-section-color-grey bold padding-4">
+                {{ form_label(form.description) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.description, {'attr': {'class': 'height-50 width-96 default-border-radius'}}) }}
+                {{ form_errors(form.title) }}
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}

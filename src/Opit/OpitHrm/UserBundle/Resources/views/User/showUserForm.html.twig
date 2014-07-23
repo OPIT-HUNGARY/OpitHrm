@@ -1,0 +1,50 @@
+{% form_theme form 'OpitOpitHrmUserBundle:Form:form_template.html.twig' %}
+
+{% if form.vars.value.getId() is not null %}
+    {% set title = "Edit User"  %}
+    {% set desc = "Edit an existing user." %}
+{% else %}
+    {% set title = "Create User"  %}
+    {% set desc = "Create a new user." %}
+{% endif %}
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+<div class="error-message">
+    {{ form_errors(form) }}
+</div>
+{{ form_start(form, {'attr': { 'id': 'adduser_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
+        {# form rendering is split because of subform layout nesting #}
+        {% for key, value in form if key != 'employee' %}
+            {{ form_row(value) }}
+        {% endfor %}
+        {# Employee related forms #}
+        {% for key, value in form.employee %}
+            {{ form_row(value) }}
+        {% endfor %}
+    </div>
+{{ form_end(form) }}
+{% block javascripts %}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/ToolTipHelp.coffee'
+    output='js/opithrmcore/tooltiphelp.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        {% endjavascripts %}
+{% endblock %}
+{# Date of birth requires individual options #}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#user_employee_dateOfBirth").datepicker({"maxDate": 0, 'changeMonth': true, 'changeYear': true}, {'testNativeSupport': true});
+    });
+    var toolTipDescobj = {
+            "idGroups" : "<table>This list can be modified from Administration->Roles</table>",
+            "idJobTitle" : "This list can be modified from Administration->Job Titles",
+            "idTeam": "This list can be modified from Administration->Team",
+            "idJoiningDate" : "This value is considered while calculating employees annual leave entitlement",
+            "idDob" : "This value is considered while calculating employees annual leave entitlement",
+            "idNoc" : "This value is considered while calculating employees annual leave entitlement"
+        };
+        $(document).data('opithrm').funcs.helpToolTipDesc(toolTipDescobj);
+        $(document).data('opithrm').funcs.showHideToolTip();
+</script>

@@ -1,0 +1,37 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+    Leave category list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<h1 class="margin-bottom-01em-important">Leave category list</h1>
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Leave categories can be created from here.They are used while creating a leave request.</div>
+<div  id="list">
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <button id="addLeaveCategory" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <form id="form-leavecategory">
+        {% include 'OpitOpitHrmLeaveBundle:Admin:_listLeaveCategories.html.twig' %}
+    </form>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/Admin/listLeaveCategory.coffee'
+    output='js/opithrmleave/admin/list_categories.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}

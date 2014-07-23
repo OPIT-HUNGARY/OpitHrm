@@ -14,9 +14,9 @@ class Version20140709153903 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
-        $group = $this->connection->fetchAssoc('SELECT COUNT(id) as group_count FROM notes_groups WHERE role="ROLE_SYSTEM_ADMIN"');
+        $group = $this->connection->fetchAssoc('SELECT COUNT(id) as group_count FROM opithrm_groups WHERE role="ROLE_SYSTEM_ADMIN"');
         if (0 == $group['group_count']) {
-            $this->addSql("INSERT INTO notes_groups (name, role) VALUES ('System admin', 'ROLE_SYSTEM_ADMIN')");
+            $this->addSql("INSERT INTO opithrm_groups (name, role) VALUES ('System admin', 'ROLE_SYSTEM_ADMIN')");
         }
 
     }

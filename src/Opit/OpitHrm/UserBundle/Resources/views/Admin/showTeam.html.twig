@@ -1,0 +1,26 @@
+{% form_theme form 'OpitOpitHrmUserBundle:Form:form_template.html.twig' %}
+
+{% if form.vars.value.getId() is not null %}
+    {% set desc = "Edit an existing team." %}
+{% else %}
+    {% set desc = "Create a new team." %}
+{% endif %}
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+<div class="error-message">
+    {{ form_errors(form) }}
+</div>
+{{ form_start(form, {'attr': { 'id': 'show_team_from'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
+        {% for key, value in form %}
+            {{ form_row(value) }}
+        {% endfor %}
+    </div>
+{{ form_end(form) }}
+{% block javascripts %}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/ToolTipHelp.coffee'
+    output='js/opithrmcore/tooltiphelp.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        {% endjavascripts %}
+{% endblock %}

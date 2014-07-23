@@ -1,0 +1,37 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+    Administrative Leave/Working Day type list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block body %}
+<h1 class="margin-bottom-01em-important">Administrative Leave/Working Day type list</h1>
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Administrative Leave/Working Day types can be created from here.They are used while creating an administrative leave/working day.</div>
+<div  id="list">
+    <table>
+        <tr>
+            <td class="padding-left-0">
+                <button id="addLeaveType" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+                <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+            </td>
+        </tr>
+    </table>
+    <div id="list-reply-message"></div>
+    <form id="form-leavetype">
+        {% include 'OpitOpitHrmLeaveBundle:Admin:_listLeaveTypes.html.twig' %}
+    </form>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmLeaveBundle/Resources/public/js/Admin/listLeaveType.coffee'
+    output='js/opithrmleave/admin/list_leave_types.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}

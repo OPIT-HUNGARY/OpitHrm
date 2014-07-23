@@ -1,0 +1,71 @@
+/* 
+    Created on : Mar 10, 2014, 1:24:23 PM
+    Author     : OPIT\OPITHRM
+*/
+
+@import '_defaults.scss';
+
+#changeStateWrapper{
+    h3{
+        margin-right:5px;
+    }
+}
+
+.table-layout-fixed{
+    table-layout: fixed;
+}
+
+.toggle-icon{
+    font-size: .5em;
+    padding: 4px;
+    border: solid 1px white;
+    margin:2px 4px 0 0;
+}
+
+.toggle-icon:hover{
+    background-color:$greyColor;
+}
+
+h1 {
+    .status-history {
+        font-size: 0.65em;
+    }
+
+    &:hover a.status-history {
+        visibility: visible;
+    }
+}
+
+.changeState{
+    width:120px;
+}
+
+.text-show-all{
+    white-space: initial;
+    word-wrap: break-word;
+}
+
+.form-fieldset-add-button {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 2px;
+    color: green;
+    margin-left: 1em;
+    display: table;
+    text-decoration: underline;
+    vertical-align: bottom;
+    cursor: pointer;
+}
+
+.form-fieldset-delete-button {
+    color: $defaultRed;
+    text-decoration: underline;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+#dialog-details-travel {
+    .dialog-table-tr-seperator{
+        border-bottom: $darkGrey solid 2px;
+    }
+}

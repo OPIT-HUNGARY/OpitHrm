@@ -1,0 +1,49 @@
+{% form_theme form 'OpitOpitHrmUserBundle:Form:form_template.html.twig' %}
+
+{% set labelWrapperClasses = ['vertical-align-top', 'item-input-box-header', 'float-left height-20', 'color-white', 'background-section-color-grey', 'bold', 'padding-4'] %}
+{% if form.vars.value.getId() is not null %}
+    {% set title = "Edit Administrative Leave/Working Day"  %}
+    {% set desc = "You can edit an existing Administrative Leave/Working Day from here." %}
+{% else %}
+    {% set title = "Create Administrative Leave/Working Day"  %}
+    {% set desc = "You can create a new Administrative Leave/Working Day from here." %}
+{% endif %}
+<h2 class="dialog-h2 hidden">{{ title|trans }}</h2>
+<div class="dialog-description">{{desc|trans}}</div>
+<div id="reply-message"></div>
+{{ form_start(form, {'attr': { 'id': 'addleavedate_frm'}, 'method': 'POST'}) }}
+    <div class="modalwindow default-border height-auto overflow-hidden">
+        <div class="float-left width-48">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.holidayDate) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.holidayDate, {'attr': {'class': 'width-96'}}) }}
+                {{ form_errors(form.holidayDate) }}
+            </div>
+        </div>
+        <div class="float-left width-48">
+            <div class="{{ labelWrapperClasses|join(' ') }}">
+                {{ form_label(form.holidayType) }}
+            </div>
+            <div class="vertical-align-top item-input-box float-left height-60 margin-bottom-10 padding-3">
+                {{ form_widget(form.holidayType, {'attr': {'class': 'width-96 default-border-radius'}}) }}
+                {{ form_errors(form.holidayType) }}
+            </div>
+        </div>
+    </div>
+{{ form_end(form) }}
+{% block javascripts %}
+    {% javascripts
+        '@OpitOpitHrmCoreBundle/Resources/public/js/ToolTipHelp.coffee'
+    output='js/opithrmcore/tooltiphelp.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        {% endjavascripts %}
+{% endblock %}
+<script type="text/javascript">
+    var toolTipDescobj = {
+            "idLeaveType" : "This list can be modified from Administration->Administrative L/WD Types"
+        };
+        $(document).data('opithrm').funcs.helpToolTipDesc(toolTipDescobj);
+        $(document).data('opithrm').funcs.showHideToolTip();
+</script>

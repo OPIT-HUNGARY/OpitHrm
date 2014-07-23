@@ -1,0 +1,12 @@
+parameters:
+    opithrm_user_status:
+        1: Active
+        0: Inactive
+
+opit_opit_hrm_user:
+    min_php_version: 5.4.0
+    ldap:
+        enabled: false
+        host: %ldap_host%
+        accountDomainNameShort: %ldap_domain_name_short%
+        baseDn: %ldap_base_dn%

@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="opit.service.exchange_rates.mnb.class">Opit\OpitHrm\CurrencyRateBundle\Service\MNBExchangeRateService</parameter>
+        <parameter key="opit.command.abstract_exchange_rate.class">Opit\OpitHrm\CurrencyRateBundle\Command\AbstractExchangeRateCommand</parameter>        
+        <parameter key="opit.service.exchange_rates.mnb_url">http://www.mnb.hu/arfolyamok.asmx?wsdl</parameter>
+        <parameter key="opit.service.exchange_rates.huf_value">1.0</parameter>
+        <parameter key="opit.twig.opit_currency_extension.class">Opit\OpitHrm\CurrencyRateBundle\Twig\OpitExtension</parameter>
+        <parameter key="exchange_service">opit.service.exchange_rates.mnb</parameter>
+    </parameters>
+    <services>
+        <service id="opit.service.exchange_rates.mnb" lazy="true" class="%opit.service.exchange_rates.mnb.class%" public="false">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="logger" />
+            <argument>%opit.service.exchange_rates.huf_value%</argument>
+            <argument>%opit.service.exchange_rates.mnb_url%</argument>
+        </service>
+        <service id="opit.command.abstract_exchange_rate_command" class="%opit.command.abstract_exchange_rate.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container" />
+            </call>
+        </service>
+        <service id="opit.twig.opit_currency_extension.class" class="%opit.twig.opit_currency_extension.class%">
+            <argument type="service" id="opit.service.exchange_rates.default" />
+            <tag name="twig.extension" />
+        </service>
+    </services>
+</container>

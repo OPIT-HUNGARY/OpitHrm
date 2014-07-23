@@ -1,11 +1,11 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
-    - { resource: "@OpitNotesCoreBundle/Resources/config/config.yml" }
-    - { resource: "@OpitNotesUserBundle/Resources/config/config.yml" }
-    - { resource: "@OpitNotesTravelBundle/Resources/config/config.yml" }
-    - { resource: "@OpitNotesCurrencyRateBundle/Resources/config/config.yml" }
-    - { resource: "@OpitNotesLeaveBundle/Resources/config/config.yml" }
+    - { resource: "@OpitOpitHrmCoreBundle/Resources/config/config.yml" }
+    - { resource: "@OpitOpitHrmUserBundle/Resources/config/config.yml" }
+    - { resource: "@OpitOpitHrmTravelBundle/Resources/config/config.yml" }
+    - { resource: "@OpitOpitHrmCurrencyRateBundle/Resources/config/config.yml" }
+    - { resource: "@OpitOpitHrmLeaveBundle/Resources/config/config.yml" }
 
 framework:
     #esi:             ~
@@ -40,7 +40,7 @@ twig:
 assetic:
     debug:          %kernel.debug%
     use_controller: false
-    bundles:        [ OpitNotesCoreBundle, OpitNotesUserBundle, OpitNotesTravelBundle, OpitNotesLeaveBundle, OpitNotesHiringBundle ]
+    bundles:        [ OpitOpitHrmCoreBundle, OpitOpitHrmUserBundle, OpitOpitHrmTravelBundle, OpitOpitHrmLeaveBundle, OpitOpitHrmHiringBundle ]
     #java: /usr/bin/java
     filters:
         coffee:
@@ -77,11 +77,11 @@ doctrine:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
         resolve_target_entities:
-            Symfony\Component\Security\Core\User\UserInterface: Opit\Notes\UserBundle\Entity\User
-            Opit\Notes\TravelBundle\Model\TravelRequestUserInterface: Opit\Notes\UserBundle\Entity\User
-            Opit\Notes\TravelBundle\Model\TravelStatusInterface: Opit\Notes\StatusBundle\Entity\Status
-            Opit\Notes\TravelBundle\Model\TravelCurrencyInterface: Opit\Notes\CurrencyRateBundle\Entity\Currency
-            Opit\Notes\NotificationBundle\Model\NotificationUserInterface: Opit\Notes\UserBundle\Entity\User
+            Symfony\Component\Security\Core\User\UserInterface: Opit\OpitHrm\UserBundle\Entity\User
+            Opit\OpitHrm\TravelBundle\Model\TravelRequestUserInterface: Opit\OpitHrm\UserBundle\Entity\User
+            Opit\OpitHrm\TravelBundle\Model\TravelStatusInterface: Opit\OpitHrm\StatusBundle\Entity\Status
+            Opit\OpitHrm\TravelBundle\Model\TravelCurrencyInterface: Opit\OpitHrm\CurrencyRateBundle\Entity\Currency
+            Opit\OpitHrm\NotificationBundle\Model\NotificationUserInterface: Opit\OpitHrm\UserBundle\Entity\User
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
@@ -97,7 +97,7 @@ swiftmailer:
     encryption: %mailer_encryption%
 
 fos_js_routing:
-    routes_to_expose: [ OpitNotesUserBundle_\w+, OpitNotesTravelBundle_\w+, OpitNotesCurrencyRateBundle_\w+, OpitNotesLeaveBundle_\w+, OpitNotesHiringBundle_\w+ ]
+    routes_to_expose: [ OpitOpitHrmUserBundle_\w+, OpitOpitHrmTravelBundle_\w+, OpitOpitHrmCurrencyRateBundle_\w+, OpitOpitHrmLeaveBundle_\w+, OpitOpitHrmHiringBundle_\w+ ]
     
 # Doctrine Extensions Configuration
 stof_doctrine_extensions:

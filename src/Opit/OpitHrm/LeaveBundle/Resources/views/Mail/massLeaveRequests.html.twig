@@ -1,0 +1,101 @@
+{% set leaveRequest = templateVars['leaveRequest'] %}
+<body style="font-size:12px;font-family: 'Arial'">
+    {% if templateVars['statusName'] is defined %}
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
+        <tr>
+            <td colspan="2">
+                <font style="color:#94c11c; font-size: 13px;"><u>Status</u></font><br />
+            </td>
+        </tr>
+        <tr>
+            <td width="20%"><strong>Current:</strong></td>
+            <td>{{ templateVars['statusName'] }}</td>
+        </tr>
+    </table>    
+    {% endif %}
+    
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
+        <tr>
+            <td colspan="2">
+                <font style="color:#94c11c; font-size: 13px;"><u>Leave request summary</u></font><br />
+            </td>
+        </tr>
+        {% for leave in leaveRequest.leaves %}
+            <tr>
+                <td colspan="2">
+                    <table cellpadding="3" border="1" bordercolor="white" style="width: 100%; color: white; font-size: 12px; border-collapse: collapse; border-spacing: 0;">
+                        <tr>
+                            <td style="font-weight:bold; width: 20%;">Id:</td>
+                            <td>{{ leaveRequest.leaveRequestId }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold; width: 20%;">Start date</td>
+                            <td>{{ leave.startDate|date('Y-m-d') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">End date</td>
+                            <td>{{ leave.endDate|date('Y-m-d') }}</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:bold;">Description</td>
+                            <td>{{ leave.description }}</td>
+                        </tr>
+                        {% if templateVars['isForApproval'] is defined and templateVars['statusName'] is defined %}
+                        <tr>
+                            <td style="font-weight:bold;">Category</td>
+                            <td>{{ leave.category.name }}</td>
+                        </tr>                            
+                        {% endif %}
+                    </table>
+                    <br />
+                </td>
+            </tr>
+        {% endfor %}
+    </table>    
+    {% if templateVars['unpaidLeaveDetails'] is defined and templateVars['unpaidLeaveDetails']|length > 0 %}
+    <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
+        <tr>
+            <td colspan="2">
+                <font style="color:#94c11c; font-size: 13px;"><u>Unpaid leaves created for following employees</u> (Not Approved)</font><br />
+            </td>
+        </tr>
+        <tr>      
+            <td colspan="2">
+                <table cellpadding="3" border="1" bordercolor="white" style="width: 100%; color: white; font-size: 12px; border-collapse: collapse; border-spacing: 0;">
+                    <tr>
+                        <td style="width: 80%; color:#94c11c"><strong>Employee name < email ></strong></td>
+                        <td style="color:#94c11c;"><strong>Unpaid leave days</strong></td>                
+                    </tr>
+                    {% for unpaidLeaveDetail in templateVars['unpaidLeaveDetails'] %}
+                        {% if unpaidLeaveDetail.unpaid > 0 %}
+                        <tr>
+                            <td style="font-weight:bold; width: 80%;"><strong>{{ unpaidLeaveDetail.employee.employeeNameFormatted }}</strong></td>
+                            <td>{{ unpaidLeaveDetail.unpaid }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+    </table>
+    {% endif %}
+    
+    {% if templateVars['isForApproval'] is defined %}
+        {% if templateVars['isForApproval'] %}
+        {% set lastContactDate = getLRLastNoticeDate(leaveRequest.created) %}
+        <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
+            <tr>
+                <td colspan="2">
+                    <font style="color:#94c11c; font-size: 13px;"><u>Note</u></font><br />
+                </td>
+            </tr>
+            <tr>      
+                <td colspan="2">
+                    Kindly contact general manager assigned for this leave request until {{ lastContactDate }}. Incase of no contact by employee the company hold the rights to approve the leave request.
+                </td>
+            </tr>
+        </table>
+        {% endif %}
+    {% endif %}
+    {% include 'OpitOpitHrmCoreBundle:Mail:footer.html.twig' %}
+</body>

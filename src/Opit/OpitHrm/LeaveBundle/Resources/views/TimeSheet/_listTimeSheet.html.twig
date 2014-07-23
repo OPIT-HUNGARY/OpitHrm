@@ -1,0 +1,58 @@
+<form class="delete-checkbox-form">
+<table id="list-table" class="width-100">
+    <tr>
+        <th>
+            <i class="fa fa-sort default-right" data-field="month"></i>
+            <span class="order-text cursor-pointer">Year / Month</span>
+        </th>
+        <th class="width-40">Actions</th>
+        <th>Information</th>
+    </tr>
+    {% for monthNumber, timesheetDateTime in availableMonths %}
+    <tr>
+        <td>
+            <span>{{ timesheetDateTime|date('Y F') }}</span>
+        </td>
+        <td>
+            <div class="display-inline-block width-24">
+                <a class="small-button print-view white-space-nowrap" href="{{ path('OpitOpitHrmLeaveBundle_timesheet_generate', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}" target="_blank">
+                    <i class="fa fa-print"></i>
+                    <span>
+                        Print / View
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][1] is defined%}
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][1] }}</span>]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
+            <div class="display-inline-block width-24">
+                <a class="download-pdf small-button white-space-nowrap" href="{{ path('OpitOpitHrmLeavelBundle_timesheet_export', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                    <i class="fa fa-file-pdf-o"></i>
+                    <span>
+                        Download PDF
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][2] is defined%}
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][2] }}</span>]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
+            <div class="display-inline-block width-24">
+                <a class="send-email small-button white-space-nowrap" href="{{ path('OpitOpitHrmLeaveBundle_timesheet_sendmail', { 'token': base64Encode(timesheetDateTime|date('Y') ~ '|' ~ timesheetDateTime|date('m')) }) }}">
+                    <i class="fa fa-envelope-o"></i>
+                    <span>
+                        Send Email
+                        {% if logTimesheets[timesheetDateTime|date('Y-m-01')][3] is defined%}
+                            &nbsp;[<span class="click-counter">{{ logTimesheets[timesheetDateTime|date('Y-m-01')][3] }}</span>]
+                        {% endif %}
+                    </span>
+                </a>
+            </div>
+        </td>
+        <td>
+            {% if logTimesheets[timesheetDateTime|date('Y-m-01')]['inSync'] is defined and logTimesheets[timesheetDateTime|date('Y-m-01')]['inSync'] == false %}
+                <i class="fa fa-warning"></i> Emailed timesheet out of sync.
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>

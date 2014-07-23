@@ -15,10 +15,10 @@ class Version20140526121424 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_status_workflow ADD discr VARCHAR(255) NOT NULL");
+        $this->addSql("ALTER TABLE opithrm_status_workflow ADD discr VARCHAR(255) NOT NULL");
 
         // Update discr attribute to be default
-        $this->addSql("UPDATE notes_status_workflow SET discr = 'default'");
+        $this->addSql("UPDATE opithrm_status_workflow SET discr = 'default'");
     }
 
     public function down(Schema $schema)
@@ -26,6 +26,6 @@ class Version20140526121424 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != "mysql", "Migration can only be executed safely on 'mysql'.");
         
-        $this->addSql("ALTER TABLE notes_status_workflow DROP discr");
+        $this->addSql("ALTER TABLE opithrm_status_workflow DROP discr");
     }
 }
