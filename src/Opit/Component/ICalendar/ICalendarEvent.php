@@ -59,13 +59,13 @@ class ICalendarEvent implements ICalendarEventInterface
         $this->output .= 'DTEND' . $this->getDtEnd() . self::DELIMITER; // Colon ":" added by setter
 
         // Add optional properties
-        if (!empty($this->getDescription())) {
+        if (null !== $this->getDescription()) {
             $this->output .= 'DESCRIPTION:' . $this->getDescription() . self::DELIMITER;
         }
-        if (!empty($this->getLocation())) {
+        if (null !== $this->getLocation()) {
             $this->output .= 'LOCATION:' . $this->getLocation() . self::DELIMITER;
         }
-        if (!empty($this->getCategories())) {
+        if (null !== $this->getCategories()) {
             $this->output .= 'CATEGORIES:' . implode(', ', $this->getCategories()) . self::DELIMITER;
         }
 

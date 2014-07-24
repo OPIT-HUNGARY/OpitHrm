@@ -33,7 +33,6 @@ use Opit\Component\Utils\Utils;
  */
 class CalendarController extends Controller
 {
-
     /**
      * Show calendar for team
      *
@@ -57,6 +56,24 @@ class CalendarController extends Controller
                 array('employees' => $employees)
             );
         }
+    }
+
+    /**
+     * Show calendar for admin
+     *
+     * @Route("/secured/calendar/team/admin", name="OpitOpitHrmLeaveBundle_calendar_team_admin")
+     * @Secure(roles="ROLE_ADMIN")
+     * @Template()
+     */
+    public function showTeamLeavesAdminCalendarAction()
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $employees = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')->findAll();
+
+        return $this->render(
+            'OpitOpitHrmLeaveBundle:Calendar:teamLeavesCalendar.html.twig',
+            array('employees' => $employees)
+        );
     }
 
     /**
@@ -175,16 +192,9 @@ class CalendarController extends Controller
     protected function getTeamsEmployees(Employee $employee)
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $securityContext = $this->container->get('security.context');
-        $teamsEmployees = array();
-
-        if ($securityContext->isGranted('ROLE_ADMIN')) {
-            $teamsEmployees = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')->findAll();
-        } else {
-            // if employee is not part of any team get his data only
-            $teamsEmployees = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')
-                ->findTeamEmployees($employee->getId());
-        }
+        // if employee is not part of any team get his data only
+        $teamsEmployees = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')
+            ->findTeamEmployees($employee->getId());
 
         return $teamsEmployees;
     }
