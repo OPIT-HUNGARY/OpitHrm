@@ -40,7 +40,7 @@ abstract class StatusManager implements StatusManagerInterface
     public function addStatus($resource, $requiredStatus, $comment = null)
     {
         $pieces = preg_split('/(?=[A-Z])/', $this->request->attributes->get('_template')->get('bundle'));
-        $bundleName = $pieces[3] . '' . $pieces[4];
+        $bundleName = $pieces[4] . '' . $pieces[5];
         $className = 'Opit\OpitHrm\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's';
         $status = $this->entityManager->getRepository('OpitOpitHrmStatusBundle:Status')->find($requiredStatus);
         $statusId = $status->getId();
@@ -128,8 +128,7 @@ abstract class StatusManager implements StatusManagerInterface
     public function forceStatus($statusId, $resource, $user = null)
     {
         $pieces = preg_split('/(?=[A-Z])/', $this->request->attributes->get('_template')->get('bundle'));
-        $bundleName = $pieces[3] . '' . $pieces[4];
-
+        $bundleName = $pieces[4] . '' . $pieces[5];
         $status = $this->entityManager->getRepository('OpitOpitHrmStatusBundle:Status')->find($statusId);
 
         $instanceS =
