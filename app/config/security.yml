@@ -43,13 +43,10 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        login:
-            pattern:  ^/secured/login$
-            security: false
-
         secured_area:
             pattern:    ^/secured/
             provider: administrators
+            anonymous: ~
             simple_form:
                 authenticator: ldap
                 check_path: OpitOpitHrmUserBundle_check
@@ -71,9 +68,9 @@ security:
             provider: in_memory
 
     access_control:
+        - { path: ^/secured/(login|login_check|logout)$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/secured, roles: ROLE_USER }
         - { path: ^/customer, roles: ROLE_CUSTOMER }
-        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }
 
     acl:
         connection: default
