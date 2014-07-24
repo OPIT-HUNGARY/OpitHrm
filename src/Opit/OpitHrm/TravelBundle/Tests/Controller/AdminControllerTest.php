@@ -15,31 +15,31 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of AdminTravelControllerTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
  * @subpackage TravelBundle
  */
-class AdminTravelControllerTest extends WebTestCase
+class AdminControllerTest extends WebTestCase
 {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
-    
+
     /**
-     * @var \Opit\OpitHrm\TravelBundle\Entity\TEPerDiem 
+     * @var \Opit\OpitHrm\TravelBundle\Entity\TEPerDiem
      */
     protected $perDiem;
-    
+
     /**
-     * @var \Opit\OpitHrm\TravelBundle\Entity\TEExpenseType  
+     * @var \Opit\OpitHrm\TravelBundle\Entity\TEExpenseType
      */
     protected $expenseType;
-    
+
     /**
-     * @var \Symfony\Component\BrowserKit\Client 
+     * @var \Symfony\Component\BrowserKit\Client
      */
     protected $client;
 
@@ -60,11 +60,11 @@ class AdminTravelControllerTest extends WebTestCase
         $adminUser->setIsFirstLogin(false);
         $this->em->persist($adminUser);
         $this->em->flush();
-        
+
         $this->perDiem = $this->em->getRepository('OpitOpitHrmTravelBundle:TEPerDiem')->findOneByHours('8');
         $this->expenseType = $this->em->getRepository('OpitOpitHrmTravelBundle:TEExpenseType')->findOneByName('Other');
     }
-    
+
     /**
      * Set up before the class
      * Running the test database.
@@ -72,11 +72,11 @@ class AdminTravelControllerTest extends WebTestCase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        
+
         // Setup test db
         system(dirname(__FILE__) . '/../dbSetup.sh');
     }
-    
+
     /**
      * test index action
      */
@@ -91,7 +91,7 @@ class AdminTravelControllerTest extends WebTestCase
             'testListExpenseTypeAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing ExpenseTypeShow action.
      */
@@ -106,7 +106,7 @@ class AdminTravelControllerTest extends WebTestCase
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testExpenseTypeShowAction: The content-type is not html.'
         );
-        
+
         // New expense type
         $crawler = $this->client->request(
             'POST',
@@ -117,7 +117,7 @@ class AdminTravelControllerTest extends WebTestCase
             'testExpenseTypeShowAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing deleteExpenseType action.
      */
@@ -133,7 +133,7 @@ class AdminTravelControllerTest extends WebTestCase
             'testDeleteExpenseTypeAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing listPerDiem action.
      */
@@ -141,14 +141,14 @@ class AdminTravelControllerTest extends WebTestCase
     {
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/list/perdiem'
+            '/secured/travel/admin/list/perdiem'
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testListPerDiemAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing showPerDiem action.
      */
@@ -157,24 +157,24 @@ class AdminTravelControllerTest extends WebTestCase
         // Existing per diem
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/show/perdiem/' . $this->perDiem->getId()
+            '/secured/travel/admin/show/perdiem/' . $this->perDiem->getId()
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testShowPerDiemAction: The content-type is not html.'
         );
-        
+
         // New per diem
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/show/perdiem/new'
+            '/secured/travel/admin/show/perdiem/new'
         );
         $this->assertTrue(
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testShowPerDiemAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing savePerDiem action.
      */
@@ -183,7 +183,7 @@ class AdminTravelControllerTest extends WebTestCase
         // Empty request
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/save/perdiem'
+            '/secured/travel/admin/save/perdiem'
         );
         $this->assertJson(
             $this->client->getResponse()->getContent(),
@@ -193,11 +193,11 @@ class AdminTravelControllerTest extends WebTestCase
             $this->client->getResponse()->headers->contains('Content-Type', 'application/json'),
             'testSavePerDiemAction: The content-type is not a json.'
         );
-        
+
         // Filled up request
         $crawler = $this->client->request(
             'POST',
-            '/secured/admin/save/perdiem',
+            '/secured/travel/admin/save/perdiem',
             array(
                 'perdiem' => array(
                     0 => array(

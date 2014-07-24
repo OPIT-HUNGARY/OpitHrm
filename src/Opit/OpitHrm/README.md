@@ -42,4 +42,4 @@ encouraged to contribute.
 License
 ------------
 
-OPIT-HRM is an released under The GNU Lesser General Public License, version 3.0 (LGPL-3.0)
+OPIT-HRM is released under The GNU Lesser General Public License, version 3.0 (LGPL-3.0)

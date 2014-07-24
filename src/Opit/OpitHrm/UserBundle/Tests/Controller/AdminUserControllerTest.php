@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of AdminUserControllerTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
@@ -27,19 +27,19 @@ class AdminUserControllerTest extends WebTestCase
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
-    
+
     /**
      * @var \Opit\OpitHrm\UserBundle\Entity\JobTitle
      */
     protected $jobTitle;
-    
+
     /**
      * @var \Opit\OpitHrm\UserBundle\Entity\Groups
      */
     protected $group;
-    
+
     /**
-     * @var \Symfony\Component\BrowserKit\Client 
+     * @var \Symfony\Component\BrowserKit\Client
      */
     protected $client;
 
@@ -55,11 +55,23 @@ class AdminUserControllerTest extends WebTestCase
         $this->em = $this->client->getContainer()
             ->get('doctrine')
             ->getManager();
-        
+
         $this->jobTitle = $this->em->getRepository('OpitOpitHrmUserBundle:JobTitle')->findOneByTitle('CEO');
         $this->group = $this->em->getRepository('OpitOpitHrmUserBundle:Groups')->findOneByRole('ROLE_FINANCE');
     }
-    
+
+    /**
+     * Set up before the class
+     * Running the test database.
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        // Setup test db
+        system(dirname(__FILE__) . '/../dbSetup.sh');
+    }
+
     /**
      * testing index action.
      */
@@ -88,7 +100,7 @@ class AdminUserControllerTest extends WebTestCase
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testShowJobTitleFormAction: The content-type is not html.'
         );
-        
+
         $crawler = $this->client->request(
             'GET',
             'secured/admin/show/jobtitle'
@@ -98,7 +110,7 @@ class AdminUserControllerTest extends WebTestCase
             'testShowJobTitleFormAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing addJobTitle action.
      */
@@ -118,7 +130,7 @@ class AdminUserControllerTest extends WebTestCase
             'testAddJobTitleAction: The content-type is not a json.'
         );
     }
-    
+
     /**
      * testing deleteJobTitle action.
      */
@@ -143,7 +155,7 @@ class AdminUserControllerTest extends WebTestCase
         $this->assertArrayHasKey('code', $decodedJson, 'testDeleteUserAction: Missing code array key.');
         $this->assertEquals('success', $decodedJson[0]['response'], 'testDeleteUserAction: Missing array value.');
     }
-    
+
     /**
      * testing groupList action.
      */
@@ -158,7 +170,7 @@ class AdminUserControllerTest extends WebTestCase
             'testGroupListAction: The content-type is not html.'
         );
     }
-    
+
     /**
      * testing groupsShow actin.
      */
@@ -177,7 +189,7 @@ class AdminUserControllerTest extends WebTestCase
         
         // Modify existing role.
         $createdGroup = $this->em->getRepository('OpitOpitHrmUserBundle:Groups')->findOneByName('NEW_TEST_ROLE');
-        
+
         $crawler = $this->client->request(
             'POST',
             '/secured/admin/groups/show/' . $createdGroup->getId(),
@@ -187,9 +199,9 @@ class AdminUserControllerTest extends WebTestCase
             $this->client->getResponse()->headers->contains('Content-Type', 'text/html; charset=UTF-8'),
             'testGroupsShowAction: The content-type of an existing group is not html.'
         );
-        
+
     }
-    
+
     /**
      * testing deleteGroup adction.
      */

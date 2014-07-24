@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Description of OpitExtensionTest
- * 
+ *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
@@ -28,7 +28,7 @@ class OpitExtensionTest extends WebTestCase
      * @var \Opit\OpitHrm\CurrencyRateBundle\Twig\OpitExtension
      */
     private $opitExtension;
-    
+
     /**
      * set up the testing.
      */
@@ -41,7 +41,7 @@ class OpitExtensionTest extends WebTestCase
 
         $this->opitExtension = new OpitExtension($client->getContainer());
     }
-    
+
     /**
      * testing getName method.
      */
@@ -53,14 +53,14 @@ class OpitExtensionTest extends WebTestCase
             'testGetName: The expected and the given values are not equal.'
         );
     }
-    
+
     /**
      * testing get globals method.
      */
     public function testGetGlobals()
     {
         $result = $this->opitExtension->getGlobals();
-        
+
         $this->assertTrue(
             is_array($result),
             'testGetFunctions: The result is not an array.'

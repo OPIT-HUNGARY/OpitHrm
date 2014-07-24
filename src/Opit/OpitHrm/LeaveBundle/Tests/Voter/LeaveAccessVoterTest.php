@@ -38,7 +38,7 @@ class LeaveAccessVoterTest extends WebTestCase
         parent::setUpBeforeClass();
 
         // Setup test db
-        system(dirname(__FILE__) . '../../dbSetup.sh');
+        system(dirname(__FILE__) . '/../dbSetup.sh');
     }
 
     /**
@@ -90,7 +90,7 @@ class LeaveAccessVoterTest extends WebTestCase
 
         // Check if user can access lr
         $this->assertEquals(
-            VoterInterface::ACCESS_DENIED,
+            VoterInterface::ACCESS_GRANTED,
             $leaveAccessVoter->vote($userToken, $leaveRequest, array('view')),
             'Vote: User can view leave request ' . $leaveRequest->getLeaveRequestId() . '.'
         );
@@ -132,21 +132,21 @@ class LeaveAccessVoterTest extends WebTestCase
 
         // Check if user can delete lr
         $this->assertEquals(
-            VoterInterface::ACCESS_DENIED,
+            VoterInterface::ACCESS_GRANTED,
             $leaveAccessVoter->vote($userToken, $leaveRequest, array('delete')),
             'Vote: User can edit leave request ' . $leaveRequest->getLeaveRequestId() . '.'
         );
 
         // Check if gm can change lr status
         $this->assertEquals(
-            VoterInterface::ACCESS_DENIED,
+            VoterInterface::ACCESS_GRANTED,
             $leaveAccessVoter->vote($gmToken, $leaveRequest, array('status')),
             'Vote: General manager can change status leave request ' . $leaveRequest->getLeaveRequestId() . '.'
         );
 
         // Check if admin can change lr status
         $this->assertEquals(
-            VoterInterface::ACCESS_DENIED,
+            VoterInterface::ACCESS_GRANTED,
             $leaveAccessVoter->vote($adminToken, $leaveRequest, array('status')),
             'Vote: Admin can change status leave request ' . $leaveRequest->getLeaveRequestId() . '.'
         );
