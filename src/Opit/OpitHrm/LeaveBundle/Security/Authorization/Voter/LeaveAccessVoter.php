@@ -253,12 +253,17 @@ class LeaveAccessVoter implements VoterInterface
         }
 
         // If user is admin and status of lr is not approved allow status change
-        if ($isAdmin && Status::APPROVED !== $leaveRequestStatusId) {
+        if ($isAdmin) {
             return VoterInterface::ACCESS_GRANTED;
         } elseif ($isGeneralManager) {
-            // If user is gm only allow status change when lr status is for approval
-            if (Status::FOR_APPROVAL === $leaveRequestStatusId) {
+            // Check if general manager is owner of leave request
+            if ($user->getEmployee() === $leaveRequest->getEmployee()) {
                 return VoterInterface::ACCESS_GRANTED;
+            } else {
+                // If user is gm only allow status change when lr status is for approval
+                if (Status::FOR_APPROVAL === $leaveRequestStatusId) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
             }
         } elseif ($user->getEmployee() === $leaveRequest->getEmployee()) {
             // If user is assigned employee and status is created or revice allow status change
