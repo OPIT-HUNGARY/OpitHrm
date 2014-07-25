@@ -28,7 +28,7 @@ class ExchangeRateDiffCommand extends AbstractExchangeRateCommand
     {
         parent::configure();
 
-        $this->setName('exchange:rates:diff')
+        $this->setName('opithrm:currency-rates:diff')
             ->setDescription('Diff the local database\'s with MNB\'s rates.')
             ->setHelp(
 <<<EOT

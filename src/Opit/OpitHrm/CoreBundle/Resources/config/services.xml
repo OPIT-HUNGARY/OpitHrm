@@ -8,6 +8,7 @@
         <parameter key="opit.twig.core_extension.class">Opit\OpitHrm\CoreBundle\Twig\CoreExtension</parameter>
         <parameter key="opit.core.email_manager.class">Opit\OpitHrm\CoreBundle\Email\EmailManager</parameter>
         <parameter key="opit.listener.xml_http_session_expired_listener.class">Opit\OpitHrm\CoreBundle\EventListener\XMLHttpSessionExpiredListener</parameter>
+        <parameter key="opit.security.acl.manager.class">Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager</parameter>
     </parameters>
     
     <services>
@@ -23,6 +24,10 @@
         </service>
         <service id="opit.listener.xml_http_session_expired_listener" class="%opit.listener.xml_http_session_expired_listener.class%">
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />
+        </service>
+        <service id="opit.security.acl.manager" class="%opit.security.acl.manager.class%">
+            <argument type="service" id="security.acl.dbal.provider" />
+            <argument type="service" id="logger" on-invalid="null" />
         </service>
     </services>
 </container>

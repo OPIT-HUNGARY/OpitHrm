@@ -16,7 +16,7 @@ use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Opit\OpitHrm\TravelBundle\Manager\AclManager;
+use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
@@ -48,7 +48,7 @@ class LeaveStatusManager extends StatusManager
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Component\Email\EmailManager $mailer
      * @param type $factory
-     * @param \Opit\OpitHrm\TravelBundle\Manager\AclManager $aclManager
+     * @param \Opit\OpitHrm\CoreBundle\Manager\AclManager $aclManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      */

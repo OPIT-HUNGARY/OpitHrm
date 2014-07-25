@@ -38,6 +38,9 @@ class UserFixtures extends AbstractDataFixture
     public function doLoad(ObjectManager $manager)
     {
         $factory = $this->container->get('security.encoder_factory');
+        $aclManager = $this->container->get('opit.security.acl.manager');
+        $users = array();
+        $managers = array();
         $user = new User();
         $encoder = $factory->getEncoder($user);
 
@@ -91,6 +94,7 @@ class UserFixtures extends AbstractDataFixture
                 $testUser->setIsFirstLogin(1);
                 $testUser->addGroup($this->getReference('user-group'));
 
+                $users[] = $testUser;
                 $manager->persist($testUser);
             }
             $this->addReference('testUser-user', $testUser);
@@ -106,6 +110,8 @@ class UserFixtures extends AbstractDataFixture
             $testTeamManager->addGroup($this->getReference('team-manager-group'));
             $testTeamManager->addGroup($this->getReference('user-group'));
             $testTeamManager->setLdapEnabled(0);
+
+            $managers[] = $testTeamManager;
             $manager->persist($testTeamManager);
 
             $testGeneralManager = new User();
@@ -120,7 +126,9 @@ class UserFixtures extends AbstractDataFixture
             $testGeneralManager->addGroup($this->getReference('user-group'));
             $testGeneralManager->setLdapEnabled(0);
 
+            $managers[] = $testGeneralManager;
             $manager->persist($testGeneralManager);
+
 
             $user = new User();
             $user->setUsername('user');
@@ -133,6 +141,7 @@ class UserFixtures extends AbstractDataFixture
             $user->addGroup($this->getReference('user-group'));
             $user->setLdapEnabled(0);
 
+            $users[] = $user;
             $manager->persist($user);
 
             $this->addReference('admin', $testAdmin);
@@ -140,7 +149,19 @@ class UserFixtures extends AbstractDataFixture
             $this->addReference('generalManager', $testGeneralManager);
         }
 
+
         $manager->flush();
+
+        $aclManager->grant($testSystemAdmin, $this->getReference('system-admin-group'));
+        $aclManager->grant($testAdmin, $this->getReference('admin-group'));
+
+        foreach ($users as $user) {
+            $aclManager->grant($user, $this->getReference('system-admin-group'));
+        }
+
+        foreach ($managers as $manager) {
+            $aclManager->grant($manager, $this->getReference('admin-group'));
+        }
     }
 
     /**

@@ -2,14 +2,14 @@
 
 /*
  *  This file is part of the OPIT-HRM project.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
 
-namespace Opit\OpitHrm\TravelBundle\Manager;
+namespace Opit\OpitHrm\CoreBundle\Security\Authorization;
 
 use Symfony\Component\Security\Acl\Model\AclProviderInterface;
 use Symfony\Component\Security\Acl\Model\SecurityIdentityInterface;
@@ -28,14 +28,14 @@ use Symfony\Component\HttpKernel\Log\LoggerInterface;
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
- * @subpackage TravelBundle
+ * @subpackage CoreBundle
  */
 class AclManager
 {
     const ACTION_ADDED = 'added';
     const ACTION_EDITED = 'edited';
     const ACTION_REMOVED = 'removed';
-    
+
     protected $provider;
     protected $logger;
 
@@ -49,13 +49,13 @@ class AclManager
         $this->provider = $provider;
         $this->logger = $logger;
     }
-    
+
     /**
      * Retrieves the security identity objects
-     * 
+     *
      * @param object $object The object to get the acl from
      * @param mixed $identities Considered security identities
-     * 
+     *
      * @return array Security identities grouped by classname
      */
     public function findSecurityIdenties($object, $grouped = false, $identities = array('UserSecurityIdentity', 'RoleSecurityIdentity'))
@@ -63,12 +63,12 @@ class AclManager
         if (!is_array($identities)) {
             $identities = array($identities);
         }
-        
+
         // Create identities and get ACL
         $oid = ObjectIdentity::fromDomainObject($object);
         $acl = $this->getAcl($oid);
         $sids = array();
-        
+
         foreach ($acl->getObjectAces() as $ace) {
             foreach ($identities as $identity) {
                 $classIdentity = 'Symfony\Component\Security\Acl\Domain\\'.$identity;
@@ -81,36 +81,36 @@ class AclManager
                 }
             }
         }
-        
+
         return $sids;
     }
-    
+
     /**
      * Retrieves an array of names grouped by security identity
-     * 
+     *
      * @param object $object
      * @param array $identities
-     * 
+     *
      * @return array The resulting array containing names
      */
     public function getNamesforIdentities($object, array $identities = array('UserSecurityIdentity' => 'getUsername', 'RoleSecurityIdentity' => 'getRole'))
     {
         $result = array();
         $sids = $this->findSecurityIdenties($object, true, array_keys($identities));
-        
+
         foreach ($identities as $identity => $method) {
             $result[$identity] = array();
-            
+
             if (isset($sids[$identity])) {
                 foreach ($sids[$identity] as $sid) {
                     $result[$identity][] = $sid->$method();
                 }
             }
         }
-        
+
         return $result;
     }
-  
+
     /**
      * Grants a permission to $identity for $object
      * Will check for existing permissions and update accordingly
@@ -130,7 +130,7 @@ class AclManager
         // Try to find an ACE for the user
         // If none exists, create one.
         list($i, $ace) = $this->getAce($acl, $sid);
-        
+
         if (isset($ace)) {
             if ($mask === 0) {
                 $acl->deleteObjectAce($i);
@@ -140,7 +140,7 @@ class AclManager
                 if ($ace->getMask() == $mask) {
                     return;
                 }
-                
+
                 $acl->updateObjectAce($i, $mask);
                 $action = self::ACTION_EDITED;
             }
@@ -149,13 +149,13 @@ class AclManager
             if ($mask === 0) {
                 return;
             }
-            
+
             $acl->insertObjectAce($sid, $mask);
             $action = self::ACTION_ADDED;
         }
 
         $this->provider->updateAcl($acl);
-        
+
         if (null !== $this->logger) {
             $this->logger->info(
                 "[ACL MANAGER] ". (($action == 'removed') ? 'Revoked' : 'Granted') .
@@ -184,7 +184,7 @@ class AclManager
             $acl->deleteObjectAce($i);
 
             $this->provider->updateAcl($acl);
-            
+
             if (null !== $this->logger) {
                 $this->logger->info(
                     "[ACL MANAGER] Revoked access to " . ClassUtils::getRealClass($object) .
@@ -193,30 +193,30 @@ class AclManager
             }
         }
     }
-    
+
     /**
      * Revokes all permissions to all identities of $object
-     * 
+     *
      * @param type $object
      */
     public function revokeAll($object)
     {
         $sids = $this->findSecurityIdenties($object);
-        
+
         foreach ($sids as $sid) {
             $this->revoke($object, $sid);
         }
     }
-    
+
     /**
      * Deletes the ACL of $object
-     * 
+     *
      * @param type $object
      */
     public function deleteAcl($object)
     {
         $oid = ObjectIdentity::fromDomainObject($object);
-        
+
         $this->provider->deleteAcl($oid);
     }
 
@@ -228,7 +228,7 @@ class AclManager
      * @param object $sid
      * @param bool $createEmpty
      * @throws \Exception
-     * 
+     *
      * @return \Symfony\Component\Security\Acl\Model\MutableAclInterface
      */
     protected function getAcl($oid, $createEmpty = true)
@@ -247,19 +247,19 @@ class AclManager
 
     /**
      * Gets the user ACE
-     * 
+     *
      * It returns the index of the ace and the ace itself. We sadly need the index as well.
-     * 
+     *
      * @param object $acl
      * @param object $sid
-     * 
+     *
      * @return array The index and access controle entry object
      */
     protected function getAce($acl, $sid)
     {
         $index = null;
         $ace = null;
-        
+
         foreach ($acl->getObjectAces() as $i => $maybeAce) {
             if ($sid->equals($maybeAce->getSecurityIdentity())) {
                 $index = $i;
@@ -270,12 +270,12 @@ class AclManager
 
         return array($index, $ace);
     }
-    
+
     /**
      * Gets the security identity
-     * 
+     *
      * Supported are Group and User entities
-     * 
+     *
      * @param object $identity
      * @return object  Returns either a Role or User security identity
      * @throws \Exception

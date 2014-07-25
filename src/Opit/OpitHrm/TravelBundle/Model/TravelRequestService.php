@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\OpitHrm\TravelBundle\Model\TravelResourceInterface;
-use Opit\OpitHrm\TravelBundle\Manager\AclManager;
+use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Opit\OpitHrm\TravelBundle\Manager\TravelNotificationManager;
 

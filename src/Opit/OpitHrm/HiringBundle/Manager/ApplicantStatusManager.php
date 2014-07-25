@@ -14,7 +14,7 @@ namespace Opit\OpitHrm\HiringBundle\Manager;
 use Doctrine\ORM\EntityManagerInterface;
 use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Opit\OpitHrm\TravelBundle\Manager\AclManager;
+use Opit\OpitHrm\CoreBundle\Manager\AclManager;
 use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\OpitHrm\HiringBundle\Entity\ApplicantStatusWorkflow;
@@ -43,7 +43,7 @@ class ApplicantStatusManager extends StatusManager
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Component\Email\EmailManagerInterface $mailer
      * @param type $factory
-     * @param \Opit\OpitHrm\TravelBundle\Manager\AclManager $aclManager
+     * @param \Opit\OpitHrm\CoreBundle\Manager\AclManager $aclManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param type $router
      */

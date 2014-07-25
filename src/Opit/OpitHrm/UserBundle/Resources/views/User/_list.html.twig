@@ -29,12 +29,14 @@
             <th>Actions</th>
         </tr>
         {% for user in users %}
+            {% set isDeleteable = is_granted('DELETE', user) %}
+            {% set isEditable = is_granted('EDIT', user) %}
         <tr>
             <td class="width-24-fix">
-                <input name="delete-user[]" type="checkbox" class="deleteMultiple" value="{{ user.id }}" {% if user.id == app.user.id %}disabled="disabled"{% endif %}>
+                <input name="delete-user[]" type="checkbox" class="deleteMultiple" {% if not isDeleteable %}disabled="disabled"{% endif %} value="{{ user.id }}" {% if user.id == app.user.id %}disabled="disabled"{% endif %}>
             </td>
             <td>
-                <span class="list-username clickable text-decoration-underline cursor-pointer" data-user-id="{{ user.id }}">
+                <span {% if isEditable %}class="list-username clickable text-decoration-underline cursor-pointer" data-user-id="{{ user.id }}"{% endif %}>
                     {{ user.username }}
                 </span>
             </td>
@@ -48,21 +50,25 @@
             </td>
             <td>
                 {% for role in user.roles %}
-                    {{ role.name }}
+                    {{ role.name }}{% if loop.index != user.roles|length %},{% endif %}
                 {% endfor %}
             </td>
             <td>{{ leaveEntitlement[user.id] }}</td>
             <td>
+                {% if isEditable %}
                 <span class="reset-password clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Reset password">
                     <i class="fa fa-undo"></i>
                 </span>
                 <span class="list-username clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Edit user">
                     <i class="fa fa-pencil-square-o"></i>
                 </span>
+                {% endif %}
                 {% if user.id != app.user.id %}
-                <span class="delete-single-user clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Delete user">
-                    <i class="fa fa-trash-o"></i>
-                 </span>
+                    {% if isDeleteable %}
+                    <span class="delete-single-user clickable text-decoration-none cursor-pointer" data-user-id="{{ user.id }}" title="Delete user">
+                        <i class="fa fa-trash-o"></i>
+                    </span>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>

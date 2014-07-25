@@ -22,6 +22,7 @@ use Opit\OpitHrm\UserBundle\Entity\User;
 use JMS\SecurityExtraBundle\Annotation\Secure;
 use Opit\Component\Utils\Utils;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\Security\Acl\Permission\BasicPermissionMap;
 
 /**
  * Description of UserController
@@ -119,11 +120,17 @@ class UserController extends Controller
     {
         $request = $this->getRequest();
         $id = $request->attributes->get('id');
+        $securityContext = $this->container->get('security.context');
 
         if ($id) {
             $user = $this->getUserObject($id);
         } else {
             $user = new User();
+        }
+
+        // Check if the current user has permission to view the object
+        if ($id && !$securityContext->isGranted(BasicPermissionMap::PERMISSION_VIEW, $user)) {
+            throw new AccessDeniedException('Access denied');
         }
 
         $form = $this->createForm(
@@ -149,54 +156,62 @@ class UserController extends Controller
         $statusCode = 200;
         $errors = array();
         $securityContext = $this->container->get('security.context');
-        $isSystemAdmin = $securityContext->isGranted('ROLE_SYSTEM_ADMIN');
+        $aclManager = $this->container->get('opit.security.acl.manager');
         $userService = $this->get('opit.model.user');
-        $id = $isSystemAdmin ? $request->attributes->get('id') : $this->get('security.context')->getToken()->getUser()->getId();
-        $systemAdminGroups = array();
+        $user = ($request->attributes->get('id')) ? $this->getUserObject($request->attributes->get('id')) : new User();
+        $isNew = null === $user->getId();
 
-        $user = ($id) ? $this->getUserObject($request->attributes->get('id')) : new User();
-
-        $form = $this->createForm(
-            new UserShowType($this->container),
-            $user
-        );
-
-        // Check if user is system admin
-        if (null !== $user->getId() && $this->isSystemAdmin($securityContext)) {
-            $systemAdminGroups = $this->getSystemAdminGroups($user->getId());
+        // Check if the current user has permission to edit the object
+        if (!$isNew && !$securityContext->isGranted(BasicPermissionMap::PERMISSION_EDIT, $user)) {
+            throw new AccessDeniedException('Access denied');
         }
 
-        if ($request->isMethod("POST")) {
-            $form->handleRequest($request);
-
-            if(null !== $user->getId() && !$this->isSystemAdminAllowedToEdit($user->getId())) {
-                throw new AccessDeniedException(
-                    'Access denied for user.'
-                );
+        // User object permission is based on assigned roles
+        // Minimum permission is equal to ROLE_SYSTEM_ADMIN, any higher roles
+        // in the hierachy require ROLE_ADMIN
+        $postedValues = $request->request->get('user');
+        $securityRole = 'ROLE_SYSTEM_ADMIN';
+        if (isset($postedValues['groups'])) {
+            $roles = $em->getRepository('OpitOpitHrmUserBundle:Groups')->findById($postedValues['groups']);
+            foreach ($roles as $role) {
+                if (in_array($role->getRole(), array('ROLE_ADMIN', 'ROLE_GENERAL_MANAGER', 'ROLE_TEAM_MANAGER'))) {
+                    $securityRole = 'ROLE_ADMIN';
+                    break;
+                }
             }
+        }
+
+        $form = $this->createForm(new UserShowType($this->container), $user);
+
+        if ($request->isMethod("POST")) {
+            $userRoles = $user->getRoles();
+            $form->handleRequest($request);
 
             // Process form data and create user
             if ($form->isValid()) {
 
-                if (null === $user->getId()) {
+                if ($isNew) {
                     $user->setIsFirstLogin(true);
                     $user->setPassword($userService->encodePassword($user));
                     $userService->sendNewPasswordMail($user);
-                }
-
-                foreach ($systemAdminGroups as $systemAdminGroup) {
-                    $user->addGroup(current($systemAdminGroup));
                 }
 
                 // Save the user.
                 $em->persist($user);
                 $em->flush();
 
+                if ($user->getRoles() != $userRoles) {
+                    // Add or update owner access to user object
+                    $role = $em->getRepository('OpitOpitHrmUserBundle:Groups')
+                        ->findOneByRole($securityRole);
+
+                    $aclManager->revokeAll($user);
+                    $aclManager->grant($user, $role);
+                }
+
                 $result['response'] = 'success';
 
-                if ($isSystemAdmin && $request->headers->get('referer') === $this->generateUrl('OpitOpitHrmUserBundle_user_list', array(), true)) {
                     return $this->listAction();
-                }
             } else {
                 $statusCode = 500;
                 $errors = Utils::getErrorMessages($form);
@@ -235,13 +250,13 @@ class UserController extends Controller
                 $id = (int) $id;
                 // If the logged in user is not equal to deleting user then remove it.
                 if ($loggedInUserId !== (int) $id) {
-                    if(!$this->isSystemAdminAllowedToEdit($id)) {
-                        throw new AccessDeniedException(
-                            'Access denied for user.'
-                        );
+                    $user = $this->getUserObject($id);
+
+                    // Check if the current user has permission to delete the object
+                    if (!$securityContext->isGranted(BasicPermissionMap::PERMISSION_DELETE, $user)) {
+                        throw new AccessDeniedException('Access denied');
                     }
 
-                    $user = $this->getUserObject($id);
                     $em->remove($user);
                 }
             }
@@ -489,48 +504,5 @@ class UserController extends Controller
         $user = $this->container->get('security.context')->getToken()->getUser();
 
         return $this->render('OpitOpitHrmUserBundle:User:showUserSummary.html.twig', array('employee' => $user->getEmployee()));
-    }
-
-    protected function isSystemAdmin($securityContext)
-    {
-        return $securityContext->isGranted('ROLE_SYSTEM_ADMIN') && !$securityContext->isGranted('ROLE_ADMIN');
-    }
-
-    protected function isSystemAdminAllowedToEdit($userId)
-    {
-        $securityContext = $this->container->get('security.context');
-        $entityManager = $this->getDoctrine()->getManager();
-        $groups = $entityManager->getRepository('OpitOpitHrmUserBundle:Groups');
-        $userRoles = $groups->findUserGroupsArray($userId);
-
-        if (null !== $userId && $this->isSystemAdmin($securityContext) && $securityContext->getToken()->getUser()->getId() != $userId) {
-            foreach ($userRoles as $role) {
-                if (in_array($role['role'], array('ROLE_ADMIN', 'ROLE_GENERAL_MANAGER', 'ROLE_TEAM_MANAGER'))) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    protected function getSystemAdminGroups($userId)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $systemAdminGroups = array();
-
-        // Get system admins all assigned groups
-        $systemAdminAssignedGroups = $this->getDoctrine()->getManager()->getRepository('OpitOpitHrmUserBundle:Groups')->findUserGroupsArray($userId);
-        // Assing role system admin
-        $systemAdminGroups[] = $entityManager->getRepository('OpitOpitHrmUserBundle:Groups')->findByRole('ROLE_SYSTEM_ADMIN');
-        // Loop through all roles system admin has got
-        foreach ($systemAdminAssignedGroups as $systemAdminGroup) {
-            // If role is gm or tm add it to the system admin groups array
-            if ('ROLE_TEAM_MANAGER' === $systemAdminGroup['role'] || 'ROLE_GENERAL_MANAGER' === $systemAdminGroup['role']) {
-                $systemAdminGroups[] = $entityManager->getRepository('OpitOpitHrmUserBundle:Groups')->findByRole($systemAdminGroup['role']);
-            }
-        }
-
-        return $systemAdminGroups;
     }
 }

@@ -55,6 +55,11 @@ class Groups implements RoleInterface
         $this->users = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->role;
+    }
+
     /**
      * @see RoleInterface
      */

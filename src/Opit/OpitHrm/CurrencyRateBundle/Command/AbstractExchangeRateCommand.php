@@ -65,7 +65,7 @@ class AbstractExchangeRateCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this->setName('exchange:rates')
+        $this->setName('opithrm:currency-rates')
             ->setDescription('Fetch the currency rates from the MNB and load into the database.')
             ->addOption('start', null, InputOption::VALUE_REQUIRED, 'Start date of fetching. Valid format: 2014-01-10')
             ->addOption('end', null, InputOption::VALUE_REQUIRED, 'End date of fetching. Valid format: 2014-01-05')
@@ -87,27 +87,35 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // If the remote's response is not empty save the rates.
-        if ($this->resultOfFetching) {
-            // If the sync was success
-            if ($this->exchangeService->saveExchangeRates($this->isForce)) {
-                $output->writeln('<info>The sync is successful.</info>');
-                $this->logger->info(
-                    sprintf('[|%s] %s command is ended successfully.', Utils::getClassBasename($this), $this->getName())
-                );
+        if (null !== $this->resultOfFetching) {
+            // If the remote's response is not empty save the rates.
+            if ($this->resultOfFetching) {
+                // If the sync was success
+                if ($this->exchangeService->saveExchangeRates($this->isForce)) {
+                    $output->writeln('<info>The sync is successful.</info>');
+                    if (null !== $this->logger) {
+                        $this->logger->info(
+                            sprintf('[|%s] %s command is ended successfully.', Utils::getClassBasename($this), $this->getName())
+                        );
+                    }
+                } else {
+                    $output->writeln('<error>The sync is failed!</error> For details read the log file.');
+                    if (null !== $this->logger) {
+                        $this->logger->error(
+                            sprintf('[|%s] %s command is failed.', Utils::getClassBasename($this), $this->getName())
+                        );
+                    }
+                }
             } else {
-                $output->writeln('<error>The sync is failed!</error> For details read the log file.');
-                $this->logger->error(
-                    sprintf('[|%s] %s command is failed.', Utils::getClassBasename($this), $this->getName())
-                );
+                // The remote response was empty then cancel the sync.
+                $output->writeln('<comment>Couldn\'t fetch rates from MNB (empty response).</comment>');
+                $output->writeln('<comment>The sync is cancelled.</comment>');
             }
-        } else {
-            // The remote response was empty then cancel the sync.
-            $output->writeln('<comment>Couldn\'t fetch rates from MNB (empty response).</comment>');
-            $output->writeln('<comment>The sync is cancelled.</comment>');
-        }
 
-        $this->logger->info(sprintf('[|%s] %s command is ended.', Utils::getClassBasename($this), $this->getName()));
+            if (null !== $this->logger) {
+                $this->logger->info(sprintf('[|%s] %s command is ended.', Utils::getClassBasename($this), $this->getName()));
+            }
+        }
     }
 
     /**

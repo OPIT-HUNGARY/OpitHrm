@@ -29,7 +29,7 @@ class ExchangeRateInsertCommand extends AbstractExchangeRateCommand
     {
         parent::configure();
 
-        $this->setName('exchange:rates:insert')
+        $this->setName('opithrm:currency-rates:insert')
             ->setDescription('Insert the given rates into the local database.')
             ->addOption(
                 'current',
@@ -63,7 +63,7 @@ EOT
     {
         parent::init($input);
 
-        // If current is setted  then fetch the current rates.
+        // If current is set then fetch the current rates.
         if (isset($this->inputOptions['current']) && $this->inputOptions['current']) {
             $this->resultOfFetching = $this->exchangeService->fetchCurrentExchangeRates();
 

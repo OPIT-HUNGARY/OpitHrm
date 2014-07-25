@@ -28,7 +28,7 @@ class ExchangeRateUpdateCommand extends AbstractExchangeRateCommand
     {
         parent::configure();
 
-        $this->setName('exchange:rates:update')
+        $this->setName('opithrm:currency-rates:update')
             ->setDescription('Update the given rates into the local database.')
             ->setHelp(
 <<<EOT

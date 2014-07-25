@@ -60,64 +60,50 @@ class UserShowType extends AbstractType
     {
         $dataArr = $builder->getData();
         $config = $this->container->getParameter('opit_opit_hrm_user');
-        $isSystemAdmin = $this->container->get('security.context')->isGranted('ROLE_SYSTEM_ADMIN');
-        $userId = null;
 
-        // If we modify an existed user.
-        if (null !== $dataArr) {
-            $userId = $dataArr->getId();
-        }
-
-        // If the current user has admin role then the field will be changeable
-        if (true === $isSystemAdmin) {
-            $builder->add('username', 'text', array('attr' => array(
+        $builder->add('username', 'text', array('attr' => array(
                 'placeholder' => 'Username'
-            )));
-        }
-
-        $builder->add('email', 'text', array('attr' => array(
-            'placeholder' => 'Email'
         )));
 
-        $builder->add('userId', 'hidden', array('data' => $userId, 'mapped' => false));
+        $builder->add('email', 'text', array('attr' => array(
+                'placeholder' => 'Email'
+        )));
 
-        if (true === $isSystemAdmin) {
-            $builder->add('groups', 'entity', array(
+        $builder->add('groups', 'entity', array(
                 'class' => 'OpitOpitHrmUserBundle:Groups',
-                'query_builder' => function (EntityRepository $er) {
-                    $dq = $er->createQueryBuilder('g');
+            'query_builder' => function (EntityRepository $er) {
+                $dq = $er->createQueryBuilder('g');
 
-                    if (!$this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
-                        $dq->where('g.role IN (:allowedRoled)');
-                        $dq->setParameter(':allowedRoled', $this->container->getParameter('security.role_hierarchy.roles')['ROLE_SYSTEM_ADMIN']);
-                    }
+                if (!$this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
+                    $dq->where('g.role IN (:allowedRoles)');
+                    $dq->setParameter(':allowedRoles', $this->container->getParameter('security.role_hierarchy.roles')['ROLE_SYSTEM_ADMIN']);
+                }
 
-                    return $dq->orderBy('g.name', 'ASC');
-                },
-                'property' => 'name',
-                'multiple' => true,
-                'expanded' => true,
-                'label_attr' => array('id' => 'idGroups')
-            ));
+                return $dq->orderBy('g.name', 'ASC');
+            },
+            'property' => 'name',
+            'multiple' => true,
+            'expanded' => true,
+            'label_attr' => array('id' => 'idGroups')
+        ));
 
-            $builder->add('isActive', 'choice', array(
+        $builder->add('isActive', 'choice', array(
                 'choices' => $this->container->getParameter('opithrm_user_status')
+        ));
+
+        // Display ldap feature related form inputs
+        if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
+            $builder->add('ldapEnabled', 'choice', array(
+                'choices'   => array('No', 'Yes'),
+                'multiple' => false,
+                'expanded' => true,
+                'data' => $dataArr->isLdapEnabled() || 0
             ));
-
-            // Display ldap feature related form inputs
-            if (isset($config['ldap']['enabled']) && true === $config['ldap']['enabled']) {
-                $builder->add('ldapEnabled', 'choice', array(
-                    'choices'   => array('No', 'Yes'),
-                    'multiple' => false,
-                    'expanded' => true,
-                    'data' => $dataArr->isLdapEnabled() || 0
-                ));
-            }
-
         }
 
         $builder->add('employee', new EmployeeType($this->container, $dataArr->getEmployee()));
     }
+
     /**
      * Sets the default form options
      *
