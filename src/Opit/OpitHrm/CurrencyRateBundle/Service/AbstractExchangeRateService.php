@@ -242,6 +242,7 @@ abstract class AbstractExchangeRateService implements ExchangeRateInterface
                 foreach ($this->currencyRates as $currencyCode => $dates) {
 
                     $lastDateObj = new \DateTime(key($dates));
+                    $lastRateValue = current($dates);
 
                     // Iterate the date and rate
                     foreach ($dates as $date => $value) {
@@ -253,7 +254,7 @@ abstract class AbstractExchangeRateService implements ExchangeRateInterface
                             $lastDateObj,
                             $interval->format('%d')-1,
                             $currencyCode,
-                            $value,
+                            $lastRateValue,
                             $force
                         );
 
@@ -263,6 +264,7 @@ abstract class AbstractExchangeRateService implements ExchangeRateInterface
                             $this->em->persist($rate);
                         }
                         $lastDateObj = clone $dateObj;
+                        $lastRateValue = $value;
                     }
 
                     // Insert difference of last MNB date and tomorrow using last MNB rate
