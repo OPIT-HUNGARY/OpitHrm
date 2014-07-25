@@ -109,7 +109,7 @@ class ExpenseController extends Controller
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($id) : new TravelExpense();
         $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
         // Get rates
-        $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate());
+        $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate($travelExpense));
         $forApproval = (bool) $forApproval;
 
         // te = Travel Expense
@@ -418,7 +418,7 @@ class ExpenseController extends Controller
 
         $travelExpenseExpenses = $travelExpenseService->sumExpenses($travelExpense);
         $sumOfCostsByCurrencies = $travelExpenseService->getCostsByCurrencies($travelExpense);
-        $midRate = $travelExpenseService->getMidRate();
+        $midRate = $travelExpenseService->getMidRate($travelExpense);
 
         $advanceAmounts = $travelExpenseService->getAdvanceAmounts($sumOfCostsByCurrencies['employeePaidExpenses'], $travelExpense);
         $totalAmountPayableInHUF = 0;

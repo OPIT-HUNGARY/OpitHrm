@@ -46,13 +46,15 @@ class StatesTravelExpensesRepository extends EntityRepository
      *
      * @param integer $teId
      * @param integer $statusId
+     * @param string $order the direction of order
      * @return null|Opit\OpitHrm\TravelBundle\Entity\StatesTravelExpenses
      */
-    public function findStatusByStatusId($teId, $statusId)
+    public function findStatusByStatusId($teId, $statusId, $order = 'DESC')
     {
         $travelExpenseState = $this->createQueryBuilder('te')
             ->where('te.travelExpense = :teId')
             ->andWhere('te.status = :statusId')
+            ->orderBy('te.id', $order)
             ->setParameter(':teId', $teId)
             ->setParameter(':statusId', $statusId)
             ->setMaxResults(1)

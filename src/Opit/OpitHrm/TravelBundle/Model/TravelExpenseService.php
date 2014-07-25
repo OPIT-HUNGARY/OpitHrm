@@ -156,7 +156,7 @@ class TravelExpenseService
                 $companyPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $companyPaidExpenses->getAmount(),
-                $this->getMidRate()
+                $this->getMidRate($travelExpense)
             );
         }
 
@@ -165,7 +165,7 @@ class TravelExpenseService
                 $userPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $userPaidExpenses->getAmount(),
-                $this->getMidRate()
+                $this->getMidRate($travelExpense)
             );
         }
 
@@ -282,7 +282,7 @@ class TravelExpenseService
     {
         $approvedCostsEUR = 0;
         $approvedCostsHUF = 0;
-        $midRate = $this->getMidRate();
+        $midRate = $this->getMidRate($travelRequest);
         foreach ($travelRequest->getAccomodations() as $accomodation) {
             $accomodationCost = $accomodation->getCost();
             $accomodationCurrency = $accomodation->getCurrency();
@@ -330,11 +330,10 @@ class TravelExpenseService
      *
      * @return \DateTime The midrate datetime object.
      */
-    public function getMidRate()
+    public function getMidRate($travelExpense)
     {
-        $status = $this->entityManager->getRepository('OpitOpitHrmStatusBundle:Status')->find(Status::FOR_APPROVAL);
         $teStatus = $this->entityManager->getRepository('OpitOpitHrmTravelBundle:StatesTravelExpenses')
-                                 ->findOneByStatus($status, array('id' => 'ASC'));
+            ->findStatusByStatusId($travelExpense->getId(), Status::FOR_APPROVAL, 'ASC');
 
         // Set the midrate of last month
         $teDate = $teStatus ? $teStatus->getCreated() : new \DateTime('today');
@@ -406,13 +405,13 @@ class TravelExpenseService
                         $payableToEmployee = abs($advancePayback);
                         $advancePayback = 0;
                     }
-                    $advacesPayback[] = $this->getAmountsArray($advanceAmount, $amount, $advancePayback, $payableToEmployee, $currency);
+                    $advacesPayback[] = $this->getAmountsArray($advanceAmount, $amount, $advancePayback, $payableToEmployee, $currency, $travelExpense);
                 }
             }
             // if no amount was received in currency
             if (!$isAdvanceReceived) {
                 if ($amount != 0) {
-                    $advacesPayback[] = $this->getAmountsArray('0', $amount, '0', $amount, $currency);
+                    $advacesPayback[] = $this->getAmountsArray('0', $amount, '0', $amount, $currency, $travelExpense);
                 }
             }
         }
@@ -420,11 +419,11 @@ class TravelExpenseService
         return $advacesPayback;
     }
 
-    private function getAmountsArray($advanceReceived, $amountSpent, $advancePayback, $payableToEmployee, $currency)
+    private function getAmountsArray($advanceReceived, $amountSpent, $advancePayback, $payableToEmployee, $currency, $travelExpense)
     {
         $amountInHUF = 0;
         if ('HUF' != $currency && 0 != $payableToEmployee) {
-            $amountInHUF = $this->exchangeService->convertCurrency($currency, 'HUF', $payableToEmployee, $this->getMidRate());
+            $amountInHUF = $this->exchangeService->convertCurrency($currency, 'HUF', $payableToEmployee, $this->getMidRate($travelExpense));
         } elseif ('HUF' == $currency) {
             $amountInHUF = $amountSpent;
         }
