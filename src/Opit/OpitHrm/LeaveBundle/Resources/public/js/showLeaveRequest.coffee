@@ -9,13 +9,11 @@ $('form#leaveRequestForm').on 'focus', '.end-date', ->
     $(@).val $startDateInput.val() if $(@).val() is ''
 
 # Check the leave dates overlapping
-$('form#leaveRequestForm').on 'change', '.start-date', ->
+$('form#leaveRequestForm').on 'blur.validation, change.validation', '.start-date', ->
     checkDatesOverlapping $(@)
 
-$('form#leaveRequestForm').on 'change', '.end-date', ->
+$('form#leaveRequestForm').on 'blur.validation, change.validation', '.end-date', ->
     checkDatesOverlapping $(@)
-
-#$('form#leaveRequestForm .option-list-scrollable').mCustomScrollbar()
 
 createErrorLabel = (errorMessage, errorClass = '', attributes = []) ->
     $errorLabel = $('<label>')
@@ -29,50 +27,52 @@ createErrorLabel = (errorMessage, errorClass = '', attributes = []) ->
 
     return $errorLabel
 
-# Cechking dates overlapping on the current date input field.
+# Validate all leave dates
+checkAllDateOverLapping = () ->
+    isValid = yes
+    $('.formFieldsetChild').each (index, element) ->
+        isLeaveDateValid = validateDatesOverlapping $(element).find('.start-date'), $(element).find('.end-date')
+        if isValid is yes then isValid = isLeaveDateValid
+
+    return isValid
+
+# Checking dates overlapping on the current date input field.
 checkDatesOverlapping = ($self) ->
     $formFieldset = $self.closest('.formFieldsetChild')
     $currentStartDate = $formFieldset.find '.start-date'
     $currentEndDate = $formFieldset.find '.end-date'
     # Call the validator to check dates overlapping.
-    validateDatesOverlapping $currentStartDate, $currentEndDate, $self
+    validateDatesOverlapping $currentStartDate, $currentEndDate
 
 # Validate the leave dates overlapping
-validateDatesOverlapping = ($currentStartDate, $currentEndDate, $self) ->
-    isValid = true
+validateDatesOverlapping = ($currentStartDate, $currentEndDate) ->
+    isValid = yes
+    currentHasError = no
+    $currentEndDateParent = $currentEndDate.closest('div')
 
-    # Iterate the leave requests
+    $currentEndDate.removeClass 'error'
+    $currentEndDateParent.find('.overlap-error').remove()
+
+    # Iterate over leave dates
     $('.formFieldsetChild').each (index, element) ->
         $startDate = $(element).find '.start-date'
         $endDate = $(element).find '.end-date'
-        $parent = $self.closest('div')
-        # Check DOMs are notthe same (checking the DOM level) in order to avoid to compoare itself values.
-        # Compare the Dom's first element show the level. Otherwise it will not work.
-        if $startDate[0] != $currentStartDate[0]
-            # Check dates overlapping.
-            if ($currentStartDate.val() <= $endDate.val()) and ($startDate.val() <= $currentEndDate.val())
-                # Check there is an error class or not
-                # Prevent to add more error class on the element
-                if $self.hasClass('error') is no
-                    $self.addClass 'error'
-                    $parent.append createErrorLabel(
-                        'Dates are overlapping: ' + $startDate.val() + ' and ' + $endDate.val(),
-                        'overlap-error',
-                        [{'property': 'data-start-date', 'value': $startDate.val()}, {'property': 'data-end-date', 'value': $endDate.val()}]
-                    )
-                else
-                    $errorLabel = $parent.find 'label.overlap-error'
-                    # Refresh the dates of error message
-                    if ($errorLabel.data 'start-date' != $startDate) and ($errorLabel.data 'end-date' != $endDate)
-                        $errorLabel.html 'Date overlapping with: ' + $startDate.val() + ' ' + $endDate.val()
-                isValid = false
-                # Breaking out the loop!
-                # In jQuery it breaks the loop and not go out from the method!
-                return false
-            else
-                # If there is not overlapping remove the error class
-                $self.removeClass 'error'
-                $parent.find('label.overlap-error').remove()
+        $endDateParent = $endDate.closest('div')
+
+        $endDate.removeClass 'error'
+        $endDateParent.find('.overlap-error').remove()
+
+        if $startDate[0] != $currentStartDate[0] and ($currentStartDate.val() <= $endDate.val()) and ($startDate.val() <= $currentEndDate.val())
+            $endDate.addClass 'error'
+            $endDateParent.append createErrorLabel 'Overlapping dates', 'overlap-error'
+
+            if currentHasError is no
+                currentHasError = yes
+                $currentEndDate.addClass 'error'
+                $currentEndDateParent.append createErrorLabel 'Overlapping dates', 'overlap-error'
+
+            isValid = no
+
     return isValid
 
 $(document).ready ->
@@ -95,7 +95,7 @@ $(document).ready ->
                 $startDateParent.find('label.bigger-error').remove()
                 if $startDateParent.find('label.past-error').length == 0
                     $startDate.removeClass 'error'
-            
+
         return isValid
         
     validateNumberOfLeaves = () ->
@@ -162,13 +162,15 @@ $(document).ready ->
         $generalManger = $('#leave_request_general_manager')
         $generalManagerAc = $('#leave_request_general_manager_ac')
         if $generalManger.val() == ''
-            $generalManagerAc.closest('div').append createErrorLabel('A general manager must be selected.', 'gm-error')
-            $generalManagerAc.addClass 'error'
+            $parent = $generalManagerAc.closest('div')
+            if $parent.find('.gm-error').length == 0
+                $parent.append createErrorLabel('A general manager must be selected.', 'gm-error')
+                $generalManagerAc.addClass 'error'
             isValid = no
         else
             $generalManagerAc.parent().find('.gm-error').remove()
             $generalManagerAc.removeClass 'error'
-            
+
         return isValid
             
     # method to create button to delete a leave
@@ -349,7 +351,7 @@ $(document).ready ->
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
-        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validateGm() is yes and validateEmployeesForMLR() is yes
+        if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validateGm() is yes and validateEmployeesForMLR() is yes and checkAllDateOverLapping() is yes
             if isGeneralManager is yes
                 if isNotMassLR() and hasPastDates()
                     message = 'Creating a past leave request will effect the time sheet of that period. Do you want to continue?'

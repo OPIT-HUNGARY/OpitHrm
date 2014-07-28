@@ -481,10 +481,10 @@ class LeaveRequest extends AbstractBase
                 }
             }
         }
-        // Error messages.
-        foreach ($overlappingDates as $dates) {
+
+        if (count($overlappingDates) > 0) {
             $context->addViolation(
-                sprintf('Leave dates are overlapping: %s and %s', $dates[0]->format('Y-m-d'), $dates[1]->format('Y-m-d'))
+                sprintf('Leave dates are overlapping')
             );
         }
     }
