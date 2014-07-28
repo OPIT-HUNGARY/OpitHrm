@@ -60,12 +60,12 @@ abstract class TEPaidExpense
      * @ORM\Column(name="destination", type="string", length=255)
      */
     protected $destination;
-  
+
     /**
      * @var integer
      *
      * @ORM\JoinColumn(name="expense_type_id", referencedColumnName="id", nullable=true)
-     * @ORM\ManyToOne(targetEntity="TEExpenseType")
+     * @ORM\ManyToOne(targetEntity="TEExpenseType", inversedBy="tePaidExpenses")
      */
     protected $expenseType;
 

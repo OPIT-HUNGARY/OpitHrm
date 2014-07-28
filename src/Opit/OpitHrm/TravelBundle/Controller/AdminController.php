@@ -125,7 +125,10 @@ class AdminController extends Controller
 
         foreach ($expenseTypeId as $id) {
             $expenseType = $entityManager->getRepository('OpitOpitHrmTravelBundle:TEExpenseType')->find($id);
-            $entityManager->remove($expenseType);
+
+            if (0 === count($expenseType->getTEPaidExpenses())) {
+                $entityManager->remove($expenseType);
+            }
         }
 
         $entityManager->flush();

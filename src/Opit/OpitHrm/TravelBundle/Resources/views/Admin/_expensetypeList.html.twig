@@ -15,7 +15,7 @@
         {% for expenseType in expenseTypes %}
         <tr>
             <td class="width-24-fix">
-                <input name="delete-user[]" type="checkbox" class="deleteMultiple">
+                <input name="delete-user[]" type="checkbox" class="deleteMultiple" {% if expenseType.tePaidExpenses|length > 0 %}disabled="disabled"{% endif %}>
             </td>
             <td>{{ expenseType.id }}</td>
             <td>{{ expenseType.name }}</td>
@@ -23,9 +23,11 @@
                 <span class="edit clickable text-decoration-none cursor-pointer" title="Edit expense type">
                     <i class="fa fa-pencil-square-o"></i>
                 </span>
+                {% if 0 == expenseType.tePaidExpenses|length %}
                 <span class="remove clickable text-decoration-none cursor-pointer" title="Delete expense type">
                     <i class="fa fa-trash-o"></i>
                 </span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
