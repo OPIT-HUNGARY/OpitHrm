@@ -14,7 +14,7 @@ namespace Opit\OpitHrm\HiringBundle\Manager;
 use Doctrine\ORM\EntityManagerInterface;
 use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Opit\OpitHrm\CoreBundle\Manager\AclManager;
+use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
 use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\OpitHrm\HiringBundle\Entity\ApplicantStatusWorkflow;
