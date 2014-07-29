@@ -27,11 +27,23 @@ The OPIT-HRM application consists of the following bundles:
 
   * CoreBundle
   * CurrencyRateBundle
+  * HiringBundle
   * LeaveBundle
   * NotificationBundle
   * StatusBundle
   * TravelBundle
   * UserBundle
+
+Application versioning scheme
+------------
+
+Version numbers are composed of four (4) segments: 3 integers and a string respectively named major.minor.bugfix-qualifier.
+Each segment captures a different intent:
+
+  * The major segment indicates module additions
+  * The minor segment indicates feature addition
+  * The bugfix segment indicates bug fixes
+  * The qualifier segment indicates the stage (alpha, beta, etc)
 
 Contribution
 ------------

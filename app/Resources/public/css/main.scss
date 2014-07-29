@@ -614,6 +614,11 @@
     @include border-radius(100%);
 }
 
+.border-solid-1 {
+    border-width: 1px;
+    border-style: solid;
+}
+
 .border-bottom-seperator-important{
     border-bottom: solid 2px $darkGrey !important;
 }

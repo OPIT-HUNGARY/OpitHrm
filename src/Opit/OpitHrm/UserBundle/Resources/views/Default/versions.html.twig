@@ -4,7 +4,8 @@
 <h2>Version History</h2>
 
 <article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
-    <h3 class="padding-left-1-em">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
         v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}
     </h3>
     <ul>
@@ -25,10 +26,11 @@
 </article>
 
 <article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
-    <h3 class="padding-left-1-em">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up fa-chevron-down margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
         v1.1.0-beta
     </h3>
-    <ul>
+    <ul class="display-none">
         <li>LDAP authentication</li>
         <li>Framework and library updates</li>
         <li>Custom scrollbar implementation</li>
@@ -37,10 +39,11 @@
 </article>
 
 <article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
-    <h3 class="padding-left-1-em">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up fa-chevron-down margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
         v1.0.1-beta
     </h3>
-    <ul>
+    <ul class="display-none">
         <li>Print view optimization</li>
         <li>Travel expense advances updates</li>
         <li>Travel expense approval process enhancements</li>
@@ -50,10 +53,11 @@
 </article>
 
 <article class="background-color-lighter-grey padding-2 border-radius-5">
-    <h3 class="padding-left-1-em">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up fa-chevron-down margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
         v1.0.0-beta
     </h3>
-    <ul>
+    <ul class="display-none">
         <li>User Management</li>
         <li>Role Management</li>
         <li>Job Title Management</li>
@@ -68,4 +72,13 @@
         <li>Bug fixes</li>
     </ul>
 </article>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/versions.coffee'
+    output='js/opithrmuser/versions.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+        {% endjavascripts %}
 {% endblock %}
