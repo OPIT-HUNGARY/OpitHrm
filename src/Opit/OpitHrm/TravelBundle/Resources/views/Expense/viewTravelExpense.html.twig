@@ -165,7 +165,7 @@
             <td class="white-space-nowrap" style="width:250px;">
             {% for currency, cost in companyPaidExpenses %}
                 {% if '0' != cost %}
-                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }}
                 {% endif %}
             {% endfor %}                
             </td>
@@ -195,7 +195,7 @@
             <td class="white-space-nowrap" style="width:250px;">
             {% for currency, cost in employeePaidExpenses %}
                 {% if '0' != cost %}
-                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }};
+                {{ formatAmount(cost, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, currency) }} {{ currency }}
                 {% endif %}
             {% endfor %}
             </td>
