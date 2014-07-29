@@ -81,14 +81,14 @@ class StatesTravelRequestsRepository extends EntityRepository
     /**
      * Find a travel request's status by status id and travel request id
      *
-     * @param integer $trId
-     * @param integer $statusId
+     * @param integer $trId travel request id
+     * @param integer $statusId status id
      * @return null|Opit\OpitHrm\TravelBundle\Entity\StatesTravelRequests
      */
     public function findStatusByStatusId($trId, $statusId)
     {
         $travelRequestState = $this->createQueryBuilder('tr')
-            ->where('tr.travelRequest = :teId')
+            ->where('tr.travelRequest = :trId')
             ->andWhere('tr.status = :statusId')
             ->setParameter(':trId', $trId)
             ->setParameter(':statusId', $statusId)

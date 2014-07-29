@@ -6,8 +6,10 @@
 
     <parameters>
         <parameter key="opit.listener.travel_request_post_listener.class">Opit\OpitHrm\TravelBundle\EventListener\TravelRequestPostListener</parameter>
+        <parameter key="opit.model.travel.class">Opit\OpitHrm\TravelBundle\Model\TravelService</parameter>
         <parameter key="opit.model.travel_expense.class">Opit\OpitHrm\TravelBundle\Model\TravelExpenseService</parameter>
         <parameter key="opit.model.travel_request.class">Opit\OpitHrm\TravelBundle\Model\TravelRequestService</parameter>
+        <parameter key="opit.manager.travel_status_manager.class">Opit\OpitHrm\TravelBundle\Manager\TravelStatusManager</parameter>
         <parameter key="opit.manager.travel_request_status_manager.class">Opit\OpitHrm\TravelBundle\Manager\TravelRequestStatusManager</parameter>
         <parameter key="opit.manager.travel_expense_status_manager.class">Opit\OpitHrm\TravelBundle\Manager\TravelExpenseStatusManager</parameter>
         <parameter key="opit.manager.travel_notification_manager.class">Opit\OpitHrm\TravelBundle\Manager\TravelNotificationManager</parameter>
@@ -19,40 +21,51 @@
         <service id="opit.listener.travel_request_post_listener" class="%opit.listener.travel_request_post_listener.class%" public="false">
             <tag name="doctrine.event_listener" event="postPersist" />
         </service>
-        <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%">
-            <argument type="service" id="security.context" />
+        <service id="opit.model.travel" class="%opit.model.travel.class%" abstract="true">
+            <call method="setTravelNotificationManager">
+                <argument type="service" id="opit.manager.travel_notification_manager" />
+            </call>
+            <call method="setRouter">
+                <argument type="service" id="router" />
+            </call>
+            <call method="setEmailManager">
+                <argument type="service" id="opit.component.email_manager" />
+            </call>
+            <call method="setExchangeService">
+                <argument type="service" id="opit.service.exchange_rates.default" />
+            </call>
+            <call method="setFactory">
+                <argument type="service" id="security.encoder_factory" />
+            </call>
+            <call method="setOptions">
+                <argument type="collection">
+                    <argument key="applicationName">%application_name%</argument>
+                </argument>
+            </call>
+        </service>
+        <service id="opit.model.travel_expense" class="%opit.model.travel_expense.class%" parent="opit.model.travel">
+            <argument type="service" id="security.context" on-invalid="null" />
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="opit.service.exchange_rates.default" />
+            <argument type="service" id="opit.manager.travel_expense_status_manager" />
             <argument>%currency_config%</argument>
         </service>
-        <service id="opit.model.travel_request" class="%opit.model.travel_request.class%">
-            <argument type="service" id="security.context" />
+        <service id="opit.model.travel_request" class="%opit.model.travel_request.class%" parent="opit.model.travel">
+            <argument type="service" id="security.context" on-invalid="null" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.travel_request_status_manager" />
             <argument type="service" id="opit.security.acl.manager" />
-            <argument type="service" id="opit.manager.travel_notification_manager" />
         </service>
-        <service id="opit.manager.travel_request_status_manager" class="%opit.manager.travel_request_status_manager.class%">
-            <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="security.encoder_factory" />
-            <argument type="service" id="router" />
-            <argument type="service" id="opit.model.travel_expense" />
-            <argument type="service" id="opit.component.email_manager" />
-            <argument>%application_name%</argument>
+        <service id="opit.manager.travel_status_manager" class="%opit.manager.travel_status_manager.class%">
+            <call method="setEntityManager">
+                <argument type="service" id="doctrine.orm.entity_manager" />
+            </call>
             <call method="setRequest">
                 <argument type="service" id="request" on-invalid="null" strict="false" />
             </call>
         </service>
-        <service id="opit.manager.travel_expense_status_manager" class="%opit.manager.travel_expense_status_manager.class%">
-            <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="security.encoder_factory" />
-            <argument type="service" id="router" />
-            <argument type="service" id="opit.model.travel_expense" />
-            <argument type="service" id="opit.component.email_manager" />
-            <argument>%application_name%</argument>
-            <call method="setRequest">
-                <argument type="service" id="request" on-invalid="null" strict="false" />
-            </call>
+        <service id="opit.manager.travel_request_status_manager" class="%opit.manager.travel_request_status_manager.class%" parent="opit.manager.travel_status_manager">
+        </service>
+        <service id="opit.manager.travel_expense_status_manager" class="%opit.manager.travel_expense_status_manager.class%" parent="opit.manager.travel_status_manager">
         </service>
         <service id="opit.manager.pdf_manager" class="%opit.manager.pdf_manager.class%"></service>
         <service id="opit.manager.travel_notification_manager" class="%opit.manager.travel_notification_manager.class%">

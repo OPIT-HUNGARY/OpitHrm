@@ -34,8 +34,11 @@ use Opit\OpitHrm\StatusBundle\Entity\Status;
 class ExpenseController extends Controller
 {
     /**
+     * Method to list travel expenses
+     *
      * @Route("/secured/expense/list", name="OpitOpitHrmTravelBundle_expense_list")
      * @Template()
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function listAction()
     {
@@ -63,8 +66,11 @@ class ExpenseController extends Controller
     }
 
     /**
+     * Method to search on travel expenses
+     *
      * @Route("/secured/expense/search", name="OpitOpitHrmTravelBundle_expense_search")
      * @Template()
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function searchAction()
     {
@@ -94,7 +100,9 @@ class ExpenseController extends Controller
     /**
      * Method to show and edit travel expense
      *
-     * @Route("/secured/expense/{id}/show/{trId}/{forApproval}", name="OpitOpitHrmTravelBundle_expense_show", defaults={"id" = "new", "forApproval" = "0"}, requirements={ "id" = "new|\d+", "trId" = "\d+", "forApproval" = "\d+"})
+     * @Route("/secured/expense/{id}/show/{trId}/{forApproval}", name="OpitOpitHrmTravelBundle_expense_show",
+     *   defaults={"id" = "new", "forApproval" = "0"},
+     *   requirements={ "id" = "new|\d+", "trId" = "\d+", "forApproval" = "\d+"})
      * @Method({"GET", "POST"})
      * @Template()
      */
@@ -107,9 +115,9 @@ class ExpenseController extends Controller
         $exchService = $this->container->get('opit.service.exchange_rates.default');
         $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($id) : new TravelExpense();
-        $approvedCosts = $travelExpenseService->getTRCosts($travelRequest);
+        $approvedCosts = $this->get('opit.model.travel_request')->getTRCosts($travelRequest);
         // Get rates
-        $rates = $exchService->getRatesByDate($travelExpenseService->getMidRate($travelExpense));
+        $rates = $exchService->getRatesByDate($travelExpenseService->getConversionDate($travelExpense));
         $forApproval = (bool) $forApproval;
 
         // te = Travel Expense
@@ -153,8 +161,14 @@ class ExpenseController extends Controller
             $isNewTravelExpense ? $travelExpense->getDepartureDateTime() : $travelRequest->getDepartureDate()
         );
 
-        $form =
-            $this->handleForm($isNewTravelExpense, $travelRequest, $travelExpense, $entityManager, $children, $request);
+        $form = $this->handleForm(
+            $isNewTravelExpense,
+            $travelRequest,
+            $travelExpense,
+            $entityManager,
+            $children,
+            $request
+        );
 
         if ($forApproval) {
             $this->changeExpenseState($travelExpense->getId(), Status::FOR_APPROVAL);
@@ -180,7 +194,8 @@ class ExpenseController extends Controller
     /**
      * To generate details form for travel expenses
      *
-     * @Route("/secured/expense/show/details/{trId}", name="OpitOpitHrmTravelBundle_expense_show_details", requirements={ "id" = "\d+"})
+     * @Route("/secured/expense/show/details/{trId}", name="OpitOpitHrmTravelBundle_expense_show_details",
+     *   requirements={ "id" = "\d+"})
      * @Template()
      */
     public function showDetailsAction($trId)
@@ -192,7 +207,11 @@ class ExpenseController extends Controller
         $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
 
         if (null !== $travelExpensePreview) {
-            $form = $this->createForm(new ExpenseType($travelRequest->getUser()->getEmployee()), $travelExpense, array('em' => $entityManager));
+            $form = $this->createForm(
+                new ExpenseType($travelRequest->getUser()->getEmployee()),
+                $travelExpense,
+                array('em' => $entityManager)
+            );
             $form->handleRequest($request);
         } else {
             $travelExpense = $this->getTravelExpense();
@@ -277,7 +296,8 @@ class ExpenseController extends Controller
     /**
      * Method to view travel expense
      *
-     * @Route("/secured/expense/view/{id}", name="OpitOpitHrmTravelBundle_expense_view", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Route("/secured/expense/view/{id}", name="OpitOpitHrmTravelBundle_expense_view",
+     *   defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Template()
      */
     public function viewTravelExpenseAction(Request $request)
@@ -291,7 +311,8 @@ class ExpenseController extends Controller
     /**
      * Method to export expense to pdf
      *
-     * @Route("/secured/expense/export/{id}", name="OpitOpitHrmTravelBundle_expense_export", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Route("/secured/expense/export/{id}", name="OpitOpitHrmTravelBundle_expense_export",
+     *   defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
      * @Template()
      */
     public function exportExpenseToPDFAction(Request $request)
@@ -376,7 +397,8 @@ class ExpenseController extends Controller
         $emailManager = $this->get('opit.component.email_manager');
         $emailManager->setRecipient($payroll->getEmail());
         $emailManager->setSubject(
-            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - Approved travel expense (' . $travelRequest->getTravelRequestId() . ')'
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM')
+            .'] - Approved travel expense (' . $travelRequest->getTravelRequestId() . ')'
         );
         $emailManager->setBodyByTemplate(
             'OpitOpitHrmTravelBundle:Mail:travelExpenseForPayroll.html.twig',
@@ -416,11 +438,14 @@ class ExpenseController extends Controller
             $departureDateTime
         );
 
-        $travelExpenseExpenses = $travelExpenseService->sumExpenses($travelExpense);
-        $sumOfCostsByCurrencies = $travelExpenseService->getCostsByCurrencies($travelExpense);
-        $midRate = $travelExpenseService->getMidRate($travelExpense);
+        $travelExpenses = $travelExpenseService->sumExpenses($travelExpense);
+        $sumCostsByCurrencies = $travelExpenseService->getCostsByCurrencies($travelExpense);
+        $midRateDate = $travelExpenseService->getConversionDate($travelExpense);
 
-        $advanceAmounts = $travelExpenseService->getAdvanceAmounts($sumOfCostsByCurrencies['employeePaidExpenses'], $travelExpense);
+        $advanceAmounts = $travelExpenseService->getAdvanceAmounts(
+            $sumCostsByCurrencies['employeePaidExpenses'],
+            $travelExpense
+        );
         $totalAmountPayableInHUF = 0;
         foreach ($advanceAmounts as $amount) {
             $totalAmountPayableInHUF += $amount['amountInHUF'];
@@ -439,14 +464,14 @@ class ExpenseController extends Controller
                 'datetime' => $approvedDateTime,
                 'trId' => $travelRequest->getTravelRequestId(),
                 'perDiem' => $perDiem,
-                'expensesPaidByCompany' => $travelExpenseExpenses['companyPaidExpenses'],
-                'expensesPaidByEmployee' => $travelExpenseExpenses['employeePaidExpenses'],
+                'expensesPaidByCompany' => $travelExpenses['companyPaidExpenses'],
+                'expensesPaidByEmployee' => $travelExpenses['employeePaidExpenses'],
                 'currencyFormat' => $currencyConfig['currency_format'],
-                'midRate' => $midRate,
-                'companyPaidExpenses' => $sumOfCostsByCurrencies['companyPaidExpenses'],
-                'employeePaidExpenses' => $sumOfCostsByCurrencies['employeePaidExpenses'],
+                'midRate' => $midRateDate,
+                'companyPaidExpenses' => $sumCostsByCurrencies['companyPaidExpenses'],
+                'employeePaidExpenses' => $sumCostsByCurrencies['employeePaidExpenses'],
                 'rates' => $this->container->get('opit.service.exchange_rates.default')
-                               ->getRatesByDate($midRate)
+                               ->getRatesByDate($midRateDate)
             )
         );
     }
@@ -477,6 +502,7 @@ class ExpenseController extends Controller
     }
 
     /**
+     * Check if the access is granted.
      *
      * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
      * @throws CreateNotFoundException
@@ -541,9 +567,12 @@ class ExpenseController extends Controller
     }
 
     /**
+     * Change the travel expense's state
      *
-     * @param integer $travelExpenseId
-     * @param integer $statusId
+     * @param integer $foreignId travel expense Id
+     * @param integer $statusId status id
+     * @param string|null $comment the comment
+     * @return \Symfony\Component\HttpFoundation\JsonResponse object
      */
     protected function changeExpenseState($foreignId, $statusId, $comment = null)
     {
@@ -551,10 +580,8 @@ class ExpenseController extends Controller
         $travelExpense = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelExpense')
             ->find($foreignId);
 
-        $status = $this->get('opit.manager.travel_expense_status_manager')->addStatus($travelExpense, $statusId, $comment);
+        $this->get('opit.model.travel_expense')->changeStatus($travelExpense, $statusId, $comment);
 
-        // send a new notification when travel request or expense status changes
-        $notificationManager = $this->container->get('opit.manager.travel_notification_manager');
-        $notificationManager->addNewTravelNotification($travelExpense, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+        return new JsonResponse();
     }
 }

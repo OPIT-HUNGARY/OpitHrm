@@ -31,7 +31,8 @@ class DefaultController extends Controller
     /**
      * Method to change the status of the travel request or travel expense
      *
-     * @Route("/change/travelstatus/{gmId}/{travelType}/{status}/{token}", name="OpitOpitHrmTravelBundle_change_status", requirements={ "status" = "\d+", "gmId" = "\d+" })
+     * @Route("/change/travelstatus/{gmId}/{travelType}/{status}/{token}", name="OpitOpitHrmTravelBundle_change_status",
+     *   requirements={ "status" = "\d+", "gmId" = "\d+" })
      * @Template()
      * @throws CreateNotFoundException
      */
@@ -68,7 +69,9 @@ class DefaultController extends Controller
 
             $entityManager->remove($token);
             $entityManager->flush();
-            $this->get('opit.manager.travel_'.$travelTypeName.'_status_manager')->addStatus($travel, $status->getId());
+
+            // Change the status via external link
+            $this->get('opit.model.travel_' . $travelTypeName)->changeStatus($travel, $status->getId());
         }
 
         return $this->render(
@@ -80,7 +83,8 @@ class DefaultController extends Controller
     /**
      * Method to get the history for a travel request and travel expense if it exists
      *
-     * @Route("/secured/travel/status/history/{id}/{mode}", name="OpitOpitHrmTravelBundle_status_history", requirements={"mode"="tr|te|both", "id"="\d+"}, defaults={"mode"="both"})
+     * @Route("/secured/travel/status/history/{id}/{mode}", name="OpitOpitHrmTravelBundle_status_history",
+     *   requirements={"mode"="tr|te|both", "id"="\d+"}, defaults={"mode"="both"})
      * @Method({"POST"})
      * @Template()
      */

@@ -43,7 +43,6 @@ abstract class StatusManager implements StatusManagerInterface
         $bundleName = $pieces[4] . '' . $pieces[5];
         $className = 'Opit\OpitHrm\\' . $bundleName . '\\Entity\States' . Utils::getClassBasename($resource) . 's';
         $status = $this->entityManager->getRepository('OpitOpitHrmStatusBundle:Status')->find($requiredStatus);
-        $statusId = $status->getId();
         $instanceS = new \ReflectionClass($className);
         $resourceState = $instanceS->newInstanceArgs(array($status, $resource));
 
@@ -72,12 +71,6 @@ abstract class StatusManager implements StatusManagerInterface
         if ((method_exists($resourceState, 'getCreatedUser') && method_exists($resource, 'getGeneralManager')) && null === $resourceState->getCreatedUser()) {
             $resourceState->setCreatedUser($resource->getGeneralManager());
         }
-
-        // Exclude current status from next states to prepare the email
-        $nextStates = $this->getNextStates($status);
-        unset($nextStates[$statusId]);
-
-        $this->prepareEmail($status, $nextStates, $resource, $requiredStatus);
 
         $this->entityManager->flush();
 
@@ -208,14 +201,4 @@ abstract class StatusManager implements StatusManagerInterface
      * @param integer $id
      */
     abstract public function removeTokens($id);
-
-    /**
-     * Composes and send an email based on a status change
-     *
-     * @param Status  $status
-     * @param array   $nextStates
-     * @param mixed   $resource
-     * @param integer $requiredStatus
-     */
-    abstract protected function prepareEmail(Status $status, array $nextStates, $resource, $requiredStatus);
 }

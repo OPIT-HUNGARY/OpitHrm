@@ -34,6 +34,8 @@ use Symfony\Component\Form\FormError;
 class TravelController extends Controller
 {
     /**
+     * Method to list travel reqeusts
+     *
      * @Route("/secured/travel/list", name="OpitOpitHrmTravelBundle_travel_list")
      * @Template()
      */
@@ -115,8 +117,8 @@ class TravelController extends Controller
         } else {
             $travelRequest = $this->getTravelRequest();
         }
-
-        $estimatedCosts = $this->get('opit.model.travel_expense')
+        // Get travel request costs.
+        $estimatedCosts = $this->get('opit.model.travel_request')
             ->getTRCosts($travelRequest);
 
         $currencyConfig = $this->container->getParameter('currency_config');
@@ -132,7 +134,8 @@ class TravelController extends Controller
     /**
      * Method to show and edit travel request
      *
-     * @Route("/secured/travel/show/{id}/{fa}", name="OpitOpitHrmTravelBundle_travel_show", defaults={"id" = "new", "fa" = "new"}, requirements={ "id" = "new|\d+", "fa" = "new|fa" })
+     * @Route("/secured/travel/show/{id}/{fa}", name="OpitOpitHrmTravelBundle_travel_show",
+     *   defaults={"id" = "new", "fa" = "new"}, requirements={ "id" = "new|\d+", "fa" = "new|fa" })
      * @Template()
      */
     public function showTravelRequestAction(Request $request)
@@ -243,17 +246,19 @@ class TravelController extends Controller
 
         // Set comment content or null
         $comment = isset($data['comment']) && $data['comment'] ? $data['comment'] : null;
+        // Change the travel request's status
+        $this->get('opit.model.travel_request')->changeStatus($travelRequest, $data['id'], $comment, false);
 
-        return $this->get('opit.model.travel_request')
-            ->changeStatus($travelRequest, $data['id'], false, $comment);
+        return new JsonResponse();
     }
 
     /**
+     * Set travel request form
      *
      * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
      * @param EntityManager $entityManager
      * @param boolean $isNewTravelRequest
-     * @return type
+     * @return \Opit\OpitHrm\TravelBundle\Form\TravelType $form
      */
     protected function setTravelRequestForm(TravelRequest $travelRequest, EntityManager $entityManager, $isNewTravelRequest)
     {
@@ -267,8 +272,9 @@ class TravelController extends Controller
     }
 
     /**
+     * Get the travel request by id
      *
-     * @param integer $travelRequestId
+     * @param integer $travelRequestId travel request id
      * @return \Opit\OpitHrm\TravelBundle\Entity\TravelRequest
      * @throws CreateNotFoundException
      */
@@ -311,7 +317,7 @@ class TravelController extends Controller
                 // Create initial states for new travel request.
                 if (null === $isNew) {
                     // Add created status for the new travel request and then send an email.
-                    $travelRequestService->changeStatus($travelRequest, Status::CREATED, true);
+                    $travelRequestService->changeStatus($travelRequest, Status::CREATED, null, true);
                     // If the TR marked for approval too then modify its status
                     if ('fa' === $forApproval) {
                         $travelRequestService->changeStatus($travelRequest, Status::FOR_APPROVAL);
@@ -333,33 +339,35 @@ class TravelController extends Controller
      */
     public function employeeTravelInfoBoardAction()
     {
-        $em = $this->getDoctrine()->getManager();
+        $entityManager = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
 
         //travel request info
-        $totalTravelRequestCount = $em->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->findEmployeeTravelRequest($user->getID());
+        $totalTRCount = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')
+            ->findEmployeeTravelRequest($user->getID());
 
-        $notPendingTravelRequestCount = $em
-                        ->getRepository('OpitOpitHrmTravelBundle:TravelRequest')
-                        ->findEmployeeNotPendingTravelRequest($user->getID()
-        );
-        $pendingTravelRequestCount = $totalTravelRequestCount-$notPendingTravelRequestCount;
+        $notPendingTRCount = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')
+            ->findEmployeeNotPendingTravelRequest($user->getID());
+
+        $pendingTRCount = $totalTRCount-$notPendingTRCount;
 
         //travel expense info
-        $totalTravelExpenseCount = $em->getRepository('OpitOpitHrmTravelBundle:TravelExpense')->findEmployeeTravelExpenseCount($user->getID());
-        $notPendingTravelExpenseCount = $em
-                        ->getRepository('OpitOpitHrmTravelBundle:TravelExpense')
-                        ->findEmployeeNotPendingTravelExpense($user->getID()
-        );
-        $pendingTravelExpenseCount = $totalTravelExpenseCount - $notPendingTravelExpenseCount;
+        $totalTECount = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelExpense')
+            ->findEmployeeTravelExpenseCount($user->getID());
 
-        return $this->render('OpitOpitHrmTravelBundle:Travel:_employeeTravelInfoBoard.html.twig',
-                array('pendingTravelRequestCount' => $pendingTravelRequestCount,
-                    'totalTravelRequestCount' => $totalTravelRequestCount,
-                    'notPendingTravelRequestCount' => $notPendingTravelRequestCount,
-                    'totalTravelExpenseCount' => $totalTravelExpenseCount,
-                    'pendingTravelExpenseCount' => $pendingTravelExpenseCount,
-                    'notPendingTravelExpenseCount' => $notPendingTravelExpenseCount
-                    ));
+        $notPendingTECount = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelExpense')
+            ->findEmployeeNotPendingTravelExpense($user->getID());
+        $pendingTECount = $totalTECount - $notPendingTECount;
+
+        return $this->render(
+            'OpitOpitHrmTravelBundle:Travel:_employeeTravelInfoBoard.html.twig',
+            array('pendingTravelRequestCount' => $pendingTRCount,
+                'totalTravelRequestCount' => $totalTRCount,
+                'notPendingTravelRequestCount' => $notPendingTRCount,
+                'totalTravelExpenseCount' => $totalTECount,
+                'pendingTravelExpenseCount' => $pendingTECount,
+                'notPendingTravelExpenseCount' => $notPendingTECount
+            )
+        );
     }
 }

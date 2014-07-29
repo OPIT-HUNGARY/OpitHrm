@@ -17,12 +17,11 @@ use Opit\OpitHrm\TravelBundle\Entity\TravelRequest;
 use Opit\OpitHrm\TravelBundle\Manager\TravelRequestStatusManager;
 use Opit\OpitHrm\UserBundle\Entity\User;
 use Symfony\Component\Security\Core\SecurityContext;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\OpitHrm\TravelBundle\Model\TravelResourceInterface;
 use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
-use Opit\OpitHrm\TravelBundle\Manager\TravelNotificationManager;
+use Opit\OpitHrm\TravelBundle\Model\TravelRequestServiceInterface;
 
 /**
  * Description of TravelRequestService
@@ -32,26 +31,24 @@ use Opit\OpitHrm\TravelBundle\Manager\TravelNotificationManager;
  * @package OPIT-HRM
  * @subpackage TravelBundle
  */
-class TravelRequestService
+class TravelRequestService extends TravelService implements TravelRequestServiceInterface
 {
     protected $securityContext;
     protected $entityManager;
     protected $statusManager;
     protected $aclManager;
-    protected $travelNotification;
 
     public function __construct(
         SecurityContext $securityContext,
         EntityManagerInterface $entityManager,
         TravelRequestStatusManager $statusManager,
-        AclManager $aclManager,
-        TravelNotificationManager $travelNotificationManager
+        AclManager $aclManager
     ) {
+
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->aclManager = $aclManager;
-        $this->travelNotificationManager = $travelNotificationManager;
     }
 
     /**
@@ -66,11 +63,7 @@ class TravelRequestService
     }
 
     /**
-     * Set travel request access rights
-     *
-     * @param Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param integer Opit\OpitHrm\StatusBundle\Entity\Status $currentStatus
-     * @return array
+     * @internal
      */
     public function setTravelRequestAccessRights(TravelResourceInterface $travelRequest, $currentStatus)
     {
@@ -133,10 +126,7 @@ class TravelRequestService
     }
 
     /**
-     * Set travel request listing rights
-     *
-     * @param Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequests
-     * @return arrzy
+     * @internal
      */
     public function setTravelRequestListingRights($travelRequests)
     {
@@ -178,10 +168,7 @@ class TravelRequestService
     }
 
     /**
-     * Method to check if user is allowed to modify the travel request
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @return boolean
+     * @internal
      */
     public function validateTROwner(TravelRequest $travelRequest)
     {
@@ -201,13 +188,7 @@ class TravelRequestService
     }
 
     /**
-     * Method to set edit rights for travel request
-     *
-     * @param \Opit\OpitHrm\UserBundle\Entity\User $user
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param boolean $isNewTravelRequest
-     * @param integer $currentStatusId
-     * @return array
+     * @internal
      */
     public function setEditRights(User $user, TravelRequest $travelRequest, $isNewTravelRequest, $currentStatusId)
     {
@@ -244,10 +225,7 @@ class TravelRequestService
     }
 
     /**
-     * Method to add accomodation and destination to travel request
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @internal
      */
     public function addChildNodes(TravelRequest $travelRequest)
     {
@@ -265,10 +243,7 @@ class TravelRequestService
     }
 
     /**
-     * Removes related travel request instances.
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param ArrayCollection $children
+     * @internal
      */
     public function removeChildNodes(TravelRequest $travelRequest, $children)
     {
@@ -282,11 +257,7 @@ class TravelRequestService
     }
 
     /**
-     * Method to get all selectable states for travel request
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param type $statusManager
-     * @return array
+     * @internal
      */
     public function getNextAvailableStates(TravelRequest $travelRequest)
     {
@@ -301,15 +272,9 @@ class TravelRequestService
     }
 
     /**
-     * Change status
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param integer $statusId
-     * @param boolean $validationDisabled
-     * @param string $comment A status comment
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @internal
      */
-    public function changeStatus(TravelRequest $travelRequest, $statusId, $validationDisabled = false, $comment = null)
+    public function changeStatus(TravelRequest $travelRequest, $statusId, $comment = null, $validationDisabled = false)
     {
         if ($validationDisabled || $this->statusManager->isValid($travelRequest, $statusId)) {
             // Manage travel request access control
@@ -320,21 +285,50 @@ class TravelRequestService
                     break;
                 case Status::FOR_APPROVAL:
                     // Grant view access for managers
-                    $this->aclManager->grant($travelRequest, $travelRequest->getGeneralManager(), MaskBuilder::MASK_VIEW);
+                    $this->aclManager->grant(
+                        $travelRequest,
+                        $travelRequest->getGeneralManager(),
+                        MaskBuilder::MASK_VIEW
+                    );
                     if ($travelRequest->getTeamManager()) {
-                        $this->aclManager->grant($travelRequest, $travelRequest->getTeamManager(), MaskBuilder::MASK_VIEW);
+                        $this->aclManager->grant(
+                            $travelRequest,
+                            $travelRequest->getTeamManager(),
+                            MaskBuilder::MASK_VIEW
+                        );
                     }
                     break;
             }
 
             $status = $this->statusManager->addStatus($travelRequest, $statusId, $comment);
 
-            // send a new notification when travel request or expense status changes
-            $this->travelNotificationManager->addNewTravelNotification($travelRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+            // Send email
+            $this->prepareEmail($status, $travelRequest);
 
-            return new JsonResponse();
+            // send a new notification when travel request or expense status changes
+            $this->travelNotificationManager->addNewTravelNotification(
+                $travelRequest,
+                (Status::FOR_APPROVAL === $status->getId() ? true : false),
+                $status
+            );
+
+            return true;
         } else {
-            return new JsonResponse('error');
+            return false;
         }
+    }
+
+    /**
+     * @internal
+     */
+    public function getConversionDate($travelRequest)
+    {
+        $trStatus = $this->entityManager->getRepository('OpitOpitHrmTravelBundle:StatesTravelRequests')
+            ->findStatusByStatusId($travelRequest->getId(), Status::FOR_APPROVAL, 'ASC');
+
+        // Set the conversation date.
+        $trDate = $trStatus ? $trStatus->getCreated() : new \DateTime('today');
+
+        return $trDate;
     }
 }

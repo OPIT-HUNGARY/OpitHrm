@@ -13,12 +13,13 @@ namespace Opit\OpitHrm\TravelBundle\Model;
 
 use Opit\OpitHrm\TravelBundle\Entity\TravelExpense;
 use Opit\OpitHrm\TravelBundle\Entity\TravelRequest;
+use Opit\OpitHrm\TravelBundle\Manager\TravelExpenseStatusManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Doctrine\Common\Collections\ArrayCollection;
 use Opit\Component\Utils\Utils;
-use Opit\OpitHrm\CurrencyRateBundle\Model\ExchangeRateInterface;
 use Opit\OpitHrm\TravelBundle\Model\TravelRequestUserInterface;
+use Opit\OpitHrm\TravelBundle\Model\TravelExpenseServiceInterface;
 
 /**
  * Description of TravelExpense
@@ -28,26 +29,23 @@ use Opit\OpitHrm\TravelBundle\Model\TravelRequestUserInterface;
  * @package OPIT-HRM
  * @subpackage TravelBundle
  */
-class TravelExpenseService
+class TravelExpenseService extends TravelService implements TravelExpenseServiceInterface
 {
     protected $securityContext;
     protected $entityManager;
+    protected $statusManager;
     protected $config;
-    protected $exchangeService;
 
-    public function __construct($securityContext, EntityManagerInterface $entityManager, ExchangeRateInterface $exchangeService, $config = array())
+    public function __construct($securityContext, EntityManagerInterface $entityManager, TravelExpenseStatusManager $statusManager, $config = array())
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
-        $this->exchangeService = $exchangeService;
+        $this->statusManager = $statusManager;
         $this->config = $config;
     }
 
     /**
-     * Method to calculate the advances for the travel
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return \Opit\OpitHrm\TravelBundle\Entity\TravelExpense
+     * @internal
      */
     public function calculateAdvances(TravelExpense $travelExpense)
     {
@@ -61,11 +59,7 @@ class TravelExpenseService
     }
 
     /**
-     * Method to calculate the per diem for the travel expense
-     *
-     * @param string $arrivalDateTime
-     * @param string $departureDateTime
-     * @return array
+     * @internal
      */
     public function calculatePerDiem($arrivalDateTime, $departureDateTime)
     {
@@ -142,10 +136,7 @@ class TravelExpenseService
     }
 
     /**
-     * Method to sum and add all employee and company paid expenses
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return array
+     * @internal
      */
     public function sumExpenses(TravelExpense $travelExpense)
     {
@@ -156,7 +147,7 @@ class TravelExpenseService
                 $companyPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $companyPaidExpenses->getAmount(),
-                $this->getMidRate($travelExpense)
+                $this->getConversionDate($travelExpense)
             );
         }
 
@@ -165,7 +156,7 @@ class TravelExpenseService
                 $userPaidExpenses->getCurrency()->getCode(),
                 $this->config['default_currency'],
                 $userPaidExpenses->getAmount(),
-                $this->getMidRate($travelExpense)
+                $this->getConversionDate($travelExpense)
             );
         }
 
@@ -175,12 +166,7 @@ class TravelExpenseService
     }
 
     /**
-     * Method to set edit rights for travel request depending on its current status
-     *
-     * @param integer $travelRequest
-     * @param integer $currentUser
-     * @param integer $currentStatusId
-     * @return array
+     * @internal
      */
     public function setEditRights(TravelRequest $travelRequest, TravelRequestUserInterface $currentUser, $currentStatusId)
     {
@@ -216,10 +202,7 @@ class TravelExpenseService
     }
 
     /**
-     * Method to add company and employee paid expenses to travel expense
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return \Opit\OpitHrm\TravelBundle\Model\ArrayCollection
+     * @internal
      */
     public function addChildNodes(TravelExpense $travelExpense)
     {
@@ -244,10 +227,7 @@ class TravelExpenseService
     }
 
     /**
-     * Method to remove child nodes
-     *
-     * @param TravelExpense $travelExpense
-     * @param ArrayCollection $children
+     * @internal
      */
     public function removeChildNodes(TravelExpense $travelExpense, $children)
     {
@@ -274,63 +254,29 @@ class TravelExpenseService
     }
 
     /**
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @return array Travel request costs in HUF and EUR
+     * @internal
      */
-    public function getTRCosts(TravelRequest $travelRequest)
+    public function changeStatus(TravelExpense $travelExpense, $statusId, $comment = null)
     {
-        $approvedCostsEUR = 0;
-        $approvedCostsHUF = 0;
-        $midRate = $this->getMidRate($travelRequest);
-        foreach ($travelRequest->getAccomodations() as $accomodation) {
-            $accomodationCost = $accomodation->getCost();
-            $accomodationCurrency = $accomodation->getCurrency();
+        $status = $this->statusManager->addStatus($travelExpense, $statusId, $comment);
 
-            $approvedCostsHUF += $this->exchangeService->convertCurrency(
-                $accomodationCurrency->getCode(),
-                'HUF',
-                $accomodationCost,
-                $midRate
-            );
-            $approvedCostsEUR += $this->exchangeService->convertCurrency(
-                $accomodationCurrency->getCode(),
-                'EUR',
-                $accomodationCost,
-                $midRate
-            );
-        }
+        // Send email
+        $this->prepareEmail($status, $travelExpense);
 
-        foreach ($travelRequest->getDestinations() as $destination) {
-            $destinationCost = $destination->getCost();
-            $destinationCurrency = $destination->getCurrency();
+        // send a new notification when travel request or expense status changes
+        $this->travelNotificationManager->addNewTravelNotification(
+            $travelExpense,
+            (Status::FOR_APPROVAL === $status->getId() ? true : false),
+            $status
+        );
 
-            $approvedCostsHUF += $this->exchangeService->convertCurrency(
-                $destinationCurrency->getCode(),
-                'HUF',
-                $destinationCost,
-                $midRate
-            );
-            $approvedCostsEUR += $this->exchangeService->convertCurrency(
-                $destinationCurrency->getCode(),
-                'EUR',
-                $destinationCost,
-                $midRate
-            );
-        }
-
-        return array('HUF' => $approvedCostsHUF, 'EUR' => $approvedCostsEUR);
+        return $status;
     }
 
     /**
-     * Get the travel expense's midrate
-     *
-     * Today's date has to be taken unless the travel expense's for approval status was set.
-     * ALWAYS the first "for approval" status fixes the expense's midrate.
-     *
-     * @return \DateTime The midrate datetime object.
+     * @internal
      */
-    public function getMidRate($travelExpense)
+    public function getConversionDate($travelExpense)
     {
         $teStatus = $this->entityManager->getRepository('OpitOpitHrmTravelBundle:StatesTravelExpenses')
             ->findStatusByStatusId($travelExpense->getId(), Status::FOR_APPROVAL, 'ASC');
@@ -341,17 +287,11 @@ class TravelExpenseService
         $midRateDate->setDate($midRateDate->format('Y'), $midRateDate->format('m'), $this->config['mid_rate']['day']);
         $midRateDate->modify($this->config['mid_rate']['modifier']);
 
-        // TODO: handle empty rates.
-
         return $midRateDate;
     }
 
     /**
-     * Get company and user paid expenses and put them in an array depending on the
-     * currency they have
-     *
-     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelExpense $travelExpense
-     * @return array
+     * @internal
      */
     public function getCostsByCurrencies(TravelExpense $travelExpense)
     {
@@ -379,6 +319,9 @@ class TravelExpenseService
         );
     }
 
+    /**
+     * @internal
+     */
     public function getAdvanceAmounts($employeePaidExpenses, $travelExpense)
     {
         $advacesPayback = array();
@@ -405,7 +348,14 @@ class TravelExpenseService
                         $payableToEmployee = abs($advancePayback);
                         $advancePayback = 0;
                     }
-                    $advacesPayback[] = $this->getAmountsArray($advanceAmount, $amount, $advancePayback, $payableToEmployee, $currency, $travelExpense);
+                    $advacesPayback[] = $this->getAmountsArray(
+                        $advanceAmount,
+                        $amount,
+                        $advancePayback,
+                        $payableToEmployee,
+                        $currency,
+                        $travelExpense
+                    );
                 }
             }
             // if no amount was received in currency
@@ -419,11 +369,27 @@ class TravelExpenseService
         return $advacesPayback;
     }
 
+    /**
+     * Get amounts array
+     *
+     * @param float $advanceReceived
+     * @param float $amountSpent
+     * @param float $advancePayback
+     * @param boolean $payableToEmployee
+     * @param string $currency
+     * @param \Opit\OpitHrm\TravelBundle\Entity\TravelExpense $travelExpense
+     * @return mixin array.
+     */
     private function getAmountsArray($advanceReceived, $amountSpent, $advancePayback, $payableToEmployee, $currency, $travelExpense)
     {
         $amountInHUF = 0;
         if ('HUF' != $currency && 0 != $payableToEmployee) {
-            $amountInHUF = $this->exchangeService->convertCurrency($currency, 'HUF', $payableToEmployee, $this->getMidRate($travelExpense));
+            $amountInHUF = $this->exchangeService->convertCurrency(
+                $currency,
+                'HUF',
+                $payableToEmployee,
+                $this->getConversionDate($travelExpense)
+            );
         } elseif ('HUF' == $currency) {
             $amountInHUF = $amountSpent;
         }
