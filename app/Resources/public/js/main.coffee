@@ -19,11 +19,10 @@ $.extend true, $(document).data('opithrm'),
                             callback $(@).find('form').serialize(), $(document).data('opithrm').funcs.disableStatusDropdown($dropdown)
                             $(@).dialog 'destroy'
                         No: ->
-                            $(document).data('opithrm').funcs.enableStatusDropdown $dropdown
-                            $(@).dialog 'destroy'
-                    close: ->
-                        $(@).dialog 'destroy'
+                            $(@).dialog 'close'
+                    close: (event, ui) ->
                         $(document).data('opithrm').funcs.enableStatusDropdown $dropdown
+                        $(@).dialog 'destroy'
 
         initDateInputs: ($container) ->
             $dateInputs = if $container then $container.find('input[type=date]') else $('input[type=date]')
@@ -303,6 +302,8 @@ $.fn.datepicker = (options = {}, parameters = {}) ->
  * @depends jQuery
  *
 ###
+$.ui.dialog.prototype._originalClose = $.ui.dialog.prototype.close
+
 $.widget "ui.dialog", $.extend {}, $.ui.dialog.prototype, {
     # Fix to allow dialog to pass html strings for title option
     _title: (title) ->
@@ -314,7 +315,8 @@ $.widget "ui.dialog", $.extend {}, $.ui.dialog.prototype, {
 
     # Enforce dialog destroy on close
     close: ->
-        $.ui.dialog.prototype.destroy.call(this);
+        $.ui.dialog.prototype._originalClose.apply @, arguments
+        $.ui.dialog.prototype.destroy.call @
 }
 
 __dialog = $.fn.dialog
