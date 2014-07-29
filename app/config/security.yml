@@ -60,6 +60,7 @@ security:
             pattern: ^/customer/
             http_basic:
                 realm: "Secured Customer Area"
+            provider: administrators
 
         feeds:
             pattern: ^/feeds/
