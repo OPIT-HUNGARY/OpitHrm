@@ -29,41 +29,14 @@ compareDays = () ->
     else
         $accomodationWrapper.children('label.custom-error').remove()
         return true
-        
 addFormDeleteButton = ->
     $deleteButton = $('<div>')
                         .html('<i class="fa fa-minus-square"></i>Delete')
-                        .addClass('deleteFormFieldsetChild formFieldsetButton')
-                        .addClass 'form-fieldset-delete-button'
+                        .addClass('form-fieldset-delete-button formFieldsetButton')
+
     $deleteButton.click ->
         $(@).parent().remove()
     return $deleteButton
-    
-addFormAddButton = (parameters) ->
-    parameters.forEach (parameter) ->
-            $button = $('<div>')
-                        .html("<i class='fa fa-plus-square'></i>#{ parameter.text }")
-                        .addClass('addFormFieldsetChild formFieldsetButton')
-                        .addClass 'form-fieldset-add-button'
-
-            $collection = parameter.parent.append $button
-            $collection.data 'index', $collection.find(':input').length
-            $button.click (e) ->
-                e.preventDefault()
-                addForm $collection, $button, true
-                return
-                
-formFieldsetAddClasses = (formFieldsetIds) ->
-    formFieldsetIds.forEach (formFieldsetId) ->
-        $parent = $("##{ formFieldsetId }").parent()
-                    .addClass('formFieldset')
-                    .addClass 'padding-bottom-5 margin-top-20 margin-bottom-20'
-
-        formFieldsetAddHeader(formFieldsetId)
-    
-formFieldsetAddHeader = (formFieldsetId) ->
-    $label = $("##{ formFieldsetId }").parent().children 'label'
-    $label.replaceWith '<h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">' + $label.html() + '</h3>'
         
 createFormFieldSetChild = ($self) ->
     $self.addClass 'formFieldsetChild'
@@ -79,37 +52,54 @@ createFormFieldSetChild = ($self) ->
     
     return $self
 
-reCreateForm = (formFieldsetChildIds) ->
-    formFieldsetChildIds.forEach (formFieldsetChildId) ->
-        $("##{ formFieldsetChildId }").children().each ->
-            createFormFieldSetChild $(@)
+addForm = ($collectionHolder, $addButton) ->
+    if $collectionHolder.data('index') is undefined
+        $collectionHolder.data 'index', $collectionHolder.find('.formFieldsetChild').length
 
-addForm = ($collectionHolder, $addButton, addListener) ->
     index = $collectionHolder.data 'index'
     newForm = $collectionHolder.data('prototype')
                 .replace('<label class="required">__name__label__</label>', '')
                 .replace /__name__/g, index
     $newForm = createFormFieldSetChild $(newForm)
-
     $newForm.find('.currency option[value=EUR]').attr 'selected','selected'
+
     $collectionHolder.data 'index', index + 1
-    $addButton.before $newForm
+    $collectionHolder.append $newForm
 
 $(document).ready ->
+    $(document).data('opithrm').funcs.makeElementToggleAble 'h3', $('.formFieldset')
+
+    $('.form-fieldset-delete-button').on 'click', ->
+        $(@).closest('.formFieldsetChild').remove()
+
+    # Init status history for travel requests
+    history = new StatusHistory('OpitOpitHrmTravelBundle_status_history')
+    do history.init
+
+    #check customer related value
+    travelCustomer = $('#travelRequest_customer_name')
+    $('#travelRequest_customer_related').change ->
+        if $(@).val() is '1'
+            travelCustomer.parent().removeClass 'visibility-hidden'
+            travelCustomer.attr('required', 'required')
+        else
+            travelCustomer.parent().addClass 'visibility-hidden'
+            travelCustomer.removeAttr 'required'
+
     $('.changeState').on 'change', ->
         $(document).data('opithrm').funcs.changeStateDialog $(@), $(document).data('opithrm').funcs.changeTravelRequestStatus, {
             foreignId: $(@).data('tr')
             type: 'travel request'
         }
 
-    if not Modernizr.inputtypes.date
-        $arrivalDate = $('#travelRequest_arrival_date')
-        $departureDate = $('#travelRequest_departure_date')
-        $('#altDatetravelRequest_arrival_date').val $arrivalDate.val()
-        $('#altDatetravelRequest_departure_date').val $departureDate.val()
-        $arrivalDate.val $arrivalDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
-        $departureDate.val $departureDate.val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
-        
+    $('#add_destination').on 'click', ->
+        $destinations = $('#travelRequest_destinations')
+        addForm $destinations, $(@)
+
+    $('#add_accomodation').on 'click', ->
+        $accomodations = $('#travelRequest_accomodations')
+        addForm $accomodations, $(@)
+
     $('#travelRequest_user_ac').autocomplete
         source: (request, response) ->
             $.post Routing.generate('OpitOpitHrmUserBundle_user_search'), request, (data) -> response(data)
@@ -133,79 +123,11 @@ $(document).ready ->
         select: (event, ui) ->
             $('#travelRequest_general_manager').val ui.item.id
             return
-            
-    # Init status history for travel requests
-    history = new StatusHistory('OpitOpitHrmTravelBundle_status_history')
-    do history.init
 
-    #check customer related value
-    travelCustomer = $('#travelRequest_customer_name')
-    if travelCustomer.val() is ''
-        travelCustomer.parent().css {visibility: 'hidden'}
-    else
-        $('#travelRequest_customer_related').val('0')
-
-    $('#travelRequest_customer_related').change ->
-        if $(@).val() is "0"
-            travelCustomer.parent().css {visibility: 'visible'}
-            travelCustomer.attr('required', 'required')
-        else
-            travelCustomer.parent().css {visibility: 'hidden'}
-            travelCustomer.removeAttr 'required'
-        
-    #add team manager and general manager to formFieldset
-    requiredApprovals = $('<div>')
-                            .addClass('formFieldset')
-                            .addClass('padding-bottom-5 margin-top-20 margin-bottom-20')
-    requiredApprovals.append($('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em').html 'Required approvals')
-    $div = $('<div>')
-            .addClass('margin-left-1-em')
-            .append $('#travelRequest_team_manager_ac').parent()
-            .append $('#travelRequest_general_manager_ac').parent()
-    $('#travelRequest_general_manager').after requiredApprovals.append($div)
-
-    #set elements to be inlined
-    $('#travelRequest_customer_related, #travelRequest_customer_name,
-       #travelRequest_team_manager_ac, #travelRequest_general_manager_ac').parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
-        
-    formFieldsetAddClasses(['travelRequest_destinations', 'travelRequest_accomodations'])
-    reCreateForm(['travelRequest_destinations', 'travelRequest_accomodations'])
-    addFormAddButton [{'text': 'Add destination', 'parent': $('#travelRequest_destinations')}, {'text': 'Add accomodations', 'parent': $('#travelRequest_accomodations')}]
-
-    $generalData = $('<div>')
-                    .addClass('formFieldset generalFormFieldset')
-                    .addClass('padding-bottom-5 margin-top-20 margin-bottom-20')
-                    .append($('#travelRequest_user_ac,
-                          #travelRequest_customer_related,
-                          #travelRequest_customer_name,
-                          #travelRequest_trip_purpose').parent())
-
-    $('#travelRequest').prepend $generalData
-
-    $userAc = $('#travelRequest_user_ac')
-    $arrivalDateContainer = $('#travelRequest_arrival_date').closest('div')
-    $departureDateContainer = $('#travelRequest_departure_date').closest('div')
-
-    $userAc.after $arrivalDateContainer.addClass('display-inline-block')
-    $userAc.after $departureDateContainer.addClass('display-inline-block margin-right-1-em')
-    
-    $(document).data('opithrm').funcs.createButton 'Cancel', 'button display-inline-block', '', $('#travelRequest_add_travel_request').parent(), 'OpitOpitHrmTravelBundle_travel_list'
-    $(document).data('opithrm').funcs.makeElementToggleAble 'h3', $('.formFieldset')
-    
     $('.disabled select, .disabled input').each ->
         $(@).attr 'disabled', 'disabled'
     $('.disabled button').each ->
         $(@).addClass('button-disabled').attr 'disabled', 'disabled'
-
-    if $('#travelRequest_add_travel_request').attr 'disabled'
-        $('.addFormFieldsetChild').each ->
-            $(@).remove()
-        $('.deleteFormFieldsetChild').each ->
-            $(@).remove()
-
-
-# method to validate form before preview
-$form = $('#travelRequestForm')
 
 # method to validate if arrival date is earlier than departure date
 $.validator.addMethod 'compare', (value, element) ->
@@ -250,6 +172,8 @@ validateCost = (self) ->
             self.closest('div').append $('<label>').addClass('custom-label-error').text 'Invalid number.'
     else
         self.closest('div').children().remove('.custom-label-error')
+
+$form = $('#travelRequestForm')
 
 # assing custom validation rules to arrival date, user, general manager
 $form.validate

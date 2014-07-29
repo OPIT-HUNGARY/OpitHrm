@@ -55,23 +55,146 @@
     <div class="dialog-description default-border-radius">
         Travel request can be added or edited from here.
     </div>
-    
+
     {% if form_errors(form)|length > 0 %}
     <div class="alert-message error-message">
         <i class='fa fa-exclamation-triangle'></i> <strong>Error messages:</strong>
         {{ form_errors(form) }}
     </div>
     {% endif %}
-    {% if isEditLocked == '1' %}
-        {% set disabled = 'disabled' %}
-    {% else %}
-        {% set disabled = '' %}
-    {% endif %}
-        {{ form(form, {
-            'action': (path('OpitOpitHrmTravelBundle_travel_show', { 'id': app.request.get('id')})),
-            'method': 'POST',
-            'attr': {'id': 'travelRequestForm', 'class': disabled},
-            'errors': false
-           })
-        }}    
+    {% set isDisabled = isEditLocked == '1' %}
+    <form action="{{ path('OpitOpitHrmTravelBundle_travel_show', { 'id': app.request.get('id')}) }}" method="post" id="travelRequestForm" class="{% if isDisabled %}disabled{% endif %}">
+        <div class="formFieldset generalFormFieldset margin-top-20 margin-bottom-20 padding-10">
+            <div class="display-block margin-top-5 margin-bottom-5">
+                {{ form_label(form.user_ac) }}
+                {{ form_widget(form.user_ac) }}
+                {{ form_widget(form.user) }}
+            </div>
+
+            <div class="display-block margin-top-5 margin-bottom-5">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.departure_date) }}
+                    {{ form_widget(form.departure_date) }}
+                </div>
+
+                <div class="display-inline-block">
+                    {{ form_label(form.arrival_date) }}
+                    {{ form_widget(form.arrival_date) }}
+                </div>
+            </div>
+
+            <div class="display-block margin-top-5 margin-bottom-5">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.customer_related) }}
+                    {{ form_widget(form.customer_related) }}
+                </div>
+
+                <div class="display-inline-block {% if form.customer_name.vars.value|length == 0 %}visibility-hidden{% endif %}">
+                    {{ form_label(form.customer_name) }}
+                    {{ form_widget(form.customer_name) }}
+                </div>
+            </div>
+
+            <div class="display-block margin-top-5 margin-bottom-5">
+                {{ form_label(form.trip_purpose) }}
+                {{ form_widget(form.trip_purpose) }}
+            </div>
+        </div>
+
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+                Destinations
+            </h3>
+            <div>
+                <div id="travelRequest_destinations" data-prototype="{{ form_widget(form.destinations.vars.prototype)|e }}">
+                {% for destination in form.destinations %}
+                    <div class="formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top">
+                        {{ form_label(destination.transportation_type) }}
+                        {{ form_widget(destination.transportation_type) }}
+
+                        {{ form_label(destination.name) }}
+                        {{ form_widget(destination.name) }}
+
+                        {{ form_label(destination.cost) }}
+                        {{ form_widget(destination.cost) }}
+
+                        {{ form_label(destination.currency) }}
+                        {{ form_widget(destination.currency) }}
+
+                        {% if not isDisabled %}
+                        <div class="formFieldsetButton form-fieldset-delete-button">
+                            <i class="fa fa-minus-square"></i>Delete
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+                {% if not isDisabled %}
+                <div class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button" id="add_destination">
+                    <i class="fa fa-plus-square"></i>Add destination
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+                Accomodations
+            </h3>
+            <div>
+                <div id="travelRequest_accomodations" data-prototype="{{ form_widget(form.accomodations.vars.prototype)|e }}">
+                {% for accomodation in form.accomodations %}
+                    <div class="formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top">
+                        {{ form_label(accomodation.hotel_name) }}
+                        {{ form_widget(accomodation.hotel_name) }}
+
+                        {{ form_label(accomodation.city) }}
+                        {{ form_widget(accomodation.city) }}
+
+                        {{ form_label(accomodation.number_of_nights) }}
+                        {{ form_widget(accomodation.number_of_nights) }}
+
+                        {{ form_label(accomodation.cost) }}
+                        {{ form_widget(accomodation.cost) }}
+
+                        {{ form_label(accomodation.currency) }}
+                        {{ form_widget(accomodation.currency) }}
+
+                        {% if not isDisabled %}
+                        <div class="formFieldsetButton form-fieldset-delete-button">
+                            <i class="fa fa-minus-square"></i>Delete
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                </div>
+                {% if not isDisabled %}
+                <div class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button" id="add_accomodation">
+                    <i class="fa fa-plus-square"></i>Add accomodations
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+            <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+                Required approvals
+            </h3>
+            <div class="margin-left-1-em">
+                <div class="display-inline-block vertical-align-top margin-right-1-em">
+                    {{ form_label(form.team_manager_ac) }}
+                    {{ form_widget(form.team_manager_ac) }}
+                    {{ form_widget(form.team_manager) }}
+                </div>
+                <div class="display-inline-block vertical-align-top margin-right-1-em">
+                    {{ form_label(form.general_manager_ac) }}
+                    {{ form_widget(form.general_manager_ac) }}
+                    {{ form_widget(form.general_manager) }}
+                </div>
+            </div>
+        </div>
+        {{ form_widget(form._token) }}
+        {{ form_widget(form.add_travel_request) }}
+        <a href="{{ path('OpitOpitHrmTravelBundle_travel_list') }}" id="cancel-button" class="button">Cancel</a>
+    </form>
 {% endblock %}

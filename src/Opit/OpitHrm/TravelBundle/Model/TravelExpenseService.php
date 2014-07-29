@@ -173,7 +173,7 @@ class TravelExpenseService extends TravelService implements TravelExpenseService
         $isEditLocked = true;
         $isStatusLocked = true;
 
-        if (!$this->securityContext->isGranted('ROLE_SUPER_ADMIN')) {
+        if (!$this->securityContext->isGranted('ROLE_ADMIN')) {
             // If request was created by current user
             if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
                 if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {

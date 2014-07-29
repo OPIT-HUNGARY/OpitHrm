@@ -26,19 +26,17 @@
     }
 }
 
-.formFieldsetDescription{
-    margin:-70px 0 0 100px;
-    background-color: #000;
-    color: #FFF;
-    @include border-radius(5px);
-}
-
 .per-diem-details-wrapper{
     background-color: $formDarkColor;
     padding:9px;
     margin-right: 6px;
+    float: right;
     @include border-radius(5px);
-    
+
+    @media all and (max-width: 1024px) {
+      float: none;
+    }
+
     .per-diem-amounts-slab{
         
         tr{
@@ -74,8 +72,4 @@
             }
         }
     }
-}
-
-.short-description{
-    margin:-60px 0 0 190px;
 }

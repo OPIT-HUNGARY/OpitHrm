@@ -7,7 +7,7 @@ do history.init
 calculateAdvancesPayback = () ->
     spent = []
     amount = 0
-    $('.elementContainer .currency-listen').each ->
+    $('#travelExpense_userPaidExpenses .currency-listen').each ->
         $amountEl = $(@).closest('.formFieldsetChild').find '.amount'
         amount = parseFloat($amountEl.val().replace ',', '.') # replace comma with dot so js can calculate with number
         amountSpent = $(@).val()
@@ -63,7 +63,7 @@ createDeleteExpenseButton = ($parent) ->
         setAvailableCurrencies(true)
         calculateAdvancesPayback()
         
-    $parent.append($('<div>').addClass('display-inline-block vertical-align-top margin-right-1-em').append($deleteButton))
+    $parent.append $deleteButton
 
 validateAllExpenseDates = ->
     isDateValid = true
@@ -94,77 +94,12 @@ expenseDateChange = (parent) ->
         $dateOfExpenseSpent.on 'change', ->
             validateExpenseDate($(@))
 
-
-reCreateExpenses = (self) ->
-    $selectedExpense = $('<span>').addClass('selected-expense').html self.find('.te-expense-type').find(':selected').text()
-    $selectedExpense.addClass 'margin-0 color-white display-block align-center background-color-dark-grey'
-    
-    self.children('label:first').remove()
-    
-    $container = $('<div>').addClass 'formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top'
-    $container.append self
-    $container.append createDeleteButton()
-    $container.prepend $selectedExpense
-    $container.find('.amount').parent().append $container.find '.currency'
-    $container.find('.amount-listen').on 'change', ->
-        calculateAdvancesPayback()
-    $container.find('.currency-listen').on 'change', ->
-        calculateAdvancesPayback()
-    
-    expenseDateChange($container)
-    
-    return $container
-
 createCustomField = (className, labelText, content) ->
     $customFieldInline = $('<div>').addClass 'display-inline-block vertical-align-top margin-right-1-em'
     $customFieldInline.append $('<label>').html labelText
     $customFieldInline.append $('<div>').addClass(className).html(content)
     
     return $customFieldInline
-
-reCreateAdvances = () ->
-    collectionIndex = 0
-    $teAdvancesReceived = $('#travelExpense_advancesReceived')
-    $generalFormFieldset = $('.generalFormFieldset')
-    $teAdvancesReceived.parent().children('label').remove()
-    $teAdvancesReceived.children().each ->
-        $(@).find('label').remove()
-        
-    $('.te-advances-received').parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
-    $advancesReceivedCurrencyParent = $('.te-advances-received-currency').parent()
-                                        .addClass('display-inline-block vertical-align-top margin-right-1-em')
-                                        .prepend($('<label>').html('Currency'))
-    
-    $('.te-advances-received').each (index) ->
-        $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0')
-        
-        $selfParent = $(@).parent()
-                        .prepend($('<label>').html('Advances received'))
-                        .after($amountSpent)
-        
-        $advancesPayback = createCustomField 'te-advances-payback custom-field', 'Advances to be returned', '0'
-        $amountSpent.after $advancesPayback
-        $advancesPayback.after(createCustomField('te-amount-payable custom-field', 'Amount payable', '0'))
-        
-        collectionIndex++
-        
-        $teAdvances = $('#travelExpense_advancesReceived_' + index)
-        $advancesReceived = $('<div>').addClass 'advances-received'
-                                .addClass('margin-top-5 margin-bottom-5')
-                                .append $teAdvances
-        $generalFormFieldset.append $advancesReceived
-        
-        createDeleteExpenseButton($teAdvances)
-        
-    $teAdvancesReceived.data 'index', collectionIndex
-    
-    $generalFormFieldset.on 'change', '.te-advances-received', ->
-        calculateAdvancesPayback()
-    $generalFormFieldset.on 'change', '.te-advances-received-currency', ->
-        calculateAdvancesPayback()
-    
-    calculateAdvancesPayback()
-
 
 setCurrenciesArray = (array) ->
     $($('#travelExpense_advancesReceived').data('prototype')).find('option').each ->
@@ -217,18 +152,24 @@ setAvailableCurrencies = (doSplice) ->
         calculateAdvancesPayback()
     return availableCurrencies
 
-addNewAdvanceReceived = (collectionHolder) ->
+addNewAdvanceReceived = () ->
     availableCurrencies = setAvailableCurrencies()
+    $collectionHolder = $('#travelExpense_advancesReceived')
     if availableCurrencies.length > 0
-        prototype = collectionHolder.data 'prototype'
-        index = collectionHolder.data 'index'
+        if $collectionHolder.data('index') is undefined
+            $collectionHolder.data 'index', $collectionHolder.find('.advances-received').length
+
+        prototype = $collectionHolder.data 'prototype'
+        index = $collectionHolder.data 'index'
 
         prototype = prototype.replace '<label class="required">__name__label__</label>', ''
-        $newAdvancesReceived = $(prototype.replace(/__name__/g, index))
-                                .addClass('advances-received')
-                                .addClass('margin-top-5 margin-bottom-5')
-        $newAdvancesReceived.children('div').children('div').each ->
-            $(@).addClass 'display-inline-block vertical-align-top margin-right-1-em'
+        $newAdvancesReceived = $(prototype.replace(/__name__/g, index)).addClass 'advances-received'
+
+        $newAdvancesReceived.find('#travelExpense_advancesReceived_' + index + '_advancesReceived').addClass 'te-advances-received'
+        $newAdvancesReceived
+            .find('#travelExpense_advancesReceived_' + index + '_advancesReceived')
+            .parent()
+            .addClass 'display-inline-block vertical-align-top margin-right-1-em'
 
         $advancesPayback = createCustomField('te-advances-payback custom-field', 'Advances to be returned', '0')
         $amountSpent = createCustomField('te-amount-spent custom-field', 'Amount spent', '0')
@@ -237,13 +178,12 @@ addNewAdvanceReceived = (collectionHolder) ->
         $amountSpent.after $advancesPayback
         $advancesPayback.after $amountPayable
 
-        createDeleteExpenseButton($newAdvancesReceived.children('div'))
+        $collectionHolder.append $newAdvancesReceived
 
-        $('.generalFormFieldset .addFormFieldsetChild').before $newAdvancesReceived
-
-        collectionHolder.data 'index', index + 1
+        $collectionHolder.data 'index', index + 1
 
         $availableCurrencies = $newAdvancesReceived.find('.te-advances-received-currency')
+        $availableCurrencies.parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
         # remove all currencies element from created element
         $availableCurrencies.children().remove()
         # add all available currencies to element
@@ -254,17 +194,26 @@ addNewAdvanceReceived = (collectionHolder) ->
             $availableCurrencies.append option
 
         $availableCurrencies.on 'change', ->
+            calculateAdvancesPayback()
             setAvailableCurrencies(true)
+
+        $newAdvancesReceived.find('.te-advances-received').on 'change', ->
+            calculateAdvancesPayback()
+
+        createDeleteExpenseButton $newAdvancesReceived
         
     calculateAdvancesPayback()
 
-addNewForm = (collectionHolder, parent) ->
+addNewForm = ($collectionHolder) ->
+    if $collectionHolder.data('index') is undefined
+        $collectionHolder.data 'index', $collectionHolder.find('.formFieldsetChild').length
+
     # get form data from collection holder
-    index = collectionHolder.data 'index'
-    prototype = collectionHolder.data 'prototype'
+    index = $collectionHolder.data 'index'
+    prototype = $collectionHolder.data 'prototype'
     prototype = prototype.replace '<label class="required">__name__label__</label>', ''
     newForm = prototype.replace /__name__/g, index
-    
+
     $selectedExpense = $('<span>').addClass('selected-expense').html 'Expense type'
     $selectedExpense.addClass 'margin-0 color-white display-block align-center background-color-dark-grey'
     
@@ -274,16 +223,19 @@ addNewForm = (collectionHolder, parent) ->
     $formFieldsetChild.append newForm
     $formFieldsetChild.append createDeleteButton()
     $formFieldsetChild.prepend $selectedExpense
-    
+
     expenseDateChange($($formFieldsetChild))
     $formFieldsetChild.find('.currency option[value=EUR]').attr('selected','selected')
-    collectionHolder.data 'index', index + 1
+    $collectionHolder.data 'index', index + 1
     $formFieldsetChild.find('.amount').parent().append($formFieldsetChild.find('.currency'))
     
-    $formFieldsetChild.find('.amount-listen, .currency-listen').on 'change', ->
+    $formFieldsetChild.find('.amount-listen').on 'change', ->
         calculateAdvancesPayback()
-    
-    parent.find('.addFormFieldsetChild').before $formFieldsetChild
+
+    $formFieldsetChild.find('.currency-listen').on 'change', ->
+        calculateAdvancesPayback()
+
+    $collectionHolder.append $formFieldsetChild
 
     # init datepicker plugin
     $(document).data('opithrm').funcs.initDateInputs $formFieldsetChild
@@ -307,7 +259,7 @@ createTableRow = (text, value, rowTitle) ->
     return $row
     
 $perDiem = $('<div>').addClass 'per-diem-details-wrapper'
-$perDiem.addClass 'display-inline-block vertical-align-top float-right margin-top-5 margin-bottom-10'
+$perDiem.addClass 'display-inline-block vertical-align-top margin-top-5 margin-bottom-10'
 
 convertCurrency = (originCode, destinationCode, value) ->
     if originCode is destinationCode
@@ -315,19 +267,22 @@ convertCurrency = (originCode, destinationCode, value) ->
     else
         return curConverter.convertCurrency(originCode, destinationCode, value).toFixed(2)
     
-calculatePerDiem = (departureDate, arrivalDate) ->
-    departurePrefix = '#travelExpense_departureDateTime_time_'
-    arrivalPrefix = '#travelExpense_arrivalDateTime_time_'
-    departure = "#{ departureDate } #{ $(departurePrefix + 'hour').val() }:#{ $(departurePrefix + 'minute').val() }"
+calculatePerDiem = () ->
+    departure = "#{ $('#travelExpense_departureDateTime_date').val() } 
+                 #{ $('#travelExpense_departureDateTime_time_hour').val() }:#{ $('#travelExpense_departureDateTime_time_minute').val() }"
     departureObj = new Date departure
-    arrival = "#{ arrivalDate } #{ $(arrivalPrefix + 'hour').val() }:#{ $(arrivalPrefix + 'minute').val() }"
+
+    arrival = "#{ $('#travelExpense_arrivalDateTime_date').val() } 
+                 #{ $('#travelExpense_arrivalDateTime_time_hour').val() }:#{ $('#travelExpense_arrivalDateTime_time_minute').val() }"
     arrivalObj = new Date arrival
+
     if arrivalObj > departureObj
         $.ajax
             method: 'POST'
             url: Routing.generate 'OpitOpitHrmTravelBundle_expense_perdiem'
             data: {arrival: arrival, departure: departure}
         .done (data) ->
+            console.log data
             $('.perDiemTable').remove()
             $perDiemTable = $('<table>').addClass 'perDiemTable bordered margin-top-10'
 
@@ -414,65 +369,14 @@ emailToPayrollDialog = ($self) ->
 $(document).ready ->
     # Initialize all and available currencies
     setAvailableCurrencies()
+    $(document).data('opithrm').funcs.makeElementToggleAble 'h3', $('.formFieldset')
 
-    $buttonParent = $('#travelExpense_add_travel_expense').parent()
-    $(document).data('opithrm').funcs.createButton 'Cancel', 'button display-inline-block', '', $buttonParent, 'OpitOpitHrmTravelBundle_travel_list'
-    $(document).data('opithrm').funcs.makeElementToggleAble 'h3', $('.formFieldset'), '.elementContainer'
+    $('#add_user_expense').on 'click', ->
+        addNewForm $('#travelExpense_userPaidExpenses')
 
-    arrivalDate = $('#travelExpense_arrivalDateTime_date').css display: 'inline-block'
-    arrivalTime = $('#travelExpense_arrivalDateTime_time').addClass 'display-inline-block vertical-align-top margin-right-1-em time-picker'
-    departureDate = $('#travelExpense_departureDateTime_date').css display: 'inline-block'
-    departureTime = $('#travelExpense_departureDateTime_time').addClass 'display-inline-block vertical-align-top margin-right-1-em time-picker'
-    
-    # for browsers that do not support input type date
-    if not Modernizr.inputtypes.date
-        arrivalDate.datepicker 'destroy'
-        departureDate.datepicker 'destroy'
-        # change date format so that symfony will accept it
-        $('input[type=date]').each ->
-            dateVal = $(@).val()
-            $(@).val $(@).val().replace(/(\d{4})-(\d{2})-(\d{2})/, "$2/$3/$1")
-    else
-        arrivalDate.attr 'readonly', 'readonly'
-        departureDate.attr 'readonly', 'readonly'
+    $('#add_company_expense').on 'click', ->
+        addNewForm $('#travelExpense_companyPaidExpenses')
 
-    $secondFormFieldset = $('#travelExpense').children('.formFieldset:nth-child(2)')
-    $thirdFormFieldset = $('#travelExpense').children('.formFieldset:nth-child(3)')
-
-    $addCompanyTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add company expense</div>')
-                            .addClass 'formFieldsetButton form-fieldset-add-button'
-    $addCompanyTagLink.on 'click', ->
-        addNewForm $('#travelExpense_companyPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(3)')
-
-    $addUserTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add user expense</div>')
-                        .addClass 'formFieldsetButton form-fieldset-add-button'
-    $addUserTagLink.on 'click', ->
-        addNewForm $('#travelExpense_userPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(2)')
-
-    $secondFormFieldset.append($('<div>').addClass('elementContainer').append $addUserTagLink)
-    $thirdFormFieldset.append($('<div>').addClass('elementContainer').append $addCompanyTagLink)
-    
-    companyPaidExpensesIndex = 0
-    userPaidExpensesIndex = 0
-    paidExpenses = [$('#travelExpense_companyPaidExpenses'), $('#travelExpense_userPaidExpenses')]
-    paidExpenses.forEach (paidExpense) ->
-        paidExpenseChildren = paidExpense.children('div')
-        if paidExpenseChildren.length > 0
-            paidExpenseChildren.each ->
-                if 'travelExpense_companyPaidExpenses' == paidExpense.attr('id')
-                    $thirdFormFieldset.find('.addFormFieldsetChild').before(reCreateExpenses($(@)))
-                    companyPaidExpensesIndex++
-                else if 'travelExpense_userPaidExpenses' == paidExpense.attr('id')
-                    $secondFormFieldset.find('.addFormFieldsetChild').before(reCreateExpenses($(@)))
-                    userPaidExpensesIndex++
-    
-    $('#travelExpense_companyPaidExpenses').data 'index', companyPaidExpensesIndex
-    $('#travelExpense_userPaidExpenses').data 'index', userPaidExpensesIndex
-    $('#travelExpense_companyPaidExpenses').parent().children('label').remove()
-    $('#travelExpense_userPaidExpenses').parent().children('label').remove()
-    
-    $('#travelExpense').css display: 'block'
-    
     $perDiemAmountsTable = $('<table>').addClass 'per-diem-amounts-slab bordered width-100'
     $.ajax
         method: 'POST'
@@ -500,24 +404,48 @@ $(document).ready ->
         $(@).parent().parent().find('.formFieldsetDescription').removeClass('display-none')
     $('.fa-question-circle').on 'mouseout', ->
         $('.formFieldsetDescription').addClass 'display-none'
-    
-    if not isNewTravelExpense
-        calculatePerDiem(departureDate.val(), arrivalDate.val())
-    
+
+    $amountListen = $('#travelExpense_userPaidExpenses .amount-listen')
+    if $amountListen.length > 0
+        $amountListen.on 'change', ->
+            calculateAdvancesPayback()
+
+        $('#travelExpense_userPaidExpenses .currency-listen').on 'change', ->
+            calculateAdvancesPayback()
+
+        $('.formFieldsetChild .fa-minus-square').on 'click', ->
+            $(@).parent().remove()
+            calculateAdvancesPayback()
+
+    $advancesReceived = $('.generalFormFieldset .te-advances-received')
+    if $advancesReceived.length > 0
+        $advancesReceived.on 'change', ->
+            calculateAdvancesPayback()
+
+        $('.generalFormFieldset .te-advances-received-currency').on 'change', ->
+            calculateAdvancesPayback()
+            setAvailableCurrencies(true)
+
+        $('.advances-received .fa-minus-square').on 'click', ->
+            $(@).closest('.advances-received').remove()
+            setAvailableCurrencies(true)
+            calculateAdvancesPayback()
+
+    $('#travelExpense_departureDateTime_date, #travelExpense_arrivalDateTime_date').attr 'readonly', 'readonly'
+
     $('#travelExpense_departureDateTime_time_hour,
         #travelExpense_departureDateTime_time_minute,
         #travelExpense_arrivalDateTime_time_hour,
         #travelExpense_arrivalDateTime_time_minute').on 'change', ->
-            calculatePerDiem(departureDate.val(), arrivalDate.val())
+            calculatePerDiem()
 
-    reCreateAdvances()
-    $advancesReceived = $('#travelExpense_advancesReceived')
+    calculatePerDiem()
 
-    $addNewAdvance = $('<div>').addClass('addFormFieldsetChild formFieldsetButton').html '<i class="fa fa-plus-square"></i>Add advances received'
-    $addNewAdvance.addClass 'form-fieldset-add-button margin-left-0-important'
-    $('.generalFormFieldset').append $addNewAdvance
-    $addNewAdvance.on 'click', ->
-        addNewAdvanceReceived($advancesReceived) 
+    calculateAdvancesPayback()
+    setAvailableCurrencies(true)
+
+    $('#add_advances_recieved').on 'click', ->
+        addNewAdvanceReceived()
         
     if $('#travelExpense_add_travel_expense').hasClass 'button-disabled'
         $('.addFormFieldsetChild').each ->
@@ -537,60 +465,8 @@ $(document).ready ->
         $(@).attr 'disabled', 'disabled'
         $(@).addClass 'dropdown-disabled'
 
-
-$formFieldset = $('<div>').addClass 'formFieldset padding-bottom-5 margin-top-20 margin-bottom-20'
-
-$generalFormFieldset = $formFieldset.clone().addClass 'generalFormFieldset clearfix padding-10'
-$expensesPaidByMe = $formFieldset.clone().append $('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html 'Expenses paid by me <i class="fa fa-question-circle"></i>'
-$expensesPaidByOpit = $formFieldset.clone().append $('<h3>').addClass('background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em cursor-pointer').html 'Expenses paid by company <i class="fa fa-question-circle"></i>'
-
-$('#travelExpense').prepend $expensesPaidByOpit
-$('#travelExpense').prepend $expensesPaidByMe
-$('#travelExpense').prepend $generalFormFieldset
-$('#travelExpense').addClass 'travelForm'
-
-$generalFormFields = $('<div>').addClass 'display-inline-block'
-$generalFormFieldset.append $generalFormFields
-
-$expensesPaidByOpitDesc = $('<div>')
-                            .addClass('formFieldsetDescription')
-                            .addClass('short-description display-none position-absolute padding-5')
-                            .html 'Expenses paid by company (already paid by Company).'
-
-$expensesPaidByMeDesc = $('<div>')
-                            .addClass('formFieldsetDescription')
-                            .addClass('short-description display-none position-absolute padding-5')
-                            .html 'Expenses paid by employee (payable to your own bank account).'
-
-$expensesPaidByOpit.append $expensesPaidByOpitDesc
-$expensesPaidByMe.append $expensesPaidByMeDesc
-
-$('.formFieldset').on 'change', '.te-expense-type', ->
-    $(@).closest('.formFieldsetChild').children('.selected-expense').html $("##{ $(@).attr 'id' } :selected").text()
-
-# move all element with specified class into form fieldset
-$('.te-claim').each (index) ->
-    $(@).parent().addClass 'display-inline-block vertical-align-top margin-right-1-em'
-    $generalFormFields.append $(@).parent()
-    
-    # if element has class display-none add class to elements parent node
-    if $(@).hasClass 'display-none'
-        $(@).removeClass 'display-none'
-        $(@).parent().addClass 'display-none'
-    # allow two properties in a row
-    if index % 2
-        $generalFormFields.append $('<br>')
-  
-#create add expenses button, and add on click listeners to them
-$addCompanyTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add company expense</div>')
-                        .addClass 'formFieldsetButton form-fieldset-add-button'
-$addCompanyTagLink.on 'click', ->
-    addNewForm($('#travelExpense_companyPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(3)'))    
-    
-$addUserTagLink = $('<div class="addFormFieldsetChild"><i class="fa fa-plus-square"></i>Add user expense</div>')
-                    .addClass 'formFieldsetButton form-fieldset-add-button'
-$addUserTagLink.on 'click', ->
-    addNewForm($('#travelExpense_userPaidExpenses'), $('#travelExpense').children('.formFieldset:nth-child(2)'))
+    $('.formFieldset').on 'change', '.te-expense-type', ->
+        $(@).closest('.formFieldsetChild').children('.selected-expense').html $("##{ $(@).attr 'id' } :selected").text()
     
 $form = $('#travelExpenseForm')    
     

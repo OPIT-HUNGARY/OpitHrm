@@ -86,13 +86,188 @@
         {{ form_errors(form) }}
     </div>
     {% endif %}
+<form action="{{ path('OpitOpitHrmTravelBundle_expense_show', { 'id': app.request.get('id'), 'trId': app.request.get('trId')}) }}" method="post" id="travelExpenseForm">
+    <div class="formFieldset generalFormFieldset margin-top-20 margin-bottom-20 padding-10">
+        <div class="display-inline-block">
+            <div class="display-block">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.user_name) }}
+                    {{ form_widget(form.user_name) }}
+                </div><div class="display-inline-block">
+                    {{ form_label(form.taxIdentification) }}
+                    {{ form_widget(form.taxIdentification) }}
+                </div>
+            </div>
 
-    {{ form(form, {
-        'action': (path('OpitOpitHrmTravelBundle_expense_show', { 'id': app.request.get('id'), 'trId': app.request.get('trId')})),
-        'method': 'POST',
-        'attr':{'id': 'travelExpenseForm'}
-       })
-    }}
+            <div class="display-block">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.rechargeable) }}
+                    {{ form_widget(form.rechargeable) }}
+                </div><div class="display-inline-block">
+                    {{ form_label(form.payInEuro) }}
+                    {{ form_widget(form.payInEuro) }}
+                </div>
+            </div>
+
+            <div class="display-block">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.bankName) }}
+                    {{ form_widget(form.bankName) }}
+                </div><div class="display-inline-block">
+                    {{ form_label(form.bankAccountNumber) }}
+                    {{ form_widget(form.bankAccountNumber) }}
+                </div>
+            </div>
+
+            <div class="display-block">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.departureCountry) }}
+                    {{ form_widget(form.departureCountry) }}
+                </div><div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.departureDateTime) }}
+                    {{ form_widget(form.departureDateTime.date) }}
+                </div><div class="display-inline-block">
+                    {{ form_widget(form.departureDateTime.time) }}
+                </div>
+            </div>
+
+            <div class="display-block">
+                <div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.arrivalCountry) }}
+                    {{ form_widget(form.arrivalCountry) }}
+                </div><div class="display-inline-block margin-right-1-em">
+                    {{ form_label(form.arrivalDateTime) }}
+                    {{ form_widget(form.arrivalDateTime.date) }}
+                </div><div class="display-inline-block">
+                    {{ form_widget(form.arrivalDateTime.time) }}
+                </div>
+            </div>
+
+            <div id="travelExpense_advancesReceived" data-prototype="{{ form_widget(form.advancesReceived.vars.prototype)|e }}">
+                {% spaceless %}
+                {% for advanceReceived in form.advancesReceived %}
+                    <div class="advances-received margin-top-2">
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            {{ form_label(advanceReceived.advancesReceived) }}
+                            {{ form_widget(advanceReceived.advancesReceived) }}
+                        </div>
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            <label>Amount spent</label>
+                            <div class="te-amount-spent custom-field">0.00</div>
+                        </div>
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            <label>Advances to be returned</label>
+                            <div class="te-advances-payback custom-field">0</div>
+                        </div>
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            <label>Amount payable</label>
+                            <div class="te-amount-payable custom-field">0</div>
+                        </div>
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            {{ form_label(advanceReceived.currency) }}
+                            {{ form_widget(advanceReceived.currency) }}
+                        </div>
+                        <div class="display-inline-block vertical-align-top margin-right-1-em">
+                            <i class="fa fa-minus-square color-red cursor-pointer margin-top-24"></i>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endspaceless %}
+            </div>
+            <div class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button margin-left-0-important" id="add_advances_recieved">
+                <i class="fa fa-plus-square"></i>Add advances received
+            </div>
+        </div>
+    </div>
+
+    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+            Expenses paid by me 
+            <i class="fa fa-question-circle cursor-pointer" title="Expenses paid by employee (payable to your own bank account)."></i>
+        </h3>
+        <div>
+            <div id="travelExpense_userPaidExpenses" data-prototype="{{ form_widget(form.userPaidExpenses.vars.prototype)|e }}">
+            {% for userPaidExpense in form.userPaidExpenses %}
+                <div class="formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top">
+                    <span class="selected-expense margin-0 color-white display-block align-center background-color-dark-grey">
+                        {{ userPaidExpense.expense_type.vars.data.name }}
+                    </span>
+
+                    {{ form_label(userPaidExpense.description) }}
+                    {{ form_widget(userPaidExpense.description) }}
+
+                    {{ form_label(userPaidExpense.date) }}
+                    {{ form_widget(userPaidExpense.date) }}
+
+                    {{ form_label(userPaidExpense.expense_type) }}
+                    {{ form_widget(userPaidExpense.expense_type) }}
+
+                    {{ form_label(userPaidExpense.amount) }}
+                    {{ form_widget(userPaidExpense.amount) }}
+
+                    {{ form_label(userPaidExpense.currency) }}
+                    {{ form_widget(userPaidExpense.currency) }}
+
+                    {{ form_label(userPaidExpense.destination) }}
+                    {{ form_widget(userPaidExpense.destination) }}
+                    <div class="formFieldsetButton form-fieldset-delete-button">
+                        <i class="fa fa-minus-square"></i>Delete
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button" id="add_user_expense">
+                <i class="fa fa-plus-square"></i>Add user expense
+            </div>
+        </div>
+    </div>
+
+    <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">
+        <h3 class="background-section-color-grey color-white padding-top-2 padding-bottom-2 padding-left-1-em">
+            Expenses paid by company 
+            <i class="fa fa-question-circle cursor-pointer" title="Expenses paid by company (already paid by Company)."></i>
+        </h3>
+        <div>
+            <div id="travelExpense_companyPaidExpenses" data-prototype="{{ form_widget(form.companyPaidExpenses.vars.prototype)|e }}">
+            {% for companyPaidExpense in form.companyPaidExpenses %}
+                <div class="formFieldsetChild padding-10 margin-left-1-em margin-bottom-1-em display-inline-block vertical-align-top">
+                    <span class="selected-expense margin-0 color-white display-block align-center background-color-dark-grey">
+                        {{ companyPaidExpense.expense_type.vars.data.name }}
+                    </span>
+
+                    {{ form_label(companyPaidExpense.description) }}
+                    {{ form_widget(companyPaidExpense.description) }}
+
+                    {{ form_label(companyPaidExpense.date) }}
+                    {{ form_widget(companyPaidExpense.date) }}
+
+                    {{ form_label(companyPaidExpense.expense_type) }}
+                    {{ form_widget(companyPaidExpense.expense_type) }}
+
+                    {{ form_label(companyPaidExpense.amount) }}
+                    {{ form_widget(companyPaidExpense.amount) }}
+
+                    {{ form_label(companyPaidExpense.currency) }}
+                    {{ form_widget(companyPaidExpense.currency) }}
+
+                    {{ form_label(companyPaidExpense.destination) }}
+                    {{ form_widget(companyPaidExpense.destination) }}
+                    <div class="formFieldsetButton form-fieldset-delete-button">
+                        <i class="fa fa-minus-square"></i>Delete
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="addFormFieldsetChild formFieldsetButton form-fieldset-add-button" id="add_company_expense">
+                <i class="fa fa-plus-square"></i>Add company expense
+            </div>
+        </div>
+    </div>
+
+    {{ form_widget(form._token) }}
+    {{ form_widget(form.add_travel_expense) }}
+    <a href="{{ path('OpitOpitHrmTravelBundle_travel_list') }}" id="cancel-button" class="button">Cancel</a>
+</form>
 {% endblock %}
     
 {% block scripts %}
