@@ -1,14 +1,41 @@
 {% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
-{% block title %}Version History - {{ parent() }}{% endblock %}
+{% block title %}Release Notes - {{ parent() }}{% endblock %}
 {% block body %}
-<h2>Version History</h2>
+<h2>Release Notes</h2>
 
 <article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
     <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
         <i class="fa fa-chevron-up margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
-        v{% if version_number is defined %}{{ version_number }}{% else %}3.0{% endif %}
+        v{% if version_number is defined %}{{ version_number }}{% else %}3.1{% endif %}
     </h3>
     <ul>
+        <li>Team leave calendar Ical export</li>
+        <li>Open source optimization</li>
+        <li>Bug fixes / Enhancements</li>
+    </ul>
+</article>
+
+<article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up fa-chevron-down margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
+        v3.0.5-beta
+    </h3>
+    <ul class="display-none">
+        <li>Bug Fix: Past mass leave request creation for role general manager</li>
+        <li>Bug Fix: Mass leave request list grouping and ordering</li>
+        <li>Bug Fix: Leave request category "sickleave" validation</li>
+        <li>Bug Fix: Administrative leave/working day setup search</li>
+        <li>Bug Fix: Content overlapping menu</li>
+        <li>Minor bug fixes</li>
+    </ul>
+</article>
+
+<article class="background-color-lighter-grey padding-2 margin-bottom-1-em border-radius-5">
+    <h3 class="padding-left-1-em margin-top-5 margin-bottom-5 cursor-pointer">
+        <i class="fa fa-chevron-up fa-chevron-down margin-right-5 float-right color-grey border-solid-1 border-radius-5 padding-4 font-weight-normal font-size-d8-em" title="Toggle view"></i>
+        v3.0.0-beta
+    </h3>
+    <ul class="display-none">
         <li>Hiring Management</li>
         <li>Leave Management</li>
         <li>Reports - Time sheets</li>
@@ -77,7 +104,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@OpitOpitHrmUserBundle/Resources/public/js/versions.coffee'
+        '@OpitOpitHrmCoreBundle/Resources/public/js/versions.coffee'
     output='js/opithrmuser/versions.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
         {% endjavascripts %}

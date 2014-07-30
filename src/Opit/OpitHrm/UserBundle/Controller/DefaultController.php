@@ -33,13 +33,4 @@ class DefaultController extends Controller
     {
         return $this->forward('OpitOpitHrmUserBundle:Security:login');
     }
-    
-    /**
-     * @Route("/secured/opithrm/versions", name="OpitOpitHrmUserBundle_default_versions")
-     * @Template()
-     */
-    public function versionsAction()
-    {
-        return array();
-    }
 }
