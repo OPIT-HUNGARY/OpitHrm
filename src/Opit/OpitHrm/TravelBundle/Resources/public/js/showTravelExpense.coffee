@@ -282,7 +282,6 @@ calculatePerDiem = () ->
             url: Routing.generate 'OpitOpitHrmTravelBundle_expense_perdiem'
             data: {arrival: arrival, departure: departure}
         .done (data) ->
-            console.log data
             $('.perDiemTable').remove()
             $perDiemTable = $('<table>').addClass 'perDiemTable bordered margin-top-10'
 
@@ -498,6 +497,13 @@ $form.validate
  
 $('#travelExpense_add_travel_expense').on 'click', (event) ->
     event.preventDefault()
+    saveText = 'Create'
+    sendForApprovalText = 'Create & send for approval'
+
+    if not isNewTravelExpense
+        saveText = 'Edit'
+        sendForApprovalText = 'Edit & send for approval'
+
     if not $(@).hasClass 'button-disabled'
         if $form.valid() and validateAllExpenseDates()
             # for browsers that do not support input type date
@@ -517,17 +523,23 @@ $('#travelExpense_add_travel_expense').on 'click', (event) ->
                     width: 550
                     maxHeight: $(window).outerHeight()-100
                     modal: on
-                    buttons:
-                        Save: ->
-                            $form.submit()
-                            return
-                        'Save & send for approval': ->
-                            $form.attr('action', $form.attr('action') + '/1')
-                            $form.submit()
-                            return
-                        Cancel: ->
-                            $preview.dialog "destroy"
-                            return
+                    buttons: [
+                            text: saveText
+                            click: ->
+                                $form.submit()
+                                return
+                        ,
+                            text: sendForApprovalText
+                            click: ->
+                                $form.attr('action', $form.attr('action') + '/1')
+                                $form.submit()
+                                return
+                        ,
+                            text: 'Cancel'
+                            click: ->
+                                $preview.dialog "destroy"
+                                return
+                    ]
             .fail (jqXHR, textStatus, errorThrown) ->
                 $('<div></div>').html('The travel expense could not be saved due to an error.').dialog
                     title: 'Error'

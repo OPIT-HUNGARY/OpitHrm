@@ -46,7 +46,7 @@ $('#list-table').on 'click', '.list-jobtitle', ->
                 width: 750
                 modal: on
                 buttons:
-                    Save: ->
+                    Edit: ->
                         $.ajax
                             type: 'POST'
                             global: false

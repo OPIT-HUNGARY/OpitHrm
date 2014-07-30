@@ -45,7 +45,7 @@ $("#form-leavecategory").on "click", ".list-leavecategory", ->
                 width: 750
                 modal: on
                 buttons:
-                    Save: ->
+                    Edit: ->
                         $.ajax
                             type: 'POST'
                             url: Routing.generate 'OpitOpitHrmLeaveBundle_admin_add_leave_category', id: id

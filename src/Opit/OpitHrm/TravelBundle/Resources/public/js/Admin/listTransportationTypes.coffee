@@ -60,7 +60,7 @@ $("#transportation-type-list").on "click", ".list-type", ->
                 width: 500
                 modal: on
                 buttons:
-                    Save: ->
+                    Edit: ->
                         saveTransportationType 'id': id, 'response': { 'message': 'Transportation type successfully modified' }
                     Close: ->
                         $(@).dialog "destroy"

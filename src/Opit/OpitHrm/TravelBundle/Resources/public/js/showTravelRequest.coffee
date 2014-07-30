@@ -187,6 +187,12 @@ $form.validate
 
 $( '#travelRequest_add_travel_request' ).click (event) ->
     event.preventDefault()
+    saveText = 'Create'
+    sendForApprovalText = 'Create & send for approval'
+
+    if not isNewTravelRequest
+        saveText = 'Edit'
+        sendForApprovalText = 'Edit & send for approval'
 
 #    validate form on client side
     if $form.valid() and compareDays() and validateAllCosts()
@@ -204,22 +210,28 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
                 width: 550
                 maxHeight: $(window).outerHeight()-100
                 modal: on
-                buttons:
-                    Save: ->
-                        $form.submit()
-                        $preview.dialog "destroy"
-                        return
-                    'Save & send for approval': ->
-                        if isNaN(window.location.href.slice(-1))
-                            $form.attr 'action', $form.attr('action') + '/new/fa'
-                        else
-                            $form.attr 'action', $form.attr('action') + '/fa'
-                        $form.submit()
-                        $preview.dialog "destroy"
-                        return
-                    Cancel: ->
-                        $preview.dialog "destroy"
-                        return
+                buttons: [
+                        text: saveText
+                        click: ->
+                            $form.submit()
+                            $preview.dialog "destroy"
+                            return
+                    ,
+                        text: sendForApprovalText
+                        click: ->
+                            if isNaN(window.location.href.slice(-1))
+                                $form.attr 'action', $form.attr('action') + '/new/fa'
+                            else
+                                $form.attr 'action', $form.attr('action') + '/fa'
+                            $form.submit()
+                            $preview.dialog "destroy"
+                            return
+                    ,
+                        text: 'Cancel'
+                        click: ->
+                            $preview.dialog "destroy"
+                            return
+                ]
         .fail (jqXHR, textStatus, errorThrown) ->
             $('<div></div>').html('The travel request could not be saved due to an error.').dialog
                 title: 'Error'

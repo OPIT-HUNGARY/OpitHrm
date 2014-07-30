@@ -28,7 +28,7 @@ class ExpenseType extends AbstractType
     private $isNew;
     private $employee;
     
-    public function __construct($employee, $roleFlag = false, $isNew = false)
+    public function __construct($employee, $isNew = false)
     {
         $this->employee = $employee;
         $this->isNew = $isNew;
@@ -125,7 +125,7 @@ class ExpenseType extends AbstractType
             'allow_delete' => true,
             'by_reference' => false
         ));
-        
+
         $builder->add('add_travel_expense', 'submit', array(
             'label'=>$this->isNew ? 'Edit travel expense' : 'Add travel expense',
             'attr' => array('class' => 'button')

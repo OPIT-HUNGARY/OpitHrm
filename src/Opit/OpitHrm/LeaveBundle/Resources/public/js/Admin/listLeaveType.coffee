@@ -45,7 +45,7 @@ $("#form-leavetype").on "click", ".list-leavetype", ->
                 width: 750
                 modal: on
                 buttons:
-                    Save: ->
+                    Edit: ->
                         $.ajax
                             type: 'POST'
                             url: Routing.generate 'OpitOpitHrmLeaveBundle_admin_add_leave_type', id: id

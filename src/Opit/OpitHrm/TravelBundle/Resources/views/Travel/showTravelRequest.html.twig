@@ -15,6 +15,10 @@
     output='js/opithrmtravel/show_travel_request.js' filter='?yui_js' %}
         <script type="text/javascript" src="{{ asset_url }}" ></script>
     {% endjavascripts %}
+    <script type="text/javascript">
+        // to check if new travel request or not
+        var isNewTravelRequest = {% if app.request.get('id') == 'new' %}true{% else %}null{% endif %};
+    </script>
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}

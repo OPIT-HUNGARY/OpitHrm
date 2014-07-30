@@ -17,7 +17,7 @@ $.extend true, $(document).data('OpitOpitHrmUserBundle'),
                         open: ->
                             $(document).data('opithrm').funcs.initDateInputs $(@)
                         buttons:
-                            Save: ->
+                            Edit: ->
                                 $.ajax
                                     type: 'POST'
                                     global: off

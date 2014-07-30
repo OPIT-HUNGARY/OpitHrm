@@ -51,7 +51,7 @@ $("#form-leavedate").on "click", ".list-leavedate", (event) ->
                 modal: on
                 open: -> $(document).data('opithrm').funcs.initDateInputs $('#addleavedate_frm')
                 buttons:
-                    Save: ->
+                    Edit: ->
                         $.ajax
                             type: 'POST'
                             global: false
