@@ -55,9 +55,13 @@ $.extend true, $(document).data('opithrm'),
                     No: ->
                         # Unset checkbox
                         $checkbox.prop 'checked', false
+                        $(document).data('opithrm').funcs.initDeleteMultipleListener()
                         $(@).dialog 'close'
                         return
                 close: ->
+                    # Unset checkbox
+                    $checkbox.prop 'checked', false
+                    $(document).data('opithrm').funcs.initDeleteMultipleListener()
                     $(@).dialog 'destroy'
                     return
             return
@@ -89,9 +93,12 @@ $.extend true, $(document).data('opithrm'),
                       return
                   No: ->
                       $(identifier + ':checkbox').attr 'checked', false
+                      $(document).data('opithrm').funcs.initDeleteMultipleListener()
                       $(@).dialog 'close'
                       return
               close: ->
+                  $(identifier + ':checkbox').attr 'checked', false
+                  $(document).data('opithrm').funcs.initDeleteMultipleListener()
                   $(@).dialog 'destroy'
                   return
                 

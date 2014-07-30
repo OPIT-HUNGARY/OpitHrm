@@ -42,7 +42,7 @@ deleteGroup = (id, name) ->
             modal: on
             title: "Delete #{ propertyName }"
             buttons:
-                Continue: ->
+                Yes: ->
                     $.ajax
                         type: 'POST'
                         url: Routing.generate removeUrl
@@ -56,10 +56,18 @@ deleteGroup = (id, name) ->
                             $(document).data('opithrm').funcs.initDeleteMultipleListener()
                             $(document).data('opithrm').funcs.showAlert $selfDialog, data, 'create', "#{ propertyNameCapital }(s) successfully deleted!"
                     $selfDialog.dialog 'destroy'
-                Cancel: ->
+                No: ->
                     $('#list-table').find('input:checkbox').each ->
                         $(@).attr 'checked', false
+                    $(document).data('opithrm').funcs.initDeleteMultipleListener()
                     $selfDialog.dialog 'destroy'
+                    return
+            close: ->
+                    $('#list-table').find('input:checkbox').each ->
+                        $(@).attr 'checked', false
+                    $(document).data('opithrm').funcs.initDeleteMultipleListener()
+                    $selfDialog.dialog 'destroy'
+                    return
 
 $('#main-wrapper #add').on 'click', ->
     showRoleDialog('new', '', "Create a new #{ propertyName }.", url, "Create #{ propertyName }", "#{ propertyNameCapital } successfully created!")
