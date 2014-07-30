@@ -2,23 +2,41 @@ OPIT-HRM README
 ========================
 
 OPIT-HRM is a open source HRM application based on the Symfony framework.
-The actual edition supports requirements for the Hungarian market.
+The actual edition supports requirements for the Hungarian market,
+but it can be setup while installation not to use Hungary specific functionalities.
 
 Requirements
 ------------
 
-OPIT-HRM requires a minimum version of PHP 5.3.3.
-The following PHP extensions are required to enable all features:
-
-  * php5-curl (http://www.php.net//manual/en/book.curl.php)
-  * php5-ldap (http://www.php.net//manual/en/book.ldap.php)
+* PHP > 5.4(some required extentions - ldap, openssl, curl)
+* MySql < 5.6
+* Apache >=2.0
+* Ruby
+* Sass
+* Nodejs
+* Coffeescript
+* Composer
 
 Installation
 ------------
 
-The best way to install OPIT-HRM is by cloning the repository. To get started
-with a basic setup, run composer install, doctrine migrations and fixtures.
-You can now login with admin/admin.
+Clone the OPIT-HRM repository and run the following commands in your
+project directory.
+
+ * composer.phar install
+ * app/console doctrine:database:create
+ * app/console doctrine:migrations:migrate
+ * app/console doctrine:fixtures:load  (optional command - will install dummy data)
+ * app/console opithrm:currency-rates:insert [--start="..."]
+    Option:
+    --start  For initial set up start date of fetching should be the 15th of
+    the previous month. Valid format: 2014-01-10
+
+
+Login the application with the following credentials
+
+Username: admin
+Password: admin
 
 Bundles
 ------------
@@ -33,6 +51,11 @@ The OPIT-HRM application consists of the following bundles:
   * StatusBundle
   * TravelBundle
   * UserBundle
+
+Documentation
+------------
+
+Documentation for users and developers of OPIT-HRM can be found at http:\\www.opit.hu\opithrm\documentation
 
 Application versioning scheme
 ------------
