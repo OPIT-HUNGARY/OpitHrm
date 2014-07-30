@@ -74,7 +74,9 @@
     </div>    
 
     <h3>
-        Travel request <span id="travelRequestPreview" class="color-light-green cursor-pointer" title="Show travel request details" data-tr-id='{{ app.request.get('trId') }}'>{{ trId }}</span> - Approved costs: {{ approvedCostsEUR }} EUR / {{ approvedCostsHUF }} HUF
+        Travel request <span id="travelRequestPreview" class="color-light-green cursor-pointer" title="Show travel request details" data-tr-id='{{ app.request.get('trId') }}'>{{ trId }}</span> - 
+        Approved costs: {{ formatAmount(approvedCostsEUR, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'EUR') }} EUR / 
+        {{ formatAmount(approvedCostsHUF, currencyFormat.decimals, currencyFormat.dec_point, currencyFormat.thousands_sep, 'HUF') }} HUF
     </h3>
     <div class="dialog-description default-border-radius">
         Travel expense can be added or edited from here.

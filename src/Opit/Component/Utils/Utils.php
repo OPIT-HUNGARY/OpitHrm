@@ -282,4 +282,24 @@ class Utils
 
         return $higherRoles;
     }
+
+    /**
+     * Get the formatted amount
+     *
+     * @param integer $amount
+     * @param integer $decimals
+     * @param string $decPoint
+     * @param string $thousandSep
+     * @param string $currency
+     * @return string
+     */
+    public static function getformattedAmount($amount, $decimals, $decPoint, $thousandSep, $currency)
+    {
+        // If the currency is HUF then decimals is not used.
+        if ('HUF' == $currency) {
+            return number_format($amount, 0, $decPoint, $thousandSep);
+        }
+
+        return number_format($amount, $decimals, $decPoint, $thousandSep);
+    }
 }

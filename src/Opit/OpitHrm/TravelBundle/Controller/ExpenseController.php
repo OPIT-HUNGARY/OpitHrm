@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of ExpenseController
@@ -116,6 +117,7 @@ class ExpenseController extends Controller
         $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
         $travelExpense = ($isNewTravelExpense) ? $this->getTravelExpense($id) : new TravelExpense();
         $approvedCosts = $this->get('opit.model.travel_request')->getTRCosts($travelRequest);
+        $currencyConfig = $this->container->getParameter('currency_config');
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getConversionDate($travelExpense));
         $forApproval = (bool) $forApproval;
@@ -187,7 +189,8 @@ class ExpenseController extends Controller
             'isStatusLocked' => $isStatusLocked,
             'rates' => json_encode($rates),
             'approvedCostsEUR' => ceil($approvedCosts['EUR']),
-            'approvedCostsHUF' => ceil($approvedCosts['HUF'])
+            'approvedCostsHUF' => ceil($approvedCosts['HUF']),
+            'currencyFormat' => $currencyConfig['currency_format'],
         );
     }
 
@@ -217,11 +220,11 @@ class ExpenseController extends Controller
             $travelExpense = $this->getTravelExpense();
         }
 
-        $currencyCongif = $this->container->getParameter('currency_config');
+        $currencyConfig = $this->container->getParameter('currency_config');
 
         return array(
             'travelExpense' => $this->get('opit.model.travel_expense')->calculateAdvances($travelExpense),
-            'currencyFormat' => $currencyCongif['currency_format']
+            'currencyFormat' => $currencyConfig['currency_format']
         );
     }
 
@@ -283,12 +286,22 @@ class ExpenseController extends Controller
      */
     public function fetchPerDiemValuesAction()
     {
+        // Get the currency format options.
+        $currencyConfig = $this->container->getParameter('currency_config');
+        $currencyFormat = $currencyConfig['currency_format'];
 
         $entityManager = $this->getDoctrine()->getManager();
         $perDiemAmounts = $entityManager->getRepository('OpitOpitHrmTravelBundle:TEPerDiem')->findAll();
         $values = array();
+
         foreach ($perDiemAmounts as $value) {
-            $values[$value->getHours()] = $value->getAmount();
+            $values[$value->getHours()] = Utils::getformattedAmount(
+                $value->getAmount(),
+                $currencyFormat['decimals'],
+                $currencyFormat['dec_point'],
+                $currencyFormat['thousands_sep'],
+                'EUR'
+            );
         }
         return new JsonResponse($values);
     }

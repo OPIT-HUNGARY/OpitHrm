@@ -43,7 +43,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
         $application = new Application($kernel);
         $application->add(new ExchangeRateUpdateCommand());
 
-        $this->command = $application->find('exchange:rates:update');
+        $this->command = $application->find('opithrm:currency-rates:update');
     }
 
     /**

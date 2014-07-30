@@ -264,4 +264,17 @@ class UtilsTest extends TypeTestCase
         $this->assertTrue(is_array($result), 'Utils::getHigherLevelRoles The result is not an array.');
         $this->assertEquals($expectedResult, $result, 'Utils::getHigherLevelRoles The expected result is not equal to received result.');
     }
+
+    public function testGetformattedAmount()
+    {
+        $decimals = 2;
+        $decPoint = ',';
+        $thousandSep = ' ';
+
+        $result = Utils::getformattedAmount(10050, $decimals, $decPoint, $thousandSep, 'HUF');
+        $this->assertEquals('10 050', $result, 'Utils::getformattedAmount The amount format does not match.');
+
+        $result2 = Utils::getformattedAmount(10050, $decimals, $decPoint, $thousandSep, 'EUR');
+        $this->assertEquals('10 050,00', $result2, 'Utils::getformattedAmount The amount format does not match.');
+    }
 }

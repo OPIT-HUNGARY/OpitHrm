@@ -42,7 +42,7 @@ class ExchangeRateInsertCommandTest extends WebTestCase
         $application = new Application($kernel);
         $application->add(new ExchangeRateInsertCommand());
 
-        $this->command = $application->find('exchange:rates:insert');
+        $this->command = $application->find('opithrm:currency-rates:insert');
 
     }
 

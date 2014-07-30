@@ -11,6 +11,8 @@
 
 namespace Opit\OpitHrm\TravelBundle\Twig;
 
+use Opit\Component\Utils\Utils;
+
 /**
  * Twig OpitExtension class
  *
@@ -32,6 +34,7 @@ class OpitExtension extends \Twig_Extension
     }
 
     /**
+     * Format the amount
      * 
      * @param integer $amount
      * @param integer $decimals
@@ -42,14 +45,7 @@ class OpitExtension extends \Twig_Extension
      */
     public function formatAmount($amount, $decimals, $decPoint, $thousandSep, $currency)
     {
-        if (0 == $amount) {
-            return 0;
-        }
-        if ('HUF' == $currency) {
-            return number_format($amount, 0, $decPoint, $thousandSep);
-        }
-        
-        return number_format($amount, $decimals, $decPoint, $thousandSep);
+        return Utils::getformattedAmount($amount, $decimals, $decPoint, $thousandSep, $currency);
     }
    
 

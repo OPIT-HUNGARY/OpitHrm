@@ -54,7 +54,7 @@ class ExchangeRateDiffCommandTest extends WebTestCase
         $application = new Application($kernel);
         $application->add(new ExchangeRateDiffCommand());
 
-        $this->command = $application->find('exchange:rates:diff');
+        $this->command = $application->find('opithrm:currency-rates:diff');
     }
 
     /**

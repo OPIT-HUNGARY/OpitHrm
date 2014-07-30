@@ -63,6 +63,7 @@ class TravelExpenseService extends TravelService implements TravelExpenseService
      */
     public function calculatePerDiem($arrivalDateTime, $departureDateTime)
     {
+        $currencyFormat = $this->config['currency_format'];
         $departureTimeHour = intval($departureDateTime->format('H'));
         $departureDate = $departureDateTime->format('Y-m-d');
 
@@ -126,12 +127,36 @@ class TravelExpenseService extends TravelService implements TravelExpenseService
         return array(
             'totalTravelHoursOnSameDay' => $totalTravelHoursOnSameDay,
             'departureHours' => $departureDayTravelHours,
-            'departurePerDiem' => $departureDayPerDiem,
+            'departurePerDiem' => Utils::getformattedAmount(
+                $departureDayPerDiem,
+                $currencyFormat['decimals'],
+                $currencyFormat['dec_point'],
+                $currencyFormat['thousands_sep'],
+                'EUR'
+            ),
             'arrivalHours' => $arrivalDayTravelHours,
-            'arrivalPerDiem' => $arrivalDayPerDiem,
+            'arrivalPerDiem' => Utils::getformattedAmount(
+                $arrivalDayPerDiem,
+                $currencyFormat['decimals'],
+                $currencyFormat['dec_point'],
+                $currencyFormat['thousands_sep'],
+                'EUR'
+            ),
             'daysBetween' => $fullDays,
-            'daysBetweenPerDiem' => $daysBetweenPerDiem,
-            'totalPerDiem' => $perDiemAmount
+            'daysBetweenPerDiem' => Utils::getformattedAmount(
+                $daysBetweenPerDiem,
+                $currencyFormat['decimals'],
+                $currencyFormat['dec_point'],
+                $currencyFormat['thousands_sep'],
+                'EUR'
+            ),
+            'totalPerDiem' => Utils::getformattedAmount(
+                $perDiemAmount,
+                $currencyFormat['decimals'],
+                $currencyFormat['dec_point'],
+                $currencyFormat['thousands_sep'],
+                'EUR'
+            ),
         );
     }
 

@@ -71,7 +71,7 @@
         <service id="opit.manager.travel_notification_manager" class="%opit.manager.travel_notification_manager.class%">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
-        <service id="opit.twig.opit_travel_bundle_extension.class" class="%opit.twig.opit_travel_bundle_extension.class%">
+        <service id="opit.twig.opit_travel_bundle_extension" class="%opit.twig.opit_travel_bundle_extension.class%">
             <tag name="twig.extension" />
         </service>
     </services>
