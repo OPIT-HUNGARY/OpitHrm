@@ -105,7 +105,7 @@ class TravelExpenseService extends TravelService implements TravelExpenseService
 
             $perDiemAmount += $arrivalDayPerDiem;
 
-            $daysBetweenArrivalDeparture = date_diff($departureDateTime, $arrivalDateTime);
+            $daysBetweenArrivalDeparture = date_diff(new \DateTime($departureDate), new \DateTime($arrivalDate));
             $fullDays = $daysBetweenArrivalDeparture->days - 1;
 
             $daysBetweenPerDiem =
