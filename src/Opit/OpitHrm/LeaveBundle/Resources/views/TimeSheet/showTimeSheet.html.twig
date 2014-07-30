@@ -2,7 +2,7 @@
     {% if action is defined and action == 2 %}
         {# The generated CSS file needs for the TCPDF #}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
-        {% set printAsset = asset('bundles/opithrmleave/css/timeSheetPrintView.css')|split('?') %}
+        {% set printAsset = asset('bundles/opitopithrmleave/css/timeSheetPrintView.css')|split('?') %}
         <link rel="stylesheet" type="text/css" media="print" href="{{ printAsset[0] }}" />
     {% else %}
         {% stylesheets

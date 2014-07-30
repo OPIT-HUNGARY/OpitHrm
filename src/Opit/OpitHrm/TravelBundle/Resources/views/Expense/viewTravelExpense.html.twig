@@ -1,7 +1,7 @@
 {% block stylesheets %}
     {% if action is defined and action == 'export' %}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
-        {% set printAsset = asset('bundles/opithrmtravel/css/travelExpensePrintView.css')|split('?') %}
+        {% set printAsset = asset('bundles/opitopithrmtravel/css/travelExpensePrintView.css')|split('?') %}
         <link rel="stylesheet" type="text/css" media="print" href="{{ printAsset[0] }}" />
     {% else %}
         {% stylesheets
