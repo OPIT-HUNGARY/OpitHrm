@@ -24,17 +24,18 @@ $("#addJobTitle").click ->
                                 data: "showList" : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('opithrm').funcs.showAlert $('#dialog-editjobtitle'), response, "create", "Job title created successfully"
+                                validationResult = $(document).data('opithrm').funcs.showAlert $('#dialog-editjobtitle'), response, 'create', 'Job title created successfully'
                                 if validationResult is true
-                                    $('#dialog-editjobtitle').dialog "destroy"
+                                    $('#dialog-editjobtitle').dialog 'destroy'
+                                $(document).data('opithrm').funcs.initDeleteMultipleListener()
                     Close: ->
                         $('#dialog-editjobtitle').dialog "destroy"
                         return
             return
         return
 
-$("#list-table").on "click", ".list-jobtitle", ->
-    id = $(@).attr "data-id"
+$('#list-table').on 'click', '.list-jobtitle', ->
+    id = $(@).attr 'data-id'
     $.ajax
         method: 'GET'
         url: Routing.generate 'OpitOpitHrmUserBundle_admin_show_jobtitle', id: id
@@ -57,14 +58,15 @@ $("#list-table").on "click", ".list-jobtitle", ->
                                 type: 'POST'
                                 global: false
                                 url: Routing.generate 'OpitOpitHrmUserBundle_admin_list_jobtitle'
-                                data: "showList" : 1
+                                data: 'showList' : 1
                             .done (data)->
                                 $('#list-table').html data
-                                validationResult = $(document).data('opithrm').funcs.showAlert $('#dialog-editjobtitle'), response, "create", "Job title modified successfully"
+                                validationResult = $(document).data('opithrm').funcs.showAlert $('#dialog-editjobtitle'), response, 'create', 'Job title modified successfully'
                                 if validationResult is true
-                                    $('#dialog-editjobtitle').dialog "destroy"
+                                    $('#dialog-editjobtitle').dialog 'destroy'
+                                $(document).data('opithrm').funcs.initDeleteMultipleListener()
                     Close: ->
-                        $('#dialog-editjobtitle').dialog "destroy"
+                        $('#dialog-editjobtitle').dialog 'destroy'
                         return
             return
         return

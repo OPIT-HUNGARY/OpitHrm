@@ -17,6 +17,7 @@ showTeamDialog = (teamId = '') ->
                     .done (data)->
                         $('.delete-checkbox-form').replaceWith data
                         $selfDialog.dialog 'destroy'
+                        $(document).data('opithrm').funcs.initDeleteMultipleListener()
                 Close: ->
                     $selfDialog.dialog 'destroy'
 
