@@ -71,6 +71,9 @@ $(document).ready ->
                 width: dialogWidth
                 maxHeight: $(window).outerHeight()-100
                 modal: on
+                buttons:
+                    Close: ->
+                        $(@).dialog 'destroy'
             return
           return
 
