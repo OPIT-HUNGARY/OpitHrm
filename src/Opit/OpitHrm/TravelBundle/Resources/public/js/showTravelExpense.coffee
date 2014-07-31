@@ -268,13 +268,29 @@ convertCurrency = (originCode, destinationCode, value) ->
         return curConverter.convertCurrency(originCode, destinationCode, value).toFixed(2)
     
 calculatePerDiem = () ->
-    departure = "#{ $('#travelExpense_departureDateTime_date').val() } 
-                 #{ $('#travelExpense_departureDateTime_time_hour').val() }:#{ $('#travelExpense_departureDateTime_time_minute').val() }"
-    departureObj = new Date departure
+    departureDate = $('#travelExpense_departureDateTime_date').val()
+    departureHour = $('#travelExpense_departureDateTime_time_hour').val()
+    departureMinute = $('#travelExpense_departureDateTime_time_minute').val()
+    departure = "#{ departureDate } #{ departureHour }:#{ departureMinute }"
 
-    arrival = "#{ $('#travelExpense_arrivalDateTime_date').val() } 
-                 #{ $('#travelExpense_arrivalDateTime_time_hour').val() }:#{ $('#travelExpense_arrivalDateTime_time_minute').val() }"
-    arrivalObj = new Date arrival
+    departureDate = departureDate.split('-')
+    departureYear = departureDate[0]
+    departureMonth = departureDate[1]
+    departureDay = departureDate[1]
+
+    departureObj = new Date departureYear, departureMonth, departureDay, departureHour, departureMinute
+
+    arrivalDate = $('#travelExpense_arrivalDateTime_date').val()
+    arrivalHour = $('#travelExpense_arrivalDateTime_time_hour').val()
+    arrivalMinute = $('#travelExpense_arrivalDateTime_time_minute').val()
+    arrival = "#{ arrivalDate } #{ arrivalHour }:#{ arrivalMinute }"
+
+    arrivalDate = arrivalDate.split('-')
+    arrivalYear = arrivalDate[0]
+    arrivalMonth = arrivalDate[1]
+    arrivalDay = arrivalDate[1]
+
+    arrivalObj = new Date arrivalYear, arrivalMonth, arrivalDay, arrivalHour, arrivalMinute
 
     if arrivalObj > departureObj
         $.ajax
