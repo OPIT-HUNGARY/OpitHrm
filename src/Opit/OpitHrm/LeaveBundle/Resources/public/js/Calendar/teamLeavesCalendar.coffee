@@ -61,8 +61,13 @@ $('#leave-calendar-container #export-button').on 'click.export', ->
 
 $(document).ready ->
     $("#team-leaves-calendar").fullCalendar
-        editable: false,
-        selectable: false,
+        editable: false
+        selectable: false
+        firstDay: 1
         events: Routing.generate('OpitOpitHrmLeaveBundle_calendar_team_employees')
-        
+        eventAfterRender: (event, element, view) ->
+            if event.className.length > 1
+                date = event.className[2].split('_')[1]
+                $('#leave-calendar-container').find("[data-date='" + date + "']").addClass 'background-color-default-red'
+
     $('.team-employee').bgPainter()

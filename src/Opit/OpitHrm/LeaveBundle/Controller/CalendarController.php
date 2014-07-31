@@ -90,18 +90,30 @@ class CalendarController extends Controller
         $employee = $securityContext->getToken()->getUser()->getEmployee();
 
         $teamsEmployees = $this->getTeamsEmployees($employee);
+        $startDate = date('Y-m-d', $request->query->get('start'));
+        $endDate = date('Y-m-d', $request->query->get('end'));
 
         // get all approved leave requests employees are in
         $leaveRequests = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')
-            ->findEmployeesLeaveRequests(
-                $teamsEmployees,
-                date('Y-m-d', $request->query->get('start')),
-                date('Y-m-d', $request->query->get('end')),
-                Status::APPROVED
-            );
+            ->findEmployeesLeaveRequests($teamsEmployees, $startDate, $endDate, Status::APPROVED);
+
+        $leaveWorkingDays = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveDate')
+            ->findLWDInRange($startDate, $endDate);
 
         $leaves = array();
+        $leaveWorkingDaysArray = array();
 
+        // Loop through all leave working days and add it to the calendar
+        foreach ($leaveWorkingDays as $leaveWorkingDay) {
+            $lwdDate = $leaveWorkingDay->getHolidayDate()->format('Y-m-d');
+            $leaveWorkingDaysArray[] = array(
+                'title' => $leaveWorkingDay->getHolidayType()->getName(),
+                'start' => $lwdDate,
+                'end' => $lwdDate,
+                'textColor' => 'white',
+                'className' => 'border-none background-color-default-red lwd_' . $lwdDate
+            );
+        }
         // loop through all leave requests
         foreach ($leaveRequests as $leaveRequest) {
             // loop through all leave request leaves
@@ -118,7 +130,7 @@ class CalendarController extends Controller
             }
         }
 
-        return new JsonResponse($leaves);
+        return new JsonResponse(array_merge($leaves, $leaveWorkingDaysArray));
     }
 
     /**

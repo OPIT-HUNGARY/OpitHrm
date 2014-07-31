@@ -163,6 +163,10 @@
     background-color: $aquamarine;
 }
 
+.background-color-default-red{
+    background-color: $defaultRed !important;
+}
+
 
 /* Align properties */
 
@@ -621,6 +625,10 @@
 
 .border-bottom-seperator-important{
     border-bottom: solid 2px $darkGrey !important;
+}
+
+.border-none{
+    border: 0 !important;
 }
 
 /* Box shadow properties */

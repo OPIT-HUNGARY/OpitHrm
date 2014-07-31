@@ -151,4 +151,27 @@ class LeaveDateRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * Find all leave working days in date range
+     *
+     * @param type $startDate
+     * @param type $endDate
+     * @return type
+     */
+    public function findLWDInRange($startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('ld');
+        $qb->select('ld')
+            ->where($qb->expr()->gte('ld.holidayDate', ':startDate'))
+            ->andWhere($qb->expr()->lte('ld.holidayDate', ':endDate'));
+        $qb->setParameters(
+            array(
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            )
+        );
+
+        return $qb->getQuery()->getResult();
+    }
 }
