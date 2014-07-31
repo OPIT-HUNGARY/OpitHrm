@@ -34,7 +34,7 @@ security:
         in_memory:
             memory:
                 users:
-                    opit:  { password: opit }
+                    - { name: %in_memory_username%, password: %in_memory_password% }
         administrators:
             entity: { class: OpitOpitHrmUserBundle:User }                    
 
