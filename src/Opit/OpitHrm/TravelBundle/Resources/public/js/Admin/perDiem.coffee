@@ -93,7 +93,7 @@ $(document).ready () ->
 # method to validate if departure date is smaller than arrival date
 $.validator.addMethod 'checkAmount', (value, element) ->
     return checkAmount(value)
-, 'The Amount should be greater than 0!'
+, 'The amount should be greater than 0.'
 
 $.validator.addClassRules(
     'amount', {checkAmount: {elements: ".amount" }}

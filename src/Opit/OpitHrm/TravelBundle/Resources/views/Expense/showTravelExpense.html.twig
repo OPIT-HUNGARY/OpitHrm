@@ -122,25 +122,25 @@
             </div>
 
             <div class="display-block">
-                <div class="display-inline-block margin-right-1-em">
+                <div class="display-inline-block margin-right-1-em vertical-align-top">
                     {{ form_label(form.departureCountry) }}
                     {{ form_widget(form.departureCountry) }}
-                </div><div class="display-inline-block margin-right-1-em">
+                </div><div class="display-inline-block margin-right-1-em vertical-align-top">
                     {{ form_label(form.departureDateTime) }}
                     {{ form_widget(form.departureDateTime.date) }}
-                </div><div class="display-inline-block">
+                </div><div class="display-inline-block vertical-align-bottom">
                     {{ form_widget(form.departureDateTime.time) }}
                 </div>
             </div>
 
             <div class="display-block">
-                <div class="display-inline-block margin-right-1-em">
+                <div class="display-inline-block margin-right-1-em vertical-align-top">
                     {{ form_label(form.arrivalCountry) }}
                     {{ form_widget(form.arrivalCountry) }}
-                </div><div class="display-inline-block margin-right-1-em">
+                </div><div class="display-inline-block margin-right-1-em vertical-align-top">
                     {{ form_label(form.arrivalDateTime) }}
                     {{ form_widget(form.arrivalDateTime.date) }}
-                </div><div class="display-inline-block">
+                </div><div class="display-inline-block vertical-align-bottom">
                     {{ form_widget(form.arrivalDateTime.time) }}
                 </div>
             </div>
@@ -180,6 +180,7 @@
                 <i class="fa fa-plus-square"></i>Add advances received
             </div>
         </div>
+            <div class="clear-both"></div>
     </div>
 
     <div class="formFieldset padding-bottom-5 margin-top-20 margin-bottom-20">

@@ -32,7 +32,7 @@ compareDays = () ->
 addFormDeleteButton = ->
     $deleteButton = $('<div>')
                         .html('<i class="fa fa-minus-square"></i>Delete')
-                        .addClass('form-fieldset-delete-button formFieldsetButton')
+                        .addClass('form-fieldset-delete-button formFieldsetButton display-inline-block')
 
     $deleteButton.click ->
         $(@).parent().remove()

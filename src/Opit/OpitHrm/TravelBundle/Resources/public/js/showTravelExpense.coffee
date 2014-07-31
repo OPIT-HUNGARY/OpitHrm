@@ -397,7 +397,7 @@ $(document).ready ->
 
     $('.generalFormFieldset').find('br').last().remove()
     $perDiem.append $perDiemAmountsTable
-    $('.generalFormFieldset').append $perDiem
+    $perDiem.insertBefore $('.generalFormFieldset .clear-both')
     
     $('.fa-question-circle').on 'mouseover', ->
         $(@).parent().parent().find('.formFieldsetDescription').removeClass('display-none')

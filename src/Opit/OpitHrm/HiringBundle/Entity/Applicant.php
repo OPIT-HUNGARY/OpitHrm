@@ -72,7 +72,7 @@ class Applicant extends AbstractBase
      * @Assert\File(
      *  maxSize="5M",
      *  mimeTypes = {"application/pdf", "application/x-pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"},
-     *  mimeTypesMessage = "CV file format not supported, supported pdf, doc, docx"
+     *  mimeTypesMessage = "Invalid CV file format. Supported formats are .pdf, .doc, .docx"
      * )
      * @ORM\Column(name="cvFile", type="string", nullable=true)
      */
