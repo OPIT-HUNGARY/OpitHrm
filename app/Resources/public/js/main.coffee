@@ -184,6 +184,16 @@ $.extend true, $(document).data('opithrm'),
                             $parent.next().slideToggle()
                 $parent.append $toggleIcon
 
+        applyDialogError: ($dialog, response) ->
+            $errorList = $('<ul>')
+            response.responseJSON[0]['errorMessage'].forEach (errorMessage) ->
+                $errorMessage = $('<li>').html errorMessage
+                $errorList.append $errorMessage
+
+            $replyMessage = $dialog.find('#reply-message')
+            $replyMessage.append $errorList
+            $replyMessage.removeClass 'display-none'
+
 ###
  * String interpolate plugin
  *

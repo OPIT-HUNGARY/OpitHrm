@@ -15,11 +15,14 @@ showTeamDialog = (title, btnText, message, teamId = '') ->
                             type: 'POST'
                             url: Routing.generate url, id: teamId
                             data: $selfDialog.find('#show_team_from').serialize()
+                            global: no
                         .done (data)->
                             $('.delete-checkbox-form').replaceWith data
                             $selfDialog.dialog 'destroy'
                             $(document).data('opithrm').funcs.initDeleteMultipleListener()
                             $(document).data('opithrm').funcs.showAlert $selfDialog, data, 'create', message
+                        .fail (data) ->
+                            $(document).data('opithrm').funcs.applyDialogError $selfDialog, data
                 ,
                     text: 'Close',
                     click: ->

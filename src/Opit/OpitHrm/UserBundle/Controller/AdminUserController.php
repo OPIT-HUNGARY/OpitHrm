@@ -24,6 +24,7 @@ use Opit\OpitHrm\UserBundle\Entity\Groups;
 use Opit\OpitHrm\UserBundle\Entity\Team;
 use Opit\OpitHrm\UserBundle\Form\TeamType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Opit\Component\Utils\Utils;
 
 /**
  * Description of AdminController
@@ -331,6 +332,12 @@ class AdminUserController extends Controller
                 $entityManager->flush();
 
                 return $this->render('OpitOpitHrmUserBundle:Admin:_teamsList.html.twig', $this->getAllTeams());
+            } else {
+                $statusCode = 500;
+                $errors = Utils::getErrorMessages($form);
+                $result['errorMessage'] = $errors;
+
+                return new JsonResponse(array($result), $statusCode);
             }
         }
 

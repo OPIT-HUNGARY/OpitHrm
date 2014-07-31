@@ -6,9 +6,9 @@
     {% set desc = "Create a new team." %}
 {% endif %}
 <div class="dialog-description">{{desc|trans}}</div>
-<div id="reply-message"></div>
-<div class="error-message">
-    {{ form_errors(form) }}
+<div id="reply-message" class="alert-message error-message display-none">
+    <i class="fa fa-exclamation-triangle"></i>
+    <strong>Error messages</strong>
 </div>
 {{ form_start(form, {'attr': { 'id': 'show_team_from'}, 'method': 'POST'}) }}
     <div class="modalwindow default-border height-auto overflow-hidden">

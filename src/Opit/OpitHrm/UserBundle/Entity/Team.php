@@ -12,6 +12,7 @@
 namespace Opit\OpitHrm\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Description of Team
@@ -38,6 +39,7 @@ class Team
      * @var string
      *
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Team name can not be blank.")
      */
     protected $teamName;
 
