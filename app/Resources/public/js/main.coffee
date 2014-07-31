@@ -50,12 +50,9 @@ $.extend true, $(document).data('opithrm'),
                                 title: 'Error'
                         $(document).data('opithrm').funcs.initListPageListeners()
                         $(document).data('opithrm').funcs.initPager()
-                        $(@).dialog 'close'
+                        $(@).dialog 'destroy'
                         return
                     No: ->
-                        # Unset checkbox
-                        $checkbox.prop 'checked', false
-                        $(document).data('opithrm').funcs.initDeleteMultipleListener()
                         $(@).dialog 'close'
                         return
                 close: ->
@@ -89,11 +86,9 @@ $.extend true, $(document).data('opithrm'),
                       .fail () ->
                           $('<div></div>').html('The '+message+' could not be deleted due to an error.').dialog
                               title: 'Error'
-                      $(@).dialog 'close'
+                      $(@).dialog 'destroy'
                       return
                   No: ->
-                      $(identifier + ':checkbox').attr 'checked', false
-                      $(document).data('opithrm').funcs.initDeleteMultipleListener()
                       $(@).dialog 'close'
                       return
               close: ->
