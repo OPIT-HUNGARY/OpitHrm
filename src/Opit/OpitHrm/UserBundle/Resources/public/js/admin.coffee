@@ -85,9 +85,6 @@ deleteJobTitle = () ->
     url = Routing.generate 'OpitOpitHrmUserBundle_admin_delete_jobtitle'
     $(document).data('opithrm').funcs.deleteAction('Job title delete', 'job title(s)', url, '.list-delete-jobtitle')
 
-$('#list-table').on "click", "th .fa-trash-o", ->
-      $('.list-delete-jobtitle').filter(() -> return not @.disabled).checkAll()
-
 $('#list-table').on 'click', '.order-text', ->
     $(document).data('opithrm').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitOpitHrmUserBundle_admin_list_jobtitle', 'list-table', 'searchForm'
 $('#list-table').on 'click', '.fa-sort', ->

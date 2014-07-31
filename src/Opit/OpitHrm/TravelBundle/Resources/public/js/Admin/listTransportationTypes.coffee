@@ -86,10 +86,6 @@ deleteTransportationType = () ->
         '.list-delete-type'
     )
 
-# Register select all icon event (delegated)
-$('#transportation-type-list').on "click", "th .fa-trash-o", ->
-      $('.list-delete-type').filter(() -> return not @.disabled).checkAll()
-
 # Register server side ordering events
 $('form#form-transportation-types').on 'click', '.order-text', ->
     $(document).data('opithrm').funcs.serverSideListOrdering $(@), $(@).parent().find('i').attr('data-field'), 'OpitOpitHrmTravelBundle_admin_transportationtype_list', 'list-table', 'searchForm'

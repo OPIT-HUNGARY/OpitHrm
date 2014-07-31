@@ -19,7 +19,7 @@
         {% for transportationType in transportationTypes %}
         <tr class="clickableTableRow">
             <td>
-                <input name="delete-type[]" type="checkbox" class="list-delete-type" value="{{ transportationType.id }}">
+                <input name="delete-type[]" type="checkbox" class="list-delete-type deleteMultiple" value="{{ transportationType.id }}">
             </td>
             <td data-tr-id='{{ transportationType.id }}'>{{ transportationType.id }}</td>
             <td>

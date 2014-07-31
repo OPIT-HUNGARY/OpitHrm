@@ -24,8 +24,8 @@
                 {% set disabledJobTitle = 'false'  %}
             {% endif %}
         <tr class="clickableTableRow">
-            <td>            
-                <input name="delete-jobtitle[]" type="checkbox" class="list-delete-jobtitle" value="{{ jobTitle.id }}" {% if 'true' == disabledJobTitle %} {{ 'disabled="disabled"' }}  {% endif %}>
+            <td>
+                <input name="delete-jobtitle[]" type="checkbox" class="list-delete-jobtitle deleteMultiple" value="{{ jobTitle.id }}" {% if 'true' == disabledJobTitle %} {{ 'disabled="disabled"' }}  {% endif %}>
             </td>
             <td data-tr-id='{{ jobTitle.id }}'>{{ jobTitle.id }}</td>
             <td><span class="list-jobtitle clickable" data-id="{{ jobTitle.id }}">{{ jobTitle.title }}</span></td>
