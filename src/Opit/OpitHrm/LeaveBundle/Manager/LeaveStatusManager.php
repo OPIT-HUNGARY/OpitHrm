@@ -95,6 +95,12 @@ class LeaveStatusManager extends StatusManager
             // send a new notification when leave request status changes
             $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
 
+            $nextStates = $this->getNextStates($status);
+            unset($nextStates[$statusId]);
+
+            // send an email when status is changed
+            $this->prepareEmail($status, $nextStates, $leaveRequest);
+
             return new JsonResponse();
         } else {
             return new JsonResponse('error');
@@ -144,7 +150,7 @@ class LeaveStatusManager extends StatusManager
      * @param \Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest $leaveRequest
      * @param type $requiredStatus
      */
-    protected function prepareEmail(Status $status, array $nextStates, $leaveRequest, $requiredStatus)
+    protected function prepareEmail(Status $status, array $nextStates, $leaveRequest)
     {
         $applicationName = $this->options['applicationName'];
         // get template name by converting entity name first letter to lower
@@ -163,14 +169,12 @@ class LeaveStatusManager extends StatusManager
             $leaveToken = $this->setLeaveToken($leaveRequest->getId());
 
             foreach ($nextStates as $key => $value) {
-                if ($key !== $requiredStatus) {
-                    // Generate links that can be used to change the status of the travel request
-                    $stateChangeLinks[] = $this->router->generate('OpitOpitHrmLeaveBundle_change_status', array(
-                        'gmId' => $generalManager->getId(),
-                        'status' => $key,
-                        'token' => $leaveToken
-                    ), true);
-                }
+                // Generate links that can be used to change the status of the travel request
+                $stateChangeLinks[] = $this->router->generate('OpitOpitHrmLeaveBundle_change_status', array(
+                    'gmId' => $generalManager->getId(),
+                    'status' => $key,
+                    'token' => $leaveToken
+                ), true);
             }
 
             $recipient = $generalManager->getEmail();

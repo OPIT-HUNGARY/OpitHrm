@@ -51,6 +51,7 @@ class DefaultController extends Controller
             $entityManager->remove($token);
             $entityManager->flush();
             $this->get('opit.manager.leave_status_manager')->addStatus($leaveRequest, $status->getId());
+            $this->get('opit.manager.leave_notification_manager')->addNewLeaveNotification($leaveRequest, false, $status);
         }
 
         return $this->render(
