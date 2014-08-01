@@ -33,8 +33,7 @@ security:
     providers:
         in_memory:
             memory:
-                users:
-                    - { name: %in_memory_username%, password: %in_memory_password% }
+                users: %in_memory_users%
         administrators:
             entity: { class: OpitOpitHrmUserBundle:User }                    
 

@@ -40,5 +40,7 @@ parameters:
     version_number: '3.0.5-beta'
 
     # In memory credentials
-    in_memory_username: ~
-    in_memory_password: ~
+    in_memory_users:
+        -
+            name: basicuser
+            password: basicpassword
