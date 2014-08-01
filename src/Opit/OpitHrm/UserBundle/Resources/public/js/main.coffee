@@ -204,12 +204,12 @@ $(document).ready ->
                 event.stopPropagation()
 
             # register hide listener clicking outside of the notifications boundaries
-            $('body').on 'click.notifications', (event) ->
+            $(document).on 'click.notifications', (event) ->
                 if $('#notifications').hasClass 'right-m15-important'
                     $('#notifications').removeClass 'right-m15-important'
 
                     # detach event listener if notifications are hidden
-                    $('body, #notifications-wrapper').off 'click.notifications'
+                    $(document, '#notifications-wrapper').off 'click.notifications'
         else
             $container.removeClass 'right-m15-important'
 
