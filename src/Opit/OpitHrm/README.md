@@ -1,14 +1,14 @@
 OPIT-HRM README
 ========================
 
-OPIT-HRM is a open source HRM application based on the Symfony framework.
+OPIT-HRM is an open source HRM application based on the Symfony framework.
 The actual edition supports requirements for the Hungarian market,
 but it can be setup while installation not to use Hungary specific functionalities.
 
 Requirements
 ------------
 
-* PHP > 5.4(some required extentions - ldap, openssl, curl)
+* PHP >= 5.3.9 (some required extensions - ldap, openssl, curl)
 * MySql < 5.6
 * Apache >=2.0
 * Ruby
@@ -55,7 +55,7 @@ The OPIT-HRM application consists of the following bundles:
 Documentation
 ------------
 
-Documentation for users and developers of OPIT-HRM can be found at http:\\www.opit.hu\opithrm\documentation
+Documentation for users and developers of OPIT-HRM can be found at [OPIT-HRM Documentation][1]
 
 Application versioning scheme
 ------------
@@ -78,3 +78,5 @@ License
 ------------
 
 OPIT-HRM is released under The GNU Lesser General Public License, version 3.0 (LGPL-3.0)
+
+[1]: http://www.opit.hu/opithrm/documentation
