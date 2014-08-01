@@ -72,7 +72,7 @@ deleteGroup = (id, name) ->
 $('#main-wrapper #add').on 'click', ->
     showRoleDialog('new', '', "Create a new #{ propertyName }.", url, "Create #{ propertyName }", "#{ propertyNameCapital } successfully created!")
     
-$('#main-wrapper').on 'click','.edit', ->
+$('#main-wrapper').on 'click','.edit-item', ->
     id = $(@).closest('tr').children('td:nth-child(2)').html()
     name = $(@).closest('tr').children('td:nth-child(3)').html()
     
