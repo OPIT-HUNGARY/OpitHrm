@@ -1,8 +1,8 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "license": "MIT",
+    "name": "opit/opithrm",
+    "license": "LGPL",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "description": "OPIT-HRM open source distribution",
     "autoload": {
         "psr-0": { "": "src/" }
     },
