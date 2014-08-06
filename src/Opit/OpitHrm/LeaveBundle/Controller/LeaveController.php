@@ -176,8 +176,7 @@ class LeaveController extends Controller
 
             if ($form->isValid()) {
                 if (null === $requestFor || 'own' === $requestFor) {
-                    $employees = array($employee);
-
+                    $employees = array($employee->getId());
                     // Single leave request for own employee
                     $error = $this->createLeaveRequests($leaveRequest, $employees, false, true, $leavesLength, $children);
                 } elseif (1 === count($employees)) {
