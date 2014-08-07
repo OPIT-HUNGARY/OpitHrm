@@ -110,9 +110,20 @@ class LeaveRequestRepository extends EntityRepository
     {
         $dq = $this->createQueryBuilder('lr');
         $dq->select('lr, l, e')
-                ->where('lr.employee in (:employee)')
-                ->andwhere('l.startDate > :startDate')
-                ->andWhere('l.endDate < :endDate');
+            ->where('lr.employee in (:employee)')
+            // where leave start date or leave end date in the given time frame
+            // or leave start date before time frame start and leave end date after time frame end
+            ->andWhere(
+                $dq->expr()->orX(
+                    'l.startDate BETWEEN :startDate AND :endDate',
+                    'l.endDate BETWEEN :startDate AND :endDate',
+                    $dq->expr()->andX(
+                        'l.startDate < :startDate',
+                        'l.endDate > :endDate'
+
+                    )
+                )
+            );
         if ($status) {
             $dq->andWhere($dq->expr()->In('s.status', ':states'));
             $dq->setParameter(':states', $status);
