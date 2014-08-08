@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -70,13 +71,25 @@ class UserShowType extends AbstractType
         )));
 
         $builder->add('groups', 'entity', array(
-                'class' => 'OpitOpitHrmUserBundle:Groups',
+            'class' => 'OpitOpitHrmUserBundle:Groups',
             'query_builder' => function (EntityRepository $er) {
+                $securityContext = $this->container->get('security.context');
                 $dq = $er->createQueryBuilder('g');
 
-                if (!$this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
+                if (!$securityContext->isGranted('ROLE_ADMIN')) {
+                    $roleHierarchy = new RoleHierarchy($this->container->getParameter('security.role_hierarchy.roles'));
+                    $roles = $roleHierarchy->getReachableRoles($securityContext->getToken()->getRoles());
+                    $allowedRoles = array();
+                    foreach ($roles as $role) {
+                        // Exclude ROLE_SYSTEM_ADMIN role
+                        // As per definition, a system admin can only set roles lower than his highest role in the hierachy
+                        if ('ROLE_SYSTEM_ADMIN' != $role->getRole()) {
+                            $allowedRoles[] = $role->getRole();
+                        }
+                    }
+
                     $dq->where('g.role IN (:allowedRoles)');
-                    $dq->setParameter(':allowedRoles', $this->container->getParameter('security.role_hierarchy.roles')['ROLE_SYSTEM_ADMIN']);
+                    $dq->setParameter(':allowedRoles', $allowedRoles);
                 }
 
                 return $dq->orderBy('g.name', 'ASC');
@@ -88,7 +101,7 @@ class UserShowType extends AbstractType
         ));
 
         $builder->add('isActive', 'choice', array(
-                'choices' => $this->container->getParameter('opithrm_user_status')
+            'choices' => $this->container->getParameter('opithrm_user_status')
         ));
 
         // Display ldap feature related form inputs

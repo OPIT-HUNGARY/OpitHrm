@@ -167,14 +167,14 @@ class UserController extends Controller
         }
 
         // User object permission is based on assigned roles
-        // Minimum permission is equal to ROLE_SYSTEM_ADMIN, any higher roles
-        // in the hierachy require ROLE_ADMIN
+        // Minimum permission is equal to ROLE_SYSTEM_ADMIN, any higher roles in the hierachy require ROLE_ADMIN
+        // As per definition, a system admin can only set roles lower than his highest role in the hierachy
         $postedValues = $request->request->get('user');
         $securityRole = 'ROLE_SYSTEM_ADMIN';
         if (isset($postedValues['groups'])) {
             $roles = $em->getRepository('OpitOpitHrmUserBundle:Groups')->findById($postedValues['groups']);
             foreach ($roles as $role) {
-                if (in_array($role->getRole(), array('ROLE_ADMIN', 'ROLE_GENERAL_MANAGER', 'ROLE_TEAM_MANAGER'))) {
+                if (in_array($role->getRole(), array('ROLE_ADMIN', 'ROLE_SYSTEM_ADMIN', 'ROLE_GENERAL_MANAGER', 'ROLE_TEAM_MANAGER'))) {
                     $securityRole = 'ROLE_ADMIN';
                     break;
                 }
