@@ -546,9 +546,9 @@ class LeaveController extends Controller
         foreach ($leaveRequest->getLeaves() as $leave) {
             $countLeaveDays = $leaveRequestService->countLeaveDays($leave->getStartDate(), $leave->getEndDate());
 
-            // Set leave category if it has none
+            // Validate leave category
             if (null === $leave->getCategory()) {
-                $leave->setCategory($data['fullDayCategory']);
+                return 'Category can not be empty.';
             }
 
             // Check if leave is not to be substracted from entitlement
