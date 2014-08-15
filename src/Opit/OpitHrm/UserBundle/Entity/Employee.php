@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Opit\OpitHrm\LeaveBundle\Model\LeaveEntitlementEmployeeInterface;
+use Symfony\Component\Validator\ExecutionContextInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -99,6 +100,14 @@ class Employee implements LeaveEntitlementEmployeeInterface
      * @Assert\Date()
      */
     protected $joiningDate;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="leaving_date", type="date", nullable=true)
+     * @Assert\Date()
+     */
+    protected $leavingDate;
 
     /**
      * @var integer
@@ -251,6 +260,29 @@ class Employee implements LeaveEntitlementEmployeeInterface
     public function getJoiningDate()
     {
         return $this->joiningDate;
+    }
+
+    /**
+     * Set leavingDate
+     *
+     * @param \DateTime $leavingDate
+     * @return Employee
+     */
+    public function setLeavingDate($leavingDate)
+    {
+        $this->leavingDate = $leavingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get leavingDate
+     *
+     * @return \DateTime
+     */
+    public function getLeavingDate()
+    {
+        return $this->leavingDate;
     }
 
     /**
@@ -528,5 +560,17 @@ class Employee implements LeaveEntitlementEmployeeInterface
     public function getJobTitle()
     {
         return $this->jobTitle;
+    }
+
+    /**
+     * @Assert\Callback(groups={"employee"})
+     */
+    public function validateLeavingDate(ExecutionContextInterface $context)
+    {
+        if ($this->getLeavingDate() < $this->getJoiningDate()) {
+            $context->addViolation(
+                sprintf('Leaving date can not be before joining date')
+            );
+        }
     }
 }

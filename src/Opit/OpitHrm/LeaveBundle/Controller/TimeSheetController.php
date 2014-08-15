@@ -248,11 +248,6 @@ class TimeSheetController extends Controller
         $hierarchy = $this->container->getParameter('security.role_hierarchy.roles');
         // Get all roles which are above the user role in the role hierarchy as time sheet only requires role user and above
         $higherRoles = Utils::getHigherLevelRoles($hierarchy);
-        // Get the employees by the roles.
-        $users = $em->getRepository('OpitOpitHrmUserBundle:User')->findUserByEmployeeNameUsingLike('', $higherRoles);
-
-        // Grouping users into subarrays.
-        $groupedUsers = Utils::groupingArrayByCounter($users, $divison);
 
         // Get the leave data
         $leaveData = $this->getLeaveData($year, $month);
@@ -265,6 +260,17 @@ class TimeSheetController extends Controller
         $endDate = clone $startDate;
         $endDate->modify('last day of this month');
         $daysOfMonth = Utils::diffDays($startDate, $endDate);
+
+        // Get the employees by the roles and employement.
+        $users = $em->getRepository('OpitOpitHrmUserBundle:User')->findEmployedUsers(
+            '',
+            new \DateTime($dateArray['year'] . '-' . $dateArray['month']),
+            new \DateTime($dateArray['year'] . '-' . $dateArray['month'] . '-' . count($daysOfMonth)),
+            $higherRoles
+        );
+
+        // Grouping users into subarrays.
+        $groupedUsers = Utils::groupingArrayByCounter($users, $divison);
 
         return $this->render(
             'OpitOpitHrmLeaveBundle:TimeSheet:showTimeSheet.html.twig',

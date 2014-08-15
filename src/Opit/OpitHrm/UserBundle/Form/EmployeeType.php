@@ -124,6 +124,14 @@ class EmployeeType extends AbstractType
             'label_attr' => array('id' => 'idJoiningDate')
         ));
 
+        $builder->add('leavingDate', 'date', array(
+            'widget' => 'single_text',
+            'attr' => array(
+                'placeholder' => 'leaving date'
+            ),
+            'label_attr' => array('id' => 'idLeavingDate')
+        ));
+
         $builder->add('dateOfBirth', 'date', array(
             'widget' => 'single_text',
             'attr' => array(

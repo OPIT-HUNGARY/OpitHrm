@@ -186,6 +186,34 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     }
 
     /**
+     * Find users that are still employed
+     * 
+     * @param string $chunk
+     * @param datetime $leavingDate
+     * @param string $role
+     * @return array
+     */
+    public function findEmployedUsers($chunk, $firstDayOfMonth, $lastDayOfMonth, $role = 'ROLE_USER')
+    {
+        $q = $this->getFindUserBaseQueryBuilder($chunk, $role);
+
+        $dq = $q
+            ->andWhere(
+                $q->expr()->andX(
+                    $q->expr()->lte('e.joiningDate', ':lastDayOfMonth'),
+                    $q->expr()->orX(
+                        $q->expr()->isNull('e.leavingDate'),
+                        $q->expr()->gte('e.leavingDate', ':firstDayOfMonth')
+                    )
+                )
+            )
+            ->setParameter('firstDayOfMonth', $firstDayOfMonth)
+            ->setParameter('lastDayOfMonth', $lastDayOfMonth);
+
+        return $dq->getQuery()->getResult();
+    }
+
+    /**
      * Finds team managers of the given user by employee name
      *
      * @param mixed $id User object or id
