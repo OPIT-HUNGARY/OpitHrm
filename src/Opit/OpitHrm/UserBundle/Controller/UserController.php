@@ -159,6 +159,7 @@ class UserController extends Controller
         $aclManager = $this->container->get('opit.security.acl.manager');
         $userService = $this->get('opit.model.user');
         $user = ($request->attributes->get('id')) ? $this->getUserObject($request->attributes->get('id')) : new User();
+        $userName = $user->getUsername();
         $isNew = null === $user->getId();
 
         // Check if the current user has permission to edit the object
@@ -207,6 +208,20 @@ class UserController extends Controller
 
                     $aclManager->revokeAll($user);
                     $aclManager->grant($user, $role);
+                }
+
+                // Update user security identity if necessary
+                try {
+                    $aclManager->updateUserSecurityIdentity($user, $userName);
+                    $this->container->get('logger')->info(
+                        '[UserController] User security identity updated.',
+                        array('OldUsername' => $userName, 'NewUsername' => $user->getUsername())
+                    );
+                } catch (\InvalidArgumentException $e) {
+                    $this->container->get('logger')->notice(
+                        '[UserController] User security identity doesn\'t require any updates.',
+                        array('username' => $userName)
+                    );
                 }
 
                 $result['response'] = 'success';

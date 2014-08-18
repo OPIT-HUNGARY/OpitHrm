@@ -21,6 +21,7 @@ use Symfony\Component\Security\Acl\Exception\Exception;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Description of AclManager
@@ -294,5 +295,17 @@ class AclManager
         }
 
         return $sid;
+    }
+
+    /**
+     * Updates a user security identity when the user's username changes
+     * 
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @param string $oldUsername
+     */
+    public function updateUserSecurityIdentity(UserInterface $user, $oldUsername)
+    {
+        $securityIdentity = $this->getSecurityIdentity($user);
+        $this->provider->updateUserSecurityIdentity($securityIdentity, $oldUsername);
     }
 }
