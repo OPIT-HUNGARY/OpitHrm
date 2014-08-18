@@ -567,7 +567,7 @@ class Employee implements LeaveEntitlementEmployeeInterface
      */
     public function validateLeavingDate(ExecutionContextInterface $context)
     {
-        if ($this->getLeavingDate() < $this->getJoiningDate()) {
+        if (null !== $this->getLeavingDate() && $this->getLeavingDate() < $this->getJoiningDate()) {
             $context->addViolation(
                 sprintf('Leaving date can not be before joining date')
             );
