@@ -148,7 +148,6 @@ class LeaveController extends Controller
             }
         }
 
-
         if (!$securityContext->isGranted('view', $leaveRequest)) {
             throw new AccessDeniedException(
                 'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
@@ -174,6 +173,15 @@ class LeaveController extends Controller
 
             $form->handleRequest($request);
 
+            $isMLR = count($employees) > 1 ? true : false;
+
+            if (!$isNewLeaveRequest) {
+                // Check if single leave request's request for property was changed
+                if ($isMLR && !$leaveRequest->getIsMassLeaveRequest()) {
+                    $form->addError(new FormError('Request for can not be modified.'));
+                }
+            }
+
             if ($form->isValid()) {
                 if (null === $requestFor || 'own' === $requestFor) {
                     $employees = array($employee->getId());
@@ -182,7 +190,7 @@ class LeaveController extends Controller
                 } elseif (1 === count($employees)) {
                     // Single leave request for other employee
                     $error = $this->createLeaveRequests($leaveRequest, $employees, false, false, $leavesLength, $children);
-                } elseif (count($employees) > 1) {
+                } elseif ($isMLR) {
                     // MLR is being created
                     $error = $this->createLeaveRequests($leaveRequest, $employees, true, false);
                 } else {
