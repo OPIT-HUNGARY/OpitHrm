@@ -8,6 +8,7 @@
         <parameter key="opit.twig.opit_extension.class">Opit\OpitHrm\UserBundle\Twig\OpitExtension</parameter>
         <parameter key="opit.model.user.class">Opit\OpitHrm\UserBundle\Model\UserService</parameter>
         <parameter key="opit.listener.first_login.class">Opit\OpitHrm\UserBundle\EventListener\FirstLoginListener</parameter>
+        <parameter key="opit.listener.inactive_user.class">Opit\OpitHrm\UserBundle\EventListener\InactiveUserListener</parameter>
         <parameter key="opit.security.ldap_authenticator.class">Opit\OpitHrm\UserBundle\Security\Ldap\LdapAuthenticator</parameter>
     </parameters>
     <services>
@@ -25,8 +26,16 @@
             <argument type="service" id="router" />
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
         </service>
+        <service id="opit.listener.inactive_user" class="%opit.listener.inactive_user.class%">
+            <argument type="service" id="security.context" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="router" />
+            <argument type="service" id="logger" on-invalid="null" />
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
+        </service>
         <service id="opit.security.ldap_authenticator" class="%opit.security.ldap_authenticator.class%" public="false">
             <argument type="service" id="security.encoder_factory" />
+            <argument type="service" id="security.user_checker" />
             <argument type="service" id="opit.manager.ldap_manager" on-invalid="null" />
             <argument type="service" id="logger" on-invalid="null" />
         </service>

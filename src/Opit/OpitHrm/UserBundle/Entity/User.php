@@ -14,7 +14,7 @@ namespace Opit\OpitHrm\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use \Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Opit\OpitHrm\TravelBundle\Model\TravelRequestUserInterface;
 use Opit\OpitHrm\NotificationBundle\Model\NotificationUserInterface;
@@ -37,7 +37,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @UniqueEntity(fields={"username"}, message="The username is already used.", groups={"user"})
  * @UniqueEntity(fields={"email"}, message="The email is already used.", groups={"user"})
  */
-class User implements UserInterface, \Serializable, TravelRequestUserInterface, NotificationUserInterface
+class User implements AdvancedUserInterface, \Serializable, TravelRequestUserInterface, NotificationUserInterface
 {
     /**
      * @ORM\Column(type="integer")
@@ -254,6 +254,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     {
         return serialize(array(
             $this->id,
+            $this->username,
+            $this->password,
+            $this->isActive,
         ));
     }
 
@@ -264,6 +267,9 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     {
         list (
             $this->id,
+            $this->username,
+            $this->password,
+            $this->isActive,
         ) = unserialize($serialized);
     }
 
@@ -467,4 +473,37 @@ class User implements UserInterface, \Serializable, TravelRequestUserInterface, 
     {
         return $this->employee;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isEnabled()
+    {
+        return $this->isActive;
+    }
+
 }

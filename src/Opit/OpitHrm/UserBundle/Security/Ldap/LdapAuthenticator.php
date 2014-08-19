@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the OPIT-HRM project.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -20,6 +20,7 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Psr\Log\LoggerInterface;
 use Zend\Ldap\Ldap;
 
@@ -35,14 +36,18 @@ class LdapAuthenticator implements SimpleFormAuthenticatorInterface
 {
 
     private $encoderFactory;
+    private $userChecker;
     private $ldapManager;
     private $logger;
+    private $hideUserNotFoundExceptions;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory, Ldap $ldapManager = null, LoggerInterface $logger = null)
+    public function __construct(EncoderFactoryInterface $encoderFactory, UserCheckerInterface $userChecker, Ldap $ldapManager = null, LoggerInterface $logger = null, $hideUserNotFoundExceptions = true)
     {
         $this->encoderFactory = $encoderFactory;
+        $this->userChecker = $userChecker;
         $this->ldapManager = $ldapManager;
         $this->logger = $logger;
+        $this->hideUserNotFoundExceptions = $hideUserNotFoundExceptions;
     }
 
     /**
@@ -50,7 +55,7 @@ class LdapAuthenticator implements SimpleFormAuthenticatorInterface
      *
      * @param  \Symfony\Component\Security\Core\Authentication\Token\TokenInterface        $token
      * @param  \Symfony\Component\Security\Core\User\UserProviderInterface                 $userProvider
-     * @param  type                                                                        $providerKey
+     * @param  string                                                                      $providerKey
      * @return \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
      * @throws BadCredentialsException
      */
@@ -58,53 +63,28 @@ class LdapAuthenticator implements SimpleFormAuthenticatorInterface
     {
         $passwordValid = false;
 
-        // Loda user object
+        // Load user object
         try {
             $user = $userProvider->loadUserByUsername($token->getUsername());
         } catch (UsernameNotFoundException $e) {
             throw new BadCredentialsException('Invalid username or password', 0, $e);
         }
 
-        // Check if ldap extension is enabled and user's ldap flag is set.
-        if (null !== $this->ldapManager && $user->isLdapEnabled()) {
-            try {
-                $this->ldapManager->bind($token->getUsername(), $token->getCredentials());
-                $passwordValid = (boolean) $this->ldapManager->getBoundUser();
-
-                if (null !== $this->logger && !$token->isAuthenticated()) {
-                    $this->logger->info(
-                        "[LdapAuthenticator] Ldap authentication successful.",
-                        array('user' => $this->ldapManager->getBoundUser())
-                    );
-                }
-            } catch (\Zend\Ldap\Exception\LdapException $e) {
+        try {
+            $this->userChecker->checkPreAuth($user);
+            // Call the correct authentication method
+            if (null !== $this->ldapManager && $user->isLdapEnabled()) {
+                $passwordValid = $this->checkAuthenticationLdap($user, $token);
+            } else {
+                $passwordValid = $this->checkAuthentication($user, $token);
+            }
+            $this->userChecker->checkPostAuth($user);
+        } catch (BadCredentialsException $e) {
+            if ($this->hideUserNotFoundExceptions) {
                 throw new BadCredentialsException('Invalid username or password', 0, $e);
             }
-        } else {
-            $currentUser = $token->getUser();
 
-            if ($currentUser instanceof UserInterface) {
-                if ($currentUser->getPassword() !== $user->getPassword()) {
-                    throw new BadCredentialsException('The credentials were changed from another session.');
-                } else {
-                    $passwordValid = true;
-                }
-            } else {
-                if ("" === ($presentedPassword = $token->getCredentials())) {
-                    throw new BadCredentialsException('Invalid username or password.');
-                }
-
-                if (!$passwordValid = $this->encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(), $presentedPassword, $user->getSalt())) {
-                    throw new BadCredentialsException('Invalid username or password.');
-                }
-            }
-
-            if (null !== $this->logger && !$token->isAuthenticated()) {
-                $this->logger->info(
-                    "[LdapAuthenticator] Local authentication successful.",
-                    array('user' => $user->getUsername())
-                );
-            }
+            throw $e;
         }
 
         // Set the authenticated token
@@ -129,5 +109,67 @@ class LdapAuthenticator implements SimpleFormAuthenticatorInterface
     public function createToken(Request $request, $username, $password, $providerKey)
     {
         return new UsernamePasswordToken($username, $password, $providerKey);
+    }
+
+    /**
+     * Authenticates the user against the db
+     *
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @param \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken $token
+     * @return boolean
+     * @throws BadCredentialsException
+     */
+    protected function checkAuthentication(UserInterface $user, UsernamePasswordToken $token)
+    {
+        $currentUser = $token->getUser();
+        if ($currentUser instanceof UserInterface) {
+            if ($currentUser->getPassword() !== $user->getPassword()) {
+                throw new BadCredentialsException('The credentials were changed from another session.');
+            }
+        } else {
+            if ("" === ($presentedPassword = $token->getCredentials())) {
+                throw new BadCredentialsException('The presented password cannot be empty.');
+            }
+
+            if (!$this->encoderFactory->getEncoder($user)->isPasswordValid($user->getPassword(), $presentedPassword, $user->getSalt())) {
+                throw new BadCredentialsException('The presented password is invalid.');
+            }
+        }
+
+        if (null !== $this->logger && !$token->isAuthenticated()) {
+            $this->logger->info(
+                "[LdapAuthenticator] Local authentication successful.",
+                array('user' => $user->getUsername())
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * Authenticates the user via ldap
+     *
+     * @param \Symfony\Component\Security\Core\User\UserInterface $user
+     * @param \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken $token
+     * @return boolean $passwordValid
+     * @throws BadCredentialsException
+     */
+    protected function checkAuthenticationLdap(UserInterface $user, UsernamePasswordToken $token)
+    {
+        try {
+            $this->ldapManager->bind($token->getUsername(), $token->getCredentials());
+            $passwordValid = (boolean) $this->ldapManager->getBoundUser();
+
+            if (null !== $this->logger && !$token->isAuthenticated()) {
+                $this->logger->info(
+                    "[LdapAuthenticator] Ldap authentication successful.",
+                    array('user' => $this->ldapManager->getBoundUser())
+                );
+            }
+
+            return $passwordValid;
+        } catch (\Zend\Ldap\Exception\LdapException $e) {
+            throw new BadCredentialsException('Ldap authentication failed', 0, $e);
+        }
     }
 }
