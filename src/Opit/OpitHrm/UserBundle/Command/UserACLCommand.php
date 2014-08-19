@@ -73,6 +73,10 @@ EOT
                 $role = $this->em->getRepository('OpitOpitHrmUserBundle:Groups')
                     ->findOneByRole($this->getSecurityRole($user));
 
+                // Revoke all aces when force option is set
+                if ($this->input->getOption('force')) {
+                    $this->aclManager->revokeAll($user);
+                }
                 $this->aclManager->grant($user, $role);
 
                 $this->output->writeln(sprintf('ACL updated for <info>%s</info> granting OWNER access for <info>%s</info>', $user->getUsername(), $role));
