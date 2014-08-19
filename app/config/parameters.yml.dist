@@ -28,6 +28,7 @@ parameters:
     ldap_host: ~
     ldap_domain_name_short: ~
     ldap_base_dn: OU=Users,DC=foo,DC=net
+    ldap_enabled: false
 
     leave_default_days: ~
     arrival_time: ~

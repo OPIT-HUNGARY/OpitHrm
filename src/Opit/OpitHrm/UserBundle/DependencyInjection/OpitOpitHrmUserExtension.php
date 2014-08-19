@@ -45,8 +45,6 @@ class OpitOpitHrmUserExtension extends Extension
                 throw new \LogicException('LDAP extension missing.');
             }
 
-            $container->setParameter('ldap_enabled', $config['ldap']['enabled']);
-
             unset($config['ldap']['enabled']);
             // Used by the ldap authenticator service
             $container->setParameter('ldap', $config['ldap']);
