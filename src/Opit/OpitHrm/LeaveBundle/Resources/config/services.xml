@@ -29,7 +29,6 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="security.encoder_factory" />
-            <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="security.context" />
             <argument type="service" id="opit.manager.leave_notification_manager" />
             <argument type="service" id="router" />
@@ -42,7 +41,6 @@
             <argument type="service" id="security.context" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.leave_status_manager" />
-            <argument type="service" id="opit.security.acl.manager" />
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="opit.manager.leave_notification_manager" />
             <argument>%application_name%</argument>

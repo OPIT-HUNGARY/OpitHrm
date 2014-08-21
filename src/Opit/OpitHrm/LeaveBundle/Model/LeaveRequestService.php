@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManager;
 use Opit\OpitHrm\LeaveBundle\Manager\LeaveStatusManager;
 use Symfony\Component\Security\Core\SecurityContext;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
 use Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest;
 use Opit\OpitHrm\UserBundle\Entity\Employee;
 use Opit\OpitHrm\LeaveBundle\Entity\Leave;
@@ -37,7 +36,6 @@ class LeaveRequestService
     protected $securityContext;
     protected $entityManager;
     protected $statusManager;
-    protected $aclManager;
     protected $mailer;
     protected $leaveNotificationManager;
     protected $leaveStatusManager;
@@ -48,14 +46,14 @@ class LeaveRequestService
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Doctrine\ORM\EntityManager $entityManager
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveStatusManager $statusManager
-     * @param \Opit\OpitHrm\CoreBundle\Manager\AclManager $aclManager
+     * @param \Opit\Component\Email\EmailManagerInterface $mailer
+     * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      */
-    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, AclManager $aclManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
+    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
     {
         $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
-        $this->aclManager = $aclManager;
         $this->mailer = $mailer;
         $this->leaveNotificationManager = $leaveNotificationManager;
         $this->options['applicationName'];

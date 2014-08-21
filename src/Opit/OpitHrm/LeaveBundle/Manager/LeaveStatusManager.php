@@ -16,8 +16,6 @@ use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\Component\Utils\Utils;
@@ -37,7 +35,6 @@ class LeaveStatusManager extends StatusManager
     protected $entityManager;
     protected $mailer;
     protected $factory;
-    protected $aclManager;
     protected $securityContext;
     protected $leaveNotificationManager;
     protected $router;
@@ -46,18 +43,18 @@ class LeaveStatusManager extends StatusManager
     /**
      *
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
-     * @param \Opit\Component\Email\EmailManager $mailer
+     * @param \Opit\Component\Email\EmailManagerInterface $mailer
      * @param type $factory
-     * @param \Opit\OpitHrm\CoreBundle\Manager\AclManager $aclManager
      * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
+     * @param type $router
+     * @param type $applicationName
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router, $applicationName)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
         $this->factory = $factory;
-        $this->aclManager = $aclManager;
         $this->securityContext = $securityContext;
         $this->leaveNotificationManager = $leaveNotificationManager;
         $this->router = $router;
@@ -75,21 +72,6 @@ class LeaveStatusManager extends StatusManager
     public function changeStatus(LeaveRequest $leaveRequest, $statusId, $validationDisabled = false, $comment = null)
     {
         if ($validationDisabled || $this->isValid($leaveRequest, $statusId)) {
-            // Manage travel request access control
-            switch ($statusId) {
-                case Status::CREATED:
-                    // Grant owner access
-                    $this->aclManager->grant($leaveRequest, $this->securityContext->getToken()->getUser());
-                    break;
-                case Status::FOR_APPROVAL:
-                    // Grant view access for managers
-                    $this->aclManager->grant($leaveRequest, $leaveRequest->getGeneralManager(), MaskBuilder::MASK_VIEW);
-                    if ($leaveRequest->getTeamManager()) {
-                        $this->aclManager->grant($leaveRequest, $leaveRequest->getTeamManager(), MaskBuilder::MASK_VIEW);
-                    }
-                    break;
-            }
-
             $status = $this->addStatus($leaveRequest, $statusId, $comment);
 
             // send a new notification when leave request status changes
