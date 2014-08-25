@@ -39,6 +39,11 @@ table{
     border:solid 1px black;
 }
 
+/* Required for TCPDF html rendering, tr:last-child not recognoized */
+.border-bottom-solid-1-black{
+     border-bottom:solid 1px black;
+}
+
 .border-right-3-black{
     border-right: solid 3px black;
 }

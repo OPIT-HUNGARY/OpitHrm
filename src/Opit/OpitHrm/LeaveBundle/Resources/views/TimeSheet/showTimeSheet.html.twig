@@ -1,5 +1,7 @@
+{% set isExportPdf = (action is defined and action == 2) %}
+
 {% block stylesheets %}
-    {% if action is defined and action == 2 %}
+    {% if isExportPdf %}
         {# The generated CSS file needs for the TCPDF #}
         {# TCDPF cannot handle versioned absolute assets, cut the query #}
         {% set printAsset = asset('bundles/opitopithrmleave/css/timeSheetPrintView.css')|split('?') %}
@@ -39,6 +41,9 @@
             {% else %}
                 {% set holiday = null %}
             {% endif %}
+
+            {# Add border to end of the table #}
+            {% set borderCss = (loop.last and isExportPdf) ? 'border-bottom-solid-1-black' : '' %}
         <tr>
             <td class="padding-2 border-solid-1-black">{{ day|date('m/d/Y') }}</td>
             {% for user in users %}
@@ -50,17 +55,17 @@
                                 <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
                                 <td class="border-solid-1-black">{{ arrivalTime }}</td>
                                 <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours / 2 ~'hours')|date('H:i') }}</td>
-                                <td class="border-right-3-black border-solid-1-black"></td>
+                                <td class="border-right-3-black border-solid-1-black">&nbsp;</td>
                             {% elseif leaveDays[day|date('Y-m-d')][employee.id] == 'Morning half day' %}
                                 <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
                                 <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours / 2 ~'hours')|date('H:i')}}</td>
                                 <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours')|date('H:i')}}</td>
-                                <td class="border-right-3-black border-solid-1-black"></td>
+                                <td class="border-right-3-black border-solid-1-black">&nbsp;</td>
                             {% else %}
-                                <td class="padding-2 white-space-nowrap">{% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}{{ '&nbsp;' }} {% else %}{{ leaveDays[day|date('Y-m-d')][employee.id] }}{% endif %}</td>
-                                <td></td>
-                                <td></td>
-                                <td class="border-right-3-black"></td>
+                                <td class="padding-2 white-space-nowrap {{ borderCss }}">{% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}{{ '&nbsp;' }} {% else %}{{ leaveDays[day|date('Y-m-d')][employee.id] }}{% endif %}</td>
+                                <td class="{{ borderCss }}">&nbsp;</td>
+                                <td class="{{ borderCss }}">&nbsp;</td>
+                                <td class="border-right-3-black {{ borderCss }}">&nbsp;</td>
                             {% endif %}
                         {% endif %}
                     {% else %}
@@ -71,20 +76,20 @@
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
                                 <td class="border-right-3-black border-solid-1-black"></td>
                             {% else %}
-                                <td>{{ '&nbsp;' }}</td>
-                                <td></td>
-                                <td></td>
-                                <td class="border-right-3-black"></td>
+                                <td class="{{ borderCss }}">{{ '&nbsp;' }}</td>
+                                <td class="{{ borderCss }}">&nbsp;</td>
+                                <td class="{{ borderCss }}">&nbsp;</td>
+                                <td class="border-right-3-black {{ borderCss }}">&nbsp;</td>
                             {% endif %}
                         {% else %}
                         <td class="padding-2 white-space-nowrap border-solid-1-black">Working day</td>
                             <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
                             <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
-                            <td class="border-solid-1-black border-right-3-black "></td>
+                            <td class="border-solid-1-black border-right-3-black">&nbsp;</td>
                         {% endif %}
                     {% endif %}
                 {% else %}
-                    <td colspan="4" class="border-right-3-black"></td>
+                    <td colspan="4" class="border-right-3-black {{ borderCss }}">&nbsp;</td>
                 {% endif %}
             {% endfor %}
         </tr>
