@@ -71,7 +71,7 @@
                 <td>
                     {% if teIds is defined %}
                         {% if 'new' == teIds[travelRequest.id].id %}
-                            {% if 1 == is_granted('add_te', travelRequest) %}
+                            {% if 1 == is_granted('create_te', travelRequest) %}
                             <a href="{{ path('OpitOpitHrmTravelBundle_expense_show', { 'trId': travelRequest.id}) }}" class="small-button">
                                 <i class="fa fa-plus-square fa-1x"></i>
                                 <span>Add travel expense</span>

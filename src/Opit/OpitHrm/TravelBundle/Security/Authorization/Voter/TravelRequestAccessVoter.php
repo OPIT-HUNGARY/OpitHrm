@@ -31,7 +31,7 @@ class TravelRequestAccessVoter implements VoterInterface
     const EDIT = 'edit';
     const DELETE = 'delete';
     const STATUS = 'status';
-    const ADD_TE = 'add_te';
+    const CREATE_TE = 'create_te';
 
     protected $entityManager;
 
@@ -48,7 +48,7 @@ class TravelRequestAccessVoter implements VoterInterface
      */
     public function supportsAttribute($attribute)
     {
-        return in_array($attribute, array(self::VIEW, self::EDIT, self::DELETE, self::STATUS));
+        return in_array($attribute, array(self::VIEW, self::EDIT, self::DELETE, self::STATUS, self::CREATE_TE));
     }
 
     /**
@@ -127,8 +127,8 @@ class TravelRequestAccessVoter implements VoterInterface
             case self::STATUS:
                 $isAccesGranted = $this->isTRStatusChangeable($user, $travelRequest, $isAdmin, $isGeneralManager, $travelRequestStatusId);
                 break;
-            case self::ADD_TE:
-                $isAccesGranted = $this->isAddTEEnabled($user, $travelRequest, $travelRequestStatusId);
+            case self::CREATE_TE:
+                $isAccesGranted = $this->isTECreateable($user, $travelRequest, $travelRequestStatusId, $isAdmin);
                 break;
         }
         return $isAccesGranted;
@@ -264,11 +264,12 @@ class TravelRequestAccessVoter implements VoterInterface
      * @param \Symfony\Component\Security\Core\User\UserInterface $user
      * @param \Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
      * @param type $travelRequestStatusId
+     * @param type $isAdmin
      * @return type
      */
-    protected function isAddTEEnabled(UserInterface $user, TravelRequest $travelRequest, $travelRequestStatusId)
+    protected function isTECreateable(UserInterface $user, TravelRequest $travelRequest, $travelRequestStatusId, $isAdmin)
     {
-        if (Status::APPROVED === $travelRequestStatusId && $user === $travelRequest->getUser()) {
+        if ($isAdmin || (Status::APPROVED === $travelRequestStatusId && $user === $travelRequest->getUser())) {
             return VoterInterface::ACCESS_GRANTED;
         }
 
