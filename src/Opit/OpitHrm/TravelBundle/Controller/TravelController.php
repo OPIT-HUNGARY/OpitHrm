@@ -69,16 +69,15 @@ class TravelController extends Controller
 
         $listingRights = $this->get('opit.model.travel_request')
             ->setTravelRequestListingRights($travelRequests);
+
         $teIds = $listingRights['teIds'];
         $travelRequestStates = $listingRights['travelRequestStates'];
         $currentStatusNames = $listingRights['currentStatusNames'];
-        $isLocked = $listingRights['isLocked'];
         $numberOfPages = ceil(count($travelRequests) / $config['max_results']);
         $templateVars = array(
             'travelRequests' => $travelRequests,
             'teIds' => $teIds,
             'travelRequestStates' => $travelRequestStates,
-            'isLocked' => $isLocked,
             'currentStatusNames' => $currentStatusNames,
             'numberOfPages' => $numberOfPages,
             'maxPages' => $config['max_pages'],
@@ -117,6 +116,13 @@ class TravelController extends Controller
         } else {
             $travelRequest = $this->getTravelRequest();
         }
+
+        if (!$this->get('security.context')->isGranted('view', $travelRequest)) {
+            throw new AccessDeniedException(
+                'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+            );
+        }
+
         // Get travel request costs.
         $estimatedCosts = $this->get('opit.model.travel_request')
             ->getTRCosts($travelRequest);
@@ -151,14 +157,8 @@ class TravelController extends Controller
         $statusManager = $this->get('opit.manager.travel_request_status_manager');
         $currentStatus = $statusManager->getCurrentStatus($travelRequest);
         $currentStatusId = $currentStatus->getId();
-
-        $isEditLocked = false;
-        $editRights = $this->get('opit.model.travel_request')
-            ->setEditRights($user, $travelRequest, $isNewTravelRequest, $currentStatusId);
-
-        if (false === $editRights && !$this->get('security.context')->isGranted('ROLE_ADMIN')) {
-            $isEditLocked = true;
-        }
+        $securityContext = $this->get('security.context');
+        $isStatusLocked = $isEditLocked = true;
 
         if (false !== $isNewTravelRequest) {
             $travelRequestStates = $statusManager->getNextStates($currentStatus);
@@ -169,7 +169,22 @@ class TravelController extends Controller
         } else {
             $travelRequest->setUser($user);
         }
-        // The next available statuses.
+
+        if (!$securityContext->isGranted('view', $travelRequest)) {
+            throw new AccessDeniedException(
+                'Access denied for travel request ' . $travelRequest->getTravelRequestId()
+            );
+        }
+
+        if ($securityContext->isGranted('edit', $travelRequest)) {
+            $isEditLocked = false;
+        }
+
+        if ($securityContext->isGranted('status', $travelRequest)) {
+            $isStatusLocked = false;
+        }
+
+        // The next available states
         $travelRequestStates[$currentStatusId] = $currentStatus->getName();
         $children = $this->get('opit.model.travel_request')->addChildNodes($travelRequest);
         // Disable softdeleteable filter for user entity to allow persistence
@@ -191,8 +206,8 @@ class TravelController extends Controller
             'form' => $form->createView(),
             'travelRequest' => $travelRequest,
             'travelRequestStates' => $travelRequestStates,
-            'isEditLocked' => $isEditLocked ? $isEditLocked : $editRights['isEditLocked'],
-            'isStatusLocked' => $editRights['isStatusLocked']
+            'isEditLocked' => $isEditLocked,
+            'isStatusLocked' => $isStatusLocked
         );
     }
 
@@ -215,13 +230,13 @@ class TravelController extends Controller
             $entityManager = $this->getDoctrine()->getManager();
             $travelRequest = $this->getTravelRequest($id);
             // check if user has sufficient role to delete travel request
-            if ($securityContext->isGranted('ROLE_GENERAL_MANAGER') || $travelRequest->getUser()->getId() === $securityContext->getToken()->getUser()->getId()) {
-
+            if ($securityContext->isGranted('delete', $travelRequest)) {
                 $travelExpense = $travelRequest->getTravelExpense();
 
                 if (null !== $travelExpense) {
                     $entityManager->remove($travelExpense);
                 }
+
                 $entityManager->remove($travelRequest);
             }
         }

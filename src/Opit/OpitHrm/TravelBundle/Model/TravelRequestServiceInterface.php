@@ -25,15 +25,6 @@ use Opit\OpitHrm\UserBundle\Entity\User;
 interface TravelRequestServiceInterface
 {
     /**
-     * Set travel request access rights
-     *
-     * @param Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequest
-     * @param integer Opit\OpitHrm\StatusBundle\Entity\Status $currentStatus
-     * @return array
-     */
-    public function setTravelRequestAccessRights(TravelResourceInterface $travelRequest, $currentStatus);
-
-    /**
      * Set travel request listing rights
      *
      * @param Opit\OpitHrm\TravelBundle\Entity\TravelRequest $travelRequests

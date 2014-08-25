@@ -40,7 +40,7 @@
                 <td class="text-overflow-ellipsis overflow-hidden white-space-nowrap max-width-150 pointer trip-purpose cursor-pointer">{{ travelRequest.tripPurpose }}</td>
                 <td>
                     {# loop through all statuses and display them in a dropdown #}
-                    <select class="changeState{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} dropdown-disabled{% endif %}" data-tr="{{ travelRequest.id }}"{% if isLocked[travelRequest.id]['isStatusLocked'] == 1 %} disabled="disabled"{% endif %}>
+                    <select class="changeState{% if 0 == is_granted('status', travelRequest) %} dropdown-disabled{% endif %}" data-tr="{{ travelRequest.id }}"{% if 0 == is_granted('status', travelRequest) %} disabled="disabled"{% endif %}>
                     {% for key, value in travelRequestStates[travelRequest.id] %}
                         <option value="{{ key }}">{{ value }}</option>
                     {% endfor %}
@@ -50,7 +50,7 @@
                     <a href="#" class="status-history" title="Status history">
                         <i class="fa fa-book" data-id="{{ travelRequest.id }}"></i>
                     </a>
-                    {% if isLocked[travelRequest.id]['isTREditLocked'] == 0 %}
+                    {% if 1 == is_granted('edit', travelRequest) %}
                         <a href="{{ path('OpitOpitHrmTravelBundle_travel_show', { 'id': travelRequest.id}) }}" title="Edit travel request">
                             <i class="fa fa-pencil-square-o"></i>
                         </a>
@@ -60,7 +60,7 @@
                         </a>
                     {% endif %}
 
-                    {% if is_granted('ROLE_GENERAL_MANAGER') or app.user.id == travelRequest.user.id %}
+                    {% if 1 == is_granted('delete', travelRequest) %}
                         <a href="#" data-id="{{ travelRequest.id }}" class="deleteSingeTravelRequest" title="Delete travel request">
                             <i class="fa fa-trash-o"></i>
                         </a>
@@ -70,9 +70,8 @@
                 </td>
                 <td>
                     {% if teIds is defined %}
-                        {% if teIds[travelRequest.id].id == 'new' %}
-                            {# if add travel expense action is not locked #}
-                            {% if isLocked[travelRequest.id]['isAddTravelExpenseLocked'] == 0 %}
+                        {% if 'new' == teIds[travelRequest.id].id %}
+                            {% if 1 == is_granted('add_te', travelRequest) %}
                             <a href="{{ path('OpitOpitHrmTravelBundle_expense_show', { 'trId': travelRequest.id}) }}" class="small-button">
                                 <i class="fa fa-plus-square fa-1x"></i>
                                 <span>Add travel expense</span>

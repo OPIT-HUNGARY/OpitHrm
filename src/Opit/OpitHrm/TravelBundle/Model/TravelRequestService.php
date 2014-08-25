@@ -65,75 +65,11 @@ class TravelRequestService extends TravelService implements TravelRequestService
     /**
      * @internal
      */
-    public function setTravelRequestAccessRights(TravelResourceInterface $travelRequest, $currentStatus)
-    {
-        $isEditLocked = true;// travel request can not be edited
-        $isTEAddLocked = true;// travel expense can not be added
-        $isStatusLocked = true;// status can not be changed
-        $unlockedStates = array();
-        $currentUser = $this->securityContext->getToken()->getUser();
-        $currentStatusId = $currentStatus->getId();
-
-        if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
-            // Show add travel expense in case travel expense is approved.
-            if (Status::APPROVED === $currentStatusId) {
-                $isTEAddLocked = false;
-            }
-
-            if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
-                $isEditLocked = false;
-            }
-
-            if ($this->isUserGeneralManager($travelRequest)) {
-                $unlockedStates = array(Status::FOR_APPROVAL);
-            }
-
-            if (in_array($currentStatusId, array_merge(array(Status::CREATED, Status::REVISE), $unlockedStates))) {
-                $isStatusLocked = false;
-            }
-        } elseif ($this->isUserGeneralManager($travelRequest)) {
-            if (Status::FOR_APPROVAL === $currentStatusId) {
-                $isStatusLocked = false;
-            }
-        }
-
-        // Unlock edit mode for admins at all times
-        if ($this->securityContext->isGranted('ROLE_ADMIN')) {
-            $isStatusLocked = false;
-            $isTEAddLocked = true;
-            $isEditLocked = false;
-
-            if (Status::APPROVED === $currentStatusId) {
-                $isEditLocked = true;
-                $isTEAddLocked = false;
-                $isStatusLocked = true;
-            } elseif (Status::PAID === $currentStatusId) {
-                $isEditLocked = true;
-                $isStatusLocked = true;
-            } elseif (Status::REJECTED === $currentStatusId) {
-                $isEditLocked = true;
-                $isStatusLocked = true;
-            } elseif (Status::FOR_APPROVAL === $currentStatusId) {
-                $isEditLocked = true;
-            }
-        }
-
-        return array(
-            'isTREditLocked' => $isEditLocked,
-            'isAddTravelExpenseLocked' => $isTEAddLocked,
-            'isStatusLocked' => $isStatusLocked
-        );
-    }
-
-    /**
-     * @internal
-     */
     public function setTravelRequestListingRights($travelRequests)
     {
         $currentStatusNames = array();
         $teIds = array();
         $travelRequestStates = array();
-        $isLocked = array();
 
         //loop through all travel requests
         foreach ($travelRequests as $travelRequest) {
@@ -148,22 +84,14 @@ class TravelRequestService extends TravelService implements TravelRequestService
                 'statusName' => null !== $teStatus ? $teStatus->getName() : '',
             );
             $currentStatusNames[$travelRequest->getId()] = $currentStatus->getName();
-            $isTRLocked = $this->setTravelRequestAccessRights($travelRequest, $currentStatus);
             $travelRequestStates[$travelRequest->getId()] =
                 $this->getNextAvailableStates($travelRequest);
-
-            if (!$this->securityContext->isGranted('ROLE_ADMIN') && Status::PAID === $currentStatus->getId()) {
-                $isTRLocked['isStatusLocked'] = true;
-            }
-
-            $isLocked[$travelRequest->getId()] = $isTRLocked;
         }
 
         return array(
             'teIds' => $teIds,
             'travelRequestStates' => $travelRequestStates,
-            'currentStatusNames' => $currentStatusNames,
-            'isLocked' => $isLocked
+            'currentStatusNames' => $currentStatusNames
         );
     }
 
@@ -277,29 +205,6 @@ class TravelRequestService extends TravelService implements TravelRequestService
     public function changeStatus(TravelRequest $travelRequest, $statusId, $comment = null, $validationDisabled = false)
     {
         if ($validationDisabled || $this->statusManager->isValid($travelRequest, $statusId)) {
-            // Manage travel request access control
-            switch ($statusId) {
-                case Status::CREATED:
-                    // Grant owner access
-                    $this->aclManager->grant($travelRequest, $this->securityContext->getToken()->getUser());
-                    break;
-                case Status::FOR_APPROVAL:
-                    // Grant view access for managers
-                    $this->aclManager->grant(
-                        $travelRequest,
-                        $travelRequest->getGeneralManager(),
-                        MaskBuilder::MASK_VIEW
-                    );
-                    if ($travelRequest->getTeamManager()) {
-                        $this->aclManager->grant(
-                            $travelRequest,
-                            $travelRequest->getTeamManager(),
-                            MaskBuilder::MASK_VIEW
-                        );
-                    }
-                    break;
-            }
-
             $status = $this->statusManager->addStatus($travelRequest, $statusId, $comment);
 
             // Send email
