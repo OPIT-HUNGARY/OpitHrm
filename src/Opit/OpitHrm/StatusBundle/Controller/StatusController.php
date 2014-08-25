@@ -41,7 +41,12 @@ class StatusController extends Controller
     {
         $formData = $request->request->all();
         $form = $this->createForm(new ChangeStatusType(), $formData);
+        $templateVars = array_merge(array('form' => $form->createView()), $formData);
 
-        return array_merge(array('form' => $form->createView()), $formData);
+        if ($template = $request->request->get('template')) {
+            return $this->render($template, $templateVars);
+        }
+
+        return $templateVars;
     }
 }

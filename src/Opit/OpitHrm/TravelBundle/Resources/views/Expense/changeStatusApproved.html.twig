@@ -1,0 +1,10 @@
+{% extends "OpitOpitHrmStatusBundle::showChangeStatus.html.twig" %}
+
+{% block form_fields %}
+    <p class="margin-top-20">Do you want to notify payroll about this travel expense?</p>
+    <div>
+        <label for="email_to_payroll_ac">Payroll name/email (optional)</label>
+        <input type="text" name="payroll" id="email_to_payroll_ac" />
+        <input type="hidden" name="payroll" id="email_to_payroll" />
+    </div>
+{% endblock %}

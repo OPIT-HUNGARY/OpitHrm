@@ -3,5 +3,8 @@
         Do you want to change the status {% if label is defined %}of <span class="bold">{{ label }}</span> {% endif %} from "{{ statusFrom }}" to "{{ statusTo }}"?
     </p>
 
-    {{ form(form) }}
+    {{ form_start(form) }}
+        {{ form_row(form.comment) }}
+        {% block form_fields %}{% endblock %}
+    {{ form_end(form) }}
 </div>

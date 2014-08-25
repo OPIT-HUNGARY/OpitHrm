@@ -342,44 +342,25 @@ changeStateModal = ($self) ->
     }
     return
 
-# Sending email to payroll when the TE is approved.
-emailToPayrollDialog = ($self) ->
-    $div = $('<div>').addClass 'background-color-lightest-grey padding-5 border-radius-5 default-border font-size-d9-em'
-    $div.html 'Do you want to notify payroll about this travel expense?'
-    $div.append $('<label>').attr('for', 'email_to_payroll').addClass('margin-top-12').html 'Payroll name/email'
-    $div.append $('<input/>').attr('id', 'email_to_payroll_ac').attr('type', 'text').addClass 'width-300'
-    $div.append $('<input/>').attr('id', 'email_to_payroll').attr 'type', 'hidden'
-    # Creating dialog window.
-    $('<div id="dialog-payroll-assign"></div>')
-        .html $div
-        .dialog
-            title: '<i class="fa fa-envelope"></i> Send email to payroll'
-            width: 500
-            buttons:
-                Send: ->
-                    # If the payroll is selected, send email.
-                    if $('#email_to_payroll').val()
-                        $.ajax
-                            method: 'POST'
-                            data: 'payroll_id': $('#email_to_payroll').val(), 'tr_id': $('#travelRequestPreview').attr 'data-tr-id'
-                            url: Routing.generate 'OpitOpitHrmTravelBundle_expense_send_mail_payroll'
-                        .done (data) ->
-                            changeStateModal $self
-                    $(@).dialog 'destroy'
-                    return
-                Close: ->
-                    $(@).dialog 'destroy'
-                    changeStateModal $self
-                    return
-
+payrollAutocomplete = ->
     # Autocompleting the input text field.
-    $('#email_to_payroll_ac').autocomplete
+    $(this).find('#email_to_payroll_ac').autocomplete
         source: (request, response) ->
             $.post Routing.generate('OpitOpitHrmUserBundle_user_search', role: 'role_payroll'), request, (data) -> response(data)
         minLength: 2
         select: (event, ui) ->
             $('#email_to_payroll').val ui.item.id
             return
+
+# Sending email to payroll when the TE is approved.
+emailToPayrollDialog = ($self) ->
+    $(document).data('opithrm').funcs.changeStateDialog $self, $(document).data('opithrm').funcs.changeTravelExpenseStatus, payrollAutocomplete, {
+        foreignId: $self.data('te')
+        type: 'travel expense',
+        template: 'OpitOpitHrmTravelBundle:Expense:changeStatusApproved.html.twig'
+    }
+
+    return
 
 $(document).ready ->
     # Initialize all and available currencies

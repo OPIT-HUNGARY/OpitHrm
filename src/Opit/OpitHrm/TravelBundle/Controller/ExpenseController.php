@@ -366,28 +366,32 @@ class ExpenseController extends Controller
 
         $this->changeExpenseState($data['foreignId'], $data['id'], $comment);
 
+        if ($payrollId = $request->request->get('payroll')) {
+            $this->sendMailToPayroll($data['foreignId'], $payrollId);
+        }
+
         return new JsonResponse();
     }
 
     /**
      * Sending email to payroll about approved travel expense
-     *
-     * @Route("/secured/expense/send/mail/payroll", name="OpitOpitHrmTravelBundle_expense_send_mail_payroll")
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * 
+     * @param type $teId
+     * @param type $payrollId
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function sendMailToPayroll(Request $request)
+    protected function sendMailToPayroll($teId, $payrollId)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $applicationName = $this->container->getParameter('application_name');
         $currencyConfig = $this->container->getParameter('currency_config');
 
-        // Find the travel request.
-        $trId = (integer) $request->request->get('tr_id');
-        $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
         // Get the travel expense.
-        $travelExpense = $travelRequest->getTravelExpense();
+        $travelExpense = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelExpense')->find($teId);
+        // Find the travel request.
+        $trId = (integer) $travelExpense->getTravelRequest()->getId();
+        $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
         // Find the payroll user.
-        $payrollId = (integer) $request->request->get('payroll_id');
         $payroll = $entityManager->getRepository('OpitOpitHrmUserBundle:User')->find($payrollId);
 
         // Calculating the per diem.
