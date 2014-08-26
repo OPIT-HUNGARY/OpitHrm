@@ -22,6 +22,7 @@ use Opit\OpitHrm\TravelBundle\Entity\TravelRequest;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 /**
  * Description of TravelController
@@ -99,6 +100,7 @@ class TravelController extends Controller
      *
      * @Route("/secured/travel/show/details", name="OpitOpitHrmTravelBundle_travel_show_details")
      * @Template()
+     * @throws AccessDeniedException
      */
     public function showDetailsAction()
     {
@@ -143,6 +145,7 @@ class TravelController extends Controller
      * @Route("/secured/travel/show/{id}/{fa}", name="OpitOpitHrmTravelBundle_travel_show",
      *   defaults={"id" = "new", "fa" = "new"}, requirements={ "id" = "new|\d+", "fa" = "new|fa" })
      * @Template()
+     * @throws AccessDeniedException
      */
     public function showTravelRequestAction(Request $request)
     {

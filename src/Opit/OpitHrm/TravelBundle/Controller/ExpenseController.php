@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManager;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\Component\Utils\Utils;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 /**
  * Description of ExpenseController
@@ -106,12 +107,13 @@ class ExpenseController extends Controller
      *   requirements={ "id" = "new|\d+", "trId" = "\d+", "forApproval" = "\d+"})
      * @Method({"GET", "POST"})
      * @Template()
+     * @throws AccessDeniedException
      */
     public function showTravelExpenseAction(Request $request, $trId, $id, $forApproval)
     {
         $entityManager = $this->getDoctrine()->getManager();
         $isNewTravelExpense = "new" !== $id;
-        $currentUser = $this->getUser();
+        $securityContext = $this->get('security.context');
         $travelExpenseService = $this->get('opit.model.travel_expense');
         $exchService = $this->container->get('opit.service.exchange_rates.default');
         $travelRequest = $entityManager->getRepository('OpitOpitHrmTravelBundle:TravelRequest')->find($trId);
@@ -121,6 +123,16 @@ class ExpenseController extends Controller
         // Get rates
         $rates = $exchService->getRatesByDate($travelExpenseService->getConversionDate($travelExpense));
         $forApproval = (bool) $forApproval;
+        $isEditLocked = $isStatusLocked = true;
+
+        $travelRequestStatus = $entityManager->getRepository('OpitOpitHrmTravelBundle:StatesTravelRequests')
+            ->getCurrentStatus($travelRequest->getId());
+
+        if (!$securityContext->isGranted('view', $travelExpense) || Status::APPROVED !== $travelRequestStatus->getStatus()->getId()) {
+            throw new AccessDeniedException(
+                'Access denied for travel expense'
+            );
+        }
 
         // te = Travel Expense
         $travelExpenseStates = array();
@@ -131,17 +143,16 @@ class ExpenseController extends Controller
         $currentStatusName = $currentStatus->getName();
         $currentStatusId = $currentStatus->getId();
 
-        // set availabilty(edit, change status) for travel expense
-        $editRights = $travelExpenseService->setEditRights(
-            $travelRequest,
-            $currentUser,
-            $currentStatus->getId()
-        );
-        $isEditLocked = $editRights['isEditLocked'];
-        $isStatusLocked = $editRights['isStatusLocked'];
+        if ($securityContext->isGranted('edit', $travelExpense)) {
+            $isEditLocked = false;
+        }
+
+        if ($securityContext->isGranted('status', $travelExpense)) {
+            $isStatusLocked = false;
+        }
 
         if (false === $isNewTravelExpense) {
-            $travelExpense->setUser($currentUser);
+            $travelExpense->setUser($this->getUser());
         } else {
             //if status is locked do not load all selectable states for expense
             if (false === $isStatusLocked) {

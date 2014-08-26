@@ -12,8 +12,6 @@
 namespace Opit\OpitHrm\TravelBundle\Model;
 
 use Opit\OpitHrm\TravelBundle\Entity\TravelExpense;
-use Opit\OpitHrm\TravelBundle\Entity\TravelRequest;
-use Opit\OpitHrm\TravelBundle\Model\TravelRequestUserInterface;
 
 /**
  * Description of TravelExpenseServiceInterface
@@ -48,16 +46,6 @@ interface TravelExpenseServiceInterface
      * @return array
      */
     public function sumExpenses(TravelExpense $travelExpense);
-
-    /**
-     * Method to set edit rights for travel request depending on its current status
-     *
-     * @param integer $travelRequest
-     * @param integer $currentUser
-     * @param integer $currentStatusId
-     * @return array
-     */
-    public function setEditRights(TravelRequest $travelRequest, TravelRequestUserInterface $currentUser, $currentStatusId);
 
     /**
      * Method to add company and employee paid expenses to travel expense

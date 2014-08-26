@@ -193,42 +193,6 @@ class TravelExpenseService extends TravelService implements TravelExpenseService
     /**
      * @internal
      */
-    public function setEditRights(TravelRequest $travelRequest, TravelRequestUserInterface $currentUser, $currentStatusId)
-    {
-        $isEditLocked = true;
-        $isStatusLocked = true;
-
-        if (!$this->securityContext->isGranted('ROLE_ADMIN')) {
-            // If request was created by current user
-            if ($travelRequest->getUser()->getId() === $currentUser->getId()) {
-                if (in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
-                    $isEditLocked = false;
-                    $isStatusLocked = false;
-                } elseif ($travelRequest->getGeneralManager()->getId() === $travelRequest->getUser()->getId()) {
-                    $isStatusLocked = false;
-                }
-            } elseif ($travelRequest->getGeneralManager()->getId() === $currentUser->getId()) {
-                if (!in_array($currentStatusId, array(Status::CREATED, Status::REVISE))) {
-                    $isStatusLocked = false;
-                }
-            }
-        } else {
-            $isEditLocked = false;
-            $isStatusLocked = false;
-            if (in_array($currentStatusId, array(Status::APPROVED, Status::REJECTED))) {
-                $isEditLocked = true;
-                $isStatusLocked = true;
-            } elseif ($currentStatusId === Status::FOR_APPROVAL) {
-                $isEditLocked = true;
-            }
-        }
-
-        return array('isStatusLocked' => $isStatusLocked, 'isEditLocked' => $isEditLocked);
-    }
-
-    /**
-     * @internal
-     */
     public function addChildNodes(TravelExpense $travelExpense)
     {
         $children = new ArrayCollection();
