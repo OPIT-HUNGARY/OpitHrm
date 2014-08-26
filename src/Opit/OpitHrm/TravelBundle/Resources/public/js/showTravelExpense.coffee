@@ -354,11 +354,11 @@ payrollAutocomplete = ->
 
 # Sending email to payroll when the TE is approved.
 emailToPayrollDialog = ($self) ->
-    $(document).data('opithrm').funcs.changeStateDialog $self, $(document).data('opithrm').funcs.changeTravelExpenseStatus, payrollAutocomplete, {
+    $(document).data('opithrm').funcs.changeStateDialog $self, $(document).data('opithrm').funcs.changeTravelExpenseStatus, {
         foreignId: $self.data('te')
         type: 'travel expense',
         template: 'OpitOpitHrmTravelBundle:Expense:changeStatusApproved.html.twig'
-    }
+    }, payrollAutocomplete
 
     return
 

@@ -1,7 +1,7 @@
 $(document).data 'opithrm', {}
 $.extend true, $(document).data('opithrm'),
     funcs:
-        changeStateDialog: ($dropdown, callback, dialogOpenCallback, options = {}) ->
+        changeStateDialog: ($dropdown, callback, options = {}, dialogOpenCallback) ->
             $.extend options, {
                 id: $dropdown.val()
                 statusFrom: $dropdown.find('option:nth-child(1)').text().toLowerCase()
@@ -21,7 +21,7 @@ $.extend true, $(document).data('opithrm'),
                         No: ->
                             $(@).dialog 'close'
                     open: (event, ui) ->
-                        dialogOpenCallback.bind(this)()
+                        dialogOpenCallback.bind(this)() if dialogOpenCallback?
                     close: (event, ui) ->
                         $(document).data('opithrm').funcs.enableStatusDropdown $dropdown
                         $(@).dialog 'destroy'
