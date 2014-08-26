@@ -37,7 +37,7 @@ class NotificationController extends Controller
     /**
      * Method to get number of unread notifications
      *
-     * @Route("/secured/notifications/unread", name="OpitOpitHrmTravelBundle_notifications_unread_count")
+     * @Route("/secured/notifications/unread", name="OpitOpitHrmNotificationBundle_notifications_unread_count")
      * @Template()
      * @Method({"POST"})
      */
@@ -52,7 +52,7 @@ class NotificationController extends Controller
     /**
      * Method to get all notifications
      *
-     * @Route("/secured/notifications/all", name="OpitOpitHrmTravelBundle_notifications_all")
+     * @Route("/secured/notifications/all", name="OpitOpitHrmNotificationBundle_notifications_all")
      * @Template()
      * @Method({"POST"})
      */
@@ -96,7 +96,7 @@ class NotificationController extends Controller
     /**
      * Method to change the read state of one notification
      *
-     * @Route("/secured/notifications/state/change", name="OpitOpitHrmTravelBundle_notifications_state_change")
+     * @Route("/secured/notifications/state/change", name="OpitOpitHrmNotificationBundle_notifications_state_change")
      * @Template()
      * @Method({"POST"})
      */
@@ -116,7 +116,7 @@ class NotificationController extends Controller
     /**
      * Method to delete a notification
      *
-     * @Route("/secured/notification/delete", name="OpitOpitHrmTravelBundle_notification_delete")
+     * @Route("/secured/notification/delete", name="OpitOpitHrmNotificationBundle_notification_delete")
      * @Template()
      * @Method({"POST"})
      */

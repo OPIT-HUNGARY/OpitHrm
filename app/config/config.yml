@@ -97,7 +97,7 @@ swiftmailer:
     encryption: %mailer_encryption%
 
 fos_js_routing:
-    routes_to_expose: [ OpitOpitHrmUserBundle_\w+, OpitOpitHrmTravelBundle_\w+, OpitOpitHrmCurrencyRateBundle_\w+, OpitOpitHrmLeaveBundle_\w+, OpitOpitHrmHiringBundle_\w+ ]
+    routes_to_expose: [ OpitOpitHrmUserBundle_\w+, OpitOpitHrmTravelBundle_\w+, OpitOpitHrmNotificationBundle_\w+, OpitOpitHrmCurrencyRateBundle_\w+, OpitOpitHrmLeaveBundle_\w+, OpitOpitHrmHiringBundle_\w+ ]
     
 # Doctrine Extensions Configuration
 stof_doctrine_extensions:

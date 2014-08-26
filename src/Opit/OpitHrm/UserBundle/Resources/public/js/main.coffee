@@ -82,7 +82,7 @@ getAllNotifications = ($notificationsContent) ->
         if el.closest('.notification').hasClass 'unread'
             $.ajax
                 method: 'POST'
-                url: Routing.generate 'OpitOpitHrmTravelBundle_notifications_state_change'
+                url: Routing.generate 'OpitOpitHrmNotificationBundle_notifications_state_change'
                 data: "id" : el.data('id')
             .complete ->
                 # if ajax request is completed, remove unread class
@@ -95,7 +95,7 @@ getAllNotifications = ($notificationsContent) ->
     # post an AJAX request to get all notifications
     $.ajax
         method: 'POST'
-        url: Routing.generate 'OpitOpitHrmTravelBundle_notifications_all'
+        url: Routing.generate 'OpitOpitHrmNotificationBundle_notifications_all'
     .done (data) ->
         # fill up wrapper with AJAX result
         $notificationsContent.html data
@@ -105,7 +105,7 @@ getAllNotifications = ($notificationsContent) ->
             # if delete icon clicked send an AJAX request to delete notification
             $.ajax
                 method: 'POST'
-                url: Routing.generate 'OpitOpitHrmTravelBundle_notification_delete'
+                url: Routing.generate 'OpitOpitHrmNotificationBundle_notification_delete'
                 data: "id" : $self.data('id')
             .done (data) ->
                 # if item was deleted remove row from wrapper
@@ -143,7 +143,7 @@ getUnreadNotifications = () ->
     # send an AJAX request to get the number of unread notifications
     $.ajax
         method: 'POST'
-        url: Routing.generate 'OpitOpitHrmTravelBundle_notifications_unread_count'
+        url: Routing.generate 'OpitOpitHrmNotificationBundle_notifications_unread_count'
         global: off
     .done (data) ->
         $unreadNotificationsCount = $('#unread-notifications-count')
