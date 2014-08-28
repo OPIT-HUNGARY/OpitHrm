@@ -103,6 +103,11 @@ class JobPosition extends AbstractBase
     protected $externalLink;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Location", inversedBy="jobPositions")
+     */
+    private $location;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -393,6 +398,29 @@ class JobPosition extends AbstractBase
         $this->externalToken = $externalToken;
 
         return $this;
+    }
+
+    /**
+     * Set location
+     *
+     * @param Location $location
+     * @return JobPosition
+     */
+    public function setLocation(Location $location = null)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
     }
 
     /**

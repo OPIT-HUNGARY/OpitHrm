@@ -81,6 +81,14 @@ class JobPositionType extends AbstractType
             'attr' => array('placeholder' => 'Hiring manager', 'class' => 'width-300')
         ));
 
+        $builder->add('location', 'entity', array(
+            'class' => 'OpitOpitHrmHiringBundle:Location',
+            'property' => 'name',
+            'empty_value' => 'Choose an option',
+            'attr' => array('class' => 'display-inline-block'),
+            'label_attr' => array('class' => 'display-inline-block')
+        ));
+
         $builder->add('isActive', 'choice', array(
             'choices'   => array('1' => 'Yes', '0' => 'No'),
             'required'  => true,

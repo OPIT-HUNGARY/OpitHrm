@@ -13,6 +13,7 @@ namespace Opit\OpitHrm\HiringBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Opit\OpitHrm\CoreBundle\Entity\CommonType;
+use Opit\OpitHrm\HiringBundle\Entity\JobPosition;
 
 /**
  * Location
@@ -36,6 +37,19 @@ class Location extends CommonType
      * @var string
      */
     protected $description;
+
+    /**
+     * @ORM\OneToMany(targetEntity="JobPosition", mappedBy="location", cascade={"persist"})
+     */
+    protected $jobPositions;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->jobPositions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -91,5 +105,38 @@ class Location extends CommonType
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Add jobPositions
+     *
+     * @param JobPosition $jobPositions
+     * @return Location
+     */
+    public function addJobPosition(JobPosition $jobPositions)
+    {
+        $this->jobPositions[] = $jobPositions;
+
+        return $this;
+    }
+
+    /**
+     * Remove jobPositions
+     *
+     * @param JobPosition $jobPositions
+     */
+    public function removeJobPosition(JobPosition $jobPositions)
+    {
+        $this->jobPositions->removeElement($jobPositions);
+    }
+
+    /**
+     * Get jobPositions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getJobPositions()
+    {
+        return $this->jobPositions;
     }
 }
