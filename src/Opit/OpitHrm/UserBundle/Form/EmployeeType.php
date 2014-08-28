@@ -171,6 +171,13 @@ class EmployeeType extends AbstractType
                     )
                 ));
             }
+
+            $builder->add('receiveNotifications', 'choice', array(
+                'choices'   => array('No', 'Yes'),
+                'multiple' => false,
+                'expanded' => true,
+                'label_attr' => array('id' => 'idReceiveNotifications'),
+            ));
         }
     }
 

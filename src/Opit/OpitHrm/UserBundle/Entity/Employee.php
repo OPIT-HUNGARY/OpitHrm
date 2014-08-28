@@ -150,6 +150,11 @@ class Employee implements LeaveEntitlementEmployeeInterface
     protected $entitledLeaves;
 
     /**
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    protected $receiveNotifications;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="employees")
      * @ORM\JoinTable(name="opithrm_employees_teams")
      */
@@ -572,5 +577,28 @@ class Employee implements LeaveEntitlementEmployeeInterface
                 sprintf('Leaving date can not be before joining date')
             );
         }
+    }
+
+    /**
+     * Set receiveNotifications
+     *
+     * @param boolean $receiveNotifications
+     * @return Employee
+     */
+    public function setReceiveNotifications($receiveNotifications)
+    {
+        $this->receiveNotifications = $receiveNotifications;
+
+        return $this;
+    }
+
+    /**
+     * Get receiveNotifications
+     *
+     * @return boolean
+     */
+    public function getReceiveNotifications()
+    {
+        return $this->receiveNotifications;
     }
 }
