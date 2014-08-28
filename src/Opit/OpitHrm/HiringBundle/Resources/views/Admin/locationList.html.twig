@@ -1,0 +1,49 @@
+{% extends 'OpitOpitHrmCoreBundle::layout.html.twig' %}
+{% block title %}
+    Location list - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% include '::_stylesheets.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var valueForm = 'locationNameForm';
+        var valueField = 'locationName';
+        var url = 'OpitOpitHrmHiringBundle_location_show';
+        var listUrl = 'OpitOpitHrmHiringBundle_location_list';
+        var removeUrl = 'OpitOpitHrmHiringBundle_location_delete';
+        var propertyName = 'location name';
+        var propertyNameCapital = 'Location name';
+    </script>
+    {% javascripts
+        '@OpitOpitHrmUserBundle/Resources/public/js/Admin/et_role_funcs.coffee'
+        output='js/opithrmuser/admin_location_list.js' filter='?yui_js' %}
+        <script type="text/javascript" src="{{ asset_url }}" ></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block body %}
+<h1 class="margin-bottom-01em-important">Location list</h1>
+{% include 'OpitOpitHrmCoreBundle:Shared:_order.html.twig' %}
+<div class="listing-description">Locations can be created for here. They can be used while creating job positions.</div>
+<table>
+    <tr>
+        <td class="padding-left-0">
+            <button id="add" class="button"><i class="fa fa-plus-square fa-1x"></i>Add</button>
+            <button id="delete" class="button delete"><i class="fa fa-trash-o fa-1x"></i>Delete</button>
+        </td>
+    </tr>
+</table>
+<div id="list-reply-message"></div>
+{% include 'OpitOpitHrmHiringBundle:Admin:_locationList.html.twig' with {
+    'locations': locations
+    } %}
+{% include 'OpitOpitHrmUserBundle:Shared:_dialog.html.twig' with {
+        'fieldName': 'locationName',
+        'fieldLabel': 'Location name'
+    } %}
+{% endblock %}

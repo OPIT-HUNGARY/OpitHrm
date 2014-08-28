@@ -50,7 +50,7 @@ abstract class CommonType extends AbstractBase
     /**
      * @var \Text
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
 

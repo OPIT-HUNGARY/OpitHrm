@@ -1,0 +1,33 @@
+<div id="list-table">
+    <table class="width-100">
+        <tr>
+            <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="id"></i>
+                <span class="order-text cursor-pointer">ID</span>
+            </th>
+            <th>
+                <i class="fa fa-sort default-right" data-field="name"></i>
+                <span class="order-text cursor-pointer">Name</span>
+            </th>
+            <th>Actions</th>
+        </tr>
+        {% for location in locations %}
+        <tr class="clickableTableRow">
+            <td>
+                <input name="delete-leavetype[]" type="checkbox" class="list-delete-location deleteMultiple" value="{{ location.id }}">
+            </td>
+            <td data-tr-id='{{ location.id }}'>{{ location.id }}</td>
+            <td>{{ location.name }}</td>
+            <td>
+                <span class="edit-item clickable text-decoration-none cursor-pointer" title="Edit location">
+                    <i class="fa fa-pencil-square-o"></i>
+                </span>
+                <span class="remove clickable text-decoration-none cursor-pointer" title="Delete location">
+                    <i class="fa fa-trash-o"></i>
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
