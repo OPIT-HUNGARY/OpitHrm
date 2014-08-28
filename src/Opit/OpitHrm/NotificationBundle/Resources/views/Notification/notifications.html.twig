@@ -1,8 +1,9 @@
-<div class="notification-type-title">Travel request</div>
-{% if '0' == travelRequests|length %}
-<h5>
-    You have no travel request notifications.
-</h5>
+{% if not travelRequests|length and not travelExpenses|length and not leaveRequests|length and not jobPositions|length and not applicants|length %}
+<h5 class="align-center">You have no new notifications.</h5>
+{% endif %}
+
+{% if travelRequests|length %}
+<h5 class="notification-type-title">Travel request</h5>
 {% endif %}
 {% for travelRequest in travelRequests %}
     <div class="notification {% if 2 == travelRequest.read.id %}unread{% endif %}">
@@ -25,11 +26,8 @@
         </div>
     </div>
 {% endfor %}
-<div class="notification-type-title">Travel expense</div>
-{% if '0' == travelExpenses|length %}
-<h5>
-    You have no travel expense notifications.
-</h5>
+{% if travelExpenses|length %}
+<h5 class="notification-type-title">Travel expense</h5>
 {% endif %}
 {% for teNotification in travelExpenses %}
     <div class="notification {% if 2 == teNotification.read.id %}unread{% endif %}">
@@ -53,11 +51,8 @@
     </div>
 {% endfor %}
 
-<div class="notification-type-title">Leave request</div>
-{% if '0' == leaveRequests|length %}
-<h5>
-    You have no leave request notifications.
-</h5>
+{% if leaveRequests|length %}
+<h5 class="notification-type-title">Leave request</h5>
 {% endif %}
 {% for lrNotification in leaveRequests %}
     <div class="notification {% if 2 == lrNotification.read.id %}unread{% endif %}">
@@ -81,11 +76,8 @@
     </div>
 {% endfor %}
 
-<div class="notification-type-title">Job position</div>
-{% if '0' == jobPositions|length %}
-<h5>
-    You have no job position notifications.
-</h5>
+{% if jobPositions|length %}
+<h5 class="notification-type-title">Job position</h5>
 {% endif %}
 {% for jpNotification in jobPositions %}
     <div class="notification {% if 2 == jpNotification.read.id %}unread{% endif %}">
@@ -109,11 +101,8 @@
     </div>
 {% endfor %}
 
-<div class="notification-type-title">Applicant</div>
-{% if '0' == applicants|length %}
-<h5>
-    You have no applicant notifications.
-</h5>
+{% if applicants|length %}
+<h5 class="notification-type-title">Applicant</h5>
 {% endif %}
 {% for applicantNotification in applicants %}
     <div class="notification {% if 2 == applicantNotification.read.id %}unread{% endif %}">

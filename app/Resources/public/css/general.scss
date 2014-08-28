@@ -387,9 +387,11 @@ header{
 
             .notification-type-title{
                 color: white;
+                font-size: 1em;
                 font-weight: bold;
                 background-color: $boxShadowColor;
                 padding: 2px 3px;
+                margin:0 ;
             }
 
             .notification{
