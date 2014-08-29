@@ -35,6 +35,14 @@ interface EmailManagerInterface
     public function setRecipient($recipient);
 
     /**
+     * Method to add additional mail recipients.
+     *
+     * @param string $email An email address
+     * @param string $name The recipient's name (optional)
+     */
+    public function addRecipient($email, $name = null);
+
+    /**
      * Sends an email with given parameters
      * Content can be explicitly set and overwrites base template settings
      *

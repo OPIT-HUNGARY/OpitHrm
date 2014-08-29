@@ -32,19 +32,53 @@ class EmployeeRepository extends EntityRepository
      */
     public function findTeamEmployees($id)
     {
-       $dq = $this->createQueryBuilder('e0')
+        $dq = $this->getTeamEmployeesBaseQuery($id);
+
+        $employees = $dq
+            ->orWhere('e.id = :id')
+            ->getQuery();
+
+        return $employees->getResult();
+    }
+
+    /**
+     * Finds team notification recipients for the given user
+     *
+     * Returns only himself if no teams are assigned
+     *
+     * @param integer $id
+     * @return array
+     */
+    public function findNotificationRecipients($id)
+    {
+        $dq = $this->getTeamEmployeesBaseQuery($id);
+
+        $recipients = $dq
+            ->andWhere('e.id != :id')
+            ->andWhere('e.receiveNotifications = 1')
+            ->getQuery();
+
+        return $recipients->getResult();
+    }
+
+    /**
+     * Builds and returns the base query for team employees
+     *
+     * @param integer $id
+     * @return QueryBuilder
+     */
+    protected function getTeamEmployeesBaseQuery($id)
+    {
+        $dq = $this->createQueryBuilder('e0')
             ->select('t0.id')
             ->innerJoin('e0.teams', 't0', 'WITH', 'e0.id = :id');
 
         $dq2 = $this->createQueryBuilder('e')
-            ->leftJoin('e.teams', 't');
-        $employees = $dq2
-            ->where($dq2->expr()->in('t.id', $dq->getDQL()))
-            ->orWhere('e.id = :id')
+            ->leftJoin('e.teams', 't')
+            ->where($dq->expr()->in('t.id', $dq->getDQL()))
             ->groupBy('e.id')
-            ->setParameter(':id', $id)
-            ->getQuery();
+            ->setParameter(':id', $id);
 
-        return $employees->getResult();
+        return $dq2;
     }
 }

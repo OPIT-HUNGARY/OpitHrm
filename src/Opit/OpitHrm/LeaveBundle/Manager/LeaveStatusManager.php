@@ -75,7 +75,11 @@ class LeaveStatusManager extends StatusManager
             $status = $this->addStatus($leaveRequest, $statusId, $comment);
 
             // send a new notification when leave request status changes
-            $this->leaveNotificationManager->addNewLeaveNotification($leaveRequest, (Status::FOR_APPROVAL === $status->getId() ? true : false), $status);
+            $this->leaveNotificationManager->addNewLeaveNotification(
+                $leaveRequest,
+                (Status::FOR_APPROVAL === $status->getId() ? true : false),
+                $status
+            );
 
             $nextStates = $this->getNextStates($status);
             unset($nextStates[$statusId]);
@@ -166,8 +170,8 @@ class LeaveStatusManager extends StatusManager
             );
         } else {
             $employee = $leaveRequest->getEmployee();
-            $user = $this->entityManager->getRepository('OpitOpitHrmUserBundle:User')->findByEmployee($employee);
-            $recipient = $user[0]->getEmail();
+            $user = $this->entityManager->getRepository('OpitOpitHrmUserBundle:User')->findOneByEmployee($employee);
+            $recipient = $user->getEmail();
             $templateVariables = array(
                 'url' => $this->router->generate('OpitOpitHrmUserBundle_security_login', array(), true)
             );
@@ -175,6 +179,9 @@ class LeaveStatusManager extends StatusManager
             switch ($statusId) {
                 case Status::APPROVED:
                     $templateVariables['isApproved'] = true;
+                    $teamManager = $leaveRequest->getTeamManager();
+                    $ccRecipients = $this->entityManager->getRepository('OpitOpitHrmUserBundle:Employee')
+                        ->findNotificationRecipients($employee);
                     break;
                 case Status::REVISE:
                     $templateVariables['isRevised'] = true;
@@ -191,9 +198,20 @@ class LeaveStatusManager extends StatusManager
         $templateVariables['employee'] = $leaveRequest->getEmployee();
         $templateVariables['leaveRequest'] = $leaveRequest;
 
+        // Set mail recipients
         $this->mailer->setRecipient($recipient);
+        if (isset($teamManager) && $teamManager) {
+            $this->mailer->addRecipient($teamManager->getEmail(), $teamManager->getEmployee()->getEmployeeName());
+        }
+        if (isset($ccRecipients) && $ccRecipients) {
+            foreach ($ccRecipients as $cc) {
+                $this->mailer->addRecipient($cc->getUser()->getEmail(), $cc->getEmployeeName());
+            }
+        }
+
         $this->mailer->setSubject(
-            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - ' . $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
+            '['.($applicationName !== null && $applicationName != 'OPIT-HRM' ? $applicationName : 'OPIT-HRM').'] - ' .
+            $subjectTravelType . ' status changed - ' . $statusName . ' (' . $leaveRequest->getLeaveRequestId() . ')'
         );
 
         $this->mailer->setBodyByTemplate('OpitOpitHrmLeaveBundle:Mail:leaveRequest.html.twig', $templateVariables);

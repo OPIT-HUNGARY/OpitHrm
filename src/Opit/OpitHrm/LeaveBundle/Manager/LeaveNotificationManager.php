@@ -49,33 +49,48 @@ class LeaveNotificationManager extends NotificationManager
     {
         // get last status name from resource
         $resourceStatus = strtolower($status->getName());
-        $message = '';
-        $notification = new LRNotification();
-        $notification->setLeaveRequest($resource);
-        $receiver = $resource->getGeneralManager();
-        $message .= 'leave request ';
-
-        call_user_func(array($notification, 'set'.Utils::getClassBasename($resource)), $resource);
+        $message = $resource->getLeaveRequestId();
 
         if (strpos('approved', $resourceStatus) !== false || strpos('rejected', $resourceStatus) !== false) {
             $message .=  ' has been ' . $resourceStatus . '.';
             $message = ucfirst($message);
         } else {
             $message = 'Status of '  . $message;
-            $message .=  'changed to ' . $resourceStatus . '.';
+            $message .=  ' changed to ' . $resourceStatus . '.';
         }
 
-        if (false === $toGeneralManager) {
-            $receiver = $this->entityManager
-            ->getRepository('OpitOpitHrmUserBundle:User')->findOneByEmployee($resource->getEmployee());
-        }
+        $receiver = (false === $toGeneralManager) ?
+            $this->entityManager->getRepository('OpitOpitHrmUserBundle:User')->findOneByEmployee($resource->getEmployee()) :
+            $resource->getGeneralManager();
 
+        $notification = new LRNotification();
+        $notification->setLeaveRequest($resource);
         $notification->setMessage($message);
         $notification->setReceiver($receiver);
         $notification->setDateTime(new \DateTime('now'));
-        $notification = $this->setNotificationStatus($notification);
+        $this->setNotificationStatus($notification);
 
         $this->entityManager->persist($notification);
+
+        // Send notifications to additional recipients if status is set to approved
+        if ($status->getId() === Status::APPROVED) {
+            if ($teamManager = $resource->getTeamManager()) {
+                $notificationsTM = clone $notification;
+                $notificationsTM->setReceiver($teamManager);
+                $this->entityManager->persist($notificationsTM);
+            }
+
+            $ccRecipients = $this->entityManager->getRepository('OpitOpitHrmUserBundle:Employee')->findNotificationRecipients($receiver);
+
+            $notifications = array();
+            foreach ($ccRecipients as $i => $employee) {
+                $notifications[$i] = clone $notification;
+                $notifications[$i]->setReceiver($employee->getUser());
+
+                $this->entityManager->persist($notifications[$i]);
+            }
+        }
+
         $this->entityManager->flush();
 
     }

@@ -32,6 +32,7 @@ class EmailManager implements EmailManagerInterface
     private $subject;
     private $mailBody;
     private $recipient;
+    private $ccRecipients;
     private $emailFormat = 'text';
     private $attachment;
 
@@ -50,6 +51,7 @@ class EmailManager implements EmailManagerInterface
         $this->logger = $logger;
         $this->config = $config;
         $this->attachment = null;
+        $this->ccRecipients = array();
 
         $this->validateConfig();
     }
@@ -80,6 +82,18 @@ class EmailManager implements EmailManagerInterface
     public function setRecipient($recipient)
     {
         $this->recipient = $recipient;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecipient($email, $name = null)
+    {
+        if (null === $name) {
+            $this->ccRecipients[] = $email;
+        } else {
+            $this->ccRecipients[$email] = $name;
+        }
     }
 
     /**
@@ -149,6 +163,11 @@ class EmailManager implements EmailManagerInterface
             ->setFrom($this->config['mail_sender'])
             ->setTo($this->recipient)
             ->setBody($this->mailBody, $this->emailFormat);
+
+        // Add CC recipients if set
+        if (count($this->ccRecipients) > 0) {
+            $message->setCc($this->ccRecipients);
+        }
 
         // add attachment
         if (null !== $this->attachment) {
