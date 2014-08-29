@@ -86,7 +86,14 @@ class JobPositionType extends AbstractType
             'property' => 'name',
             'empty_value' => 'Choose an option',
             'attr' => array('class' => 'display-inline-block'),
-            'label_attr' => array('class' => 'display-inline-block')
+            'label_attr' => array('class' => 'display-inline-block'),
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
+                $qb = $er->createQueryBuilder('l');
+                return $qb->where(
+                        $qb->expr()->isNull('l.deletedAt')
+                    )
+                    ->orderBy('l.name', 'ASC');
+            }
         ));
 
         $builder->add('isActive', 'choice', array(

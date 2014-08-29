@@ -39,7 +39,7 @@ class Location extends CommonType
     protected $description;
 
     /**
-     * @ORM\OneToMany(targetEntity="JobPosition", mappedBy="location", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="JobPosition", mappedBy="location")
      */
     protected $jobPositions;
 
@@ -48,6 +48,7 @@ class Location extends CommonType
      */
     public function __construct()
     {
+        parent::__construct();
         $this->jobPositions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 

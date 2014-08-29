@@ -56,6 +56,7 @@ class JobPositionController extends Controller
         if ($isNewJobPosition) {
             $jobPosition = new JobPosition();
         } else {
+            $entityManager->getFilters()->disable('softdeleteable');
             $jobPosition = $entityManager->getRepository('OpitOpitHrmHiringBundle:JobPosition')->find($jobPositionId);
 
             if (null === $jobPosition) {

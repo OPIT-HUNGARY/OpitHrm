@@ -12,6 +12,7 @@
 namespace Opit\OpitHrm\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Description of CommonType
@@ -28,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"location" = "Opit\OpitHrm\HiringBundle\Entity\Location"})
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 abstract class CommonType extends AbstractBase
 {
@@ -53,6 +55,11 @@ abstract class CommonType extends AbstractBase
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     protected $description;
+
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     /**
      * Constructor
@@ -116,5 +123,25 @@ abstract class CommonType extends AbstractBase
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return datetime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param datetime $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
 }
