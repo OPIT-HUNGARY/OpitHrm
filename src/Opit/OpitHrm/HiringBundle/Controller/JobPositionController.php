@@ -128,6 +128,7 @@ class JobPositionController extends Controller
     public function listJobPositionAction(Request $request)
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getFilters()->disable('softdeleteable');
         $securityContext = $this->container->get('security.context');
         $isSearch = $request->request->get('issearch');
         $searchRequests = array();

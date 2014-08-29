@@ -103,6 +103,8 @@ class JobPosition extends AbstractBase
     protected $externalLink;
 
     /**
+     * @Serializer\Expose
+     * @Serializer\Inline
      * @ORM\ManyToOne(targetEntity="Location", inversedBy="jobPositions")
      */
     private $location;

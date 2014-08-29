@@ -14,11 +14,13 @@ namespace Opit\OpitHrm\HiringBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Opit\OpitHrm\CoreBundle\Entity\CommonType;
 use Opit\OpitHrm\HiringBundle\Entity\JobPosition;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Location
  *
  * @ORM\Entity
+ * @Serializer\ExclusionPolicy("all")
  */
 class Location extends CommonType
 {
@@ -30,6 +32,8 @@ class Location extends CommonType
 
     /**
      * @var string
+     * @Serializer\Expose
+     * @Serializer\SerializedName("location")
      */
     protected $name;
 

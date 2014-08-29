@@ -19,14 +19,16 @@ class RestController extends FOSRestController
     /**
      * Get job positions action
      *
-     * @Rest\Get("/feeds/hiring/jobs.{_format}", name="OpitOpitHrmHiringBundle_api_get_jobpositions", requirements={"_format"="json|xml|html"}, defaults={"_format"="json"})
+     * @Rest\Get("/feeds/hiring/jobs.{_format}", name="OpitOpitHrmHiringBundle_api_get_jobpositions", requirements={"_format"="json|xml"}, defaults={"_format"="json"})
      * @Rest\View()
      *
      * @return array
      */
     public function getJobPositionsAction()
     {
-        $jobPositions = $this->getDoctrine()->getRepository('OpitOpitHrmHiringBundle:JobPosition')->findBy(
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->getFilters()->disable('softdeleteable');
+        $jobPositions = $entityManager->getRepository('OpitOpitHrmHiringBundle:JobPosition')->findBy(
             array('isActive' => true)
         );
 

@@ -13,6 +13,7 @@ namespace Opit\OpitHrm\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Description of CommonType
@@ -25,6 +26,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @subpackage CoreBundle
  *
  * @ORM\Table(name="opithrm_common_types")
+ * @Serializer\ExclusionPolicy("all")
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
