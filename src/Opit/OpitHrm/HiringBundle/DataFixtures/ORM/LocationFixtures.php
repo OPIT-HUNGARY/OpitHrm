@@ -12,32 +12,36 @@
 namespace Opit\OpitHrm\TravelBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Opit\OpitHrm\TravelBundle\Entity\TransportationType;
 use Opit\OpitHrm\CoreBundle\DataFixtures\ORM\AbstractDataFixture;
+use Opit\OpitHrm\HiringBundle\Entity\Location;
 
 /**
- * Description of TransportationTypeFixtures
+ * Description of LocationFixtures
  *
  * @author OPIT Consulting Kft. - PHP Team - {@link http://www.opit.hu}
  * @version 1.0
  * @package OPIT-HRM
- * @subpackage TravelBundle
+ * @subpackage HiringBundle
  */
-class TransportationTypeFixtures extends AbstractDataFixture
+class LocationFixtures extends AbstractDataFixture
 {
     /**
      * {@inheritDoc}
      */
     public function doLoad(ObjectManager $manager)
     {
-        $transportationTypes = array('Airplane', 'Bus', 'Car', 'Taxi');
+        $locationNames = array('Budapest, Hungary', 'Berlin, Germany', 'Auckland, New Zealand', 'Luxembourg, Luxembourg');
 
-        for ($i = 0; $i < count($transportationTypes); $i++) {
-            $transportationType = new TransportationType();
-            $transportationType->setName($transportationTypes[$i]);
-            $manager->persist($transportationType);
+        foreach ($locationNames as $locationName) {
+            $location = new Location();
+            $location->setName($locationName);
+            $location->setSystem(false);
+            $manager->persist($location);
 
-            $this->addReference('transportation-type-' . strtolower($transportationTypes[$i]), $transportationType);
+            $this->addReference(
+                current(explode(',', strtolower($locationName))),
+                $location)
+            ;
         }
 
         $manager->flush();

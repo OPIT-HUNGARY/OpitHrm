@@ -37,6 +37,7 @@ class JobPositionFixture extends AbstractDataFixture
         $juniorPHPDev->setNumberOfPositions(3);
         $juniorPHPDev->setHiringManager($admin);
         $juniorPHPDev->setCreatedUser($admin);
+        $juniorPHPDev->setLocation($this->getReference('budapest'));
 
         $seniorPHPDev = new JobPosition();
         $seniorPHPDev->setDescription('Looking for a senior PHP developer under 26 with more than 7 years of relevant experience.');
@@ -45,6 +46,7 @@ class JobPositionFixture extends AbstractDataFixture
         $seniorPHPDev->setNumberOfPositions(3);
         $seniorPHPDev->setHiringManager($generalManager);
         $seniorPHPDev->setCreatedUser($generalManager);
+        $seniorPHPDev->setLocation($this->getReference('berlin'));
 
         $sysAdmin = new JobPosition();
         $sysAdmin->setDescription('Looking for system administrator.');
@@ -53,6 +55,7 @@ class JobPositionFixture extends AbstractDataFixture
         $sysAdmin->setNumberOfPositions(1);
         $sysAdmin->setHiringManager($generalManager);
         $sysAdmin->setCreatedUser($generalManager);
+        $sysAdmin->setLocation($this->getReference('auckland'));
 
         $manager->persist($juniorPHPDev);
         $manager->persist($seniorPHPDev);
