@@ -269,7 +269,7 @@ class TravelRequestAccessVoter implements VoterInterface
      */
     protected function isTECreateable(UserInterface $user, TravelRequest $travelRequest, $travelRequestStatusId, $isAdmin)
     {
-        if ($isAdmin || (Status::APPROVED === $travelRequestStatusId && $user === $travelRequest->getUser())) {
+        if (Status::APPROVED === $travelRequestStatusId && ($isAdmin || $user === $travelRequest->getUser())) {
             return VoterInterface::ACCESS_GRANTED;
         }
 
