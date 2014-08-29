@@ -44,6 +44,7 @@ class TeamType extends AbstractType
         $builder->add('employees', 'entity', array(
             'class' => 'OpitOpitHrmUserBundle:Employee',
             'property' => 'employeeName',
+            'label' => 'Team managers',
             'multiple' => true,
             'expanded' => true,
             'required' => false,
