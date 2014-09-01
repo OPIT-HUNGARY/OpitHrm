@@ -52,12 +52,12 @@ class LeaveNotificationManager extends NotificationManager
         $message = $resource->getLeaveRequestId();
 
         if (strpos('approved', $resourceStatus) !== false || strpos('rejected', $resourceStatus) !== false) {
-            $message .=  ' has been ' . $resourceStatus . '.';
+            $message .=  ' has been ' . $resourceStatus;
             $message = ucfirst($message);
         } else {
-            $message = 'Status of '  . $message;
-            $message .=  ' changed to ' . $resourceStatus . '.';
+            $message .=  ' changed to ' . $resourceStatus;
         }
+        $message .=  ' for ' . $resource->getEmployee()->getEmployeeName() . '.';
 
         $receiver = (false === $toGeneralManager) ?
             $this->entityManager->getRepository('OpitOpitHrmUserBundle:User')->findOneByEmployee($resource->getEmployee()) :
