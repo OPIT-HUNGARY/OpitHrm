@@ -55,18 +55,17 @@
             <td width="20%"><strong>Update:</strong></td>
             <td>
                 {% if templateVars['isApproved'] is defined %}
-                    Your leave request has been approved.
+                    Leave request has been approved.
                 {% elseif templateVars['isRevised'] is defined %}
-                    Kindly edit your leave request
+                    Kindly edit the leave request by logging into 
                 {% elseif templateVars['isRejected'] is defined %}
-                    Your leave request has been rejected, you can create a new one
+                    Leave request has been rejected, a new one can be created by logging into 
                 {% elseif templateVars['isCreated'] is defined %}
-                    Your leave request has been created, you can send it for approval
+                    Leave request has been created, it can be send for approval by logging into 
                 {% endif %}
-                 by logging into 
-                <a href="{{ templateVars['url'] }}" style="color: #82CAFF;">
+                <a href="{{ templateVars['url'] }}" style="color: #82CAFF;">{% if true -%}
                     {% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}
-                </a>.
+                {%- endif %}</a>.
             </td>
         </tr>
     </table>
@@ -79,8 +78,12 @@
             </td>
         </tr>
         <tr>
-            <td width="20%"><strong>Id:</strong></td>
-            <td>{{ leaveRequest.leaveRequestId }}<br /></td>
+            <td style="font-weight:bold; width: 20%;">Id:</td>
+            <td>{{ leaveRequest.leaveRequestId }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight:bold; width: 20%;">Name:</td>
+            <td>{{ leaveRequest.employee.employeeName }}</td>
         </tr>
         <tr>
             <td colspan="2">
@@ -118,7 +121,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                This leave request has been rejected as it overlapped with a leave request created by {{ leaveRequest.rejectedGmName }} for you. 
+                This leave request has been rejected as it overlapped with a leave request created by {{ leaveRequest.rejectedGmName }}. 
                 Kindly create a new leave request if required.
             </td>
         </tr>
