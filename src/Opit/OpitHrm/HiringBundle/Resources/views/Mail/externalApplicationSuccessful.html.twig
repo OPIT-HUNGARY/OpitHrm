@@ -1,6 +1,8 @@
-{% set jobPosition = templateVars['jobPosition'] %}
-{% set applicant = templateVars['applicant'] %}
-<body style="font-size:12px;font-family: 'Arial'">
+{% extends 'OpitOpitHrmCoreBundle:Mail:scaffold.html.twig' %}
+
+{% block content %}
+    {% set jobPosition = templateVars['jobPosition'] %}
+    {% set applicant = templateVars['applicant'] %}
     <table cellpadding="5" style="width: 400px; font-size: 12px;">
         <tr>
             <td>
@@ -30,5 +32,4 @@
             <td>{{ jobPosition.description }}<br /></td>
         </tr>
     </table>
-    {% include 'OpitOpitHrmCoreBundle:Mail:footer.html.twig' %}
-</body>
+{% endblock %}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="msapplication-config" content="none"/>
+        <meta http-equiv="content-language" content="en">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>{% block title %}{% if (application_name is defined and application_name is not empty) %}{{ application_name }}{% else %}OPIT-HRM{% endif %}{% endblock %}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="{{ asset("favicon.ico", absolute=true) }}" />
+        <link rel="stylesheet" href="{{ asset("css/html5-boilerplate/normalize.css", absolute=true) }}" />
+        <link rel="stylesheet" href="{{ asset("css/html5-boilerplate/main.css", absolute=true) }}" />
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body style="font-size: 12px">
+        {% block content %}{% endblock %}
+        <footer>
+        {% block footer %}
+            {% include 'OpitOpitHrmCoreBundle:Mail:footer.html.twig' %}
+        {% endblock %}
+        </footer>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

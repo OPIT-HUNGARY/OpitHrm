@@ -1,5 +1,7 @@
-{% set leaveRequest = templateVars['leaveRequest'] %}
-<body style="font-size:12px;font-family: 'Arial'">
+{% extends 'OpitOpitHrmCoreBundle:Mail:scaffold.html.twig' %}
+
+{% block content %}
+    {% set leaveRequest = templateVars['leaveRequest'] %}
     {% if templateVars['statusName'] is defined %}
     <table cellpadding="5" style="background: #0C090A; width: 400px; font-size: 12px; color: white; border-bottom: 1px solid #94c11c;">
         <tr>
@@ -97,5 +99,4 @@
         </table>
         {% endif %}
     {% endif %}
-    {% include 'OpitOpitHrmCoreBundle:Mail:footer.html.twig' %}
-</body>
+{% endblock %}
