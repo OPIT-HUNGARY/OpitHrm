@@ -205,6 +205,7 @@ class UserFixtures extends AbstractDataFixture
         $employee = new Employee();
         $employee->setEmployeeName($name);
         $employee->setDateOfBirth($birthDate);
+        $employee->setReceiveNotifications(false);
         $employee->setJoiningDate($joinDate);
         $employee->setNumberOfChildren(mt_rand(0, 4));
         $employee->setWorkingHours($workingHours[array_rand($workingHours)]);
