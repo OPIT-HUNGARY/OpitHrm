@@ -62,7 +62,7 @@
                                 <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours')|date('H:i')}}</td>
                                 <td class="border-right-3-black border-solid-1-black">&nbsp;</td>
                             {% else %}
-                                <td class="padding-2 white-space-nowrap {{ borderCss }}">{% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}{{ '&nbsp;' }} {% else %}{{ leaveDays[day|date('Y-m-d')][employee.id] }}{% endif %}</td>
+                                <td class="padding-2 white-space-nowrap {{ borderCss }}">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="border-right-3-black {{ borderCss }}">&nbsp;</td>
@@ -76,13 +76,13 @@
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
                                 <td class="border-right-3-black border-solid-1-black"></td>
                             {% else %}
-                                <td class="{{ borderCss }}">{{ '&nbsp;' }}</td>
+                                <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="border-right-3-black {{ borderCss }}">&nbsp;</td>
                             {% endif %}
                         {% else %}
-                        <td class="padding-2 white-space-nowrap border-solid-1-black">Working day</td>
+                            <td class="padding-2 white-space-nowrap border-solid-1-black">Working day</td>
                             <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
                             <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
                             <td class="border-solid-1-black border-right-3-black">&nbsp;</td>
