@@ -32,11 +32,11 @@ class LeaveTypesFixtures extends AbstractDataFixture
     {
         $types = array(
             array(
-                'name' => 'Bank holidays',
+                'name' => 'Bank holiday',
                 'isWorkingDay' => 0
             ),
             array(
-                'name' => 'Weekend working days',
+                'name' => 'Weekend working day',
                 'isWorkingDay' => 1
             )
         );

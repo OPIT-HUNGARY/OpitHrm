@@ -37,9 +37,9 @@
         </tr>
         {% for day in daysOfMonth %}
             {% if leaveDatesOfMonth[day|date('Y-m-d')] is defined %}
-                {% set holiday = leaveDatesOfMonth[day|date('Y-m-d')] %}
+                {% set leaveType = leaveDatesOfMonth[day|date('Y-m-d')] %}
             {% else %}
-                {% set holiday = null %}
+                {% set leaveType = null %}
             {% endif %}
 
             {# Add border to end of the table #}
@@ -62,16 +62,34 @@
                                 <td class="border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours')|date('H:i')}}</td>
                                 <td class="border-right-3-black border-solid-1-black">&nbsp;</td>
                             {% else %}
-                                <td class="padding-2 white-space-nowrap {{ borderCss }}">{{ leaveDays[day|date('Y-m-d')][employee.id] }}</td>
+                                <td class="padding-2 white-space-nowrap {{ borderCss }}">
+                                    {# If leaveType is set #}
+                                    {% if leaveType %}
+                                        {# If leave type is working day and leave is set #}
+                                        {% if leaveType.isWorkingDay and leaveDays[day|date('Y-m-d')][employee.id] %}
+                                            {{ leaveDays[day|date('Y-m-d')][employee.id] }}
+                                        {% else %}
+                                            &nbsp;
+                                        {% endif %}
+                                    {% else %}
+                                        {# If leaveType is not set #}
+                                        {# If it is a weekend #}
+                                        {% if (day|date('w') == 0 or day|date('w') == 6) %}
+                                            &nbsp;
+                                        {% else %}
+                                            {{ leaveDays[day|date('Y-m-d')][employee.id] }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="{{ borderCss }}">&nbsp;</td>
                                 <td class="border-right-3-black {{ borderCss }}">&nbsp;</td>
                             {% endif %}
                         {% endif %}
                     {% else %}
-                        {% if (day|date('w') == 0 or day|date('w') == 6) or holiday is not null %}
-                            {% if holiday == 'Weekend working days' %}
-                                <td class="padding-2 white-space-nowrap border-solid-1-black">Working day</td>
+                        {% if (day|date('w') == 0 or day|date('w') == 6) or leaveType is not null %}
+                            {% if leaveType == 'Weekend working day' %}
+                                <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveType }}</td>
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
                                 <td class="border-right-3-black border-solid-1-black"></td>

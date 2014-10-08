@@ -241,7 +241,7 @@ class TimeSheetController extends Controller
         // Grouping the leave dates by the date.
         foreach ($leaveDates as $leaveDate) {
             $leaveDatesOfMonth[$leaveDate->getHolidayDate()->format('Y-m-d')] =
-                $leaveDate->getHolidayType()->getName();
+                $leaveDate->getHolidayType();
         }
 
         // Get the role hierarchy.
