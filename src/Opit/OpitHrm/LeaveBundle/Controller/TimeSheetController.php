@@ -39,7 +39,7 @@ class TimeSheetController extends Controller
      * To list time sheets in OPIT-HRM
      *
      * @Route("/secured/timesheet/lists", name="OpitOpitHrmLeaveBundle_timesheet_list")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_REPORTS_MANAGER")
      * @Template()
      */
     public function listsTimeSheetAction()
@@ -97,7 +97,7 @@ class TimeSheetController extends Controller
      * To list time sheets in OPIT-HRM
      *
      * @Route("/secured/timesheet/generate/{token}", name="OpitOpitHrmLeaveBundle_timesheet_generate")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_REPORTS_MANAGER")
      * @Template()
      */
     public function generateTimeSheetAction($token)
@@ -138,7 +138,7 @@ class TimeSheetController extends Controller
      * To list time sheets in OPIT-HRM
      *
      * @Route("/secured/timesheet/sendmail/{token}", name="OpitOpitHrmLeaveBundle_timesheet_sendmail")
-     * @Secure(roles="ROLE_ADMIN")
+     * @Secure(roles="ROLE_REPORTS_MANAGER")
      */
     public function sendEmailAction($token)
     {
