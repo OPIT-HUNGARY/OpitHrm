@@ -156,6 +156,13 @@ class LdapAuthenticator implements SimpleFormAuthenticatorInterface
      */
     protected function checkAuthenticationLdap(UserInterface $user, UsernamePasswordToken $token)
     {
+        $currentUser = $token->getUser();
+        // Due to ldap restrinctions we expect a user authenticated once the token
+        // contains a user object
+        if ($currentUser instanceof UserInterface) {
+            return true;
+        }
+
         try {
             $this->ldapManager->bind($token->getUsername(), $token->getCredentials());
             $passwordValid = (boolean) $this->ldapManager->getBoundUser();
