@@ -88,7 +88,7 @@
                         {% endif %}
                     {% else %}
                         {% if (day|date('w') == 0 or day|date('w') == 6) or leaveType is not null %}
-                            {% if leaveType == 'Weekend working day' %}
+                            {% if leaveType and leaveType.isWorkingDay %}
                                 <td class="padding-2 white-space-nowrap border-solid-1-black">{{ leaveType }}</td>
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime }}</td>
                                 <td class="padding-2 border-solid-1-black">{{ arrivalTime|date_modify('+' ~ employee.workingHours ~'hours +' ~ lunchTimeInMinutes ~ 'minutes')|date('H:i')}}</td>
