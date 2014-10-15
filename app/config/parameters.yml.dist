@@ -38,7 +38,7 @@ parameters:
 
     application_name: OPIT-HRM
     # Versioning policy can be found in the README.md
-    version_number: '3.2.1-beta'
+    version_number: '3.2.2-beta'
 
     # In memory credentials
     in_memory_users:
