@@ -51,13 +51,12 @@ class ExchangeRateInsertCommandTest extends WebTestCase
      */
     public function testExecute()
     {
-        // Get the last week's friday.
+        // Get the last week's friday. Note: Dependent on the remote service this date need to be adjusted.
         $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
         // Get the last week's friday.
         $yesterday = date('Y-m-d', strtotime('yesterday'));
 
         $commandTester1 = new CommandTester($this->command);
-        //var_dump($this->command->exchangeService);
         $commandTester1->execute(
             array(
                 'command' => $this->command->getName(),
@@ -67,7 +66,7 @@ class ExchangeRateInsertCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester1->getDisplay(),
-            'Execute: CommandTester1 is failed.'
+            'Execute: CommandTester1 failed.'
         );
 
         $commandTester2 = new CommandTester($this->command);
@@ -81,7 +80,7 @@ class ExchangeRateInsertCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester2->getDisplay(),
-            'Execute: CommandTester2 is failed.'
+            'Execute: CommandTester2 failed.'
         );
 
         $commandTester3 = new CommandTester($this->command);
@@ -96,7 +95,7 @@ class ExchangeRateInsertCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester3->getDisplay(),
-            'Execute: CommandTester3 is failed.'
+            'Execute: CommandTester3 failed.'
         );
 
         $commandTester4 = new CommandTester($this->command);
@@ -111,5 +110,24 @@ class ExchangeRateInsertCommandTest extends WebTestCase
             $commandTester4->getDisplay(),
             'Execute: CommandTester4 is null.'
         );
+
+        /*
+        Cannot be run in the current flow because start will match
+        a future date and command will abort.
+
+        $commandTester5 = new CommandTester($this->command);
+        $commandTester5->execute(
+            array(
+                'command' => $this->command->getName(),
+                '--current'  => null,
+                '--with-local'  => null
+            )
+        );
+        $this->assertRegExp(
+            '/The sync is successful.\n/',
+            $commandTester5->getDisplay(),
+            'Execute: CommandTester5 failed.'
+        );
+        */
     }
 }

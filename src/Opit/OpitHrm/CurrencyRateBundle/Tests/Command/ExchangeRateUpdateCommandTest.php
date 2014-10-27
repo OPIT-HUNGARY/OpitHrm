@@ -51,7 +51,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
      */
     public function testExecute()
     {
-        // Get the last week's friday.
+        // Get the last week's friday. Note: Dependent on the remote service this date need to be adjusted.
         $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
         // Get the last week's friday.
         $yesterday = date('Y-m-d', strtotime('yesterday'));
@@ -66,7 +66,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester1->getDisplay(),
-            'Execute: CommandTester1 is failed.'
+            'Execute: CommandTester1 failed.'
         );
 
         $commandTester2 = new CommandTester($this->command);
@@ -80,7 +80,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester2->getDisplay(),
-            'Execute: CommandTester2 is failed.'
+            'Execute: CommandTester2 failed.'
         );
 
         $commandTester3 = new CommandTester($this->command);
@@ -95,7 +95,7 @@ class ExchangeRateUpdateCommandTest extends WebTestCase
         $this->assertRegExp(
             '/The sync is successful.\n/',
             $commandTester3->getDisplay(),
-            'Execute: CommandTester3 is failed.'
+            'Execute: CommandTester3 failed.'
         );
 
     }

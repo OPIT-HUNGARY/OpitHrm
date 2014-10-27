@@ -38,6 +38,12 @@ class ExchangeRateInsertCommand extends AbstractExchangeRateCommand
                 'Insert only the current rates into the local database.'
             )
             ->addOption(
+                'with-local',
+                null,
+                InputOption::VALUE_NONE,
+                'Works only in combination with <comment>--current</comment> and sets the start date based on last found local rate.'
+            )
+            ->addOption(
                 'missing',
                 null,
                 InputOption::VALUE_NONE,
@@ -51,6 +57,7 @@ The <info>%command.name%</info> command fetching the given rates and insert into
 
 You can optionally specify the following options:
    <comment>--current</comment> option to fetch the today's rates: <info>%command.full_name% --current</info>
+   <comment>--with-local</comment> works only in combination with <comment>--current</comment>: <info>%command.full_name% --current --with-local</info>
    <comment>--missing</comment> option to fetch the missing rates into the local database from the last saved rate's date': <info>%command.full_name% --missing</info>
    <comment>--start</comment> option to fetch rates from the start date: <info>%command.full_name% --start</info>
    <comment>--end</comment> option to fetch rates to the end date: <info>%command.full_name% --end</info>
@@ -65,7 +72,26 @@ EOT
 
         // If current is set then fetch the current rates.
         if (isset($this->inputOptions['current']) && $this->inputOptions['current']) {
-            $this->resultOfFetching = $this->exchangeService->fetchCurrentExchangeRates();
+            // Use last local date as start date if --with-local is given
+            if (isset($this->inputOptions['with-local']) && $this->inputOptions['with-local']) {
+                $objStartDate = $this->exchangeService->getLastLocalRateDate();
+
+                // Abort if last local date is in the future
+                if ($objStartDate > date('Y-m-d')) {
+                    $output->writeln(
+                        '<comment>The last local rate\'s date is in the future. Insertion aborted.</comment>'
+                    );
+                    exit(0);
+                }
+
+                $this->inputOptions['start'] = $objStartDate->format('Y-m-d');
+
+                $this->resultOfFetching = $this->exchangeService->fetchExchangeRates(
+                    $this->validateCommandOptions($this->inputOptions, $output)
+                );
+            } else {
+                $this->resultOfFetching = $this->exchangeService->fetchCurrentExchangeRates();
+            }
 
         } elseif (isset($this->inputOptions['missing']) && $this->inputOptions['missing']) {
             $this->isNotRequiredOptions['start'] = true;
@@ -75,7 +101,7 @@ EOT
             // If the last local rate's date is today or tomorrow then aborting the command.
             if (false === $this->resultOfFetching) {
                 $output->writeln(
-                    '<comment>The last local rate\'s date is today or tomorrow. The fetching is cancelled.</comment>'
+                    '<comment>The last local rate\'s date is today or tomorrow. Insertion aborted.</comment>'
                 );
                 exit(0);
             }

@@ -62,7 +62,7 @@ class ExchangeRateDiffCommandTest extends WebTestCase
      */
     public function testExecute()
     {
-        // Get the last week's friday.
+        // Get the last week's friday. Note: Dependent on the remote service this date need to be adjusted.
         $lastFridayDate = date('Y-m-d', strtotime('last Friday'));
         // Get the last week's friday.
         $yesterday = date('Y-m-d', strtotime('yesterday'));
