@@ -6,6 +6,10 @@
 #leave-calendar-container {
     position: relative;
     
+    .fc-event-title {
+        text-transform: uppercase;
+    }
+
     #export-button {
         position: absolute;
         z-index: 10;

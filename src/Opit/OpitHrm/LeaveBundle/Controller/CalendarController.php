@@ -44,16 +44,33 @@ class CalendarController extends Controller
     {
         $securityContext = $this->container->get('security.context');
         $employees = $this->getTeamsEmployees($securityContext->getToken()->getUser()->getEmployee());
+        $leftToAvail = array();
+
+        if ($securityContext->isGranted('ROLE_TEAM_MANAGER')) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $leaveRequestRepository = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest');
+            $leaveCalculationService = $this->get('opit_opithrm_leave.leave_calculation_service');
+
+            // Fetch left to avail days for all employees
+            foreach ($employees as $employee) {
+                $empLeaveEntitlement = $leaveCalculationService->leaveDaysCalculationByEmployee($employee);
+
+                // Entitled leave days
+                $entitledAppliedLeaveDays = $leaveRequestRepository->totalCountedLeaveDays($employee->getId());
+
+                $leftToAvail[$employee->getId()] = ($empLeaveEntitlement > $entitledAppliedLeaveDays ? $empLeaveEntitlement - $entitledAppliedLeaveDays : 0);
+            }
+        }
 
         if (!$partial) {
             return $this->render(
                 'OpitOpitHrmLeaveBundle:Calendar:teamLeavesCalendar.html.twig',
-                array('employees' => $employees)
+                array('employees' => $employees, 'leftToAvail' => $leftToAvail)
             );
         } else {
             return $this->render(
                 'OpitOpitHrmLeaveBundle:Calendar:_teamLeavesCalendar.html.twig',
-                array('employees' => $employees)
+                array('employees' => $employees, 'leftToAvail' => $leftToAvail)
             );
         }
     }
@@ -121,7 +138,7 @@ class CalendarController extends Controller
             foreach ($leaveRequest->getLeaves() as $leave) {
                 // set leave data
                 $leaves[] = array(
-                    'title' => strtoupper($employee->getEmployeeName()) . ' - ' . $leave->getCategory()->getName(),
+                    'title' => $employee->getEmployeeName() . ' - ' . $leave->getCategory()->getName(),
                     'start' => $leave->getStartDate()->format('Y-m-d'),
                     'end' => $leave->getEndDate()->format('Y-m-d'),
                     'className' => str_replace(' ', '_', ($employee->getEmployeeName() . '-' . $employee->getId())),

@@ -7,6 +7,9 @@
             {% set employeeClass = employee.employeeName|replace(' ', '_') ~ '-' ~ employee.id %}
             <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employeeClass }}" data-class="{{ employeeClass }}">
                 {{ employee.employeeName }}
+                {% if is_granted('ROLE_TEAM_MANAGER') %}
+                <span title="Left to avail">({{ leftToAvail[employee.id] }})</span>
+                {% endif %}
                 <br />
                 <span class="font-size-d8-em">
                     {{ employee.user.email }}
