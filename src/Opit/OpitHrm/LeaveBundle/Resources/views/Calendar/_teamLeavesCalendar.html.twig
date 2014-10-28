@@ -1,11 +1,24 @@
-<div id="leave-calendar-container" class="float-left summary-box" style="width:612px;">
-    <span id="export-button" class="fc-button fc-button-today fc-state-default fc-corner-left fc-corner-right">export <i class="fa fa-upload"></i></span>
+<div id="leave-calendar-container" class="float-left summary-box" style="width:612px; height: 615px;">
+    <div id="calendar-button-group">
+        <select id="calendar-team-selector">
+            <option value="0" selected="selected">All teams</option>
+            {% for team in app.user.employee.teams %}
+                <option value="{{ team.id }}">{{ team.teamName }}</option>
+            {% endfor %}
+        </select>
+        <span id="export-button" class="fc-button fc-button-today fc-state-default fc-corner-left fc-corner-right">export <i class="fa fa-upload"></i></span>
+    </div>
     <h3><i class="fa fa-user"></i>  Team Leave Calendar </h3>
     <div id="team-leaves-calendar" class="width-98"></div>
     <div class="margin-bottom-20 margin-top-5 display-block">
          {% for employee in employees %}
-            {% set employeeClass = employee.employeeName|replace(' ', '_') ~ '-' ~ employee.id %}
-            <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employeeClass }}" data-class="{{ employeeClass }}">
+            {% set employeeData = employee.employeeName|replace(' ', '_') ~ '-' ~ employee.id %}
+            {% set employeeClass = employeeData %}
+            {# Set employee teams as classes #}
+            {% for team in employee.teams %}
+                {% set employeeClass  = employeeClass ~ ' team-' ~ team.id %}
+            {% endfor %}
+            <div class="display-inline-block padding-10 border-radius-5 padding-top-2 padding-bottom-2 margin-bottom-5 color-white team-employee {{ employeeClass }}" data-class="{{ employeeData }}">
                 {{ employee.employeeName }}
                 {% if is_granted('ROLE_TEAM_MANAGER') %}
                 <span title="Left to avail">({{ leftToAvail[employee.id] }})</span>

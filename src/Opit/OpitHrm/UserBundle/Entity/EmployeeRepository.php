@@ -30,15 +30,24 @@ class EmployeeRepository extends EntityRepository
      * @param integer $id
      * @return array
      */
-    public function findTeamEmployees($id)
+    public function findTeamEmployees($id, $team)
     {
-        $dq = $this->getTeamEmployeesBaseQuery($id);
+        if ($team > 0) {
+            $dq = $this->createQueryBuilder('e');
+            $dq->leftJoin('e.teams', 't')
+                ->where($dq->expr()->eq('t.id', ':id'))
+                ->setParameter(':id', $team);
 
-        $employees = $dq
-            ->orWhere('e.id = :id')
-            ->getQuery();
+            return $dq->getQuery()->getResult();
+        } else {
+            $dq = $this->getTeamEmployeesBaseQuery($id, $team);
 
-        return $employees->getResult();
+            $employees = $dq
+                ->orWhere('e.id = :id')
+                ->getQuery();
+
+            return $employees->getResult();
+        }
     }
 
     /**

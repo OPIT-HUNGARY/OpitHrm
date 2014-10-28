@@ -10,18 +10,23 @@
         text-transform: uppercase;
     }
 
-    #export-button {
+    #calendar-button-group {
         position: absolute;
         z-index: 10;
         display: none;
         right: 2em;
+
+        > #calendar-team-selector {
+            vertical-align:top;
+        }
+
+        > #export-button {
+            vertical-align:top;
+            margin-left: 10px;
+        }
     }
-    
-    &.width-55 #export-button {
-        right: 0;
-    }
-    
-    &:hover #export-button {
+
+    &:hover #calendar-button-group {
         display:block;
     }
 }

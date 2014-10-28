@@ -106,9 +106,10 @@ class CalendarController extends Controller
         $securityContext = $this->container->get('security.context');
         $employee = $securityContext->getToken()->getUser()->getEmployee();
 
-        $teamsEmployees = $this->getTeamsEmployees($employee);
         $startDate = date('Y-m-d', $request->query->get('start'));
         $endDate = date('Y-m-d', $request->query->get('end'));
+
+        $teamsEmployees = $this->getTeamsEmployees($employee, $request->query->get('team'));
 
         // get all approved leave requests employees are in
         $leaveRequests = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')
@@ -165,7 +166,7 @@ class CalendarController extends Controller
         $employee = $securityContext->getToken()->getUser()->getEmployee();
         $statusManager = $this->get('opit.manager.leave_status_manager');
 
-        $teamsEmployees = $this->getTeamsEmployees($employee);
+        $teamsEmployees = $this->getTeamsEmployees($employee, $request->request->get('team'));
         // get all approved leave requests employees are in
         $leaveRequests = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')
             ->findEmployeesLeaveRequests(
@@ -218,12 +219,12 @@ class CalendarController extends Controller
      * @param type $employee
      * @return type
      */
-    protected function getTeamsEmployees(Employee $employee)
+    protected function getTeamsEmployees(Employee $employee, $team = 0)
     {
         $entityManager = $this->getDoctrine()->getManager();
         // if employee is not part of any team get his data only
         $teamsEmployees = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')
-            ->findTeamEmployees($employee->getId());
+            ->findTeamEmployees($employee->getId(), $team);
 
         return $teamsEmployees;
     }
