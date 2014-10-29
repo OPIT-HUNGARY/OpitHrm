@@ -1,12 +1,18 @@
-<div id="leave-calendar-container" class="float-left summary-box" style="width:612px; height: 615px;">
-    <div id="calendar-button-group">
-        <select id="calendar-team-selector">
+<div id="leave-calendar-overlay" class="display-none"></div>
+<div id="leave-calendar-container" class="float-left summary-box">
+    <i id="toggle-calendar-size" class="fa fa-external-link cursor-pointer"></i>
+    <div id="calendar-button-group" class="display-inline-block">
+        <span id="export-button" class="fc-today-button fc-button fc-state-default fc-corner-left fc-corner-right">
+            export <i class="fa fa-upload"></i>
+        </span>
+        <select id="calendar-team-selector" class="fc-state-default fc-corner-left fc-corner-right">
             <option value="0" selected="selected">All teams</option>
+            {# Add all teams user is in #}
             {% for team in app.user.employee.teams %}
                 <option value="{{ team.id }}">{{ team.teamName }}</option>
             {% endfor %}
         </select>
-        <span id="export-button" class="fc-button fc-button-today fc-state-default fc-corner-left fc-corner-right">export <i class="fa fa-upload"></i></span>
+        <span class="fc-header-space"></span>
     </div>
     <h3><i class="fa fa-user"></i>  Team Leave Calendar </h3>
     <div id="team-leaves-calendar" class="width-98"></div>

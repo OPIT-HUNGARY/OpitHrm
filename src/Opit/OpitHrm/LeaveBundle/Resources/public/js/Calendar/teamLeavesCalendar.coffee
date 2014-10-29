@@ -60,43 +60,95 @@ $('#leave-calendar-container #export-button').on 'click.export', ->
 
     return
 
-renderCalendar = (teamId) ->
+$('#calendar-team-selector').on 'change', ->
+    teamId = $(@).val()
+    url = Routing.generate('OpitOpitHrmLeaveBundle_calendar_team_employees') + '?team=' + teamId
+    $teamLeavesCalendar = $('#team-leaves-calendar')
+
+    $(@).after $('<i>').addClass('fa fa-spinner fa-spin margin-left-5 margin-top-5 team-load-indicator')
+    # Disable dropdown
+    $(@).attr 'disabled', 'disabled'
+    $(@).addClass 'dropdown-disabled'
+    # Hide all employees
+    $('.team-employee').addClass 'display-none-important'
+
+    # Remove all events from calendar
+    $teamLeavesCalendar.fullCalendar 'removeEvents'
+    # Remove event source from calendar event sources
+    $teamLeavesCalendar.fullCalendar 'removeEventSource', $teamLeavesCalendar.data('url')
+    # Add new event source to calendar (autofetches events)
+    $teamLeavesCalendar.data 'url', url
+    $teamLeavesCalendar.fullCalendar 'addEventSource', url
+
+$('#toggle-calendar-size').on 'click', ->
+    $calendarContainer = $('#leave-calendar-container')
+    calendarWidth = window.innerHeight
+
+    if window.innerHeight > window.innerWidth
+        calendarWidth = window.innerWidth
+
+    if $calendarContainer.data('isFullScreen') is true
+        $calendarContainer.data 'isFullScreen', false
+        $calendarContainer.css
+            'width': ''
+            'margin-left': ''
+
+        $(document.body).css
+            'overflow': ''
+    else
+        $calendarContainer.data 'isFullScreen', true
+        $calendarContainer.css
+            'width': calendarWidth
+            'margin-left': -(calendarWidth/2) + 'px'
+
+        # Disable body scroll in case screen is smaller than menu width
+        $(document.body).css
+            'overflow': 'hidden'
+
+    # Rotate the toggle fullscreen icon
+    $(@).toggleClass 'fa-rotate-180'
+    # Toggle calendar container to be fullscreen
+    $calendarContainer.toggleClass 'fullscreen'
+    # Show or hide overlay
+    $('#leave-calendar-overlay').toggleClass 'display-none'
+
+    # Trigger window resize for fullcalendar to resize calendar to new size
+    $(window).trigger 'resize'
+
+$(document).ready ->
+    url = Routing.generate('OpitOpitHrmLeaveBundle_calendar_team_employees')
     $teamLeaveCalendar = $('#team-leaves-calendar')
-    $teamLeaveCalendar.html('')
+    $teamLeaveCalendar.data 'url', url
+
     $teamLeaveCalendar.fullCalendar
         editable: false
         selectable: false
         firstDay: 1
         events:
-            url: Routing.generate('OpitOpitHrmLeaveBundle_calendar_team_employees')
+            url: url
             data:
-                team: teamId
+                team: 0
         eventAfterRender: (event, element, view) ->
+            teamId = $('#calendar-team-selector').val()
             if teamId > 0
                 # Show employees that are in the selected team
-                className = event.className[0]
                 $(".team-employee.team-#{teamId}").removeClass 'display-none-important'
             else
                 # Show all employees
                 $('.team-employee').removeClass 'display-none-important'
 
+            # Set holiday event background color
             if event.className.length > 1
                 date = event.className[2].split('_')[1]
                 $('#leave-calendar-container').find("[data-date='" + date + "']").addClass 'background-color-default-red'
 
             $('.team-load-indicator').remove()
+
+            # Enable dropdown
             $('#calendar-team-selector').removeAttr 'disabled'
             $('#calendar-team-selector').removeClass 'dropdown-disabled'
 
     $('.team-employee').bgPainter()
 
-$('#calendar-team-selector').on 'change', ->
-    $(@).after $('<i>').addClass('fa fa-spinner fa-spin margin-left-5 margin-top-5 team-load-indicator')
-    $(@).attr 'disabled', 'disabled'
-    $(@).addClass 'dropdown-disabled'
-    # Hide all employees
-    $('.team-employee').addClass 'display-none-important'
-    renderCalendar $(@).val()
-
-$(document).ready ->
-    renderCalendar 0
+    $('#leave-calendar-container').data 'isFullScreen', false
+    $('.fc-header-right').prepend $('#calendar-button-group')
