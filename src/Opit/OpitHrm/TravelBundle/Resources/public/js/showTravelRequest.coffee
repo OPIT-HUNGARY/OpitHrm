@@ -206,7 +206,7 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
             $preview.dialog
                 title: '<i class="fa fa-list-alt"></i> Details'
                 close: ->
-                    $preview.dialog "destroy"
+                    $preview.dialog 'destroy'
                 width: 550
                 maxHeight: $(window).outerHeight()-100
                 modal: on
@@ -224,12 +224,12 @@ $( '#travelRequest_add_travel_request' ).click (event) ->
                             else
                                 $form.attr 'action', $form.attr('action') + '/fa'
                             $form.submit()
-                            $preview.dialog "destroy"
+                            $preview.dialog 'destroy'
                             return
                     ,
                         text: 'Cancel'
                         click: ->
-                            $preview.dialog "destroy"
+                            $preview.dialog 'destroy'
                             return
                 ]
         .fail (jqXHR, textStatus, errorThrown) ->

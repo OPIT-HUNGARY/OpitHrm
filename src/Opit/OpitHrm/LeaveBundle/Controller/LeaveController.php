@@ -110,7 +110,8 @@ class LeaveController extends Controller
     /**
      * To add/edit leave in OPIT-HRM
      *
-     * @Route("/secured/leave/show/{id}", name="OpitOpitHrmLeaveBundle_leave_show", defaults={"id" = "new"}, requirements={ "id" = "new|\d+"})
+     * @Route("/secured/leave/show/{id}/{fa}", name="OpitOpitHrmLeaveBundle_leave_show",
+     * defaults={"id" = "new", "fa" = "new"}, requirements={ "id" = "new|\d+", "fa" = "new|fa" })
      * @Secure(roles="ROLE_USER")
      * @throws CreateNotFoundException
      * @Template()
@@ -119,6 +120,7 @@ class LeaveController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $leaveRequestId = $request->attributes->get('id');
+        $forApproval = 'fa' === $request->attributes->get('fa') ? true : false;
         $isNewLeaveRequest = 'new' === $leaveRequestId ? true : false;
         $securityContext = $this->get('security.context');
         $user = $securityContext->getToken()->getUser();
@@ -201,6 +203,13 @@ class LeaveController extends Controller
                 if (null !== $error) {
                     $form->addError(new FormError($error));
                 } else {
+                    if ($forApproval && (null === $requestFor || 'own' === $requestFor)) {
+                        $leaveRequestService = $this->get('opit.model.leave_request');
+                        $status = $entityManager->getRepository('OpitOpitHrmStatusBundle:Status')->find(Status::FOR_APPROVAL);
+                        $employee = $entityManager->getRepository('OpitOpitHrmUserBundle:Employee')->find($employees[0]);
+                        $this->setLRStatusSendNotificationEmail($leaveRequest, $employee, $status, $leaveRequestService);
+                    }
+
                     return $this->redirect($this->generateUrl('OpitOpitHrmLeaveBundle_leave_list'));
                 }
             }
@@ -232,12 +241,30 @@ class LeaveController extends Controller
      */
     public function showDetailsAction(Request $request)
     {
+        $leaveRequest = new LeaveRequest();
         $entityManager = $this->getDoctrine()->getManager();
-        $leaveRequestId = $request->request->get('id');
         // Disable softdeleteable filter for user entity to allow persistence
         $entityManager->getFilters()->disable('softdeleteable');
-        // For creating entities for the leave request preview
-        $leaveRequest = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')->find($leaveRequestId);
+
+        $leaveRequestPreview = $request->request->get('preview');
+
+        if (null !== $leaveRequestPreview) {
+            $form = $this->createForm(new LeaveRequestType(true), $leaveRequest, array('em' => $entityManager));
+            $form->handleRequest($request);
+        } else {
+            // For creating entities for the leave request preview
+            $leaveRequest = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')->find(
+                $request->request->get('id')
+            );
+
+            $children = new ArrayCollection();
+            // Add the leaves to leave reqeust.
+            if (null !== $leaveRequest) {
+                foreach ($leaveRequest->getLeaves() as $leave) {
+                    $children->add($leave);
+                }
+            }
+        }
 
         if (null === $leaveRequest) {
             throw $this->createNotFoundException('Missing leave request.');
@@ -247,14 +274,6 @@ class LeaveController extends Controller
             throw new AccessDeniedException(
                 'Access denied for leave request ' . $leaveRequest->getLeaveRequestId()
             );
-        }
-
-        $children = new ArrayCollection();
-        // Add the leaves to leave reqeust.
-        if (null !== $leaveRequest) {
-            foreach ($leaveRequest->getLeaves() as $leave) {
-                $children->add($leave);
-            }
         }
 
         // Calculating the leave days for the current employee.

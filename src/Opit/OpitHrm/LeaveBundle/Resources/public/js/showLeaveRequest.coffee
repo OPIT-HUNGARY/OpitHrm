@@ -117,7 +117,6 @@ $(document).ready ->
     validateEmployeesForMLR = () ->
         isValid = yes
         if $('#other-employees').is(':checked') and not $('input[name="employee[]"]').is(':checked')
-            console.log 'bent'
             isValid = no
             if $('.leave-error').length <= 0
                 $errorContainer = $('#reply-message')
@@ -257,6 +256,46 @@ $(document).ready ->
         # Update scrollbar for employee container
         $('form#leaveRequestForm .option-list-scrollable').last().mCustomScrollbar 'update'
 
+    showLRDetailsDialog = () ->
+        $form = $('#leaveRequestForm')
+        $submitBtn = $('#leave_request_create_leave_request')
+        isNewLR = isNaN(window.location.href.slice(-1))
+        modalButtonText = 'Edit'
+
+        if isNewLR
+            modalButtonText = 'Create'
+
+        $.ajax
+            method: 'POST'
+            url: Routing.generate 'OpitOpitHrmLeaveBundle_leave_show_details'
+            data: 'preview=1&' + $form.serialize()
+        .done (data) ->
+            $preview = $('<div id="dialog-travelrequest-preview"></div>').html data
+            $preview.dialog
+                title: '<i class="fa fa-list-alt"></i> Details'
+                close: ->
+                    $preview.dialog 'destroy'
+                width: 550
+                buttons: [
+                        text: modalButtonText,
+                        click: ->
+                            $form.submit()
+                    ,
+                        text: "#{modalButtonText} & send for approval",
+                        click: ->
+                            if isNewLR
+                                $form.attr 'action', $form.attr('action') + '/new/fa'
+                            else
+                                $form.attr 'action', $form.attr('action') + '/fa'
+                            $form.submit()
+                            $preview.dialog 'destroy'
+                    ,
+                        text: 'Cancel',
+                        click: ->
+                            $preview.dialog 'destroy'
+                            return
+                ]
+
     $('.changeState').on 'change', ->
         $(document).data('opithrm').funcs.changeStateDialog $(@), $(document).data('opithrm').funcs.changeLeaveRequestStatus, {
             foreignId: $(@).data('lr')
@@ -351,9 +390,12 @@ $(document).ready ->
     
     $( '#leave_request_create_leave_request' ).on 'click', (event) ->
         event.preventDefault()
+        $form = $('#leaveRequestForm')
         if compareLeaveDates() is yes and validateNumberOfLeaves() is yes and validateGm() is yes and validateEmployeesForMLR() is yes and checkAllDateOverLapping() is yes
             if isGeneralManager is yes
-                if isNotMassLR() and hasPastDates()
+                if $('#own').is(':checked') and !hasPastDates()
+                    do showLRDetailsDialog
+                else if isNotMassLR() and hasPastDates()
                     message = 'Creating a past leave request will effect the time sheet of that period. Do you want to continue?'
                     $('<div id="dialog-show-past-lr-warning"></div>').html(message)
                         .dialog
@@ -363,11 +405,10 @@ $(document).ready ->
                             modal: on
                             buttons:
                                 Yes: ->
-                                    $('#leaveRequestForm').submit()
+                                    $form.submit()
                                 No: ->
                                     $('#dialog-show-past-lr-warning').dialog 'destroy'
                 else
-                    $('#leaveRequestForm').submit()
+                    $form.submit()
             else if hasPastDates(yes) is no
-                $('#leaveRequestForm').submit()
-        
+                do showLRDetailsDialog
