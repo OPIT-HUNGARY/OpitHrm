@@ -26,6 +26,37 @@ $.extend true, $(document).data('opithrm'),
             return
 
 $(document).ready ->
+    # Set the active tab using the window hash property
+    setActiveTab = () ->
+        hash = window.location.hash
+        index = if hash != '' then $("[href='#{hash}']").parent().index() else 0
+        $('#leave_list.tabs').tabs
+            active: index
+
+    $(window).on 'hashchange', () ->
+        do setActiveTab
+
+    $('#leave_list.tabs').tabs
+        activate: (event, ui) ->
+            id = $(ui.newPanel[0]).attr('id')
+            # Set the window location hash
+            window.location.hash = "##{id}"
+            # Set search url and resultSelector
+            window.search.setUrl $(ui.newTab[0]).data('url')
+            window.search.setResultSelector "#list-table-#{id}"
+            return
+        create: (event, ui) ->
+            id = $(ui.panel[0]).attr('id')
+            # Set initial search url and result selector
+            window.search.setUrl $(ui.tab[0]).data('url')
+            window.search.setResultSelector "#list-table-#{id}"
+
+            do setActiveTab
+            return
+
+    # Add item count to awaiting approval tab
+    $('.ui-state-default a[href="#awaiting_approval"]').append ' (' + $('#list-table-awaiting_approval').data('count') + ')'
+
     # Init leave history for travel requests
     history = new StatusHistory('OpitOpitHrmLeaveBundle_status_history')
     do history.init
@@ -86,8 +117,12 @@ $(document).ready ->
         return
 
     $('#leave_list').on 'click', '.fa-sort', ->
-        $(document).data('opithrm').funcs.serverSideListOrdering $(@), $(@).data('field'), 'OpitOpitHrmLeaveBundle_leave_list', 'leave_list'
+        id = $(@).closest('div').attr('id')
+        url = Routing.generate 'OpitOpitHrmLeaveBundle_lr_list', type: id
+        $(document).data('opithrm').funcs.serverSideListOrdering $(@), $(@).data('field'), url, "leave-#{id}-form"
 
     $('#leave_list').on 'click', '.order-text', ->
         $orderIcon = $(@).parent().find('.fa-sort')
-        $(document).data('opithrm').funcs.serverSideListOrdering $orderIcon, $orderIcon.data('field'), 'OpitOpitHrmLeaveBundle_leave_list', 'leave_list'
+        id = $orderIcon.closest('div').attr('id')
+        url = Routing.generate 'OpitOpitHrmLeaveBundle_lr_list', type: id
+        $(document).data('opithrm').funcs.serverSideListOrdering $orderIcon, $orderIcon.data('field'), url, "leave-#{id}-form"

@@ -21,7 +21,7 @@
 
 {% block body %}
     <h1>Leave request list</h1>
-    {% include 'OpitOpitHrmLeaveBundle:Leave:_searchForm.html.twig' with { 'order_field': 'lr.id' } %}
+    {% include 'OpitOpitHrmLeaveBundle:Leave:_searchForm.html.twig' with { 'order_field': 'lr.id', 'searchAction': path('OpitOpitHrmLeaveBundle_lr_list', {'type': 'own'}) } %}
     <table>
         <tr>
             <td class="padding-left-0">
@@ -34,7 +34,41 @@
     <div id="leave-entitlement" class="background-color-light-grey margin-bottom-10 padding-10 border-radius-5">
         <strong>Annual leave entitlement:</strong> {{ leaveDays }} day(s).
     </div>
+    {% if is_granted('ROLE_GENERAL_MANAGER') %}
+    <div id="leave_list" class="tabs">
+        <ul>
+            <li data-url="{{ path('OpitOpitHrmLeaveBundle_lr_list', {'type': 'own'}) }}">
+                <a href="#own">Own</a>
+            </li>
+            <li data-url="{{ path('OpitOpitHrmLeaveBundle_lr_list', {'type': 'awaiting_approval'}) }}">
+                <a href="#awaiting_approval">Awaiting approval</a>
+            </li>
+            <li data-url="{{ path('OpitOpitHrmLeaveBundle_lr_list', {'type': 'approved_rejected'}) }}">
+                <a href="#approved_rejected">Approved / Rejected</a>
+            </li>
+            <li data-url="{{ path('OpitOpitHrmLeaveBundle_lr_list', {'type': 'mass'}) }}">
+                <a href="#mass">Mass</a>
+            </li>
+        </ul>
+
+        <div id="own">
+            {% render(controller('OpitOpitHrmLeaveBundle:Leave:listLR', {'type': 'own'})) %}
+        </div>
+        <div id="awaiting_approval">
+            {% render(controller('OpitOpitHrmLeaveBundle:Leave:listLR', {'type': 'awaiting_approval'})) %}
+        </div>
+        <div id="approved_rejected">
+            {% render(controller('OpitOpitHrmLeaveBundle:Leave:listLR', {'type': 'approved_rejected'})) %}
+        </div>
+        <div id="mass">
+            {% render(controller('OpitOpitHrmLeaveBundle:Leave:listLR', {'type': 'mass'})) %}
+        </div>
+    </div>
+    {% else %}
     <div id="leave_list">
-        {% include 'OpitOpitHrmLeaveBundle:Leave:_list.html.twig' %}
-    </div>    
+        <div id="own">
+            {% render(controller('OpitOpitHrmLeaveBundle:Leave:listLR', {'type': 'own'})) %}
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}

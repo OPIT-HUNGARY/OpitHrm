@@ -1,14 +1,12 @@
-<form class="delete-checkbox-form">
-    <table id="list-table" class="width-100">
+<form class="delete-checkbox-form" id="leave-{{ type }}-form">
+    <table id="list-table-{{ type }}" class="width-100 list-table" data-count="{{ lrCount }}">
         <tr>
             <th class="width-24-fix"><i class="fa fa-trash-o" title="Select/Deselect all"></i></th>
             <th>
                 <i class="fa fa-sort default-right" data-field="lr.id"></i>
                 <span class="order-text cursor-pointer">ID</span>
             </th>
-            <th>
-                <span class="order-text cursor-pointer">Employee name</span>
-            </th>
+            <th>Employee name</th>
             <th>
                 <i class="fa fa-sort default-right" data-field="l.endDate"></i>
                 <span class="order-text cursor-pointer">Dates</span>
@@ -115,12 +113,12 @@
     {% include 'OpitOpitHrmCoreBundle:Shared:_emptyResult.html.twig' with { 'collection': leaveRequests } %}
 
     {% if numberOfPages is defined and numberOfPages > 0 %}
-        {% include 'OpitOpitHrmUserBundle:Shared:_pager.html.twig' with
+        {% include 'OpitOpitHrmCoreBundle:Shared:_pager.html.twig' with
             {
                 'numberOfPages': numberOfPages,
                 'maxNumberOfPages': maxPages,
                 'offset': offset,
-                'url': path('OpitOpitHrmLeaveBundle_leave_list')
+                'url': path('OpitOpitHrmLeaveBundle_lr_list', {'type': type})
             }
         %}
     {% endif %}

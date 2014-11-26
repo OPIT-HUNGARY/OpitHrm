@@ -1,5 +1,5 @@
 <form class="delete-checkbox-form">
-    <table id="list-table" class="width-100">
+    <table id="list-table" class="width-100 list-table">
         <tr>
             <th class="width-24-fix"><i class="fa fa-trash-o fa-1x" title="Select/Deselect all"></i></th>
             <th>
@@ -80,7 +80,7 @@
     {% endif %}
 
     {% if numberOfPages is defined and numberOfPages > 0 %}
-        {% include 'OpitOpitHrmUserBundle:Shared:_pager.html.twig' with
+        {% include 'OpitOpitHrmCoreBundle:Shared:_pager.html.twig' with
             {
                 'numberOfPages': numberOfPages,
                 'maxPages': maxPages,

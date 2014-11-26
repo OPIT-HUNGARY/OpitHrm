@@ -22,7 +22,7 @@ class SearchForm
         titleSelector: '#searchFormTitle'
         buttonSelector: '#searchButton'
         resetSelector: '#resetButton'
-        resultSelector: '#list-table'
+        resultSelector: '.list-table'
         callbacks: null
     
     ###*
@@ -35,13 +35,29 @@ class SearchForm
         # Extend/merge custom options
         @options = $.extend true, {}, @defaults, options
         @form = $(@options.formSelector).find 'form'
-        @url = @form.attr 'action' if @url?
-        
+        @url = @form.attr 'action' if not @url
         # Add callbacks passed to constructor
         @addCallback @options.callbacks if @options.callbacks?
         
         console.log "[SearchForm] Search form initialized.", @options if @debug is on
-        
+
+    ###*
+     * Set search url
+     *
+     * @param string url The url for the run/reset events
+    ###
+    setUrl: (url) ->
+        @url = url
+
+    ###*
+     * Set result selector
+     *
+     * @param string resultSelector Element to replace with search result
+    ###
+    setResultSelector: (resultSelector) ->
+        @defaults.resultSelector = resultSelector
+        @options.resultSelector = resultSelector
+
     ###*
      * Runs a search with given parameters
     ###
@@ -75,7 +91,7 @@ class SearchForm
             url: @url
             data: 'resetForm': true, 'showList' : 1
         .done (response) =>
-            $('#list-table').parent().html response
+            $(@options.resultSelector).parent().html response
             
             do @runCallbacks
             
@@ -171,7 +187,7 @@ class SearchForm
         
         return
 
-# Init the search form
+# Init the search form globaly
 search = new SearchForm
 
 search.addCallback [
@@ -180,3 +196,6 @@ search.addCallback [
     $(document).data('opithrm').funcs.initPager
 ]
 search.registerEvents()
+
+# Expose the search instance
+window.search = search;

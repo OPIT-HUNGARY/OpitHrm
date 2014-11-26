@@ -5,18 +5,19 @@
 
 @import '_defaults';
 
-#list-table{
-    tr:nth-child(even){
+.list-table{
+    tr:nth-child(even) {
         background-color: $lightGrayColor;
     }
-    th{
+    th {
         i:hover{
             cursor:pointer;
         }
     }
-    a{
+    a {
         float:left;
     }
+
     tr {
         td{
             .fa-pencil-square-o, .fa-trash-o, .fa-book, .fa-list-alt, .fa-male {
@@ -28,18 +29,18 @@
 
 #searchFormWrapper{
     background-color: $defaultLightColor;
-   
+
     h3{
         font-size: 1.4em;
-        
+
         i{
             font-size: 12px;
             border: solid 1px $defaultDarkColor;
         }
     }
-    
+
     #searchFormProperties{
-        
+
         .searchProperty{
             width:15%;
             margin:5px;
@@ -49,36 +50,85 @@
             input[type="text"], input[type="date"]{
                 width:100%;
             }
-            
+
             > label{
                 display:block;
             }
         }
     }
-    
+
     #searchFormButtons{
         margin:10px 0 10px 15px;
     }
+}
+
+.ui-tabs {
+    border: none;
+    padding: 0;
+    font-size: 13px;
+
+    ul.ui-tabs-nav {
+        border: 0;
+        padding: 0;
+        background: transparent;
+
+        > li {
+            &.ui-state-default {
+                background: $lightGrayHover;
+                border: none;
+                margin-right: 5px;
+                text-transform: uppercase;
+
+                &:hover {
+                    background: $defaultDarkColor;
+                }
+
+                > a {
+                    color: white;
+
+                }
+
+                &.ui-state-active {
+                    background: $darkGrey;
+                    margin-top: 0;
+
+                    &:hover {
+                        background: $darkGrey;
+                    }
+
+                    > a {
+                        &:focus {
+                            outline: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding: 0;
 }
 
 #pager{
     i:hover{
         color:$lightGreen;
     }
-    
+
     span{
         padding:0 5px;
     }
-    
+
     span:hover{
         color:$lightGreen;
     }
-    
+
     .selected-page{
         color:$lightGreen;
         text-decoration:underline;
     }
-    
+
     .selected-page:hover{
         text-decoration:underline;
     }

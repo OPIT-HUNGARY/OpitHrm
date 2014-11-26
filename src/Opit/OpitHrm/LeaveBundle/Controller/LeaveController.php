@@ -35,76 +35,111 @@ use Symfony\Component\Form\FormError;
 class LeaveController extends Controller
 {
     /**
-     * To list leaves in OPIT-HRM
+     * To list leave requests in OPIT-HRM
      *
-     * @Route("/secured/leave/list", name="OpitOpitHrmLeaveBundle_leave_list")
+     * @Route("/secured/lr/list/{type}", name="OpitOpitHrmLeaveBundle_lr_list", requirements={"type"="mass|own|awaiting_approval|approved_rejected"})
      * @Secure(roles="ROLE_USER")
      * @Template()
      */
-    public function listLeaveRequestsAction(Request $request)
+    public function listLRAction(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        $employee = $user->getEmployee();
-        $isSearch = $request->request->get('issearch');
-        $searchRequests = array();
-        $parentsOfGroupLRs = array();
-        $isGeneralManager = $this->get('security.context')->isGranted('ROLE_GENERAL_MANAGER');
-
-        // Calculating the leave days for the current employee.
-        $leaveCalculationService = $this->get('opit_opithrm_leave.leave_calculation_service');
-        $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
-
-
         $config = $this->container->getParameter('pager_config');
         $maxResults = $config['max_results'];
         $offset = $request->request->get('offset');
-        $pagnationParameters = array(
-            'firstResult' => ($offset * $maxResults),
-            'maxResults' => $maxResults,
-            'isGeneralManager' => $isGeneralManager,
-            'isAdmin' => $securityContext->isGranted('ROLE_ADMIN'),
-            'employee' => $employee,
-            'user' => $user
-        );
+        $type = $request->attributes->get('type');
+
+        $searchRequests = array();
+        $isSearch = $request->request->get('issearch');
 
         if ($isSearch) {
             $searchRequests = $request->request->all();
         }
 
-        $leaveRequests = $entityManager->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest')
-            ->findAllByFiltersPaginated($pagnationParameters, $searchRequests);
+        $pagnationParameters = array(
+            'firstResult' => ($offset * $maxResults),
+            'maxResults' => $maxResults,
+        );
 
-        // Set parent leave request ids
-        foreach ($leaveRequests as $leaveRequest) {
-            if ($lrg = $leaveRequest->getLeaveRequestGroup()) {
-                $massLeaveRequest = $lrg->getLeaveRequests(array('isMassLeaveRequest' => 1), array('limit' => 1));
-                if (!$leaveRequest->getIsMassLeaveRequest()) {
-                     $leaveRequest->setParentLeaveRequestId($massLeaveRequest[0]->getLeaveRequestId());
+        $leaveRequestRepository = $this->getDoctrine()->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest');
+
+        if ('approved_rejected' === $type) {
+            $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
+                $user,
+                array(Status::APPROVED, Status::REJECTED, Status::PAID),
+                $pagnationParameters,
+                $searchRequests
+            );
+        } elseif ('awaiting_approval' === $type) {
+            $lrs = array();
+            $statusManager = $this->get('opit.manager.leave_status_manager');
+            $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
+                $user,
+                Status::FOR_APPROVAL,
+                $pagnationParameters,
+                $searchRequests
+            );
+
+            // Filter LRs that have for approval status currently set
+            foreach ($leaveRequests as $leaveRequest) {
+                $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
+                if (Status::FOR_APPROVAL === $currentStatus->getId()) {
+                    $lrs[] = $leaveRequest;
                 }
             }
+
+            $leaveRequests = $lrs;
+        } elseif ('own' === $type) {
+            $leaveRequests = $leaveRequestRepository->findOwnLeaveRequests(
+                $user->getEmployee()->getId(),
+                $pagnationParameters,
+                $searchRequests
+            );
+
+            // Set leave request parent leave request id
+            $this->setLRParentId($leaveRequests);
+        } elseif ('mass' === $type) {
+            $leaveRequests = $leaveRequestRepository->findMassLeaveRequests(
+                $user,
+                $pagnationParameters,
+                $searchRequests
+            );
+
+            // Set leave request parent leave request id
+            $this->setLRParentId($leaveRequests);
         }
 
         $statusData = $this->get('opit.model.leave_request')->getLRStatusData($leaveRequests);
 
-        if ($request->request->get('resetForm') || $isSearch || null !== $offset) {
-            $template = 'OpitOpitHrmLeaveBundle:Leave:_list.html.twig';
-        } else {
-            $template = 'OpitOpitHrmLeaveBundle:Leave:list.html.twig';
-        }
-
         return $this->render(
-            $template, array(
+            'OpitOpitHrmLeaveBundle:Leave:_list.html.twig',
+            array(
+                'lrCount' => count($leaveRequests),
                 'leaveRequests' => $leaveRequests,
-                'parentsOfGroups' => $parentsOfGroupLRs,
-                'leaveDays' => $leaveDays,
                 'numberOfPages' => ceil(count($leaveRequests) / $maxResults),
                 'offset' => ($offset + 1),
                 'maxPages' => $config['max_pages'],
                 'statusData' => $statusData,
+                'type' => $type
             )
         );
+    }
+
+    /**
+     * To list leaves in OPIT-HRM
+     *
+     * @Route("/secured/leave/list", name="OpitOpitHrmLeaveBundle_leave_list")
+     * @Secure(roles="ROLE_USER")
+     * @Template("OpitOpitHrmLeaveBundle:Leave:list.html.twig")
+     */
+    public function listLeaveRequestsAction()
+    {
+        // Calculating the leave days for the current employee.
+        $leaveCalculationService = $this->get('opit_opithrm_leave.leave_calculation_service');
+        $leaveDays = $leaveCalculationService->leaveDaysCalculationByEmployee($this->getUser()->getEmployee());
+
+        return array('leaveDays' => $leaveDays);
     }
 
     /**
@@ -299,7 +334,6 @@ class LeaveController extends Controller
      */
     public function deleteLeaveRequestAction(Request $request)
     {
-        $securityContext = $this->container->get('security.context');
         $entityManager = $this->getDoctrine()->getManager();
         $ids = $request->request->get('deleteMultiple');
 
@@ -410,6 +444,24 @@ class LeaveController extends Controller
                 'notEntitledAppliedLeaveDays' => $notEntitledAppliedLeaveDays
                 )
         );
+    }
+
+    /**
+     * Set leave request parent leave request id
+     *
+     * @param mixed $leaveRequests
+     */
+    protected function setLRParentId(&$leaveRequests)
+    {
+        foreach ($leaveRequests as $leaveRequest) {
+            if (null !== $leaveRequest->getLeaveRequestGroup()) {
+                $massLeaveRequest = $leaveRequest->getLeaveRequestGroup()->getLeaveRequests(array('isMassLeaveRequest' => 1), array('limit' => 1));
+
+                if (!$leaveRequest->getIsMassLeaveRequest()) {
+                    $leaveRequest->setParentLeaveRequestId($massLeaveRequest[0]->getLeaveRequestId());
+                }
+            }
+        }
     }
 
     /**

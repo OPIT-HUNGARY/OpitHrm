@@ -14,6 +14,7 @@ namespace Opit\OpitHrm\LeaveBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
+use Opit\OpitHrm\UserBundle\Entity\User;
 
 /**
  * Description of LeaveRepository
@@ -24,79 +25,6 @@ use Opit\OpitHrm\StatusBundle\Entity\Status;
  */
 class LeaveRequestRepository extends EntityRepository
 {
-    /**
-     * @param array $parameters
-     * @return object
-     */
-    public function findAllByFiltersPaginated($pagnationParameters, $parameters = array())
-    {
-        $orderParams = isset($parameters['order']) ? $parameters['order'] : array(
-            'field' => 'lr.id',
-            'dir' => 'ASC'
-        );
-        $searchParams = isset($parameters['search']) ? $parameters['search'] : array();
-
-        $dq = $this->createQueryBuilder('lr')
-            ->innerJoin('lr.leaves', 'l')
-            ->innerJoin('lr.employee', 'e')
-            ->innerJoin('e.user', 'u');
-
-        if (isset($searchParams['startDate']) && $searchParams['startDate'] !== '') {
-            $dq->andWhere('l.startDate >= :startDate');
-            $dq->setParameter(':startDate', $searchParams['startDate']);
-        }
-
-        if (isset($searchParams['endDate']) && $searchParams['endDate'] !== '') {
-            $dq->andWhere('l.endDate <= :endDate');
-            $dq->setParameter(':endDate', $searchParams['endDate']);
-        }
-
-        if (isset($searchParams['email']) && $searchParams['email'] !== '') {
-            $dq->andWhere('u.email LIKE :email');
-            $dq->setParameter(':email', '%' . $searchParams['email']. '%');
-        }
-        if (isset($searchParams['employeeName']) && $searchParams['employeeName'] !== '') {
-            $dq->andWhere('e.employeeName LIKE :employeeName');
-            $dq->setParameter(':employeeName', '%' . $searchParams['employeeName']. '%');
-        }
-
-        if (isset($searchParams['leaveId']) && $searchParams['leaveId'] !== '') {
-            $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
-            $dq->setParameter(':leaveId', '%'.$searchParams['leaveId'].'%');
-        }
-
-        if (!$pagnationParameters['isAdmin']) {
-            if ($pagnationParameters['isGeneralManager']) {
-                $statusExpr = $dq->expr()->orX(
-                    $dq->expr()->andX(
-                        $dq->expr()->orX(
-                            $dq->expr()->notIn('s.status', ':status'), $dq->expr()->eq('lr.isMassLeaveRequest', 1)
-                        ), $dq->expr()->eq('lr.generalManager', ':user')
-                    ), $dq->expr()->eq('lr.employee', ':employee')
-                );
-                $dq->leftJoin('lr.states', 's', 'WITH')
-                    ->andWhere($statusExpr);
-
-                $dq->setParameter(':user', $pagnationParameters['user']);
-                $dq->setParameter(':status', Status::CREATED);
-                $dq->setParameter(':employee', $pagnationParameters['employee']);
-            } elseif (!$pagnationParameters['isGeneralManager']) {
-                $dq->andWhere($dq->expr()->eq('lr.employee', ':employee'));
-                $dq->setParameter(':employee', $pagnationParameters['employee']);
-            }
-        }
-
-        // Order the result, mass leave request needs to be opposite of grouping
-        $dq->addOrderBy('lr.leaveRequestGroup', $orderParams['dir'])
-            ->addOrderBy('lr.isMassLeaveRequest', (strtoupper($orderParams['dir']) == 'ASC') ? 'DESC' : 'ASC')
-            ->addOrderBy($orderParams['field'], $orderParams['dir']);
-
-        $dq->setFirstResult($pagnationParameters['firstResult']);
-        $dq->setMaxResults($pagnationParameters['maxResults']);
-
-        return new Paginator($dq->getQuery(), true);
-    }
-
     /**
      * Find all employee leave request with in a date range
      *
@@ -137,6 +65,149 @@ class LeaveRequestRepository extends EntityRepository
         $q = $dq->getQuery();
 
         return $q->getResult();
+    }
+
+    /**
+     * Find employees leave requests
+     *
+     * @param \Opit\OpitHrm\LeaveBundle\Entity\User $generalManager
+     * @param mixed $states
+     * @param array $pagnationParameters
+     * @param type $parameters
+     * @return Paginator
+     */
+    public function findEmployeeLeaveRequests(User $generalManager, $states, array $pagnationParameters, $parameters)
+    {
+        $dq = $this->createQueryBuilder('lr');
+
+        $dq->select('lr')
+            ->where(
+                $dq->expr()->eq('lr.generalManager', '(:generalManager)')
+            )
+            ->andWhere(
+                $dq->expr()->neq('lr.employee', $generalManager->getEmployee()->getId())
+            )
+            ->andWhere(
+                $dq->expr()->isNull('lr.leaveRequestGroup')
+            )
+            ->andWhere(
+                $dq->expr()->in('s.status', ':states')
+            )
+            ->innerJoin('lr.states', 's')
+            ->setParameter(':states', $states)
+            ->setParameter('generalManager', $generalManager->getId());
+
+        $dq = $this->findByParams($parameters, $dq);
+
+        $dq->setFirstResult($pagnationParameters['firstResult']);
+        $dq->setMaxResults($pagnationParameters['maxResults']);
+
+        return new Paginator($dq->getQuery(), true);
+    }
+
+    /**
+     * Find mass leave requests assigned to gm
+     *
+     * @param User $generalManager
+     * @param array $pagnationParameters
+     * @param array $parameters
+     * @return Paginator
+     */
+    public function findMassLeaveRequests(User $generalManager, array $pagnationParameters, array $parameters)
+    {
+        $dq = $this->createQueryBuilder('lr');
+
+        $dq->select('lr')
+            ->where(
+                $dq->expr()->eq('lr.generalManager', '(:generalManager)')
+            )
+            ->andWhere(
+                $dq->expr()->isNotNull('lr.leaveRequestGroup')
+            )
+            ->andWhere(
+                $dq->expr()->eq('lr.generalManager', $generalManager->getId())
+            )
+            ->setParameter('generalManager', $generalManager->getId());
+
+        $dq = $this->findByParams($parameters, $dq);
+
+        $dq->setFirstResult($pagnationParameters['firstResult']);
+        $dq->setMaxResults($pagnationParameters['maxResults']);
+
+        return new Paginator($dq->getQuery(), true);
+    }
+
+    /**
+     * Find own leave requests
+     *
+     * @param type $employeeId
+     * @param array $pagnationParameters
+     * @param array $parameters
+     * @return Paginator
+     */
+    public function findOwnLeaveRequests($employeeId, array $pagnationParameters, array $parameters)
+    {
+        $dq = $this->createQueryBuilder('lr');
+
+        $dq->select('lr')
+            ->where(
+                $dq->expr()->eq('lr.employee', '(:employeeId)')
+            )
+            ->andWhere(
+                $dq->expr()->eq('lr.isMassLeaveRequest', 0)
+            )
+            ->setParameter('employeeId', $employeeId);
+
+        $dq = $this->findByParams($parameters, $dq);
+
+        $dq->setFirstResult($pagnationParameters['firstResult']);
+        $dq->setMaxResults($pagnationParameters['maxResults']);
+
+        return new Paginator($dq->getQuery(), true);
+    }
+
+    public function findByParams($parameters, $dq)
+    {
+        $dq->innerJoin('lr.leaves', 'l')
+            ->innerJoin('lr.employee', 'e')
+            ->innerJoin('e.user', 'u');
+
+        $orderParams = isset($parameters['order']) ? $parameters['order'] : array(
+            'field' => 'lr.id',
+            'dir' => 'ASC'
+        );
+
+        if (isset($parameters['search'])) {
+            $searchParams = $parameters['search'];
+
+            if (isset($searchParams['startDate']) && $searchParams['startDate'] !== '') {
+                $dq->andWhere('l.startDate >= :startDate');
+                $dq->setParameter(':startDate', $searchParams['startDate']);
+            }
+
+            if (isset($searchParams['endDate']) && $searchParams['endDate'] !== '') {
+                $dq->andWhere('l.endDate <= :endDate');
+                $dq->setParameter(':endDate', $searchParams['endDate']);
+            }
+
+            if (isset($searchParams['email']) && $searchParams['email'] !== '') {
+                $dq->andWhere('u.email LIKE :email');
+                $dq->setParameter(':email', '%' . $searchParams['email'] . '%');
+            }
+            if (isset($searchParams['employeeName']) && $searchParams['employeeName'] !== '') {
+                $dq->andWhere('e.employeeName LIKE :employeeName');
+                $dq->setParameter(':employeeName', '%' . $searchParams['employeeName'] . '%');
+            }
+
+            if (isset($searchParams['leaveId']) && $searchParams['leaveId'] !== '') {
+                $dq->andWhere('lr.leaveRequestId LIKE :leaveId');
+                $dq->setParameter(':leaveId', '%' . $searchParams['leaveId'] . '%');
+            }
+        }
+
+        $dq->addOrderBy($orderParams['field'], $orderParams['dir']);
+
+        return $dq;
     }
 
     /**
