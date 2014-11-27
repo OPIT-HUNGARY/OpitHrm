@@ -55,7 +55,6 @@ class SearchForm
      * @param string resultSelector Element to replace with search result
     ###
     setResultSelector: (resultSelector) ->
-        @defaults.resultSelector = resultSelector
         @options.resultSelector = resultSelector
 
     ###*

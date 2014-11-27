@@ -409,6 +409,24 @@ class LeaveRequestService
         }
     }
 
+    /**
+     * Set leave request's parent leave request id
+     *
+     * @param object $leaveRequests
+     */
+    public function setLRParentId($leaveRequests)
+    {
+        foreach ($leaveRequests as $leaveRequest) {
+            if (null !== $leaveRequest->getLeaveRequestGroup()) {
+                $massLeaveRequest = $leaveRequest->getLeaveRequestGroup()->getLeaveRequests(array('isMassLeaveRequest' => 1), array('limit' => 1));
+
+                if (!$leaveRequest->getIsMassLeaveRequest()) {
+                    $leaveRequest->setParentLeaveRequestId($massLeaveRequest[0]->getLeaveRequestId());
+                }
+            }
+        }
+    }
+
     protected function isAllowed()
     {
         $token = $this->securityContext->getToken();

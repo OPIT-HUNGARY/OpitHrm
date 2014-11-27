@@ -28,11 +28,11 @@ class LeaveRequestRepository extends EntityRepository
     /**
      * Find all employee leave request with in a date range
      *
-     * @param type $employeeIds
-     * @param type $startDate
-     * @param type $endDate
-     * @param type $status
-     * @return type
+     * @param array $employeeIds
+     * @param string $startDate
+     * @param string $endDate
+     * @param array $status
+     * @return array
      */
     public function findEmployeesLeaveRequests($employeeIds, $startDate = '', $endDate = '', $status = null)
     {
@@ -70,13 +70,13 @@ class LeaveRequestRepository extends EntityRepository
     /**
      * Find employees leave requests
      *
-     * @param \Opit\OpitHrm\LeaveBundle\Entity\User $generalManager
+     * @param User $generalManager
      * @param mixed $states
-     * @param array $pagnationParameters
-     * @param type $parameters
+     * @param array $paginationParameters
+     * @param array $parameters
      * @return Paginator
      */
-    public function findEmployeeLeaveRequests(User $generalManager, $states, array $pagnationParameters, $parameters)
+    public function findEmployeeLeaveRequests(User $generalManager, $states, array $paginationParameters, $parameters)
     {
         $dq = $this->createQueryBuilder('lr');
 
@@ -99,8 +99,8 @@ class LeaveRequestRepository extends EntityRepository
 
         $dq = $this->findByParams($parameters, $dq);
 
-        $dq->setFirstResult($pagnationParameters['firstResult']);
-        $dq->setMaxResults($pagnationParameters['maxResults']);
+        $dq->setFirstResult($paginationParameters['firstResult']);
+        $dq->setMaxResults($paginationParameters['maxResults']);
 
         return new Paginator($dq->getQuery(), true);
     }
@@ -109,11 +109,11 @@ class LeaveRequestRepository extends EntityRepository
      * Find mass leave requests assigned to gm
      *
      * @param User $generalManager
-     * @param array $pagnationParameters
+     * @param array $paginationParameters
      * @param array $parameters
      * @return Paginator
      */
-    public function findMassLeaveRequests(User $generalManager, array $pagnationParameters, array $parameters)
+    public function findMassLeaveRequests(User $generalManager, array $paginationParameters, array $parameters)
     {
         $dq = $this->createQueryBuilder('lr');
 
@@ -131,8 +131,8 @@ class LeaveRequestRepository extends EntityRepository
 
         $dq = $this->findByParams($parameters, $dq);
 
-        $dq->setFirstResult($pagnationParameters['firstResult']);
-        $dq->setMaxResults($pagnationParameters['maxResults']);
+        $dq->setFirstResult($paginationParameters['firstResult']);
+        $dq->setMaxResults($paginationParameters['maxResults']);
 
         return new Paginator($dq->getQuery(), true);
     }
@@ -140,12 +140,12 @@ class LeaveRequestRepository extends EntityRepository
     /**
      * Find own leave requests
      *
-     * @param type $employeeId
-     * @param array $pagnationParameters
+     * @param integer $employeeId
+     * @param array $paginationParameters
      * @param array $parameters
      * @return Paginator
      */
-    public function findOwnLeaveRequests($employeeId, array $pagnationParameters, array $parameters)
+    public function findOwnLeaveRequests($employeeId, array $paginationParameters, array $parameters)
     {
         $dq = $this->createQueryBuilder('lr');
 
@@ -160,12 +160,17 @@ class LeaveRequestRepository extends EntityRepository
 
         $dq = $this->findByParams($parameters, $dq);
 
-        $dq->setFirstResult($pagnationParameters['firstResult']);
-        $dq->setMaxResults($pagnationParameters['maxResults']);
+        $dq->setFirstResult($paginationParameters['firstResult']);
+        $dq->setMaxResults($paginationParameters['maxResults']);
 
         return new Paginator($dq->getQuery(), true);
     }
 
+    /**
+     * @param array $parameters
+     * @param \Doctrine\ORM\QueryBuilder $dq
+     * @return mixed
+     */
     public function findByParams($parameters, $dq)
     {
         $dq->innerJoin('lr.leaves', 'l')
@@ -213,8 +218,8 @@ class LeaveRequestRepository extends EntityRepository
     /**
      * Find all approved leave requests by date interval.
      *
-     * @param date $startDate
-     * @param date $endDate
+     * @param string $startDate
+     * @param string $endDate
      * @return array
      */
     public function findApprovedLeaveRequestsByDates($startDate = '', $endDate = '')
@@ -242,11 +247,11 @@ class LeaveRequestRepository extends EntityRepository
     /**
      * Total employee leave request
      *
-     * @param type $employeeId
-     * @param date $startDate
-     * @param date $endDate
+     * @param integer $employeeId
+     * @param string $startDate
+     * @param string $endDate
      * @param boolean $finalizedOnly , returns total request count by default
-     * @return type
+     * @return mixed
      */
     public function findEmployeesLRCount($employeeId, $startDate = '', $endDate = '', $finalizedOnly = false)
     {
@@ -278,7 +283,7 @@ class LeaveRequestRepository extends EntityRepository
      *
      * @param integer $employeeId
      * @param bool $incNonAnnualEntLeaves decides to include or not leaves not to be subtracted from annual leaves
-     * @return type
+     * @return mixed
      */
     public function totalCountedLeaveDays($employeeId, $incNonAnnualEntLeaves = false)
     {

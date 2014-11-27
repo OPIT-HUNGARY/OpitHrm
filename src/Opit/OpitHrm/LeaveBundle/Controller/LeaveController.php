@@ -64,50 +64,59 @@ class LeaveController extends Controller
 
         $leaveRequestRepository = $this->getDoctrine()->getRepository('OpitOpitHrmLeaveBundle:LeaveRequest');
 
-        if ('approved_rejected' === $type) {
-            $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
-                $user,
-                array(Status::APPROVED, Status::REJECTED, Status::PAID),
-                $pagnationParameters,
-                $searchRequests
-            );
-        } elseif ('awaiting_approval' === $type) {
-            $lrs = array();
-            $statusManager = $this->get('opit.manager.leave_status_manager');
-            $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
-                $user,
-                Status::FOR_APPROVAL,
-                $pagnationParameters,
-                $searchRequests
-            );
+        switch ($type) {
+            case 'approved_rejected':
+                $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
+                    $user,
+                    array(Status::APPROVED, Status::REJECTED, Status::PAID),
+                    $pagnationParameters,
+                    $searchRequests
+                );
+                break;
+            case 'awaiting_approval':
+                $lrs = array();
+                $statusManager = $this->get('opit.manager.leave_status_manager');
+                $leaveRequests = $leaveRequestRepository->findEmployeeLeaveRequests(
+                    $user,
+                    Status::FOR_APPROVAL,
+                    $pagnationParameters,
+                    $searchRequests
+                );
 
-            // Filter LRs that have for approval status currently set
-            foreach ($leaveRequests as $leaveRequest) {
-                $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
-                if (Status::FOR_APPROVAL === $currentStatus->getId()) {
-                    $lrs[] = $leaveRequest;
+                // Filter LRs that have for approval status currently set
+                foreach ($leaveRequests as $leaveRequest) {
+                    $currentStatus = $statusManager->getCurrentStatus($leaveRequest);
+                    if (Status::FOR_APPROVAL === $currentStatus->getId()) {
+                        $lrs[] = $leaveRequest;
+                    }
                 }
-            }
 
-            $leaveRequests = $lrs;
-        } elseif ('own' === $type) {
-            $leaveRequests = $leaveRequestRepository->findOwnLeaveRequests(
-                $user->getEmployee()->getId(),
-                $pagnationParameters,
-                $searchRequests
-            );
+                $leaveRequests = $lrs;
+                break;
+            case 'own':
+                $leaveRequests = $leaveRequestRepository->findOwnLeaveRequests(
+                    $user->getEmployee()->getId(),
+                    $pagnationParameters,
+                    $searchRequests
+                );
 
-            // Set leave request parent leave request id
-            $this->setLRParentId($leaveRequests);
-        } elseif ('mass' === $type) {
-            $leaveRequests = $leaveRequestRepository->findMassLeaveRequests(
-                $user,
-                $pagnationParameters,
-                $searchRequests
-            );
+                // Set leave request parent leave request id
+                $leaveRequestService = $this->get('opit.model.leave_request');
+                $leaveRequestService->setLRParentId($leaveRequests);
+                break;
+            case 'mass':
+                $leaveRequests = $leaveRequestRepository->findMassLeaveRequests(
+                    $user,
+                    $pagnationParameters,
+                    $searchRequests
+                );
 
-            // Set leave request parent leave request id
-            $this->setLRParentId($leaveRequests);
+                // Set leave request parent leave request id
+                $leaveRequestService = $this->get('opit.model.leave_request');
+                $leaveRequestService->setLRParentId($leaveRequests);
+                break;
+            default:
+                throw new \InvalidArgumentException('Leave request type "' . $type . '" not supported.');
         }
 
         $statusData = $this->get('opit.model.leave_request')->getLRStatusData($leaveRequests);
@@ -444,24 +453,6 @@ class LeaveController extends Controller
                 'notEntitledAppliedLeaveDays' => $notEntitledAppliedLeaveDays
                 )
         );
-    }
-
-    /**
-     * Set leave request parent leave request id
-     *
-     * @param mixed $leaveRequests
-     */
-    protected function setLRParentId(&$leaveRequests)
-    {
-        foreach ($leaveRequests as $leaveRequest) {
-            if (null !== $leaveRequest->getLeaveRequestGroup()) {
-                $massLeaveRequest = $leaveRequest->getLeaveRequestGroup()->getLeaveRequests(array('isMassLeaveRequest' => 1), array('limit' => 1));
-
-                if (!$leaveRequest->getIsMassLeaveRequest()) {
-                    $leaveRequest->setParentLeaveRequestId($massLeaveRequest[0]->getLeaveRequestId());
-                }
-            }
-        }
     }
 
     /**
