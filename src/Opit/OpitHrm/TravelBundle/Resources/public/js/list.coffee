@@ -3,7 +3,7 @@ $(document).ready ->
     history = new StatusHistory('OpitOpitHrmTravelBundle_status_history')
     do history.init
 
-    $('#main-wrapper').on 'click', '#travel_list #list-table .clickable', ->
+    $('#main-wrapper').on 'click', '#travel_list .list-table .clickable', ->
       $changeState = $(@).closest('tr').find('.changeState')
       travelRequestId = $(@).attr 'data-tr-id'
       firstStatusId = $(@).parent().find('option:first-child').val()
