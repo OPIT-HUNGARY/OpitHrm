@@ -67,7 +67,7 @@ class LeaveType extends AbstractType
         $builder->add('category', 'entity', array(
             'class' => 'OpitOpitHrmLeaveBundle:LeaveCategory',
             'property' => 'name',
-            'empty_value' => 'Choose an option',
+            'placeholder' => 'Choose an option',
             'attr' => array('class' => 'leave-category'),
             'query_builder' => function(EntityRepository $er) {
                 return $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');

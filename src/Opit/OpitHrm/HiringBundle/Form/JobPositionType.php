@@ -84,7 +84,7 @@ class JobPositionType extends AbstractType
         $builder->add('location', 'entity', array(
             'class' => 'OpitOpitHrmHiringBundle:Location',
             'property' => 'name',
-            'empty_value' => 'Choose an option',
+            'placeholder' => 'Choose an option',
             'attr' => array('class' => 'display-inline-block'),
             'label_attr' => array('class' => 'display-inline-block'),
             'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
