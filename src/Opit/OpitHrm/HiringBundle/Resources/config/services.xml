@@ -25,7 +25,6 @@
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="security.encoder_factory" />
             <argument type="service" id="opit.security.acl.manager" />
-            <argument type="service" id="security.context" />
             <argument type="service" id="router" />
             <argument>%application_name%</argument>
             <call method="setRequest">

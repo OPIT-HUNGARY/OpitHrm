@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
-use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\OpitHrm\HiringBundle\Entity\ApplicantStatusWorkflow;
 use Opit\OpitHrm\HiringBundle\Entity\Token;
@@ -34,32 +33,29 @@ class ApplicantStatusManager extends StatusManager
     protected $mailer;
     protected $factory;
     protected $aclManager;
-    protected $securityContext;
     protected $router;
     protected $options;
 
     /**
-     * 
+     *
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Component\Email\EmailManagerInterface $mailer
      * @param type $factory
      * @param \Opit\OpitHrm\CoreBundle\Manager\AclManager $aclManager
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param type $router
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, SecurityContext $securityContext, $router, $applicationName)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, AclManager $aclManager, $router, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
         $this->factory = $factory;
         $this->aclManager = $aclManager;
-        $this->securityContext = $securityContext;
         $this->router = $router;
         $this->options['applicationName'] = $applicationName;
     }
 
     /**
-     * 
+     *
      * @param \Opit\OpitHrm\StatusBundle\Entity\Status $status
      * @param array $nextStates
      * @param object $resource
@@ -110,7 +106,7 @@ class ApplicantStatusManager extends StatusManager
 
     /**
      * Method to remove all tokens for applicant
-     * 
+     *
      * @param integer $id
      */
     public function removeTokens($id)

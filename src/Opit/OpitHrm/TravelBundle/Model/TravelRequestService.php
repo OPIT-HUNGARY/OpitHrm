@@ -16,7 +16,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Opit\OpitHrm\TravelBundle\Entity\TravelRequest;
 use Opit\OpitHrm\TravelBundle\Manager\TravelRequestStatusManager;
 use Opit\OpitHrm\UserBundle\Entity\User;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\OpitHrm\TravelBundle\Model\TravelResourceInterface;
 use Opit\OpitHrm\CoreBundle\Security\Authorization\AclManager;
@@ -33,19 +34,22 @@ use Opit\OpitHrm\TravelBundle\Model\TravelRequestServiceInterface;
  */
 class TravelRequestService extends TravelService implements TravelRequestServiceInterface
 {
-    protected $securityContext;
+    protected $authorizationChecker;
+    protected $tokenStorage;
     protected $entityManager;
     protected $statusManager;
     protected $aclManager;
 
     public function __construct(
-        SecurityContext $securityContext,
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $tokenStorage,
         EntityManagerInterface $entityManager,
         TravelRequestStatusManager $statusManager,
         AclManager $aclManager
     ) {
 
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->tokenStorage = $tokenStorage;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->aclManager = $aclManager;
@@ -59,7 +63,7 @@ class TravelRequestService extends TravelService implements TravelRequestService
      */
     public function isUserGeneralManager(TravelResourceInterface $travelRequest)
     {
-        return $travelRequest->getGeneralManager()->getId() === $this->securityContext->getToken()->getUser()->getId();
+        return $travelRequest->getGeneralManager()->getId() === $this->tokenStorage->getToken()->getUser()->getId();
     }
 
     /**
@@ -103,12 +107,12 @@ class TravelRequestService extends TravelService implements TravelRequestService
         $valid = false;
 
         // checks if travel request is being modified by an admin
-        if ($this->securityContext->isGranted('ROLE_ADMIN') || $this->securityContext->isGranted('ROLE_GENERAL_MANAGER')) {
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN') || $this->authorizationChecker->isGranted('ROLE_GENERAL_MANAGER')) {
             return true;
         }
 
         // if travel request user is the current user, pass the validation
-        if ($travelRequest->getUser()->getId() === $this->securityContext->getToken()->getUser()->getId()) {
+        if ($travelRequest->getUser()->getId() === $this->tokenStorage->getToken()->getUser()->getId()) {
             $valid = true;
         }
 
@@ -128,7 +132,7 @@ class TravelRequestService extends TravelService implements TravelRequestService
             $isStatusLocked = true;
             $isEditLocked = false;
         } else {
-            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $isEditLocked = false;
                 $isStatusLocked = false;
                 if (in_array($currentStatusId, array(Status::APPROVED, Status::REJECTED))) {

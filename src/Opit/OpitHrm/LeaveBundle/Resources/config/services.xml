@@ -29,7 +29,6 @@
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.component.email_manager" />
             <argument type="service" id="security.encoder_factory" />
-            <argument type="service" id="security.context" />
             <argument type="service" id="opit.manager.leave_notification_manager" />
             <argument type="service" id="router" />
             <argument>%application_name%</argument>
@@ -38,7 +37,8 @@
             </call>
         </service>
         <service id="opit.model.leave_request" class="%opit.model.leave_request.class%">
-            <argument type="service" id="security.context" />
+            <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="security.token_storage" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="opit.manager.leave_status_manager" />
             <argument type="service" id="opit.component.email_manager" />

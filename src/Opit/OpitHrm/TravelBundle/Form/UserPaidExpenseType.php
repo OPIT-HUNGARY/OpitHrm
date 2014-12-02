@@ -41,7 +41,7 @@ class UserPaidExpenseType extends AbstractType
             'class'  => 'OpitOpitHrmTravelBundle:TEExpenseType',
             'property' => 'name',
             'required' => 'true',
-            'empty_value' => 'Choose...',
+            'placeholder' => 'Choose...',
             'label'=>'Expense type',
             'attr' => array('class' => 'te-expense-type'),
             'query_builder' => function (EntityRepository $er) {

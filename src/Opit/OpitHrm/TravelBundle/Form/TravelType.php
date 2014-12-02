@@ -75,7 +75,7 @@ class TravelType extends AbstractType
         ));
         $builder->add('customer_related', 'choice', array(
             'required' => false,
-            'empty_value' => false,
+            'placeholder' => false,
             'data' => 'No',
             'label'=>'Customer related',
             'choices' => array('1'=>'No', '0'=>'Yes')

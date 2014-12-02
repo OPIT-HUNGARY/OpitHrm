@@ -22,7 +22,7 @@
             <argument>%security.role_hierarchy.roles%</argument>
         </service>
         <service id="opit.listener.first_login" class="%opit.listener.first_login.class%">
-            <argument type="service" id="security.context" />
+            <argument type="service" id="security.token_storage" />
             <argument type="service" id="router" />
             <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
         </service>

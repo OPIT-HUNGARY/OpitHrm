@@ -4,7 +4,7 @@
     "type": "project",
     "description": "OPIT-HRM open source distribution",
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },
     "repositories": [
     {
@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.3.9",
-        "symfony/symfony": "2.5.*",
+        "symfony/symfony": "2.6.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "twig/extensions": "~1.0",
@@ -24,21 +24,21 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "doctrine/migrations": "dev-master",
-        "doctrine/doctrine-migrations-bundle": "dev-master",
-        "doctrine/doctrine-fixtures-bundle": "dev-master",
-        "bmatzner/fontawesome-bundle": "dev-master",
+        "doctrine/migrations": "1.0.*@dev",
+        "doctrine/doctrine-migrations-bundle": "~2.0@dev",
+        "doctrine/doctrine-fixtures-bundle": "~2.0@dev",
+        "bmatzner/fontawesome-bundle": "~4.0",
         "friendsofsymfony/jsrouting-bundle": "~1.5",
         "stof/doctrine-extensions-bundle": "~1.1",
-        "jms/security-extra-bundle": "dev-master",
-        "tecnick.com/tcpdf": "6.0.053",
-        "phpunit/phpunit": "3.7.*",
+        "jms/security-extra-bundle": "~1.5",
+        "tecnick.com/tcpdf": "6.0.*",
         "zendframework/zend-ldap": "~2.3",
         "friendsofsymfony/rest-bundle": "1.*",
-        "jms/serializer-bundle": "dev-master"
+        "jms/serializer-bundle": "~0.13"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "phpunit/phpunit": "3.7.*"
     },
     "scripts": {
         "post-root-package-install": [
@@ -77,7 +77,7 @@
             }
         ],
         "branch-alias": {
-            "dev-master": "2.5-dev"
+            "dev-master": "2.6-dev"
         }
     }
 }

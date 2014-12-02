@@ -13,7 +13,7 @@ namespace Opit\OpitHrm\UserBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -28,18 +28,18 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  */
 class FirstLoginListener
 {
-    private $securityContext;
+    private $tokenStorage;
     private $router;
 
     /**
      *
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface tokenStorage
      * @param \Symfony\Component\Routing\Router $router
      * @param \Symfony\Component\DependencyInjection\Container $container
      */
-    public function __construct(SecurityContext $securityContext, Router $router)
+    public function __construct(TokenStorageInterface $tokenStorage, Router $router)
     {
-        $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
         $this->router = $router;
     }
 
@@ -56,7 +56,7 @@ class FirstLoginListener
             return;
         }
 
-        $token = $this->securityContext->getToken();
+        $token = $this->tokenStorage->getToken();
 
         // Bypass listener if token does not match UsernamePasswordToken
         if (!$token instanceof UsernamePasswordToken) {

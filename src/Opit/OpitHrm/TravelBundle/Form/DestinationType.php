@@ -2,9 +2,9 @@
 
 /*
  *  This file is part of the OPIT-HRM project.
- * 
+ *
  *  (c) Opit Consulting Kft. <info@opit.hu>
- * 
+ *
  *  For the full copyright and license information, please view the LICENSE
  *  file that was distributed with this source code.
  */
@@ -40,8 +40,8 @@ class DestinationType extends AbstractType
             'class'  => 'OpitOpitHrmTravelBundle:TransportationType',
             'property' => 'name',
             'required' => 'true',
-            'empty_value' => '-Select-',
-            'label'=>'Transportation type',
+            'placeholder' => '-Select-',
+            'label' => 'Transportation type',
             'query_builder' => function (EntityRepository $repository) {
                 // Extend query to filter out softdeleted entities
                 return $repository->createQueryBuilder('t')
@@ -49,14 +49,14 @@ class DestinationType extends AbstractType
                      ->orderBy('t.name', 'ASC');
             }
          ));
-        
+
         $builder->add('name', 'text', array(
-            'label'=>'Destination name',
+            'label' => 'Destination name',
             'attr' => array(
                 'placeholder' => 'Destination name'
             )
         ));
-        
+
         $builder->add('cost', 'number', array(
             'attr' => array(
                 'class' => 'cost display-inline-block-important width-80',
@@ -73,7 +73,7 @@ class DestinationType extends AbstractType
             'multiple' => false
         ));
     }
-    
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
