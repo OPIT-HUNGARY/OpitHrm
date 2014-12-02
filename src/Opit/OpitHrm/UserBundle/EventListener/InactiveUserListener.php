@@ -13,7 +13,7 @@ namespace Opit\OpitHrm\UserBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -31,20 +31,20 @@ use Psr\Log\LoggerInterface;
  */
 class InactiveUserListener
 {
-    private $securityContext;
+    private $tokenStorage;
     private $entityManager;
     private $router;
     private $logger;
 
     /**
      *
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface tokenStorage
      * @param \Symfony\Component\Routing\Router $router
      * @param \Symfony\Component\DependencyInjection\Container $container
      */
-    public function __construct(SecurityContext $securityContext, ObjectManager $entityManager, Router $router, LoggerInterface $logger)
+    public function __construct(TokenStorageInterface $tokenStorage, ObjectManager $entityManager, Router $router, LoggerInterface $logger)
     {
-    $this->securityContext = $securityContext;
+        $this->tokenStorage = $tokenStorage;
         $this->entityManager = $entityManager;
         $this->router = $router;
         $this->logger = $logger;
@@ -63,7 +63,7 @@ class InactiveUserListener
             return;
         }
 
-        $token = $this->securityContext->getToken();
+        $token = $this->tokenStorage->getToken();
         $user = $token->getUser();
 
         // check if employee object exists

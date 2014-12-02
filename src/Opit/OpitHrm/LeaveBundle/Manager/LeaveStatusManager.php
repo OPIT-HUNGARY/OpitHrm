@@ -16,7 +16,6 @@ use Opit\OpitHrm\StatusBundle\Manager\StatusManager;
 use Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
-use Symfony\Component\Security\Core\SecurityContext;
 use Opit\Component\Email\EmailManagerInterface;
 use Opit\Component\Utils\Utils;
 use Opit\OpitHrm\LeaveBundle\Entity\Token;
@@ -35,7 +34,6 @@ class LeaveStatusManager extends StatusManager
     protected $entityManager;
     protected $mailer;
     protected $factory;
-    protected $securityContext;
     protected $leaveNotificationManager;
     protected $router;
     protected $options;
@@ -45,17 +43,15 @@ class LeaveStatusManager extends StatusManager
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Opit\Component\Email\EmailManagerInterface $mailer
      * @param type $factory
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      * @param type $router
      * @param type $applicationName
      */
-    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, SecurityContext $securityContext, LeaveNotificationManager $leaveNotificationManager, $router, $applicationName)
+    public function __construct(EntityManagerInterface $entityManager, EmailManagerInterface $mailer, $factory, LeaveNotificationManager $leaveNotificationManager, $router, $applicationName)
     {
         $this->entityManager = $entityManager;
         $this->mailer = $mailer;
         $this->factory = $factory;
-        $this->securityContext = $securityContext;
         $this->leaveNotificationManager = $leaveNotificationManager;
         $this->router = $router;
         $this->options['applicationName'] = $applicationName;

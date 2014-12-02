@@ -13,7 +13,8 @@ namespace Opit\OpitHrm\LeaveBundle\Model;
 
 use Doctrine\ORM\EntityManager;
 use Opit\OpitHrm\LeaveBundle\Manager\LeaveStatusManager;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Opit\OpitHrm\StatusBundle\Entity\Status;
 use Opit\OpitHrm\LeaveBundle\Entity\LeaveRequest;
 use Opit\OpitHrm\UserBundle\Entity\Employee;
@@ -33,7 +34,8 @@ use Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager;
  */
 class LeaveRequestService
 {
-    protected $securityContext;
+    protected $authorizationChecker;
+    protected $tokenStorage;
     protected $entityManager;
     protected $statusManager;
     protected $mailer;
@@ -43,15 +45,17 @@ class LeaveRequestService
 
     /**
      *
-     * @param \Symfony\Component\Security\Core\SecurityContext $securityContext
+     * @param \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface $authorizationChecker
+     * @param \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface $tokenStorage
      * @param \Doctrine\ORM\EntityManager $entityManager
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveStatusManager $statusManager
      * @param \Opit\Component\Email\EmailManagerInterface $mailer
      * @param \Opit\OpitHrm\LeaveBundle\Manager\LeaveNotificationManager $leaveNotificationManager
      */
-    public function __construct(SecurityContext $securityContext, EntityManager $entityManager, LeaveStatusManager $statusManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage, EntityManager $entityManager, LeaveStatusManager $statusManager, EmailManagerInterface $mailer, LeaveNotificationManager $leaveNotificationManager)
     {
-        $this->securityContext = $securityContext;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->tokenStorage = $tokenStorage;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->mailer = $mailer;
@@ -80,7 +84,7 @@ class LeaveRequestService
 
             $leaveRequestStates[$leaveRequest->getId()] = $this->getNextAvailableStates($leaveRequest);
 
-            if ($this->securityContext->isGranted('ROLE_ADMIN')) {
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $isForApproval[$leaveRequest->getId()] = false;
             } else {
                 $isForApproval[$leaveRequest->getId()] = ($currentStatus->getId() === Status::FOR_APPROVAL);
@@ -125,10 +129,10 @@ class LeaveRequestService
 
         $isStatusLocked = true; // status can not be changed
         $unlockedStates = array();
-        $currentEmployee = $this->securityContext->getToken()->getUser()->getEmployee();
+        $currentEmployee = $this->tokenStorage->getToken()->getUser()->getEmployee();
         $isGeneralManager = $this->isUserGeneralManager($leaveRequest);
 
-        if (!$this->securityContext->isGranted('ROLE_ADMIN')) {
+        if (!$this->authorizationChecker->isGranted('ROLE_ADMIN')) {
             if ($leaveRequest->getEmployee()->getId() === $currentEmployee->getId()) {
                 if ($isGeneralManager) {
                     $unlockedStates = array(Status::FOR_APPROVAL);
@@ -159,7 +163,7 @@ class LeaveRequestService
      */
     public function isUserGeneralManager(LeaveRequest $leaveRequest)
     {
-        return $leaveRequest->getGeneralManager()->getEmployee()->getId() === $this->securityContext->getToken()->getUser()->getEmployee()->getId();
+        return $leaveRequest->getGeneralManager()->getEmployee()->getId() === $this->tokenStorage->getToken()->getUser()->getEmployee()->getId();
     }
 
     /**
@@ -299,7 +303,7 @@ class LeaveRequestService
         $employeeLeaveRequests = array();
         // If this is an own employee leave request.
         if (empty($employees)) {
-            $employees[] = $this->securityContext->getToken()->getUser()->getEmployee();
+            $employees[] = $this->tokenStorage->getToken()->getUser()->getEmployee();
         }
         // Get the employee lave requests.
         foreach ($employees as $employee) {
@@ -429,7 +433,7 @@ class LeaveRequestService
 
     protected function isAllowed()
     {
-        $token = $this->securityContext->getToken();
+        $token = $this->tokenStorage->getToken();
 
         if (null === $token) {
             throw new Exception\LeaveRequestServiceException('The security context contains no authentication token. This service cannot be used.');

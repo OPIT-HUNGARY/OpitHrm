@@ -31,14 +31,12 @@ use Opit\OpitHrm\TravelBundle\Model\TravelExpenseServiceInterface;
  */
 class TravelExpenseService extends TravelService implements TravelExpenseServiceInterface
 {
-    protected $securityContext;
     protected $entityManager;
     protected $statusManager;
     protected $config;
 
-    public function __construct($securityContext, EntityManagerInterface $entityManager, TravelExpenseStatusManager $statusManager, $config = array())
+    public function __construct(EntityManagerInterface $entityManager, TravelExpenseStatusManager $statusManager, $config = array())
     {
-        $this->securityContext = $securityContext;
         $this->entityManager = $entityManager;
         $this->statusManager = $statusManager;
         $this->config = $config;
