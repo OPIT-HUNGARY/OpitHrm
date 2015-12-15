@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * "jp" = "Opit\OpitHrm\HiringBundle\Entity\JPNotification",
  * "applicant" = "Opit\OpitHrm\HiringBundle\Entity\ApplicantNotification"})
  */
-class Notification
+abstract class Notification
 {
     /**
      * @var integer

@@ -33,7 +33,7 @@ use Opit\OpitHrm\StatusBundle\Entity\Status;
  *     "applicant" = "Opit\OpitHrm\HiringBundle\Entity\ApplicantStatusWorkflow"
  * })
  */
-class StatusWorkflow
+abstract class StatusWorkflow
 {
     /**
      * @ORM\Column(type="integer")
