@@ -8,7 +8,7 @@ but it can be setup while installation not to use Hungary specific functionaliti
 Requirements
 ------------
 
-* PHP >= 5.3.9 (some required extensions - ldap, openssl, curl)
+* PHP >= 5.4.0 (some required extensions - ldap, openssl, curl)
 * MySql < 5.6
 * Apache >=2.0
 * Ruby
